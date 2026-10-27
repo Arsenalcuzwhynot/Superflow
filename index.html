@@ -94,6 +94,9 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .multibuy-control{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .multibuy-control label{font-size:11px;font-weight:700}
 .multibuy-control input{width:88px;padding:7px 9px}
+.admin-wipe{margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+.admin-wipe>label{font-size:11px;font-weight:700}
+.admin-wipe .multibuy-control input{width:min(190px,45%)}
 .shop-item{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px;background:#11161d;border:1px solid var(--line);border-radius:9px}
 .swatch{width:40px;height:40px;border-radius:8px;border:1px solid #ffffff30;display:grid;place-items:center;font-size:22px;color:#fff}
 .item-title{font-size:12px;font-weight:800}
@@ -232,6 +235,35 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
           <p class="muted small">Progress saves to your account. Avoid playing on two devices at the same time.</p>
         </div>
       </section>
+      <section class="panel" id="adminPanel" hidden>
+        <div class="panel-head"><h2>Admin Panel</h2></div>
+        <div class="body">
+          <div class="multibuy-control">
+            <label for="adminCashAmount">Add cash</label>
+            <input id="adminCashAmount" type="number" min="0.01" step="any" placeholder="Amount">
+            <button id="adminCashBtn" type="button">Grant cash</button>
+          </div>
+          <div class="multibuy-control">
+            <label for="adminMultiplierAmount">Add multiplier</label>
+            <input id="adminMultiplierAmount" type="number" min="0.01" step="0.01" placeholder="Amount">
+            <button id="adminMultiplierBtn" type="button">Grant multiplier</button>
+          </div>
+          <div class="multibuy-control">
+            <label for="adminLevelAmount">Gain levels</label>
+            <input id="adminLevelAmount" type="number" min="1" step="1" value="1">
+            <button id="adminLevelBtn" type="button">Grant levels</button>
+          </div>
+          <div class="admin-wipe">
+            <p class="muted small">Reset all players’ money, inventory, levels, XP, multipliers, slots, and leaderboard scores. Accounts and chat are preserved. This cannot be undone.</p>
+            <label for="adminWipeConfirm">Type WIPE PROGRESS to enable the global reset</label>
+            <div class="multibuy-control">
+              <input id="adminWipeConfirm" type="text" autocomplete="off" placeholder="WIPE PROGRESS">
+              <button id="adminWipeBtn" type="button" disabled>Wipe all player progress</button>
+            </div>
+          </div>
+          <div class="note" id="adminStatus" role="status" aria-live="polite"></div>
+        </div>
+      </section>
       <section class="panel">
         <div class="panel-head"><h2>Tier Colors</h2></div>
         <div class="body"><div id="legend" class="legend"></div></div>
@@ -264,6 +296,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 <script>
 "use strict";
 
@@ -317,11 +350,13 @@ const FIREBASE_CONFIG = {
 const $ = id => document.getElementById(id);
 let authRef = null;
 let dbRef = null;
+let functionsRef = null;
 let currentUser = null;
 let currentUsername = null;
 let firebaseReady = false;
 let communityUnsubscribers = [];
 let lastChatSentAt = 0;
+let progressResetRequired = false;
 
 function getAccountStore() {
   try {
@@ -353,6 +388,7 @@ function initFirebase() {
   if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
   authRef = firebase.auth();
   dbRef = firebase.firestore();
+  functionsRef = firebase.app().functions("us-central1");
   firebaseReady = true;
   return true;
 }
@@ -365,6 +401,19 @@ function updateAuthUI() {
   } else {
     statusEl.textContent = "Log in or create an account to play.";
     $("gamePlayerName").textContent = "";
+  }
+}
+
+async function updateAdminUI() {
+  const panel = $("adminPanel");
+  panel.hidden = true;
+  if (!currentUser || currentUsername !== FREE_GENERATOR_USERNAME || !functionsRef) return;
+  try {
+    const token = await currentUser.getIdTokenResult(true);
+    panel.hidden = token.claims.admin !== true;
+  } catch (error) {
+    $("adminStatus").textContent = "Could not verify admin access: " + (error.message || "try logging in again.");
+    $("adminStatus").style.color = "#ff8c8c";
   }
 }
 
@@ -385,6 +434,7 @@ async function enterGame(username, user) {
   renderLegend();
   render();
   updateAuthUI();
+  await updateAdminUI();
   $("authScreen").hidden = true;
   $("gameShell").hidden = false;
 }
@@ -406,14 +456,20 @@ async function loadUserSave() {
       if (localRaw) {
         const localData = JSON.parse(localRaw);
         if (localData && localData.state) {
-          await userDoc.set({ state: localData.state, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
-          data = localData;
+          await userDoc.set({
+            state: localData.state,
+            progressVersion: 0,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          data = { ...localData, progressVersion: 0 };
         }
       }
     }
     if (!data || typeof data !== "object") return;
     const savedState = data.state && typeof data.state === "object" ? data.state : {};
     state = { ...freshState(), ...savedState };
+    const progressVersion = Number(data.progressVersion);
+    state.progressVersion = Number.isSafeInteger(progressVersion) && progressVersion >= 0 ? progressVersion : 0;
     state.money = Math.max(0, Number(state.money) || 0);
     state.lifetime = Math.max(0, Number(state.lifetime) || 0);
     state.inventory = state.inventory && typeof state.inventory === "object" ? state.inventory : {};
@@ -445,12 +501,27 @@ async function loadUserSave() {
 async function saveUserState(silent = true) {
   try {
     if (!currentUser || !dbRef) return;
-    await dbRef.collection("users").doc(currentUser.uid).set({
-      state,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
+    const userDoc = dbRef.collection("users").doc(currentUser.uid);
+    await dbRef.runTransaction(async transaction => {
+      const snapshot = await transaction.get(userDoc);
+      const storedVersion = snapshot.exists ? Number(snapshot.data().progressVersion) || 0 : 0;
+      if (storedVersion !== state.progressVersion) throw new Error("progress-reset");
+      transaction.set(userDoc, {
+        state,
+        progressVersion: state.progressVersion,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    });
     if (!silent) notify("Saved to your account.");
   } catch (e) {
+    if (e.message === "progress-reset") {
+      progressResetRequired = true;
+      await load();
+      progressResetRequired = false;
+      render();
+      notify("Your progress was reset by an administrator. Your game has been refreshed.");
+      return;
+    }
     if (!silent) notify("Cloud save failed. Check your Firestore rules and connection.", true);
   }
 }
@@ -458,13 +529,28 @@ async function saveUserState(silent = true) {
 async function publishLeaderboardEntry() {
   if (!currentUser || !dbRef) return;
   try {
-    await dbRef.collection("leaderboard").doc(currentUser.uid).set({
-      uid: currentUser.uid,
-      username: currentUsername,
-      cashEarned: Math.max(0, Number(state.lifetime) || 0),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
+    const userDoc = dbRef.collection("users").doc(currentUser.uid);
+    const leaderboardDoc = dbRef.collection("leaderboard").doc(currentUser.uid);
+    await dbRef.runTransaction(async transaction => {
+      const userSnapshot = await transaction.get(userDoc);
+      const storedVersion = userSnapshot.exists ? Number(userSnapshot.data().progressVersion) || 0 : 0;
+      if (storedVersion !== state.progressVersion) throw new Error("progress-reset");
+      transaction.set(leaderboardDoc, {
+        uid: currentUser.uid,
+        username: currentUsername,
+        cashEarned: Math.max(0, Number(state.lifetime) || 0),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    });
   } catch (e) {
+    if (e.message === "progress-reset") {
+      progressResetRequired = true;
+      await load();
+      progressResetRequired = false;
+      render();
+      notify("Your progress was reset by an administrator. Your game has been refreshed.");
+      return;
+    }
     $("leaderboardStatus").textContent = "Leaderboard could not update. Check Firestore rules.";
   }
 }
@@ -589,6 +675,7 @@ const freshState = () => ({
   level: 1,
   xp: 0,
   multiplier: 1,
+  progressVersion: 0,
   slots: [null],
   selected: null
 });
@@ -622,7 +709,7 @@ function totalOwned() { return Object.values(state.inventory).reduce((a, b) => a
 function baseIncome() { return state.slots.reduce((sum, slot) => sum + (slot ? getGenerator(slot.id).income : 0), 0); }
 function totalIncome() { return baseIncome() * state.multiplier; }
 function multiplierDropChance(generator) {
-  return Math.min(1, 0.005 * (generator.index + 1) * Math.pow(0.98, state.multiplier - 1));
+  return Math.min(1, 0.0005 * (generator.index + 1) * Math.pow(0.95, state.multiplier - 1));
 }
 
 function notify(message, error = false) {
@@ -968,6 +1055,59 @@ $("upgradesTabBtn").addEventListener("click", () => selectShopTab("upgrades"));
 $("saveBtn").addEventListener("click", () => save(false));
 $("multiBuyAmount").addEventListener("input", updateShopBuyButtons);
 $("clearAllBtn").addEventListener("click", clearAllGenerators);
+$("adminWipeConfirm").addEventListener("input", () => {
+  $("adminWipeBtn").disabled = $("adminWipeConfirm").value !== "WIPE PROGRESS";
+});
+async function runAdminAction(action, amount) {
+  const status = $("adminStatus");
+  const controls = Array.from($("adminPanel").querySelectorAll("input, button"));
+  controls.forEach(control => { control.disabled = true; });
+  status.style.color = "var(--muted)";
+  status.textContent = "Applying admin action...";
+  try {
+    const result = await functionsRef.httpsCallable("adminAction")({ action, amount });
+    await load();
+    render();
+    const message = result.data.message || "Admin action completed.";
+    status.style.color = "var(--green)";
+    status.textContent = message;
+    notify(message);
+  } catch (error) {
+    const message = error.message || "Admin action failed.";
+    status.style.color = "#ff8c8c";
+    status.textContent = message;
+    notify(message, true);
+  } finally {
+    controls.forEach(control => { control.disabled = false; });
+    $("adminWipeBtn").disabled = $("adminWipeConfirm").value !== "WIPE PROGRESS";
+  }
+}
+function readAdminAmount(inputId, { integer = false, max = Number.MAX_SAFE_INTEGER } = {}) {
+  const amount = Number($(inputId).value);
+  if (!Number.isFinite(amount) || amount <= 0 || amount > max || (integer && !Number.isSafeInteger(amount))) {
+    notify("Enter a valid amount greater than zero.", true);
+    return null;
+  }
+  return amount;
+}
+$("adminCashBtn").addEventListener("click", () => {
+  const amount = readAdminAmount("adminCashAmount", { max: 1e100 });
+  if (amount !== null) runAdminAction("grantCash", amount);
+});
+$("adminMultiplierBtn").addEventListener("click", () => {
+  const amount = readAdminAmount("adminMultiplierAmount", { max: 1e6 });
+  if (amount !== null && Math.round(amount * 100) / 100 === amount) runAdminAction("grantMultiplier", amount);
+  else if (amount !== null) notify("Multiplier amount must be in increments of 0.01.", true);
+});
+$("adminLevelBtn").addEventListener("click", () => {
+  const amount = readAdminAmount("adminLevelAmount", { integer: true, max: 10000 });
+  if (amount !== null) runAdminAction("grantLevels", amount);
+});
+$("adminWipeBtn").addEventListener("click", () => {
+  if ($("adminWipeConfirm").value !== "WIPE PROGRESS") return;
+  if (!confirm("This resets progress and leaderboard scores for every player. Accounts and chat stay. Continue?")) return;
+  runAdminAction("wipeProgress", "WIPE PROGRESS");
+});
 $("resetBtn").addEventListener("click", () => {
   if (!confirm("Reset all progress, including money, level, multiplier, inventory, and placed generators? This cannot be undone.")) return;
   state = freshState();
@@ -996,7 +1136,7 @@ const firebaseEnabled = initFirebase();
 if (firebaseEnabled) authRef.setPersistence(firebase.auth.Auth.Persistence.NONE).catch(() => {});
 updateAuthUI();
 setInterval(() => {
-  if (!currentUser) return;
+  if (!currentUser || progressResetRequired) return;
   const earned = totalIncome();
   state.money += earned;
   state.lifetime += earned;
