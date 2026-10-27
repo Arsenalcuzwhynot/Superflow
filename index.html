@@ -3,11 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Generator Grid</title>
+<meta name="theme-color" content="#0d1015">
+<title>Superflow!</title>
 <style>
 :root{
   --bg:#0d1015;--panel:#171c24;--panel2:#1d242e;--line:#303946;
   --text:#edf1f5;--muted:#9ca8b6;--green:#7ad7a6;--gold:#f0cb75;
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#f3f7f4;--panel:#ffffff;--panel2:#e8f0eb;--line:#d5e0d9;
+  --text:#26332c;--muted:#65746b;--green:#26734c;--gold:#916717;
+  color-scheme:light;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
@@ -19,6 +26,7 @@ input::placeholder{color:#8a98ab}
 [hidden]{display:none!important}
 .auth-screen{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at 18% 82%,#263b3b 0,transparent 42%),radial-gradient(ellipse at 83% 18%,#41352a 0,transparent 38%),var(--bg)}
 .auth-card{width:min(440px,100%);background:#121922;border:1px solid var(--line);border-radius:12px;padding:28px;box-shadow:0 24px 80px #0008}
+.auth-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}
 .auth-heading{font-size:23px;font-weight:900;letter-spacing:.04em;margin-bottom:5px}
 .auth-status{color:var(--muted);font-size:12px;margin-bottom:20px}
 .auth-form{display:grid;gap:10px}
@@ -27,21 +35,29 @@ input::placeholder{color:#8a98ab}
 .auth-actions button{min-height:44px}
 .auth-card .secondary{background:#1b2734}
 .auth-hint{margin-top:14px;color:var(--muted);font-size:11px}
+.theme-toggle{white-space:nowrap;font-size:12px;padding:8px 10px}
 .game-shell{min-height:100vh}
 .game-account{display:flex;align-items:center;gap:10px}
 .game-account .auth-status{margin:0}
 header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px clamp(14px,3vw,32px);border-bottom:1px solid var(--line);background:#11161d;position:relative;z-index:4}
-.brand{font-size:19px;font-weight:900;letter-spacing:.09em}.brand span{color:#8ea0b4}
+.brand{display:flex;align-items:center;gap:9px;font-size:20px;font-weight:800;letter-spacing:-.045em;white-space:nowrap}
+.brand-mark{width:34px;height:34px;flex:none}
+.brand-name span{color:var(--green)}
+.auth-card .brand{font-size:23px}
+.auth-card .brand-mark{width:40px;height:40px}
+.game-account{flex-wrap:wrap;justify-content:flex-end}
 .stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .stat{min-width:112px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:7px 11px}
 .stat small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
 .stat strong{font-size:16px}
 main{max-width:1250px;margin:auto;padding:20px}
-.workspace-nav{position:sticky;top:0;z-index:5;display:flex;gap:8px;overflow-x:auto;padding:10px 12px;margin:0 0 16px;background:#11161df2;border:1px solid var(--line);border-radius:10px;backdrop-filter:blur(12px)}
-.workspace-tab{flex:1;min-width:110px;background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;color:var(--muted)}
-.workspace-tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--green)}
-.workspace-view{margin-bottom:16px}
-.overview-layout{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px;align-items:start}
+.layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.9fr);gap:16px;align-items:start}
+.side{display:grid;gap:16px}
+.shop-tabs{position:sticky;top:0;z-index:2;display:flex;gap:8px;margin:-15px -15px 12px;padding:8px 15px 0;background:var(--panel);border-bottom:1px solid var(--line)}
+.shop-tab{flex:1;min-width:0;background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;padding:8px 7px;color:var(--muted)}
+.shop-tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--green)}
+.shop-content{max-height:520px;overflow:auto;padding-right:4px}
+.overview-layout{display:grid;gap:16px;align-items:start}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .panel-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
 h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
@@ -119,16 +135,35 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .summary-card strong{font-size:16px}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .note{min-height:19px;font-size:11px;color:var(--green);margin-top:10px}
-.legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
-.legend-item{display:flex;align-items:center;gap:8px;font-size:11px;color:#d0d8e2}
-.dot{width:12px;height:12px;border-radius:3px;border:1px solid #ffffff30;flex:none}
 .footer{text-align:center;color:#748092;font-size:11px;padding:22px 10px}
 .modal-bg{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
 .modal-bg.open{display:flex}.modal{width:min(390px,100%);background:#1a222d;border:1px solid #3a4655;border-radius:12px;padding:18px}
 .modal h2{margin-bottom:8px}.modal p{font-size:12px;color:var(--muted)}
 .modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+:root[data-theme="light"] button{background:#e8efea;border-color:#cbd8d0}
+:root[data-theme="light"] input{background:#fff;border-color:#c5d2c9;color:var(--text)}
+:root[data-theme="light"] input::placeholder{color:#7d8b82}
+:root[data-theme="light"] .auth-screen{background:radial-gradient(ellipse at 18% 82%,#dcebe1 0,transparent 42%),radial-gradient(ellipse at 83% 18%,#eee5d5 0,transparent 38%),var(--bg)}
+:root[data-theme="light"] .auth-card{background:#fff;box-shadow:0 24px 80px #2644341a}
+:root[data-theme="light"] header{background:#e8f0eb}
+:root[data-theme="light"] .auth-card .secondary{background:#eef3ef}
+:root[data-theme="light"] .slot.empty{background:#f4f7f5;border-color:#c7d4cb}
+:root[data-theme="light"] .slot.empty:hover{background:#e7f0e9;border-color:#7ca88b}
+:root[data-theme="light"] .slot.filled:not(.effect-tier):not(.effect-chroma):not(.effect-celestial):not(.effect-aether):not(.effect-nebulous):not(.effect-paradox):not(.effect-singularity){background:#edf3ef}
+:root[data-theme="light"] .slot .gen-income{color:#34443a}
+:root[data-theme="light"] .leaderboard-row,
+:root[data-theme="light"] .chat-messages,
+:root[data-theme="light"] .rebirth-panel,
+:root[data-theme="light"] .upgrade-points,
+:root[data-theme="light"] .upgrade-card,
+:root[data-theme="light"] .shop-item{background:#f5f8f6;border-color:var(--line)}
+:root[data-theme="light"] .shop-tabs{background:var(--panel)}
+:root[data-theme="light"] .modal{background:#fff;border-color:var(--line)}
+:root[data-theme="light"] .empty-mark{color:#8a9a8f}
 @media(max-width:700px){.community-grid{grid-template-columns:1fr}}
-@media(max-width:560px){header{align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start;width:100%}.stat{flex:1;min-width:90px}main{padding:12px}.workspace-tab{min-width:88px;padding-inline:8px}}
+@media(max-width:850px){.layout{grid-template-columns:minmax(0,1fr) minmax(280px,.9fr)}}
+@media(max-width:700px){.layout{grid-template-columns:1fr}}
+@media(max-width:560px){header{align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start;width:100%}.stat{flex:1;min-width:90px}main{padding:12px}}
 @media(prefers-reduced-motion:reduce){.slot.filled.effect-tier,.slot.filled.effect-chroma,.slot.filled.effect-celestial,.slot.filled.effect-aether,.slot.filled.effect-nebulous,.slot.filled.effect-paradox,.slot.filled.effect-singularity{animation:none}}
 
     .side-scroll-controls {
@@ -164,23 +199,42 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 <body>
 <section class="auth-screen" id="authScreen">
   <div class="auth-card">
-    <div class="brand">GENERATOR <span>GRID</span></div>
-    <div class="auth-heading">Player account</div>
-    <div id="authStatus" class="auth-status">Log in or create an account to play.</div>
+    <div class="auth-card-top">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+          <defs><linearGradient id="flowMarkGradient" x1="5" y1="35" x2="35" y2="5" gradientUnits="userSpaceOnUse"><stop stop-color="#7ad7a6"/><stop offset="1" stop-color="#68b8d2"/></linearGradient></defs>
+          <rect x="1" y="1" width="38" height="38" rx="13" fill="#17251f" stroke="#7ad7a6" stroke-opacity=".35"/>
+          <path d="M28 11H17a6 6 0 0 0 0 12h6a6 6 0 0 1 0 12H11" fill="none" stroke="url(#flowMarkGradient)" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="29" cy="29" r="2" fill="#f0cb75"/>
+        </svg>
+        <span class="brand-name">Superflow<span>!</span></span>
+      </div>
+      <button class="theme-toggle" id="authThemeToggleBtn" type="button" aria-label="Switch to light mode">Light mode</button>
+    </div>
+    <div class="auth-heading">Welcome to the flow</div>
+    <div id="authStatus" class="auth-status">Sign in or create an account to start playing.</div>
     <div class="auth-form">
       <input id="usernameInput" type="text" placeholder="Username" autocomplete="username" aria-label="Username" />
       <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" aria-label="Password" />
       <div class="auth-actions">
-        <button id="loginBtn" type="button">Log in</button>
+        <button id="loginBtn" type="button">Sign in</button>
         <button id="signupBtn" type="button" class="secondary">Create account</button>
       </div>
     </div>
-    <div class="auth-hint">Username capitalization matters.</div>
+    <div class="auth-hint">Usernames are case-sensitive.</div>
   </div>
 </section>
 <div class="game-shell" id="gameShell" hidden>
 <header>
-  <div class="brand">GENERATOR <span>GRID</span></div>
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+      <defs><linearGradient id="flowMarkGradientGame" x1="5" y1="35" x2="35" y2="5" gradientUnits="userSpaceOnUse"><stop stop-color="#7ad7a6"/><stop offset="1" stop-color="#68b8d2"/></linearGradient></defs>
+      <rect x="1" y="1" width="38" height="38" rx="13" fill="#17251f" stroke="#7ad7a6" stroke-opacity=".35"/>
+      <path d="M28 11H17a6 6 0 0 0 0 12h6a6 6 0 0 1 0 12H11" fill="none" stroke="url(#flowMarkGradientGame)" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="29" cy="29" r="2" fill="#f0cb75"/>
+    </svg>
+    <span class="brand-name">Superflow<span>!</span></span>
+  </div>
   <div class="stats">
     <div class="stat"><small>Money</small><strong id="money">$10</strong></div>
     <div class="stat"><small>Income / second</small><strong id="income">$0</strong></div>
@@ -188,16 +242,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
     <div class="stat"><small>Level · XP to next</small><strong><span id="level">1</span> · <span id="xpProgress">0 / 10 XP</span></strong></div>
     <div class="stat"><small>Money multiplier</small><strong id="multiplier">×1</strong></div>
   </div>
-  <div class="game-account"><span id="gamePlayerName" class="auth-status"></span><button id="logoutBtn" type="button">Log out</button></div>
+  <div class="game-account"><span id="gamePlayerName" class="auth-status"></span><button class="theme-toggle" id="gameThemeToggleBtn" type="button" aria-label="Switch to light mode">Light mode</button><button id="logoutBtn" type="button">Log out</button></div>
 </header>
 <main>
-  <nav class="workspace-nav" role="tablist" aria-label="Game sections">
-    <button class="workspace-tab" id="generatorsTabBtn" type="button" role="tab" aria-selected="true" aria-controls="generatorsView">Generators</button>
-    <button class="workspace-tab" id="shopTabBtn" type="button" role="tab" aria-selected="false" aria-controls="shopView">Shop</button>
-    <button class="workspace-tab" id="rebirthTabBtn" type="button" role="tab" aria-selected="false" aria-controls="rebirthView">Rebirth</button>
-    <button class="workspace-tab" id="upgradesTabBtn" type="button" role="tab" aria-selected="false" aria-controls="upgradesView">Upgrades</button>
-  </nav>
-  <section class="workspace-view" id="generatorsView" role="tabpanel" aria-labelledby="generatorsTabBtn">
+  <div class="layout">
     <section class="panel">
       <div class="panel-head">
         <div><h2>Generator Slots</h2><div class="muted small" id="slotSummary">Level 1 · 1 slot unlocked</div></div>
@@ -209,46 +257,40 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         <div class="note" id="notice"></div>
       </div>
     </section>
-  </section>
-  <section class="workspace-view" id="shopView" role="tabpanel" aria-labelledby="shopTabBtn" hidden>
-    <section class="panel">
+    <div class="side">
+      <section class="panel">
       <div class="panel-head">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <h2>Generator Shop</h2>
+          <h2>Shop</h2>
           <span class="muted small" id="inventoryTotal">0 owned</span>
         </div>
       </div>
-      <div class="body">
-        <div class="multibuy-control">
-          <label for="multiBuyAmount">Multibuy quantity</label>
-          <input id="multiBuyAmount" type="number" min="1" step="1" value="1" inputmode="numeric">
+      <div class="body shop-content">
+        <div class="shop-tabs" role="tablist" aria-label="Shop, rebirth, and upgrade sections">
+          <button class="shop-tab" id="shopTabBtn" type="button" role="tab" aria-selected="true" aria-controls="shopTabPanel">Shop</button>
+          <button class="shop-tab" id="rebirthTabBtn" type="button" role="tab" aria-selected="false" aria-controls="rebirthTabPanel">Rebirth</button>
+          <button class="shop-tab" id="upgradesTabBtn" type="button" role="tab" aria-selected="false" aria-controls="upgradesTabPanel">Upgrades</button>
         </div>
-        <div class="shop-list" id="shop"></div>
-      </div>
-    </section>
-  </section>
-  <section class="workspace-view" id="rebirthView" role="tabpanel" aria-labelledby="rebirthTabBtn" hidden>
-    <section class="panel">
-      <div class="panel-head"><h2>Rebirth</h2></div>
-      <div class="body">
+        <div id="shopTabPanel" role="tabpanel" aria-labelledby="shopTabBtn">
+          <div class="multibuy-control">
+            <label for="multiBuyAmount">Multibuy quantity</label>
+            <input id="multiBuyAmount" type="number" min="1" step="1" value="1" inputmode="numeric">
+          </div>
+          <div class="shop-list" id="shop"></div>
+        </div>
+        <div id="rebirthTabPanel" role="tabpanel" aria-labelledby="rebirthTabBtn" hidden>
         <div class="rebirth-panel">
           <strong>Rebirth</strong>
           <p class="muted small" id="rebirthInfo">Reach level 20 and have $1M to rebirth.</p>
           <button id="rebirthBtn" type="button" disabled>Rebirth</button>
         </div>
+        </div>
+        <div id="upgradesTabPanel" role="tabpanel" aria-labelledby="upgradesTabBtn" hidden>
+          <div class="upgrade-points">Rebirth points: <span id="upgradePoints">0</span></div>
+          <div class="upgrade-list" id="upgradeList"></div>
+        </div>
       </div>
-    </section>
-  </section>
-  <section class="workspace-view" id="upgradesView" role="tabpanel" aria-labelledby="upgradesTabBtn" hidden>
-    <section class="panel">
-      <div class="panel-head"><h2>Rebirth Upgrades</h2></div>
-      <div class="body">
-        <div class="upgrade-points">Rebirth points: <span id="upgradePoints">0</span></div>
-        <div class="upgrade-list" id="upgradeList"></div>
-      </div>
-    </section>
-  </section>
-  <div class="overview-layout">
+      </section>
       <section class="panel">
         <div class="panel-head"><h2>Overview</h2></div>
         <div class="body">
@@ -284,10 +326,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
           <div class="note" id="adminStatus" role="status" aria-live="polite"></div>
         </div>
       </section>
-      <section class="panel">
-        <div class="panel-head"><h2>Tier Colors</h2></div>
-        <div class="body"><div id="legend" class="legend"></div></div>
-      </section>
+    </div>
   </div>
   <div class="community-grid">
     <section class="panel">
@@ -299,27 +338,27 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         </div>
         <div id="cashLeaderboardPanel" role="tabpanel" aria-labelledby="cashLeaderboardTabBtn">
           <ol class="leaderboard-list" id="leaderboardList"></ol>
-          <div class="muted small" id="leaderboardStatus">Log in to load the leaderboard.</div>
+          <div class="muted small" id="leaderboardStatus">Sign in to see the leaderboard.</div>
         </div>
         <div id="levelsLeaderboardPanel" role="tabpanel" aria-labelledby="levelsLeaderboardTabBtn" hidden>
           <ol class="leaderboard-list" id="levelsLeaderboardList"></ol>
-          <div class="muted small" id="levelsLeaderboardStatus">Log in to load the leaderboard.</div>
+          <div class="muted small" id="levelsLeaderboardStatus">Sign in to see the leaderboard.</div>
         </div>
       </div>
     </section>
     <section class="panel">
-      <div class="panel-head"><h2>Global Chat</h2><span class="muted small">Be kind. 300 characters max.</span></div>
+      <div class="panel-head"><h2>Chat</h2><span class="muted small">Keep it friendly. 300 characters max.</span></div>
       <div class="body">
         <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
         <form class="chat-compose" id="chatForm">
           <input id="chatInput" type="text" maxlength="300" placeholder="Write a message" autocomplete="off" aria-label="Chat message" />
           <button id="sendChatBtn" type="submit">Send</button>
         </form>
-        <div class="chat-status muted small" id="chatStatus">Log in to join the chat.</div>
+        <div class="chat-status muted small" id="chatStatus">Sign in to join the chat.</div>
       </div>
     </section>
   </div>
-  <div class="footer">GENERATOR GRID · A simple money-and-generators game</div>
+  <div class="footer">Superflow! · Build your flow, one generator at a time.</div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-actions" id="modalActions"></div></div></div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -366,6 +405,7 @@ const GENERATOR_TIERS = [
 const SAVE_KEY = "generatorGridSave_v1";
 const ACCOUNTS_KEY = "generatorGridAccounts_v1";
 const PLAYER_SAVE_PREFIX = "generatorGridSave_player_";
+const THEME_STORAGE_KEY = "superflowTheme";
 const FREE_GENERATOR_USERNAME = "ArsenalSuperDev";
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyBwY1KLhbjRU2mk05MQxDDqeyLwhElqexo",
@@ -427,7 +467,7 @@ function updateAuthUI() {
   if (currentUser) {
     $("gamePlayerName").textContent = "Player: " + currentUsername;
   } else {
-    statusEl.textContent = "Log in or create an account to play.";
+    statusEl.textContent = "Sign in or create an account to start playing.";
     $("gamePlayerName").textContent = "";
   }
 }
@@ -456,12 +496,11 @@ async function enterGame(username, user) {
   currentUsername = username;
   state = freshState();
   await load();
-  selectWorkspace("generators");
+  selectShopTab("shop");
   configureGameTickTimer();
   await save();
   await publishLeaderboardEntry();
   startCommunityListeners();
-  renderLegend();
   render();
   updateAuthUI();
   await updateAdminUI();
@@ -660,7 +699,7 @@ async function sendChatMessage(event) {
   event.preventDefault();
   const text = $("chatInput").value.trim();
   if (!currentUser || !dbRef) {
-    $("chatStatus").textContent = "Log in to send messages.";
+    $("chatStatus").textContent = "Sign in before sending a message.";
     return;
   }
   if (!text) return;
@@ -812,6 +851,35 @@ function notify(message, error = false) {
   clearTimeout(noticeTimer);
   noticeTimer = setTimeout(() => $("notice").textContent = "", 3500);
 }
+function setTheme(theme, persist = true) {
+  const selectedTheme = theme === "light" ? "light" : "dark";
+  document.documentElement.dataset.theme = selectedTheme;
+  const nextTheme = selectedTheme === "light" ? "dark" : "light";
+  const buttonText = nextTheme === "light" ? "Light mode" : "Dark mode";
+  ["authThemeToggleBtn", "gameThemeToggleBtn"].forEach(id => {
+    const button = $(id);
+    button.textContent = buttonText;
+    button.setAttribute("aria-label", "Switch to " + nextTheme + " mode");
+    button.title = "Switch to " + nextTheme + " mode";
+  });
+  document.querySelector('meta[name="theme-color"]').content = selectedTheme === "light" ? "#f3f7f4" : "#0d1015";
+  if (persist) {
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, selectedTheme);
+    } catch (error) {
+      console.warn("Could not save the Superflow theme preference.", error);
+    }
+  }
+}
+function loadTheme() {
+  try {
+    return localStorage.getItem(THEME_STORAGE_KEY) === "light" ? "light" : "dark";
+  } catch (error) {
+    console.warn("Could not load the saved Superflow theme preference.", error);
+    return "dark";
+  }
+}
+setTheme(loadTheme(), false);
 function save(silent = true) {
   return saveUserState(silent);
 }
@@ -849,7 +917,7 @@ async function createAccountWithUsername() {
     delete accounts[username];
     saveAccountStore(accounts);
     await enterGame(username, credential.user);
-    notify("Player account created for " + username + ".");
+    notify("Your Superflow account is ready, " + username + ".");
   } catch (e) {
     showAuthError(e.code === "auth/email-already-in-use" ? "That username already exists." : e.message || "Could not create account.");
   }
@@ -1202,18 +1270,23 @@ $("modalBg").addEventListener("click", e => { if (e.target === $("modalBg")) clo
 $("loginBtn").addEventListener("click", loginWithUsername);
 $("signupBtn").addEventListener("click", createAccountWithUsername);
 $("logoutBtn").addEventListener("click", logoutUser);
+$("authThemeToggleBtn").addEventListener("click", () => {
+  setTheme(document.documentElement.dataset.theme === "light" ? "dark" : "light");
+});
+$("gameThemeToggleBtn").addEventListener("click", () => {
+  setTheme(document.documentElement.dataset.theme === "light" ? "dark" : "light");
+});
 $("chatForm").addEventListener("submit", sendChatMessage);
-function selectWorkspace(view) {
-  ["generators", "shop", "rebirth", "upgrades"].forEach(name => {
-    const selected = name === view;
+function selectShopTab(tab) {
+  ["shop", "rebirth", "upgrades"].forEach(name => {
+    const selected = name === tab;
     $(name + "TabBtn").setAttribute("aria-selected", String(selected));
-    $(name + "View").hidden = !selected;
+    $(name + "TabPanel").hidden = !selected;
   });
 }
-$("generatorsTabBtn").addEventListener("click", () => selectWorkspace("generators"));
-$("shopTabBtn").addEventListener("click", () => selectWorkspace("shop"));
-$("rebirthTabBtn").addEventListener("click", () => selectWorkspace("rebirth"));
-$("upgradesTabBtn").addEventListener("click", () => selectWorkspace("upgrades"));
+$("shopTabBtn").addEventListener("click", () => selectShopTab("shop"));
+$("rebirthTabBtn").addEventListener("click", () => selectShopTab("rebirth"));
+$("upgradesTabBtn").addEventListener("click", () => selectShopTab("upgrades"));
 function selectLeaderboardTab(tab) {
   const cashSelected = tab === "cash";
   $("cashLeaderboardTabBtn").setAttribute("aria-selected", String(cashSelected));
@@ -1283,21 +1356,6 @@ $("resetBtn").addEventListener("click", () => {
 });
 window.addEventListener("beforeunload", () => save());
 
-function renderLegend() {
-  const host = $("legend");
-  host.innerHTML = "";
-  GENERATOR_TIERS.forEach(g => {
-    const item = document.createElement("div");
-    item.className = "legend-item";
-    const dot = document.createElement("span");
-    dot.className = "dot";
-    dot.style.background = g.color;
-    const label = document.createElement("span");
-    label.textContent = g.name;
-    item.append(dot, label);
-    host.appendChild(item);
-  });
-}
 const firebaseEnabled = initFirebase();
 if (firebaseEnabled) authRef.setPersistence(firebase.auth.Auth.Persistence.NONE).catch(() => {});
 updateAuthUI();
