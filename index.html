@@ -94,9 +94,8 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .multibuy-control{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .multibuy-control label{font-size:11px;font-weight:700}
 .multibuy-control input{width:88px;padding:7px 9px}
-.admin-wipe{margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
-.admin-wipe>label{font-size:11px;font-weight:700}
-.admin-wipe .multibuy-control input{width:min(190px,45%)}
+.rebirth-panel{margin-top:12px;padding:12px;background:#10151c;border:1px solid var(--line);border-radius:9px}
+.rebirth-panel p{margin:5px 0 10px}
 .shop-item{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px;background:#11161d;border:1px solid var(--line);border-radius:9px}
 .swatch{width:40px;height:40px;border-radius:8px;border:1px solid #ffffff30;display:grid;place-items:center;font-size:22px;color:#fff}
 .item-title{font-size:12px;font-weight:800}
@@ -228,6 +227,11 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
             <div class="summary-card"><small>Total owned</small><strong id="owned">0</strong></div>
             <div class="summary-card"><small>Lifetime earned</small><strong id="lifetime">$0</strong></div>
           </div>
+          <div class="rebirth-panel">
+            <strong>Rebirth</strong>
+            <p class="muted small" id="rebirthInfo">Reach level 20 and have $1M to rebirth.</p>
+            <button id="rebirthBtn" type="button" disabled>Rebirth</button>
+          </div>
           <div class="actions">
             <button id="saveBtn">Save now</button>
             <button id="resetBtn">Reset game</button>
@@ -252,14 +256,6 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
             <label for="adminLevelAmount">Gain levels</label>
             <input id="adminLevelAmount" type="number" min="1" step="1" value="1">
             <button id="adminLevelBtn" type="button">Grant levels</button>
-          </div>
-          <div class="admin-wipe">
-            <p class="muted small">Reset all players’ money, inventory, levels, XP, multipliers, slots, and leaderboard scores. Accounts and chat are preserved. This cannot be undone.</p>
-            <label for="adminWipeConfirm">Type WIPE PROGRESS to enable the global reset</label>
-            <div class="multibuy-control">
-              <input id="adminWipeConfirm" type="text" autocomplete="off" placeholder="WIPE PROGRESS">
-              <button id="adminWipeBtn" type="button" disabled>Wipe all player progress</button>
-            </div>
           </div>
           <div class="note" id="adminStatus" role="status" aria-live="polite"></div>
         </div>
@@ -356,7 +352,6 @@ let currentUsername = null;
 let firebaseReady = false;
 let communityUnsubscribers = [];
 let lastChatSentAt = 0;
-let progressResetRequired = false;
 
 function getAccountStore() {
   try {
@@ -456,20 +451,14 @@ async function loadUserSave() {
       if (localRaw) {
         const localData = JSON.parse(localRaw);
         if (localData && localData.state) {
-          await userDoc.set({
-            state: localData.state,
-            progressVersion: 0,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-          data = { ...localData, progressVersion: 0 };
+          await userDoc.set({ state: localData.state, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+          data = localData;
         }
       }
     }
     if (!data || typeof data !== "object") return;
     const savedState = data.state && typeof data.state === "object" ? data.state : {};
     state = { ...freshState(), ...savedState };
-    const progressVersion = Number(data.progressVersion);
-    state.progressVersion = Number.isSafeInteger(progressVersion) && progressVersion >= 0 ? progressVersion : 0;
     state.money = Math.max(0, Number(state.money) || 0);
     state.lifetime = Math.max(0, Number(state.lifetime) || 0);
     state.inventory = state.inventory && typeof state.inventory === "object" ? state.inventory : {};
@@ -478,8 +467,10 @@ async function loadUserSave() {
     const normalizedSlots = savedSlots.map(slot => slot && getGenerator(slot.id) ? { id: slot.id } : null);
     if (Number.isSafeInteger(savedState.level) && savedState.level >= 1) {
       state.level = savedState.level;
+      const savedRebirths = Number(savedState.rebirths);
       const savedXp = Number(state.xp);
       const savedMultiplier = Number(state.multiplier);
+      state.rebirths = Number.isSafeInteger(savedRebirths) && savedRebirths >= 0 ? savedRebirths : 0;
       state.xp = Number.isFinite(savedXp) ? Math.max(0, savedXp) : 0;
       state.multiplier = Number.isFinite(savedMultiplier) ? Math.max(1, Math.round(savedMultiplier * 100) / 100) : 1;
       state.slots = normalizedSlots;
@@ -487,6 +478,7 @@ async function loadUserSave() {
     } else {
       const previousGenerators = normalizedSlots.filter(Boolean);
       state.level = Math.max(1, previousGenerators.length);
+      state.rebirths = 0;
       state.xp = 0;
       state.multiplier = 1;
       state.slots = Array(state.level).fill(null);
@@ -501,27 +493,12 @@ async function loadUserSave() {
 async function saveUserState(silent = true) {
   try {
     if (!currentUser || !dbRef) return;
-    const userDoc = dbRef.collection("users").doc(currentUser.uid);
-    await dbRef.runTransaction(async transaction => {
-      const snapshot = await transaction.get(userDoc);
-      const storedVersion = snapshot.exists ? Number(snapshot.data().progressVersion) || 0 : 0;
-      if (storedVersion !== state.progressVersion) throw new Error("progress-reset");
-      transaction.set(userDoc, {
-        state,
-        progressVersion: state.progressVersion,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }, { merge: true });
-    });
+    await dbRef.collection("users").doc(currentUser.uid).set({
+      state,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
     if (!silent) notify("Saved to your account.");
   } catch (e) {
-    if (e.message === "progress-reset") {
-      progressResetRequired = true;
-      await load();
-      progressResetRequired = false;
-      render();
-      notify("Your progress was reset by an administrator. Your game has been refreshed.");
-      return;
-    }
     if (!silent) notify("Cloud save failed. Check your Firestore rules and connection.", true);
   }
 }
@@ -529,28 +506,13 @@ async function saveUserState(silent = true) {
 async function publishLeaderboardEntry() {
   if (!currentUser || !dbRef) return;
   try {
-    const userDoc = dbRef.collection("users").doc(currentUser.uid);
-    const leaderboardDoc = dbRef.collection("leaderboard").doc(currentUser.uid);
-    await dbRef.runTransaction(async transaction => {
-      const userSnapshot = await transaction.get(userDoc);
-      const storedVersion = userSnapshot.exists ? Number(userSnapshot.data().progressVersion) || 0 : 0;
-      if (storedVersion !== state.progressVersion) throw new Error("progress-reset");
-      transaction.set(leaderboardDoc, {
-        uid: currentUser.uid,
-        username: currentUsername,
-        cashEarned: Math.max(0, Number(state.lifetime) || 0),
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }, { merge: true });
-    });
+    await dbRef.collection("leaderboard").doc(currentUser.uid).set({
+      uid: currentUser.uid,
+      username: currentUsername,
+      cashEarned: Math.max(0, Number(state.lifetime) || 0),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
   } catch (e) {
-    if (e.message === "progress-reset") {
-      progressResetRequired = true;
-      await load();
-      progressResetRequired = false;
-      render();
-      notify("Your progress was reset by an administrator. Your game has been refreshed.");
-      return;
-    }
     $("leaderboardStatus").textContent = "Leaderboard could not update. Check Firestore rules.";
   }
 }
@@ -673,9 +635,9 @@ const freshState = () => ({
   lifetime: 0,
   inventory: {},
   level: 1,
+  rebirths: 0,
   xp: 0,
   multiplier: 1,
-  progressVersion: 0,
   slots: [null],
   selected: null
 });
@@ -691,6 +653,28 @@ function number(n) {
   return n.toLocaleString("en-CA", { maximumFractionDigits: 2 }) + units[unit];
 }
 function cash(n) { return "$" + number(n); }
+function romanNumeral(value) {
+  const numerals = [
+    [1000, "M"], [900, "CM"], [500, "D"], [400, "CD"], [100, "C"],
+    [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"],
+    [5, "V"], [4, "IV"], [1, "I"]
+  ];
+  let remainder = value;
+  let result = "";
+  for (const [amount, numeral] of numerals) {
+    while (remainder >= amount) {
+      result += numeral;
+      remainder -= amount;
+    }
+  }
+  return result;
+}
+function rebirthLevelLabel() {
+  const rebirth = state.rebirths === 0 ? "0" : romanNumeral(state.rebirths);
+  return rebirth + "-" + state.level;
+}
+function rebirthLevelRequirement() { return 20 + state.rebirths; }
+function rebirthCost() { return 1000000 * Math.pow(2, state.rebirths); }
 function getGenerator(id) { return GENERATORS.find(g => g.id === id); }
 function generatorPrice(generator) { return currentUsername === FREE_GENERATOR_USERNAME ? 0 : generator.cost; }
 function owned(id) { return state.inventory[id] || 0; }
@@ -864,10 +848,16 @@ function renderStats() {
   $("money").textContent = cash(state.money);
   $("income").textContent = cash(totalIncome());
   $("placed").textContent = placedTotal() + " / " + state.slots.length;
-  $("level").textContent = state.level;
+  $("level").textContent = rebirthLevelLabel();
   $("xpProgress").textContent = number(state.xp) + " / " + number(xpRequiredForLevel(state.level)) + " XP";
   $("multiplier").textContent = "×" + number(state.multiplier);
-  $("slotSummary").textContent = "Level " + state.level + " · " + state.slots.length + " slot" + (state.slots.length === 1 ? "" : "s") + " unlocked";
+  $("slotSummary").textContent = "Level " + rebirthLevelLabel() + " · " + state.slots.length + " slot" + (state.slots.length === 1 ? "" : "s") + " unlocked";
+  const requiredLevel = rebirthLevelRequirement();
+  const cost = rebirthCost();
+  $("rebirthInfo").textContent = "Reach level " + requiredLevel + " and have " + cash(cost)
+    + " to rebirth. You keep your cash, generators, and multiplier; your level and XP reset.";
+  $("rebirthBtn").disabled = state.level < requiredLevel || state.money < cost;
+  $("rebirthBtn").textContent = "Rebirth for " + cash(cost);
   $("owned").textContent = totalOwned();
   $("inventoryTotal").textContent = totalOwned() + " owned";
   $("lifetime").textContent = cash(state.lifetime);
@@ -990,6 +980,23 @@ function clearAllGenerators() {
   save();
   notify(returned + " generator" + (returned === 1 ? "" : "s") + " returned to your inventory.");
 }
+function rebirth() {
+  const requiredLevel = rebirthLevelRequirement();
+  const cost = rebirthCost();
+  if (state.level < requiredLevel || state.money < cost) return;
+  if (!confirm("Rebirth " + romanNumeral(state.rebirths + 1) + "? This costs " + cash(cost)
+    + " and resets your level and XP. Your cash, generators, and multiplier are kept.")) return;
+  state.money -= cost;
+  state.rebirths++;
+  state.level = 1;
+  state.xp = 0;
+  state.slots = Array(1).fill(null);
+  state.selected = null;
+  render();
+  save();
+  publishLeaderboardEntry();
+  notify("Rebirth complete! You are now " + rebirthLevelLabel() + ".");
+}
 function clickSlot(index) {
   const slot = state.slots[index];
   if (slot) {
@@ -1055,9 +1062,6 @@ $("upgradesTabBtn").addEventListener("click", () => selectShopTab("upgrades"));
 $("saveBtn").addEventListener("click", () => save(false));
 $("multiBuyAmount").addEventListener("input", updateShopBuyButtons);
 $("clearAllBtn").addEventListener("click", clearAllGenerators);
-$("adminWipeConfirm").addEventListener("input", () => {
-  $("adminWipeBtn").disabled = $("adminWipeConfirm").value !== "WIPE PROGRESS";
-});
 async function runAdminAction(action, amount) {
   const status = $("adminStatus");
   const controls = Array.from($("adminPanel").querySelectorAll("input, button"));
@@ -1079,7 +1083,6 @@ async function runAdminAction(action, amount) {
     notify(message, true);
   } finally {
     controls.forEach(control => { control.disabled = false; });
-    $("adminWipeBtn").disabled = $("adminWipeConfirm").value !== "WIPE PROGRESS";
   }
 }
 function readAdminAmount(inputId, { integer = false, max = Number.MAX_SAFE_INTEGER } = {}) {
@@ -1103,13 +1106,9 @@ $("adminLevelBtn").addEventListener("click", () => {
   const amount = readAdminAmount("adminLevelAmount", { integer: true, max: 10000 });
   if (amount !== null) runAdminAction("grantLevels", amount);
 });
-$("adminWipeBtn").addEventListener("click", () => {
-  if ($("adminWipeConfirm").value !== "WIPE PROGRESS") return;
-  if (!confirm("This resets progress and leaderboard scores for every player. Accounts and chat stay. Continue?")) return;
-  runAdminAction("wipeProgress", "WIPE PROGRESS");
-});
+$("rebirthBtn").addEventListener("click", rebirth);
 $("resetBtn").addEventListener("click", () => {
-  if (!confirm("Reset all progress, including money, level, multiplier, inventory, and placed generators? This cannot be undone.")) return;
+  if (!confirm("Reset your money, lifetime earnings, inventory, level, rebirths, XP, multiplier, and placed generators? This cannot be undone.")) return;
   state = freshState();
   render();
   save();
@@ -1136,7 +1135,7 @@ const firebaseEnabled = initFirebase();
 if (firebaseEnabled) authRef.setPersistence(firebase.auth.Auth.Persistence.NONE).catch(() => {});
 updateAuthUI();
 setInterval(() => {
-  if (!currentUser || progressResetRequired) return;
+  if (!currentUser) return;
   const earned = totalIncome();
   state.money += earned;
   state.lifetime += earned;
