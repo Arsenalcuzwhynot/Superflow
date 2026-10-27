@@ -30,14 +30,18 @@ input::placeholder{color:#8a98ab}
 .game-shell{min-height:100vh}
 .game-account{display:flex;align-items:center;gap:10px}
 .game-account .auth-status{margin:0}
-header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px clamp(14px,3vw,32px);border-bottom:1px solid var(--line);background:#11161d;position:sticky;top:0;z-index:4}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px clamp(14px,3vw,32px);border-bottom:1px solid var(--line);background:#11161d;position:relative;z-index:4}
 .brand{font-size:19px;font-weight:900;letter-spacing:.09em}.brand span{color:#8ea0b4}
 .stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .stat{min-width:112px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:7px 11px}
 .stat small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
 .stat strong{font-size:16px}
 main{max-width:1250px;margin:auto;padding:20px}
-.layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.9fr);gap:16px;align-items:start}
+.workspace-nav{position:sticky;top:0;z-index:5;display:flex;gap:8px;overflow-x:auto;padding:10px 12px;margin:0 0 16px;background:#11161df2;border:1px solid var(--line);border-radius:10px;backdrop-filter:blur(12px)}
+.workspace-tab{flex:1;min-width:110px;background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;color:var(--muted)}
+.workspace-tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--green)}
+.workspace-view{margin-bottom:16px}
+.overview-layout{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px;align-items:start}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .panel-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
 h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
@@ -73,7 +77,6 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .slot .gen-income{font-size:clamp(5px,calc(10px * var(--slot-scale,1)),10px);color:#dce4ee}
 .empty-mark{font-size:25px;color:#4a596a}
 .tip{margin:13px 2px 0;color:var(--muted);font-size:11px;text-align:center}
-.side{display:grid;gap:16px}
 .community-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;margin-top:16px}
 .leaderboard-list{display:grid;gap:6px;max-height:420px;overflow:auto;list-style:none;padding:0;margin:0}
 .leaderboard-row{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;padding:8px 10px;background:#11161d;border:1px solid var(--line);border-radius:8px}
@@ -91,15 +94,18 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .chat-compose input{min-width:0}
 .chat-status{min-height:18px;margin-top:6px}
 .shop-list{display:grid;gap:8px}
-.shop-tabs{display:flex;gap:8px;margin-bottom:12px;border-bottom:1px solid var(--line)}
-.shop-tab{background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;padding:8px 10px;color:var(--muted)}
-.shop-tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--green)}
 .coming-soon{padding:24px 12px;text-align:center;color:var(--muted);font-weight:700}
 .multibuy-control{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .multibuy-control label{font-size:11px;font-weight:700}
 .multibuy-control input{width:88px;padding:7px 9px}
 .rebirth-panel{margin-top:12px;padding:12px;background:#10151c;border:1px solid var(--line);border-radius:9px}
 .rebirth-panel p{margin:5px 0 10px}
+.upgrade-points{margin-bottom:12px;padding:12px;background:#10151c;border:1px solid var(--line);border-radius:9px;font-weight:800}
+.upgrade-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:10px}
+.upgrade-card{display:grid;gap:8px;padding:12px;background:#11161d;border:1px solid var(--line);border-radius:9px}
+.upgrade-card h3{margin:0;font-size:13px}
+.upgrade-card p{margin:0;color:var(--muted);font-size:11px}
+.upgrade-card .upgrade-footer{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .shop-item{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px;background:#11161d;border:1px solid var(--line);border-radius:9px}
 .swatch{width:40px;height:40px;border-radius:8px;border:1px solid #ffffff30;display:grid;place-items:center;font-size:22px;color:#fff}
 .item-title{font-size:12px;font-weight:800}
@@ -121,9 +127,8 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .modal-bg.open{display:flex}.modal{width:min(390px,100%);background:#1a222d;border:1px solid #3a4655;border-radius:12px;padding:18px}
 .modal h2{margin-bottom:8px}.modal p{font-size:12px;color:var(--muted)}
 .modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-@media(max-width:850px){.layout{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.side .panel:last-child{grid-column:1/-1}}
 @media(max-width:700px){.community-grid{grid-template-columns:1fr}}
-@media(max-width:560px){header{align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start;width:100%}.stat{flex:1;min-width:90px}main{padding:12px}.side{grid-template-columns:1fr}.side .panel:last-child{grid-column:auto}}
+@media(max-width:560px){header{align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start;width:100%}.stat{flex:1;min-width:90px}main{padding:12px}.workspace-tab{min-width:88px;padding-inline:8px}}
 @media(prefers-reduced-motion:reduce){.slot.filled.effect-tier,.slot.filled.effect-chroma,.slot.filled.effect-celestial,.slot.filled.effect-aether,.slot.filled.effect-nebulous,.slot.filled.effect-paradox,.slot.filled.effect-singularity{animation:none}}
 
     .side-scroll-controls {
@@ -186,7 +191,13 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
   <div class="game-account"><span id="gamePlayerName" class="auth-status"></span><button id="logoutBtn" type="button">Log out</button></div>
 </header>
 <main>
-  <div class="layout">
+  <nav class="workspace-nav" role="tablist" aria-label="Game sections">
+    <button class="workspace-tab" id="generatorsTabBtn" type="button" role="tab" aria-selected="true" aria-controls="generatorsView">Generators</button>
+    <button class="workspace-tab" id="shopTabBtn" type="button" role="tab" aria-selected="false" aria-controls="shopView">Shop</button>
+    <button class="workspace-tab" id="rebirthTabBtn" type="button" role="tab" aria-selected="false" aria-controls="rebirthView">Rebirth</button>
+    <button class="workspace-tab" id="upgradesTabBtn" type="button" role="tab" aria-selected="false" aria-controls="upgradesView">Upgrades</button>
+  </nav>
+  <section class="workspace-view" id="generatorsView" role="tabpanel" aria-labelledby="generatorsTabBtn">
     <section class="panel">
       <div class="panel-head">
         <div><h2>Generator Slots</h2><div class="muted small" id="slotSummary">Level 1 · 1 slot unlocked</div></div>
@@ -198,40 +209,46 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         <div class="note" id="notice"></div>
       </div>
     </section>
-    <div class="side">
-      <section class="panel">
-        <div class="panel-head">
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-            <h2>Generator Shop</h2>
-            <span class="muted small" id="inventoryTotal">0 owned</span>
-          </div>
-          <button id="shopToggleBtn" type="button" aria-expanded="true">Hide shop</button>
+  </section>
+  <section class="workspace-view" id="shopView" role="tabpanel" aria-labelledby="shopTabBtn" hidden>
+    <section class="panel">
+      <div class="panel-head">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <h2>Generator Shop</h2>
+          <span class="muted small" id="inventoryTotal">0 owned</span>
         </div>
-        <div class="body" id="shopBody" style="max-height:520px;overflow:auto;padding-right:4px;display:block;">
-          <div class="shop-tabs" role="tablist" aria-label="Generator shop sections">
-            <button class="shop-tab" id="shopTabBtn" type="button" role="tab" aria-selected="true" aria-controls="shopTabPanel">Shop</button>
-            <button class="shop-tab" id="upgradesTabBtn" type="button" role="tab" aria-selected="false" aria-controls="upgradesTabPanel">Upgrades</button>
-            <button class="shop-tab" id="rebirthTabBtn" type="button" role="tab" aria-selected="false" aria-controls="rebirthTabPanel">Rebirth</button>
-          </div>
-          <div id="shopTabPanel" role="tabpanel" aria-labelledby="shopTabBtn">
-            <div class="multibuy-control">
-              <label for="multiBuyAmount">Multibuy quantity</label>
-              <input id="multiBuyAmount" type="number" min="1" step="1" value="1" inputmode="numeric">
-            </div>
-            <div class="shop-list" id="shop"></div>
-          </div>
-          <div id="upgradesTabPanel" role="tabpanel" aria-labelledby="upgradesTabBtn" hidden>
-            <div class="coming-soon">Upgrades coming soon.</div>
-          </div>
-          <div id="rebirthTabPanel" role="tabpanel" aria-labelledby="rebirthTabBtn" hidden>
-            <div class="rebirth-panel">
-              <strong>Rebirth</strong>
-              <p class="muted small" id="rebirthInfo">Reach level 20 and have $1M to rebirth.</p>
-              <button id="rebirthBtn" type="button" disabled>Rebirth</button>
-            </div>
-          </div>
+      </div>
+      <div class="body">
+        <div class="multibuy-control">
+          <label for="multiBuyAmount">Multibuy quantity</label>
+          <input id="multiBuyAmount" type="number" min="1" step="1" value="1" inputmode="numeric">
         </div>
-      </section>
+        <div class="shop-list" id="shop"></div>
+      </div>
+    </section>
+  </section>
+  <section class="workspace-view" id="rebirthView" role="tabpanel" aria-labelledby="rebirthTabBtn" hidden>
+    <section class="panel">
+      <div class="panel-head"><h2>Rebirth</h2></div>
+      <div class="body">
+        <div class="rebirth-panel">
+          <strong>Rebirth</strong>
+          <p class="muted small" id="rebirthInfo">Reach level 20 and have $1M to rebirth.</p>
+          <button id="rebirthBtn" type="button" disabled>Rebirth</button>
+        </div>
+      </div>
+    </section>
+  </section>
+  <section class="workspace-view" id="upgradesView" role="tabpanel" aria-labelledby="upgradesTabBtn" hidden>
+    <section class="panel">
+      <div class="panel-head"><h2>Rebirth Upgrades</h2></div>
+      <div class="body">
+        <div class="upgrade-points">Rebirth points: <span id="upgradePoints">0</span></div>
+        <div class="upgrade-list" id="upgradeList"></div>
+      </div>
+    </section>
+  </section>
+  <div class="overview-layout">
       <section class="panel">
         <div class="panel-head"><h2>Overview</h2></div>
         <div class="body">
@@ -271,7 +288,6 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         <div class="panel-head"><h2>Tier Colors</h2></div>
         <div class="body"><div id="legend" class="legend"></div></div>
       </section>
-    </div>
   </div>
   <div class="community-grid">
     <section class="panel">
@@ -440,6 +456,8 @@ async function enterGame(username, user) {
   currentUsername = username;
   state = freshState();
   await load();
+  selectWorkspace("generators");
+  configureGameTickTimer();
   await save();
   await publishLeaderboardEntry();
   startCommunityListeners();
@@ -482,6 +500,10 @@ async function loadUserSave() {
       : Date.now();
     state.money = Math.max(0, Number(state.money) || 0);
     state.lifetime = Math.max(0, Number(state.lifetime) || 0);
+    state.rebirthPoints = Number.isSafeInteger(savedState.rebirthPoints) && savedState.rebirthPoints >= 0
+      ? savedState.rebirthPoints
+      : 0;
+    state.upgrades = normalizeUpgrades(savedState.upgrades);
     state.inventory = state.inventory && typeof state.inventory === "object" ? state.inventory : {};
     for (const g of GENERATORS) state.inventory[g.id] = Math.max(0, Math.floor(Number(state.inventory[g.id]) || 0));
     const savedSlots = Array.isArray(savedState.slots) ? savedState.slots : [];
@@ -495,14 +517,14 @@ async function loadUserSave() {
       state.xp = Number.isFinite(savedXp) ? Math.max(0, savedXp) : 0;
       state.multiplier = Number.isFinite(savedMultiplier) ? Math.max(1, Math.round(savedMultiplier * 100) / 100) : 1;
       state.slots = normalizedSlots;
-      while (state.slots.length < state.level) state.slots.push(null);
+      while (state.slots.length < state.level + permanentBonusSlots()) state.slots.push(null);
     } else {
       const previousGenerators = normalizedSlots.filter(Boolean);
       state.level = Math.max(1, previousGenerators.length);
       state.rebirths = 0;
       state.xp = 0;
       state.multiplier = 1;
-      state.slots = Array(state.level).fill(null);
+      state.slots = Array(state.level + permanentBonusSlots()).fill(null);
       previousGenerators.forEach((slot, index) => { state.slots[index] = slot; });
     }
     if (!getGenerator(state.selected) || available(state.selected) <= 0) state.selected = null;
@@ -697,6 +719,8 @@ const freshState = () => ({
   inventory: {},
   level: 1,
   rebirths: 0,
+  rebirthPoints: 0,
+  upgrades: { dropSpeed: 0, multiChance: 0, genSlots: 0, genCost: 0 },
   levelReachedAt: Date.now(),
   xp: 0,
   multiplier: 1,
@@ -705,6 +729,13 @@ const freshState = () => ({
 });
 let state = freshState();
 let noticeTimer = null;
+let gameTickTimer = null;
+const UPGRADE_DEFINITIONS = [
+  { id: "dropSpeed", title: "Note Drop Speed", max: 5, description: "Generators pay more frequently. Each rank shortens the drop interval by 0.1 seconds, down to 0.5 seconds." },
+  { id: "multiChance", title: "Multi Chance", max: 10, description: "Raises multiplier drop odds by 25% per rank. Costs 1 rebirth point per rank." },
+  { id: "genSlots", title: "Generator Slots", max: 20, description: "Permanently adds 2 generator slots per rank, including after future rebirths." },
+  { id: "genCost", title: "Gen Cost", max: 5, description: "Makes every generator 2% cheaper per rank, up to 10% off." }
+];
 
 function number(n) {
   if (!Number.isFinite(n)) return "∞";
@@ -737,8 +768,24 @@ function rebirthLevelLabel() {
 }
 function rebirthLevelRequirement() { return 20 + state.rebirths; }
 function rebirthCost() { return 1000000 * Math.pow(2, state.rebirths); }
+function normalizeUpgrades(upgrades) {
+  const saved = upgrades && typeof upgrades === "object" ? upgrades : {};
+  return {
+    dropSpeed: Number.isSafeInteger(saved.dropSpeed) ? Math.max(0, Math.min(5, saved.dropSpeed)) : 0,
+    multiChance: Number.isSafeInteger(saved.multiChance) ? Math.max(0, Math.min(10, saved.multiChance)) : 0,
+    genSlots: Number.isSafeInteger(saved.genSlots) ? Math.max(0, Math.min(20, saved.genSlots)) : 0,
+    genCost: Number.isSafeInteger(saved.genCost) ? Math.max(0, Math.min(5, saved.genCost)) : 0
+  };
+}
+function permanentBonusSlots() { return state.upgrades.genSlots * 2; }
+function tickIntervalSeconds() { return 1 - state.upgrades.dropSpeed * 0.1; }
+function tickIntervalMilliseconds() { return tickIntervalSeconds() * 1000; }
 function getGenerator(id) { return GENERATORS.find(g => g.id === id); }
-function generatorPrice(generator) { return currentUsername === FREE_GENERATOR_USERNAME ? 0 : generator.cost; }
+function generatorPrice(generator) {
+  return currentUsername === FREE_GENERATOR_USERNAME
+    ? 0
+    : generator.cost * (1 - state.upgrades.genCost * 0.02);
+}
 function owned(id) { return state.inventory[id] || 0; }
 function placed(id) { return state.slots.filter(x => x && x.id === id).length; }
 function available(id) { return Math.max(0, owned(id) - placed(id)); }
@@ -753,9 +800,10 @@ function canBuy(generator, quantity = getMultiBuyAmount()) {
 }
 function totalOwned() { return Object.values(state.inventory).reduce((a, b) => a + b, 0); }
 function baseIncome() { return state.slots.reduce((sum, slot) => sum + (slot ? getGenerator(slot.id).income : 0), 0); }
-function totalIncome() { return baseIncome() * state.multiplier; }
+function totalIncome() { return baseIncome() * state.multiplier / tickIntervalSeconds(); }
 function multiplierDropChance(generator) {
-  return Math.min(1, 0.0005 * (generator.index + 1) * Math.pow(0.95, state.multiplier - 1));
+  const baseChance = Math.min(1, 0.0005 * (generator.index + 1) * Math.pow(0.95, state.multiplier - 1));
+  return 1 - Math.pow(1 - baseChance, 1 + state.upgrades.multiChance * 0.25);
 }
 
 function notify(message, error = false) {
@@ -842,6 +890,7 @@ async function logoutUser() {
   currentUser = null;
   currentUsername = null;
   state = freshState();
+  configureGameTickTimer();
   updateAuthUI();
   $("gameShell").hidden = true;
   $("authScreen").hidden = false;
@@ -868,7 +917,7 @@ function makeShopRow(generator, mode) {
   price.className = "price";
   price.textContent = cash(generatorPrice(generator));
   const earn = document.createElement("span");
-  earn.textContent = cash(generator.income * state.multiplier) + "/sec";
+  earn.textContent = cash(generator.income * state.multiplier / tickIntervalSeconds()) + "/sec";
   const xpEarn = document.createElement("span");
   xpEarn.textContent = number(generator.xpPerSecond) + " XP/sec";
   const unplacedText = document.createElement("span");
@@ -913,16 +962,51 @@ function renderStats() {
   $("level").textContent = rebirthLevelLabel();
   $("xpProgress").textContent = number(state.xp) + " / " + number(xpRequiredForLevel(state.level)) + " XP";
   $("multiplier").textContent = "×" + number(state.multiplier);
-  $("slotSummary").textContent = "Level " + rebirthLevelLabel() + " · " + state.slots.length + " slot" + (state.slots.length === 1 ? "" : "s") + " unlocked";
+  $("slotSummary").textContent = "Level " + rebirthLevelLabel() + " · " + state.slots.length
+    + " slot" + (state.slots.length === 1 ? "" : "s") + " (" + permanentBonusSlots() + " permanent bonus)";
   const requiredLevel = rebirthLevelRequirement();
   const cost = rebirthCost();
   $("rebirthInfo").textContent = "Reach level " + requiredLevel + " and have " + cash(cost)
-    + " to rebirth. You keep your cash, generators, and multiplier; your level and XP reset.";
+    + " to rebirth. Gain 1 rebirth point. You keep remaining cash, generators, multiplier, and permanent slots; level and XP reset.";
   $("rebirthBtn").disabled = state.level < requiredLevel || state.money < cost;
   $("rebirthBtn").textContent = "Rebirth for " + cash(cost);
+  $("upgradePoints").textContent = state.rebirthPoints;
   $("owned").textContent = totalOwned();
   $("inventoryTotal").textContent = totalOwned() + " owned";
   $("lifetime").textContent = cash(state.lifetime);
+}
+function renderUpgrades() {
+  const host = $("upgradeList");
+  host.innerHTML = "";
+  UPGRADE_DEFINITIONS.forEach(upgrade => {
+    const level = state.upgrades[upgrade.id];
+    const card = document.createElement("section");
+    card.className = "upgrade-card";
+    const title = document.createElement("h3");
+    title.textContent = upgrade.title + " · " + level + "/" + upgrade.max;
+    const description = document.createElement("p");
+    description.textContent = upgrade.description;
+    const current = document.createElement("p");
+    if (upgrade.id === "dropSpeed") {
+      current.textContent = "Current drop interval: " + tickIntervalSeconds().toFixed(1) + " seconds";
+    } else if (upgrade.id === "multiChance") {
+      current.textContent = "Current multiplier chance bonus: +" + (level * 25) + "%";
+    } else if (upgrade.id === "genSlots") {
+      current.textContent = "Permanent slot bonus: +" + permanentBonusSlots();
+    } else {
+      current.textContent = "Current generator discount: " + (level * 2) + "%";
+    }
+    const footer = document.createElement("div");
+    footer.className = "upgrade-footer";
+    const cost = document.createElement("span");
+    cost.className = "muted small";
+    cost.textContent = "Cost: 1 rebirth point";
+    const button = makeButton(level >= upgrade.max ? "Maxed" : "Upgrade", () => purchaseUpgrade(upgrade.id),
+      level >= upgrade.max || state.rebirthPoints < 1);
+    footer.append(cost, button);
+    card.append(title, description, current, footer);
+    host.appendChild(card);
+  });
 }
 function placedTotal() { return state.slots.filter(Boolean).length; }
 function renderSlots() {
@@ -966,9 +1050,9 @@ function renderSlots() {
       name.textContent = "Generator";
       const earn = document.createElement("span");
       earn.className = "gen-income";
-      earn.textContent = cash(g.income * state.multiplier) + "/s";
+      earn.textContent = cash(g.income * state.multiplier / tickIntervalSeconds()) + "/s";
       button.append(tier, mark, name, earn);
-      button.title = g.name + ": " + cash(g.income * state.multiplier) + " per second. Click to inspect.";
+      button.title = g.name + ": " + cash(g.income * state.multiplier / tickIntervalSeconds()) + " per second. Click to inspect.";
     } else {
       const mark = document.createElement("span");
       mark.className = "empty-mark";
@@ -984,7 +1068,7 @@ function renderSlotEarnings() {
   document.querySelectorAll("#slots .slot.filled").forEach(button => {
     const generator = getGenerator(button.dataset.generatorId);
     if (!generator) return;
-    const earnings = cash(generator.income * state.multiplier);
+    const earnings = cash(generator.income * state.multiplier / tickIntervalSeconds());
     button.querySelector(".gen-income").textContent = earnings + "/s";
     button.title = generator.name + ": " + earnings + " per second. Click to inspect.";
   });
@@ -1006,7 +1090,7 @@ function renderInventory() {
   const host = $("inventory");
   if (host) host.innerHTML = "";
 }
-function render() { renderStats(); renderSlots(); renderShop(); renderInventory(); }
+function render() { renderStats(); renderSlots(); renderShop(); renderInventory(); renderUpgrades(); }
 function buy(id, quantity = 1) {
   const g = getGenerator(id);
   if (!g || !Number.isSafeInteger(quantity) || quantity < 1 || !canBuy(g, quantity)) return;
@@ -1042,6 +1126,19 @@ function clearAllGenerators() {
   save();
   notify(returned + " generator" + (returned === 1 ? "" : "s") + " returned to your inventory.");
 }
+function purchaseUpgrade(id) {
+  const upgrade = UPGRADE_DEFINITIONS.find(item => item.id === id);
+  if (!upgrade || state.upgrades[id] >= upgrade.max || state.rebirthPoints < 1) return;
+  state.rebirthPoints--;
+  state.upgrades[id]++;
+  if (id === "genSlots") {
+    state.slots.push(null, null);
+  }
+  render();
+  if (id === "dropSpeed") configureGameTickTimer();
+  save();
+  notify(upgrade.title + " upgraded to " + state.upgrades[id] + "/" + upgrade.max + ".");
+}
 function rebirth() {
   const requiredLevel = rebirthLevelRequirement();
   const cost = rebirthCost();
@@ -1050,10 +1147,11 @@ function rebirth() {
     + " and resets your level and XP. Your cash, generators, and multiplier are kept.")) return;
   state.money -= cost;
   state.rebirths++;
+  state.rebirthPoints++;
   state.level = 1;
   state.levelReachedAt = Date.now();
   state.xp = 0;
-  state.slots = Array(1).fill(null);
+  state.slots = Array(1 + permanentBonusSlots()).fill(null);
   state.selected = null;
   render();
   save();
@@ -1105,24 +1203,17 @@ $("loginBtn").addEventListener("click", loginWithUsername);
 $("signupBtn").addEventListener("click", createAccountWithUsername);
 $("logoutBtn").addEventListener("click", logoutUser);
 $("chatForm").addEventListener("submit", sendChatMessage);
-$("shopToggleBtn").addEventListener("click", () => {
-  const body = $("shopBody");
-  const btn = $("shopToggleBtn");
-  const open = body.style.display !== "none";
-  body.style.display = open ? "none" : "block";
-  btn.textContent = open ? "Show shop" : "Hide shop";
-  btn.setAttribute("aria-expanded", String(!open));
-});
-function selectShopTab(tab) {
-  ["shop", "upgrades", "rebirth"].forEach(name => {
-    const selected = tab === name;
+function selectWorkspace(view) {
+  ["generators", "shop", "rebirth", "upgrades"].forEach(name => {
+    const selected = name === view;
     $(name + "TabBtn").setAttribute("aria-selected", String(selected));
-    $(name + "TabPanel").hidden = !selected;
+    $(name + "View").hidden = !selected;
   });
 }
-$("shopTabBtn").addEventListener("click", () => selectShopTab("shop"));
-$("upgradesTabBtn").addEventListener("click", () => selectShopTab("upgrades"));
-$("rebirthTabBtn").addEventListener("click", () => selectShopTab("rebirth"));
+$("generatorsTabBtn").addEventListener("click", () => selectWorkspace("generators"));
+$("shopTabBtn").addEventListener("click", () => selectWorkspace("shop"));
+$("rebirthTabBtn").addEventListener("click", () => selectWorkspace("rebirth"));
+$("upgradesTabBtn").addEventListener("click", () => selectWorkspace("upgrades"));
 function selectLeaderboardTab(tab) {
   const cashSelected = tab === "cash";
   $("cashLeaderboardTabBtn").setAttribute("aria-selected", String(cashSelected));
@@ -1182,8 +1273,9 @@ $("adminLevelBtn").addEventListener("click", () => {
 });
 $("rebirthBtn").addEventListener("click", rebirth);
 $("resetBtn").addEventListener("click", () => {
-  if (!confirm("Reset your money, lifetime earnings, inventory, level, rebirths, XP, multiplier, and placed generators? This cannot be undone.")) return;
+  if (!confirm("Reset your money, lifetime earnings, inventory, level, rebirths, rebirth points, upgrades, XP, multiplier, and placed generators? This cannot be undone.")) return;
   state = freshState();
+  configureGameTickTimer();
   render();
   save();
   publishLeaderboardEntry();
@@ -1209,13 +1301,14 @@ function renderLegend() {
 const firebaseEnabled = initFirebase();
 if (firebaseEnabled) authRef.setPersistence(firebase.auth.Auth.Persistence.NONE).catch(() => {});
 updateAuthUI();
-setInterval(() => {
+function gameTick() {
   if (!currentUser) return;
-  const earned = totalIncome();
+  const intervalSeconds = tickIntervalSeconds();
+  const earned = baseIncome() * state.multiplier;
   state.money += earned;
   state.lifetime += earned;
   const activeGenerators = state.slots.filter(Boolean).map(slot => getGenerator(slot.id));
-  state.xp += activeGenerators.reduce((total, generator) => total + generator.xpPerSecond, 0);
+  state.xp += activeGenerators.reduce((total, generator) => total + generator.xpPerSecond, 0) * intervalSeconds;
   let levelsGained = 0;
   while (state.xp >= xpRequiredForLevel(state.level)) {
     state.xp -= xpRequiredForLevel(state.level);
@@ -1226,7 +1319,8 @@ setInterval(() => {
   if (levelsGained > 0) state.levelReachedAt = Date.now();
   let multiplierDrops = 0;
   activeGenerators.forEach(generator => {
-    if (Math.random() < multiplierDropChance(generator)) multiplierDrops++;
+    const chanceThisTick = 1 - Math.pow(1 - multiplierDropChance(generator), intervalSeconds);
+    if (Math.random() < chanceThisTick) multiplierDrops++;
   });
   state.multiplier = Math.round((state.multiplier + multiplierDrops * 0.01) * 100) / 100;
   if (levelsGained > 0) {
@@ -1244,7 +1338,12 @@ setInterval(() => {
   renderStats();
   renderShop();
   renderSlotEarnings();
-}, 1000);
+}
+function configureGameTickTimer() {
+  if (gameTickTimer !== null) clearInterval(gameTickTimer);
+  gameTickTimer = setInterval(gameTick, tickIntervalMilliseconds());
+}
+configureGameTickTimer();
 setInterval(() => {
   if (currentUser) save(true);
 }, 60000);
