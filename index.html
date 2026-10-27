@@ -80,6 +80,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .leaderboard-rank{color:var(--gold);font-weight:800}
 .leaderboard-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .leaderboard-cash{font-variant-numeric:tabular-nums;color:var(--green)}
+.leaderboard-tabs{display:flex;gap:8px;margin-bottom:12px;border-bottom:1px solid var(--line)}
+.leaderboard-tab{background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;padding:8px 10px;color:var(--muted)}
+.leaderboard-tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--green)}
+.leaderboard-score{font-variant-numeric:tabular-nums;color:var(--gold);white-space:nowrap}
 .chat-messages{height:320px;overflow:auto;display:flex;flex-direction:column-reverse;gap:8px;padding:10px;background:#10151c;border:1px solid var(--line);border-radius:8px}
 .chat-message{overflow-wrap:anywhere;font-size:12px}
 .chat-meta{color:var(--muted);font-size:10px;margin-right:6px}
@@ -207,6 +211,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
           <div class="shop-tabs" role="tablist" aria-label="Generator shop sections">
             <button class="shop-tab" id="shopTabBtn" type="button" role="tab" aria-selected="true" aria-controls="shopTabPanel">Shop</button>
             <button class="shop-tab" id="upgradesTabBtn" type="button" role="tab" aria-selected="false" aria-controls="upgradesTabPanel">Upgrades</button>
+            <button class="shop-tab" id="rebirthTabBtn" type="button" role="tab" aria-selected="false" aria-controls="rebirthTabPanel">Rebirth</button>
           </div>
           <div id="shopTabPanel" role="tabpanel" aria-labelledby="shopTabBtn">
             <div class="multibuy-control">
@@ -218,6 +223,13 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
           <div id="upgradesTabPanel" role="tabpanel" aria-labelledby="upgradesTabBtn" hidden>
             <div class="coming-soon">Upgrades coming soon.</div>
           </div>
+          <div id="rebirthTabPanel" role="tabpanel" aria-labelledby="rebirthTabBtn" hidden>
+            <div class="rebirth-panel">
+              <strong>Rebirth</strong>
+              <p class="muted small" id="rebirthInfo">Reach level 20 and have $1M to rebirth.</p>
+              <button id="rebirthBtn" type="button" disabled>Rebirth</button>
+            </div>
+          </div>
         </div>
       </section>
       <section class="panel">
@@ -226,11 +238,6 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
           <div class="summary">
             <div class="summary-card"><small>Total owned</small><strong id="owned">0</strong></div>
             <div class="summary-card"><small>Lifetime earned</small><strong id="lifetime">$0</strong></div>
-          </div>
-          <div class="rebirth-panel">
-            <strong>Rebirth</strong>
-            <p class="muted small" id="rebirthInfo">Reach level 20 and have $1M to rebirth.</p>
-            <button id="rebirthBtn" type="button" disabled>Rebirth</button>
           </div>
           <div class="actions">
             <button id="saveBtn">Save now</button>
@@ -268,10 +275,20 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
   </div>
   <div class="community-grid">
     <section class="panel">
-      <div class="panel-head"><h2>All-Time Leaderboard</h2><span class="muted small">Top 100 by cash earned</span></div>
+      <div class="panel-head"><h2>Leaderboards</h2><span class="muted small">Top 100 players</span></div>
       <div class="body">
-        <ol class="leaderboard-list" id="leaderboardList"></ol>
-        <div class="muted small" id="leaderboardStatus">Log in to load the leaderboard.</div>
+        <div class="leaderboard-tabs" role="tablist" aria-label="Leaderboard types">
+          <button class="leaderboard-tab" id="cashLeaderboardTabBtn" type="button" role="tab" aria-selected="true" aria-controls="cashLeaderboardPanel">Cash</button>
+          <button class="leaderboard-tab" id="levelsLeaderboardTabBtn" type="button" role="tab" aria-selected="false" aria-controls="levelsLeaderboardPanel">Levels</button>
+        </div>
+        <div id="cashLeaderboardPanel" role="tabpanel" aria-labelledby="cashLeaderboardTabBtn">
+          <ol class="leaderboard-list" id="leaderboardList"></ol>
+          <div class="muted small" id="leaderboardStatus">Log in to load the leaderboard.</div>
+        </div>
+        <div id="levelsLeaderboardPanel" role="tabpanel" aria-labelledby="levelsLeaderboardTabBtn" hidden>
+          <ol class="leaderboard-list" id="levelsLeaderboardList"></ol>
+          <div class="muted small" id="levelsLeaderboardStatus">Log in to load the leaderboard.</div>
+        </div>
       </div>
     </section>
     <section class="panel">
@@ -459,6 +476,10 @@ async function loadUserSave() {
     if (!data || typeof data !== "object") return;
     const savedState = data.state && typeof data.state === "object" ? data.state : {};
     state = { ...freshState(), ...savedState };
+    const savedLevelReachedAt = Number(savedState.levelReachedAt);
+    state.levelReachedAt = Number.isSafeInteger(savedLevelReachedAt) && savedLevelReachedAt > 0
+      ? savedLevelReachedAt
+      : Date.now();
     state.money = Math.max(0, Number(state.money) || 0);
     state.lifetime = Math.max(0, Number(state.lifetime) || 0);
     state.inventory = state.inventory && typeof state.inventory === "object" ? state.inventory : {};
@@ -510,10 +531,16 @@ async function publishLeaderboardEntry() {
       uid: currentUser.uid,
       username: currentUsername,
       cashEarned: Math.max(0, Number(state.lifetime) || 0),
+      rebirths: Math.max(0, Number.isSafeInteger(state.rebirths) ? state.rebirths : 0),
+      level: Math.max(1, Number.isSafeInteger(state.level) ? state.level : 1),
+      levelReachedAt: Number.isSafeInteger(state.levelReachedAt) && state.levelReachedAt > 0
+        ? state.levelReachedAt
+        : Date.now(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
   } catch (e) {
     $("leaderboardStatus").textContent = "Leaderboard could not update. Check Firestore rules.";
+    $("levelsLeaderboardStatus").textContent = "Leaderboard could not update. Check Firestore rules.";
   }
 }
 
@@ -537,6 +564,32 @@ function renderLeaderboard(snapshot) {
     host.appendChild(row);
   });
   $("leaderboardStatus").textContent = snapshot.empty ? "No scores yet. Be the first on the board!" : "Showing the top " + snapshot.size + " players.";
+}
+
+function renderLevelsLeaderboard(snapshot) {
+  const host = $("levelsLeaderboardList");
+  host.innerHTML = "";
+  snapshot.docs.forEach((entry, index) => {
+    const data = entry.data();
+    const rebirths = Number.isSafeInteger(data.rebirths) && data.rebirths >= 0 ? data.rebirths : 0;
+    const level = Number.isSafeInteger(data.level) && data.level >= 1 ? data.level : 1;
+    const row = document.createElement("li");
+    row.className = "leaderboard-row";
+    const rank = document.createElement("span");
+    rank.className = "leaderboard-rank";
+    rank.textContent = "#" + (index + 1);
+    const username = document.createElement("span");
+    username.className = "leaderboard-name";
+    username.textContent = data.username || "Player";
+    const score = document.createElement("span");
+    score.className = "leaderboard-score";
+    score.textContent = (rebirths === 0 ? "0" : romanNumeral(rebirths)) + "-" + level;
+    row.append(rank, username, score);
+    host.appendChild(row);
+  });
+  $("levelsLeaderboardStatus").textContent = snapshot.empty
+    ? "No levels yet. Be the first on the board!"
+    : "Ranked by rebirths, level, then who reached that level first.";
 }
 
 function renderChat(snapshot) {
@@ -563,9 +616,17 @@ function startCommunityListeners() {
   communityUnsubscribers = [];
   if (!currentUser || !dbRef) return;
   const leaderboardQuery = dbRef.collection("leaderboard").orderBy("cashEarned", "desc").limit(100);
+  const levelsLeaderboardQuery = dbRef.collection("leaderboard")
+    .orderBy("rebirths", "desc")
+    .orderBy("level", "desc")
+    .orderBy("levelReachedAt", "asc")
+    .limit(100);
   const chatQuery = dbRef.collection("chatMessages").orderBy("createdAt", "desc").limit(50);
   communityUnsubscribers.push(leaderboardQuery.onSnapshot(renderLeaderboard, () => {
     $("leaderboardStatus").textContent = "Leaderboard unavailable. Check Firestore rules.";
+  }));
+  communityUnsubscribers.push(levelsLeaderboardQuery.onSnapshot(renderLevelsLeaderboard, () => {
+    $("levelsLeaderboardStatus").textContent = "Levels leaderboard unavailable. Deploy the leaderboard index and check Firestore rules.";
   }));
   communityUnsubscribers.push(chatQuery.onSnapshot(renderChat, () => {
     $("chatStatus").textContent = "Chat unavailable. Check Firestore rules.";
@@ -636,6 +697,7 @@ const freshState = () => ({
   inventory: {},
   level: 1,
   rebirths: 0,
+  levelReachedAt: Date.now(),
   xp: 0,
   multiplier: 1,
   slots: [null],
@@ -989,6 +1051,7 @@ function rebirth() {
   state.money -= cost;
   state.rebirths++;
   state.level = 1;
+  state.levelReachedAt = Date.now();
   state.xp = 0;
   state.slots = Array(1).fill(null);
   state.selected = null;
@@ -1051,14 +1114,24 @@ $("shopToggleBtn").addEventListener("click", () => {
   btn.setAttribute("aria-expanded", String(!open));
 });
 function selectShopTab(tab) {
-  const shopSelected = tab === "shop";
-  $("shopTabBtn").setAttribute("aria-selected", String(shopSelected));
-  $("upgradesTabBtn").setAttribute("aria-selected", String(!shopSelected));
-  $("shopTabPanel").hidden = !shopSelected;
-  $("upgradesTabPanel").hidden = shopSelected;
+  ["shop", "upgrades", "rebirth"].forEach(name => {
+    const selected = tab === name;
+    $(name + "TabBtn").setAttribute("aria-selected", String(selected));
+    $(name + "TabPanel").hidden = !selected;
+  });
 }
 $("shopTabBtn").addEventListener("click", () => selectShopTab("shop"));
 $("upgradesTabBtn").addEventListener("click", () => selectShopTab("upgrades"));
+$("rebirthTabBtn").addEventListener("click", () => selectShopTab("rebirth"));
+function selectLeaderboardTab(tab) {
+  const cashSelected = tab === "cash";
+  $("cashLeaderboardTabBtn").setAttribute("aria-selected", String(cashSelected));
+  $("levelsLeaderboardTabBtn").setAttribute("aria-selected", String(!cashSelected));
+  $("cashLeaderboardPanel").hidden = !cashSelected;
+  $("levelsLeaderboardPanel").hidden = cashSelected;
+}
+$("cashLeaderboardTabBtn").addEventListener("click", () => selectLeaderboardTab("cash"));
+$("levelsLeaderboardTabBtn").addEventListener("click", () => selectLeaderboardTab("levels"));
 $("saveBtn").addEventListener("click", () => save(false));
 $("multiBuyAmount").addEventListener("input", updateShopBuyButtons);
 $("clearAllBtn").addEventListener("click", clearAllGenerators);
@@ -1072,6 +1145,7 @@ async function runAdminAction(action, amount) {
     const result = await functionsRef.httpsCallable("adminAction")({ action, amount });
     await load();
     render();
+    await publishLeaderboardEntry();
     const message = result.data.message || "Admin action completed.";
     status.style.color = "var(--green)";
     status.textContent = message;
@@ -1112,6 +1186,7 @@ $("resetBtn").addEventListener("click", () => {
   state = freshState();
   render();
   save();
+  publishLeaderboardEntry();
   notify("Game reset.");
 });
 window.addEventListener("beforeunload", () => save());
@@ -1148,6 +1223,7 @@ setInterval(() => {
     state.slots.push(null);
     levelsGained++;
   }
+  if (levelsGained > 0) state.levelReachedAt = Date.now();
   let multiplierDrops = 0;
   activeGenerators.forEach(generator => {
     if (Math.random() < multiplierDropChance(generator)) multiplierDrops++;
@@ -1160,6 +1236,7 @@ setInterval(() => {
       ? levelMessage + " Multiplier increased to ×" + number(state.multiplier) + "!"
       : levelMessage);
     save();
+    publishLeaderboardEntry();
   } else if (multiplierDrops > 0) {
     notify("Multiplier increased to ×" + number(state.multiplier) + "!");
     save();
