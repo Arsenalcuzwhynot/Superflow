@@ -53,6 +53,18 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .empty-mark{font-size:25px;color:#4a596a}
 .tip{margin:13px 2px 0;color:var(--muted);font-size:11px;text-align:center}
 .side{display:grid;gap:16px}
+.community-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;margin-top:16px}
+.leaderboard-list{display:grid;gap:6px;max-height:420px;overflow:auto;list-style:none;padding:0;margin:0}
+.leaderboard-row{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;padding:8px 10px;background:#11161d;border:1px solid var(--line);border-radius:8px}
+.leaderboard-rank{color:var(--gold);font-weight:800}
+.leaderboard-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.leaderboard-cash{font-variant-numeric:tabular-nums;color:var(--green)}
+.chat-messages{height:320px;overflow:auto;display:flex;flex-direction:column-reverse;gap:8px;padding:10px;background:#10151c;border:1px solid var(--line);border-radius:8px}
+.chat-message{overflow-wrap:anywhere;font-size:12px}
+.chat-meta{color:var(--muted);font-size:10px;margin-right:6px}
+.chat-compose{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:10px}
+.chat-compose input{min-width:0}
+.chat-status{min-height:18px;margin-top:6px}
 .shop-list{display:grid;gap:8px}
 .shop-item{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px;background:#11161d;border:1px solid var(--line);border-radius:9px}
 .swatch{width:40px;height:40px;border-radius:8px;border:1px solid #ffffff30;display:grid;place-items:center;font-size:22px;color:#fff}
@@ -76,6 +88,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .modal h2{margin-bottom:8px}.modal p{font-size:12px;color:var(--muted)}
 .modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 @media(max-width:850px){.layout{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.side .panel:last-child{grid-column:1/-1}}
+@media(max-width:700px){.community-grid{grid-template-columns:1fr}}
 @media(max-width:560px){header{align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start;width:100%}.stat{flex:1;min-width:90px}main{padding:12px}.side{grid-template-columns:1fr}.side .panel:last-child{grid-column:auto}.slot-grid{gap:5px}.slot{border-radius:6px;padding:4px 1px}}
 
     .side-scroll-controls {
@@ -171,7 +184,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
             <button id="saveBtn">Save now</button>
             <button id="resetBtn">Reset game</button>
           </div>
-          <p class="muted small">Progress saves automatically in this browser on this device.</p>
+          <p class="muted small">Progress saves to your account. Avoid playing on two devices at the same time.</p>
         </div>
       </section>
       <section class="panel">
@@ -179,6 +192,26 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         <div class="body"><div id="legend" class="legend"></div></div>
       </section>
     </div>
+  </div>
+  <div class="community-grid">
+    <section class="panel">
+      <div class="panel-head"><h2>All-Time Leaderboard</h2><span class="muted small">Top 100 by cash earned</span></div>
+      <div class="body">
+        <ol class="leaderboard-list" id="leaderboardList"></ol>
+        <div class="muted small" id="leaderboardStatus">Log in to load the leaderboard.</div>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><h2>Global Chat</h2><span class="muted small">Be kind. 300 characters max.</span></div>
+      <div class="body">
+        <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+        <form class="chat-compose" id="chatForm">
+          <input id="chatInput" type="text" maxlength="300" placeholder="Write a message" autocomplete="off" aria-label="Chat message" />
+          <button id="sendChatBtn" type="submit">Send</button>
+        </form>
+        <div class="chat-status muted small" id="chatStatus">Log in to join the chat.</div>
+      </div>
+    </section>
   </div>
   <div class="footer">GENERATOR GRID · A simple money-and-generators game</div>
 </main>
@@ -237,6 +270,8 @@ let dbRef = null;
 let currentUser = null;
 let currentUsername = null;
 let firebaseReady = false;
+let communityUnsubscribers = [];
+let lastChatSentAt = 0;
 
 function getAccountStore() {
   try {
@@ -295,6 +330,8 @@ async function enterGame(username, user) {
   state = freshState();
   await load();
   await save();
+  await publishLeaderboardEntry();
+  startCommunityListeners();
   renderLegend();
   render();
   updateAuthUI();
@@ -349,6 +386,112 @@ async function saveUserState(silent = true) {
     if (!silent) notify("Saved to your account.");
   } catch (e) {
     if (!silent) notify("Cloud save failed. Check your Firestore rules and connection.", true);
+  }
+}
+
+async function publishLeaderboardEntry() {
+  if (!currentUser || !dbRef) return;
+  try {
+    await dbRef.collection("leaderboard").doc(currentUser.uid).set({
+      uid: currentUser.uid,
+      username: currentUsername,
+      cashEarned: Math.max(0, Number(state.lifetime) || 0),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  } catch (e) {
+    $("leaderboardStatus").textContent = "Leaderboard could not update. Check Firestore rules.";
+  }
+}
+
+function renderLeaderboard(snapshot) {
+  const host = $("leaderboardList");
+  host.innerHTML = "";
+  snapshot.docs.forEach((entry, index) => {
+    const data = entry.data();
+    const row = document.createElement("li");
+    row.className = "leaderboard-row";
+    const rank = document.createElement("span");
+    rank.className = "leaderboard-rank";
+    rank.textContent = "#" + (index + 1);
+    const username = document.createElement("span");
+    username.className = "leaderboard-name";
+    username.textContent = data.username || "Player";
+    const cashEarned = document.createElement("span");
+    cashEarned.className = "leaderboard-cash";
+    cashEarned.textContent = cash(Math.max(0, Number(data.cashEarned) || 0));
+    row.append(rank, username, cashEarned);
+    host.appendChild(row);
+  });
+  $("leaderboardStatus").textContent = snapshot.empty ? "No scores yet. Be the first on the board!" : "Showing the top " + snapshot.size + " players.";
+}
+
+function renderChat(snapshot) {
+  const host = $("chatMessages");
+  host.innerHTML = "";
+  snapshot.docs.forEach(messageDoc => {
+    const message = messageDoc.data();
+    const row = document.createElement("div");
+    row.className = "chat-message";
+    const meta = document.createElement("span");
+    meta.className = "chat-meta";
+    const time = message.createdAt && message.createdAt.toDate ? message.createdAt.toDate().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "";
+    meta.textContent = (message.username || "Player") + (time ? " · " + time : "");
+    const text = document.createElement("span");
+    text.textContent = message.text || "";
+    row.append(meta, text);
+    host.appendChild(row);
+  });
+  $("chatStatus").textContent = "Showing the latest " + snapshot.size + " messages.";
+}
+
+function startCommunityListeners() {
+  communityUnsubscribers.forEach(unsubscribe => unsubscribe());
+  communityUnsubscribers = [];
+  if (!currentUser || !dbRef) return;
+  const leaderboardQuery = dbRef.collection("leaderboard").orderBy("cashEarned", "desc").limit(100);
+  const chatQuery = dbRef.collection("chatMessages").orderBy("createdAt", "desc").limit(50);
+  communityUnsubscribers.push(leaderboardQuery.onSnapshot(renderLeaderboard, () => {
+    $("leaderboardStatus").textContent = "Leaderboard unavailable. Check Firestore rules.";
+  }));
+  communityUnsubscribers.push(chatQuery.onSnapshot(renderChat, () => {
+    $("chatStatus").textContent = "Chat unavailable. Check Firestore rules.";
+  }));
+  $("chatStatus").textContent = "Connecting to global chat...";
+}
+
+async function sendChatMessage(event) {
+  event.preventDefault();
+  const text = $("chatInput").value.trim();
+  if (!currentUser || !dbRef) {
+    $("chatStatus").textContent = "Log in to send messages.";
+    return;
+  }
+  if (!text) return;
+  if (Date.now() - lastChatSentAt < 3000) {
+    $("chatStatus").textContent = "Please wait a few seconds before sending another message.";
+    return;
+  }
+  try {
+    const messageRef = dbRef.collection("chatMessages").doc();
+    const cooldownRef = dbRef.collection("chatCooldowns").doc(currentUser.uid);
+    await dbRef.runTransaction(async transaction => {
+      const cooldown = await transaction.get(cooldownRef);
+      const previousTime = cooldown.exists && cooldown.data().lastSentAt ? cooldown.data().lastSentAt.toMillis() : 0;
+      if (Date.now() - previousTime < 3000) throw new Error("chat-cooldown");
+      transaction.set(cooldownRef, { lastSentAt: firebase.firestore.FieldValue.serverTimestamp() });
+      transaction.set(messageRef, {
+        uid: currentUser.uid,
+        username: currentUsername,
+        text: text.slice(0, 300),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    });
+    lastChatSentAt = Date.now();
+    $("chatInput").value = "";
+  } catch (e) {
+    $("chatStatus").textContent = e.message === "chat-cooldown"
+      ? "Please wait a few seconds before sending another message."
+      : "Message could not be sent. Check Firestore rules.";
   }
 }
 
@@ -463,6 +606,9 @@ async function loginWithUsername() {
 
 async function logoutUser() {
   await save();
+  await publishLeaderboardEntry();
+  communityUnsubscribers.forEach(unsubscribe => unsubscribe());
+  communityUnsubscribers = [];
   await authRef.signOut();
   currentUser = null;
   currentUsername = null;
@@ -650,6 +796,7 @@ $("modalBg").addEventListener("click", e => { if (e.target === $("modalBg")) clo
 $("loginBtn").addEventListener("click", loginWithUsername);
 $("signupBtn").addEventListener("click", createAccountWithUsername);
 $("logoutBtn").addEventListener("click", logoutUser);
+$("chatForm").addEventListener("submit", sendChatMessage);
 $("shopToggleBtn").addEventListener("click", () => {
   const body = $("shopBody");
   const btn = $("shopToggleBtn");
@@ -697,6 +844,9 @@ setInterval(() => {
 setInterval(() => {
   if (currentUser) save(true);
 }, 60000);
+setInterval(() => {
+  if (currentUser) publishLeaderboardEntry();
+}, 120000);
 
 document.getElementById("scrollUpBtn")?.addEventListener("click", () => {
   window.scrollBy({ top: -Math.max(350, window.innerHeight * 0.75), behavior: "smooth" });
