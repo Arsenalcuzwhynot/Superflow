@@ -63,30 +63,38 @@ main{max-width:1250px;margin:auto;padding:20px}
 h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .body{padding:15px}
 .slot-grid{display:grid;grid-template-columns:repeat(var(--slot-columns,1),minmax(0,1fr));gap:clamp(2px,calc(9px * var(--slot-scale,1)),9px);width:100%;margin-inline:auto}
-.slot{min-width:0;aspect-ratio:1/1.08;padding:calc(7px * var(--slot-scale,1)) calc(3px * var(--slot-scale,1));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(5px * var(--slot-scale,1));background:#10151c;border:1px dashed #394452;border-radius:calc(9px * var(--slot-scale,1));text-align:center;overflow:hidden}
+.slot{position:relative;isolation:isolate;min-width:0;aspect-ratio:1/1.08;padding:calc(7px * var(--slot-scale,1)) calc(3px * var(--slot-scale,1));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(5px * var(--slot-scale,1));background:#10151c;border:1px dashed #394452;border-radius:calc(9px * var(--slot-scale,1));text-align:center;overflow:hidden}
 .slot.empty:hover{border-color:#9aafc9;background:#18212d}
-.slot.filled{border-style:solid;background:#1d242d}
-.slot.filled.effect-chroma,.slot.filled.effect-celestial,.slot.filled.effect-aether,
-.slot.filled.effect-nebulous,.slot.filled.effect-paradox,.slot.filled.effect-singularity{
-  background-size:500% 100%;
-  animation:placed-gradient var(--effect-duration) ease-in-out infinite;
-}
-.slot.filled.effect-tier{
-  background-image:linear-gradient(125deg,var(--tier-color),var(--tier-accent),color-mix(in srgb,var(--tier-color) 45%,#10151c),var(--tier-accent));
-  background-size:300% 300%;
-  animation:placed-gradient var(--effect-duration) ease-in-out infinite;
-}
-.slot.filled.effect-chroma{background-image:linear-gradient(100deg,#7444bd,#dc65d0,#499be1,#57c99b,#d8c64b,#7444bd)}
-.slot.filled.effect-celestial{background-image:linear-gradient(100deg,#f18a30,#ed402e,#ec4d78,#a34bc7,#f18a30)}
-.slot.filled.effect-aether{background-image:linear-gradient(100deg,#75c9f4,#b7e6ff,#e7a5d5,#e45fae,#75c9f4)}
-.slot.filled.effect-nebulous{background-image:linear-gradient(100deg,#101d55,#183f87,#14755e,#55a947,#101d55)}
-.slot.filled.effect-paradox{background-image:linear-gradient(100deg,#db2e2e,#f45a32,#ffd52e,#fff06b,#db2e2e)}
-.slot.filled.effect-singularity{background-image:linear-gradient(100deg,#ff4b00,#ff9a00,#ffdc22,#ff6500,#ff3c00)}
-@keyframes placed-gradient{
-  0%{background-position:0% 50%;filter:saturate(1)}
-  50%{filter:saturate(1.35)}
-  100%{background-position:100% 50%;filter:saturate(1)}
-}
+.slot.filled{border-style:solid;background-color:#17221e;background-image:linear-gradient(135deg,color-mix(in srgb,var(--tier-color) 76%,#18221e),color-mix(in srgb,var(--tier-accent) 72%,#151b20),color-mix(in srgb,var(--tier-color) 82%,#10151c))}
+.slot.filled::before,.slot.filled::after{content:"";display:none;position:absolute;inset:-12%;z-index:0;pointer-events:none;border-radius:inherit}
+.slot.filled.effect-tier{background-size:220% 220%;animation:placed-gradient var(--effect-duration,16s) ease-in-out infinite alternate}
+.slot.filled.effect-tier::before,.slot.filled.effect-tier::after{display:block}
+.slot.filled.effect-tier::before{opacity:.17;background-image:radial-gradient(circle,var(--particle-color,var(--tier-accent)) 1px,transparent 1.8px);background-size:19px 19px;animation:particle-drift var(--particle-duration,12s) ease-in-out infinite alternate}
+.slot.filled.effect-tier::after{opacity:.2;background-image:radial-gradient(ellipse at 30% 45%,var(--particle-color,var(--tier-accent)) 0,transparent 55%);background-size:150% 150%;animation:particle-glow var(--particle-duration,12s) ease-in-out infinite alternate}
+.slot.filled.effect-dots::before{opacity:.78;background-size:14px 14px,22px 22px;background-image:radial-gradient(circle,var(--particle-color) 1.5px,transparent 2.2px),radial-gradient(circle,var(--particle-color) 1px,transparent 1.7px)}
+.slot.filled.effect-stars::before{opacity:.86;background-size:27px 27px;background-image:radial-gradient(circle,var(--particle-color) 1px,transparent 1.7px),linear-gradient(90deg,transparent 47%,var(--particle-color) 49%,var(--particle-color) 51%,transparent 53%),linear-gradient(transparent 47%,var(--particle-color) 49%,var(--particle-color) 51%,transparent 53%);background-position:0 0,8px 8px,8px 8px}
+.slot.filled.effect-squares::before{opacity:.68;background-size:17px 17px;background-image:linear-gradient(45deg,transparent 38%,var(--particle-color) 39%,var(--particle-color) 52%,transparent 53%),linear-gradient(-45deg,transparent 38%,var(--particle-color) 39%,var(--particle-color) 52%,transparent 53%)}
+.slot.filled.effect-lightning::before{opacity:.72;background-size:58px 75px;background-image:linear-gradient(115deg,transparent 0 42%,var(--particle-color) 43% 46%,transparent 47% 54%,var(--particle-color) 55% 58%,transparent 59%)}
+.slot.filled.effect-fog::after{opacity:.55;background-image:radial-gradient(ellipse at 28% 62%,var(--particle-color) 0,transparent 46%),radial-gradient(ellipse at 76% 32%,var(--tier-accent) 0,transparent 50%);background-size:180% 180%}
+.slot.filled.effect-glow{box-shadow:inset 0 0 18px color-mix(in srgb,var(--particle-color) 62%,transparent),0 0 12px color-mix(in srgb,var(--particle-color) 32%,transparent)}
+.slot.filled.effect-shimmer,.slot.filled.effect-chroma,.slot.filled.effect-aether{background-image:linear-gradient(115deg,color-mix(in srgb,var(--tier-color) 76%,#151b20),var(--tier-accent),color-mix(in srgb,var(--tier-color) 30%,#fff),var(--tier-color),var(--tier-accent));background-size:300% 300%}
+.slot.filled.effect-chroma::before,.slot.filled.effect-aether::before{display:block}
+.slot.filled.effect-shimmer::before{opacity:.35;background-image:linear-gradient(110deg,transparent 15%,#ffffffaa 42%,transparent 58%);background-size:220% 220%;animation:shimmer-sweep var(--shimmer-duration,9s) ease-in-out infinite alternate}
+.slot.filled.effect-chroma::before,.slot.filled.effect-aether::before{opacity:.35;background-image:linear-gradient(110deg,transparent 15%,#ffffffaa 42%,transparent 58%);background-size:220% 220%;animation:shimmer-sweep var(--shimmer-duration,9s) ease-in-out infinite alternate}
+.slot.filled.effect-glow::before,.slot.filled.effect-fog::after{display:block}
+.slot.filled.effect-dots::before,.slot.filled.effect-stars::before,.slot.filled.effect-squares::before,.slot.filled.effect-lightning::before{display:block}
+.slot.filled.effect-dots::after,.slot.filled.effect-stars::after,.slot.filled.effect-squares::after,.slot.filled.effect-lightning::after{display:block}
+.slot.filled.effect-dots::after,.slot.filled.effect-stars::after,.slot.filled.effect-squares::after,.slot.filled.effect-lightning::after{animation:particle-glow var(--particle-duration,12s) ease-in-out infinite alternate}
+.slot.filled.effect-chroma{--particle-duration:10s;--shimmer-duration:11s}
+.slot.filled.effect-aether{--particle-duration:7s;--shimmer-duration:5s}
+.slot.filled.effect-fog{--particle-duration:18s;--effect-duration:20s}
+.slot.filled.effect-singularity{--particle-duration:18s;--effect-duration:22s}
+.slot.filled.effect-paradox{--effect-duration:18s}
+@keyframes placed-gradient{from{background-position:0% 45%}to{background-position:100% 55%}}
+@keyframes particle-drift{from{transform:translate3d(-3px,5px,0);background-position:0 0}to{transform:translate3d(5px,-5px,0);background-position:38px -27px}}
+@keyframes particle-glow{from{transform:translate3d(-5px,4px,0) scale(1);opacity:.15}to{transform:translate3d(6px,-5px,0) scale(1.12);opacity:.55}}
+@keyframes shimmer-sweep{from{background-position:0% 50%;opacity:.25}to{background-position:100% 50%;opacity:.75}}
+.slot>span{position:relative;z-index:1}
 .slot .tier{font-size:clamp(5px,calc(10px * var(--slot-scale,1)),10px);font-weight:800;letter-spacing:.04em}
 .slot .generator-mark{font-size:clamp(9px,calc(32px * var(--slot-scale,1)),32px);line-height:1}
 .slot .gen-name{font-size:clamp(5px,calc(11px * var(--slot-scale,1)),11px);font-weight:700;overflow-wrap:anywhere}
@@ -149,8 +157,9 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 :root[data-theme="light"] .auth-card .secondary{background:#eef3ef}
 :root[data-theme="light"] .slot.empty{background:#f4f7f5;border-color:#c7d4cb}
 :root[data-theme="light"] .slot.empty:hover{background:#e7f0e9;border-color:#7ca88b}
-:root[data-theme="light"] .slot.filled:not(.effect-tier):not(.effect-chroma):not(.effect-celestial):not(.effect-aether):not(.effect-nebulous):not(.effect-paradox):not(.effect-singularity){background:#edf3ef}
-:root[data-theme="light"] .slot .gen-income{color:#34443a}
+:root[data-theme="light"] .slot.filled{background-color:#f8fbf9;background-image:linear-gradient(135deg,color-mix(in srgb,var(--tier-color) 66%,#fff),color-mix(in srgb,var(--tier-accent) 68%,#fff),color-mix(in srgb,var(--tier-color) 52%,#fff))}
+:root[data-theme="light"] .slot.filled.effect-shimmer,:root[data-theme="light"] .slot.filled.effect-chroma,:root[data-theme="light"] .slot.filled.effect-aether{background-image:linear-gradient(115deg,color-mix(in srgb,var(--tier-color) 62%,#fff),var(--tier-accent),#fff,var(--tier-color),var(--tier-accent))}
+:root[data-theme="light"] .slot .gen-income{color:#26332c}
 :root[data-theme="light"] .leaderboard-row,
 :root[data-theme="light"] .chat-messages,
 :root[data-theme="light"] .rebirth-panel,
@@ -160,11 +169,12 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 :root[data-theme="light"] .shop-tabs{background:var(--panel)}
 :root[data-theme="light"] .modal{background:#fff;border-color:var(--line)}
 :root[data-theme="light"] .empty-mark{color:#8a9a8f}
+:root[data-theme="light"] .slot.filled.effect-glow{box-shadow:inset 0 0 18px color-mix(in srgb,var(--particle-color) 42%,transparent),0 0 12px color-mix(in srgb,var(--particle-color) 26%,transparent)}
+@media(prefers-reduced-motion:reduce){.slot.filled,.slot.filled::before,.slot.filled::after{animation:none!important}}
 @media(max-width:700px){.community-grid{grid-template-columns:1fr}}
 @media(max-width:850px){.layout{grid-template-columns:minmax(0,1fr) minmax(280px,.9fr)}}
 @media(max-width:700px){.layout{grid-template-columns:1fr}}
 @media(max-width:560px){header{align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start;width:100%}.stat{flex:1;min-width:90px}main{padding:12px}}
-@media(prefers-reduced-motion:reduce){.slot.filled.effect-tier,.slot.filled.effect-chroma,.slot.filled.effect-celestial,.slot.filled.effect-aether,.slot.filled.effect-nebulous,.slot.filled.effect-paradox,.slot.filled.effect-singularity{animation:none}}
 
     .side-scroll-controls {
       position: fixed;
@@ -375,32 +385,32 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
   To add a new tier later, add one object and give it a color.
 */
 const GENERATOR_TIERS = [
-  { id:"basic",      name:"Basic",      color:"#666b72", accent:"#666b72" },
-  { id:"common",     name:"Common",     color:"#858b93", accent:"#858b93" },
-  { id:"uncommon",   name:"Uncommon",   color:"#bdc98a", accent:"#bdc98a" },
-  { id:"rare",       name:"Rare",       color:"#83b9df", accent:"#83b9df" },
-  { id:"epic",       name:"Epic",       color:"#50346f", accent:"#50346f" },
-  { id:"legendary",  name:"Legendary",  color:"#c5ad54", accent:"#c5ad54" },
-  { id:"mythical",   name:"Mythical",   color:"#a9434a", accent:"#a9434a" },
-  { id:"ethereal",   name:"Ethereal",   color:"#45484d", accent:"#45484d" },
-  { id:"ultimate",   name:"Ultimate",   color:"#e58a43", accent:"#e58a43" },
-  { id:"hyper",      name:"Hyper",      color:"#7c252d", accent:"#7c252d" },
-  { id:"supreme",    name:"Supreme",    color:"#244d83", accent:"#244d83" },
-  { id:"divine",     name:"Divine",     color:"#d98cae", accent:"#d98cae" },
-  { id:"godly",      name:"Godly",      color:"#e9fff9", accent:"#d6fffa" },
-  { id:"quantum",    name:"Quantum",    color:"#5f4bb6", accent:"#8f7ae6" },
-  { id:"plasma",     name:"Plasma",     color:"#ff6b3d", accent:"#ff8b5e" },
-  { id:"radiant",    name:"Radiant",    color:"#f4c95d", accent:"#f9e27d" },
-  { id:"surge",      name:"Surge",      color:"#2ed7ff", accent:"#6be7ff" },
-  { id:"chroma",     name:"Chroma",     color:"#7547bd", accent:"#bd8cff", effect:"chroma", effectDuration:4 },
-  { id:"blossom",    name:"Blossom",    color:"#f6b26a", accent:"#f8d294" },
-  { id:"absolute",   name:"Absolute",   color:"#527b18", accent:"#a1cf38" },
-  { id:"astral",     name:"Astral",     color:"#6aa9ff", accent:"#9ed0ff" },
-  { id:"celestial",  name:"Celestial",  color:"#f18a30", accent:"#ff9b64", effect:"celestial", effectDuration:5 },
-  { id:"aether",     name:"Aether",     color:"#75c9f4", accent:"#dca2dc", effect:"aether", effectDuration:5 },
-  { id:"nebulous",   name:"Nebulous",   color:"#183f87", accent:"#55a947", effect:"nebulous", effectDuration:5 },
-  { id:"paradox",    name:"Paradox",    color:"#db2e2e", accent:"#ffd52e", effect:"paradox", effectDuration:2.4 },
-  { id:"singularity",name:"Singularity",color:"#ff6500", accent:"#ffdc22", effect:"singularity", effectDuration:0.9 }
+  { id:"basic",      name:"Basic",      color:"#8c9baa", accent:"#c6d3de" },
+  { id:"common",     name:"Common",     color:"#56b69a", accent:"#a2e3bf" },
+  { id:"uncommon",   name:"Uncommon",   color:"#83bf49", accent:"#d0e97a" },
+  { id:"rare",       name:"Rare",       color:"#32abc5", accent:"#89e7ec" },
+  { id:"epic",       name:"Epic",       color:"#8565c9", accent:"#d2a0f1" },
+  { id:"legendary",  name:"Legendary",  color:"#db9b34", accent:"#ffe184" },
+  { id:"mythical",   name:"Mythical",   color:"#d64e63", accent:"#ff9db2" },
+  { id:"ethereal",   name:"Ethereal",   color:"#3db7a9", accent:"#a4f5dc" },
+  { id:"ultimate",   name:"Ultimate",   color:"#e27a36", accent:"#ffc979" },
+  { id:"hyper",      name:"Hyper",      color:"#cf4058", accent:"#ff9a79" },
+  { id:"supreme",    name:"Supreme",    color:"#3d70bd", accent:"#91b9f4" },
+  { id:"divine",     name:"Divine",     color:"#dc72ad", accent:"#ffc1df", effect:"dots" },
+  { id:"godly",      name:"Godly",      color:"#a2d9d0", accent:"#f4fff0", effect:"dots" },
+  { id:"quantum",    name:"Quantum",    color:"#7254c7", accent:"#d1a2ff", effect:"stars" },
+  { id:"plasma",     name:"Plasma",     color:"#e84b3c", accent:"#ff9a77", effect:"squares" },
+  { id:"radiant",    name:"Radiant",    color:"#e8ad29", accent:"#fff0a1", effect:"glow" },
+  { id:"surge",      name:"Surge",      color:"#249fc9", accent:"#a9efff", effect:"lightning" },
+  { id:"chroma",     name:"Chroma",     color:"#7547bd", accent:"#bd8cff", effect:"chroma", effectDuration:16 },
+  { id:"blossom",    name:"Blossom",    color:"#f39752", accent:"#ffb8d5", effect:"fog", effectDuration:20 },
+  { id:"absolute",   name:"Absolute",   color:"#60a92d", accent:"#c5f176", effect:"squares" },
+  { id:"astral",     name:"Astral",     color:"#28569b", accent:"#739de2" },
+  { id:"celestial",  name:"Celestial",  color:"#e78434", accent:"#ffc177", effect:"dots", effectDuration:16 },
+  { id:"aether",     name:"Aether",     color:"#61b4e2", accent:"#f1a9e3", effect:"aether", effectDuration:14 },
+  { id:"nebulous",   name:"Nebulous",   color:"#294a8d", accent:"#61c97b", effect:"fog", effectDuration:20 },
+  { id:"paradox",    name:"Paradox",    color:"#e02c32", accent:"#ffbb42", effect:"paradox", effectDuration:18 },
+  { id:"singularity",name:"Singularity",color:"#ed650d", accent:"#ffc431", effect:"singularity", effectDuration:22 }
 ];
 const SAVE_KEY = "generatorGridSave_v1";
 const ACCOUNTS_KEY = "generatorGridAccounts_v1";
@@ -1077,9 +1087,47 @@ function renderUpgrades() {
   });
 }
 function placedTotal() { return state.slots.filter(Boolean).length; }
+function makeSlotButton(index, slot) {
+  const button = document.createElement("button");
+  button.className = "slot";
+  button.addEventListener("click", () => clickSlot(index));
+  if (!slot) {
+    button.classList.add("empty");
+    const mark = document.createElement("span");
+    mark.className = "empty-mark";
+    button.append(mark);
+    return button;
+  }
+  const g = getGenerator(slot.id);
+  const accent = g.accent || g.color;
+  button.classList.add("filled");
+  button.dataset.generatorId = g.id;
+  button.style.borderColor = accent;
+  button.style.setProperty("--tier-color", g.color);
+  button.style.setProperty("--tier-accent", accent);
+  button.style.setProperty("--particle-color", accent);
+  if (g.index > 7) button.classList.add("effect-tier");
+  if (g.effect) button.classList.add("effect-" + g.effect);
+  if (g.effectDuration) button.style.setProperty("--effect-duration", g.effectDuration + "s");
+  if (g.id === "singularity") button.style.setProperty("--particle-duration", "22s");
+  const tier = document.createElement("span");
+  tier.className = "tier";
+  tier.textContent = g.name.toUpperCase();
+  tier.style.color = accent;
+  const mark = document.createElement("span");
+  mark.className = "generator-mark";
+  mark.textContent = "◆";
+  mark.style.color = accent;
+  const name = document.createElement("span");
+  name.className = "gen-name";
+  name.textContent = "Generator";
+  const earn = document.createElement("span");
+  earn.className = "gen-income";
+  button.append(tier, mark, name, earn);
+  return button;
+}
 function renderSlots() {
   const host = $("slots");
-  host.innerHTML = "";
   const columns = Math.ceil(Math.sqrt(state.slots.length));
   const scale = Math.min(1, 5 / columns);
   host.style.setProperty("--slot-columns", columns);
@@ -1087,50 +1135,27 @@ function renderSlots() {
   host.style.maxWidth = (columns * 150 + (columns - 1) * 9) + "px";
   $("clearAllBtn").disabled = placedTotal() === 0;
   state.slots.forEach((slot, index) => {
-    const button = document.createElement("button");
-    button.className = "slot " + (slot ? "filled" : "empty");
+    const existing = host.children[index];
+    const expectedId = slot ? getGenerator(slot.id).id : null;
+    const existingId = existing && existing.dataset.generatorId || null;
+    let button = existing;
+    if (!existing || existingId !== expectedId) {
+      button = makeSlotButton(index, slot);
+      if (existing) existing.replaceWith(button);
+      else host.appendChild(button);
+    } else if (!slot) {
+      const mark = existing.querySelector(".empty-mark");
+      mark.textContent = state.selected ? "+" : "·";
+      existing.title = state.selected ? "Place " + getGenerator(state.selected).name : "Empty slot";
+    }
     if (slot) {
       const g = getGenerator(slot.id);
-      button.dataset.generatorId = g.id;
-      const accent = g.accent || g.color;
-      button.style.borderColor = accent;
-      if (g.effect) {
-        button.classList.add("effect-" + g.effect);
-        button.style.setProperty("--effect-duration", g.effectDuration + "s");
-      } else if (g.index > 7) {
-        button.classList.add("effect-tier");
-        button.style.setProperty("--tier-color", g.color);
-        button.style.setProperty("--tier-accent", accent);
-        button.style.setProperty("--effect-duration", g.effectDuration + "s");
-      } else {
-        button.style.background = "linear-gradient(145deg, " + (accent + "44") + ", #10151c)";
-      }
-      const tier = document.createElement("span");
-      tier.className = "tier";
-      tier.textContent = g.name.toUpperCase();
-      tier.style.color = accent;
-      const mark = document.createElement("span");
-      mark.className = "generator-mark";
-      mark.textContent = "◆";
-      mark.style.color = accent;
-      const name = document.createElement("span");
-      name.className = "gen-name";
-      name.textContent = "Generator";
-      const earn = document.createElement("span");
-      earn.className = "gen-income";
-      earn.textContent = cash(g.income * state.multiplier / tickIntervalSeconds()) + "/s";
-      button.append(tier, mark, name, earn);
-      button.title = g.name + ": " + cash(g.income * state.multiplier / tickIntervalSeconds()) + " per second. Click to inspect.";
-    } else {
-      const mark = document.createElement("span");
-      mark.className = "empty-mark";
-      mark.textContent = state.selected ? "+" : "·";
-      button.append(mark);
-      button.title = state.selected ? "Place " + getGenerator(state.selected).name : "Empty slot";
+      const earnings = cash(g.income * state.multiplier / tickIntervalSeconds());
+      button.querySelector(".gen-income").textContent = earnings + "/s";
+      button.title = g.name + ": " + earnings + " per second. Click to inspect.";
     }
-    button.addEventListener("click", () => clickSlot(index));
-    host.appendChild(button);
   });
+  while (host.children.length > state.slots.length) host.lastElementChild.remove();
 }
 function renderSlotEarnings() {
   document.querySelectorAll("#slots .slot.filled").forEach(button => {
