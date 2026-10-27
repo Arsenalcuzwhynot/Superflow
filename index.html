@@ -42,8 +42,8 @@ main{max-width:1250px;margin:auto;padding:20px}
 .panel-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
 h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .body{padding:15px}
-.slot-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
-.slot{min-width:0;aspect-ratio:1/1.08;padding:7px 3px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:#10151c;border:1px dashed #394452;border-radius:9px;text-align:center}
+.slot-grid{display:grid;grid-template-columns:repeat(var(--slot-columns,1),minmax(0,1fr));gap:clamp(2px,calc(9px * var(--slot-scale,1)),9px);width:100%;margin-inline:auto}
+.slot{min-width:0;aspect-ratio:1/1.08;padding:calc(7px * var(--slot-scale,1)) calc(3px * var(--slot-scale,1));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(5px * var(--slot-scale,1));background:#10151c;border:1px dashed #394452;border-radius:calc(9px * var(--slot-scale,1));text-align:center;overflow:hidden}
 .slot.empty:hover{border-color:#9aafc9;background:#18212d}
 .slot.filled{border-style:solid;background:#1d242d}
 .slot.filled.effect-chroma,.slot.filled.effect-celestial,.slot.filled.effect-aether,
@@ -67,10 +67,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
   50%{filter:saturate(1.35)}
   100%{background-position:100% 50%;filter:saturate(1)}
 }
-.slot .tier{font-size:clamp(8px,1vw,10px);font-weight:800;letter-spacing:.04em}
-.slot .generator-mark{font-size:clamp(20px,3vw,32px);line-height:1}
-.slot .gen-name{font-size:clamp(8px,1vw,11px);font-weight:700;overflow-wrap:anywhere}
-.slot .gen-income{font-size:clamp(8px,.95vw,10px);color:#dce4ee}
+.slot .tier{font-size:clamp(5px,calc(10px * var(--slot-scale,1)),10px);font-weight:800;letter-spacing:.04em}
+.slot .generator-mark{font-size:clamp(9px,calc(32px * var(--slot-scale,1)),32px);line-height:1}
+.slot .gen-name{font-size:clamp(5px,calc(11px * var(--slot-scale,1)),11px);font-weight:700;overflow-wrap:anywhere}
+.slot .gen-income{font-size:clamp(5px,calc(10px * var(--slot-scale,1)),10px);color:#dce4ee}
 .empty-mark{font-size:25px;color:#4a596a}
 .tip{margin:13px 2px 0;color:var(--muted);font-size:11px;text-align:center}
 .side{display:grid;gap:16px}
@@ -87,6 +87,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .chat-compose input{min-width:0}
 .chat-status{min-height:18px;margin-top:6px}
 .shop-list{display:grid;gap:8px}
+.shop-tabs{display:flex;gap:8px;margin-bottom:12px;border-bottom:1px solid var(--line)}
+.shop-tab{background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;padding:8px 10px;color:var(--muted)}
+.shop-tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--green)}
+.coming-soon{padding:24px 12px;text-align:center;color:var(--muted);font-weight:700}
 .multibuy-control{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .multibuy-control label{font-size:11px;font-weight:700}
 .multibuy-control input{width:88px;padding:7px 9px}
@@ -113,7 +117,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 @media(max-width:850px){.layout{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.side .panel:last-child{grid-column:1/-1}}
 @media(max-width:700px){.community-grid{grid-template-columns:1fr}}
-@media(max-width:560px){header{align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start;width:100%}.stat{flex:1;min-width:90px}main{padding:12px}.side{grid-template-columns:1fr}.side .panel:last-child{grid-column:auto}.slot-grid{gap:5px}.slot{border-radius:6px;padding:4px 1px}}
+@media(max-width:560px){header{align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start;width:100%}.stat{flex:1;min-width:90px}main{padding:12px}.side{grid-template-columns:1fr}.side .panel:last-child{grid-column:auto}}
 @media(prefers-reduced-motion:reduce){.slot.filled.effect-tier,.slot.filled.effect-chroma,.slot.filled.effect-celestial,.slot.filled.effect-aether,.slot.filled.effect-nebulous,.slot.filled.effect-paradox,.slot.filled.effect-singularity{animation:none}}
 
     .side-scroll-controls {
@@ -169,7 +173,9 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
   <div class="stats">
     <div class="stat"><small>Money</small><strong id="money">$10</strong></div>
     <div class="stat"><small>Income / second</small><strong id="income">$0</strong></div>
-    <div class="stat"><small>Generators placed</small><strong id="placed">0 / 25</strong></div>
+    <div class="stat"><small>Generators placed</small><strong id="placed">0 / 1</strong></div>
+    <div class="stat"><small>Level · XP to next</small><strong><span id="level">1</span> · <span id="xpProgress">0 / 10 XP</span></strong></div>
+    <div class="stat"><small>Money multiplier</small><strong id="multiplier">×1</strong></div>
   </div>
   <div class="game-account"><span id="gamePlayerName" class="auth-status"></span><button id="logoutBtn" type="button">Log out</button></div>
 </header>
@@ -177,7 +183,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
   <div class="layout">
     <section class="panel">
       <div class="panel-head">
-        <div><h2>Generator Slots</h2><div class="muted small">Buy generators, then place them in an empty slot.</div></div>
+        <div><h2>Generator Slots</h2><div class="muted small" id="slotSummary">Level 1 · 1 slot unlocked</div></div>
         <button id="clearAllBtn" type="button" disabled>Clear all</button>
       </div>
       <div class="body">
@@ -196,11 +202,20 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
           <button id="shopToggleBtn" type="button" aria-expanded="true">Hide shop</button>
         </div>
         <div class="body" id="shopBody" style="max-height:520px;overflow:auto;padding-right:4px;display:block;">
-          <div class="multibuy-control">
-            <label for="multiBuyAmount">Multibuy quantity</label>
-            <input id="multiBuyAmount" type="number" min="1" step="1" value="1" inputmode="numeric">
+          <div class="shop-tabs" role="tablist" aria-label="Generator shop sections">
+            <button class="shop-tab" id="shopTabBtn" type="button" role="tab" aria-selected="true" aria-controls="shopTabPanel">Shop</button>
+            <button class="shop-tab" id="upgradesTabBtn" type="button" role="tab" aria-selected="false" aria-controls="upgradesTabPanel">Upgrades</button>
           </div>
-          <div class="shop-list" id="shop"></div>
+          <div id="shopTabPanel" role="tabpanel" aria-labelledby="shopTabBtn">
+            <div class="multibuy-control">
+              <label for="multiBuyAmount">Multibuy quantity</label>
+              <input id="multiBuyAmount" type="number" min="1" step="1" value="1" inputmode="numeric">
+            </div>
+            <div class="shop-list" id="shop"></div>
+          </div>
+          <div id="upgradesTabPanel" role="tabpanel" aria-labelledby="upgradesTabBtn" hidden>
+            <div class="coming-soon">Upgrades coming soon.</div>
+          </div>
         </div>
       </section>
       <section class="panel">
@@ -286,7 +301,6 @@ const GENERATOR_TIERS = [
   { id:"paradox",    name:"Paradox",    color:"#db2e2e", accent:"#ffd52e", effect:"paradox", effectDuration:2.4 },
   { id:"singularity",name:"Singularity",color:"#ff6500", accent:"#ffdc22", effect:"singularity", effectDuration:0.9 }
 ];
-const SLOT_COUNT = 25;
 const SAVE_KEY = "generatorGridSave_v1";
 const ACCOUNTS_KEY = "generatorGridAccounts_v1";
 const PLAYER_SAVE_PREFIX = "generatorGridSave_player_";
@@ -398,14 +412,30 @@ async function loadUserSave() {
       }
     }
     if (!data || typeof data !== "object") return;
-    state = { ...freshState(), ...data.state };
+    const savedState = data.state && typeof data.state === "object" ? data.state : {};
+    state = { ...freshState(), ...savedState };
     state.money = Math.max(0, Number(state.money) || 0);
     state.lifetime = Math.max(0, Number(state.lifetime) || 0);
     state.inventory = state.inventory && typeof state.inventory === "object" ? state.inventory : {};
     for (const g of GENERATORS) state.inventory[g.id] = Math.max(0, Math.floor(Number(state.inventory[g.id]) || 0));
-    state.slots = Array.isArray(state.slots) ? state.slots.slice(0, SLOT_COUNT) : Array(SLOT_COUNT).fill(null);
-    while (state.slots.length < SLOT_COUNT) state.slots.push(null);
-    state.slots = state.slots.map(slot => slot && getGenerator(slot.id) ? { id: slot.id } : null);
+    const savedSlots = Array.isArray(savedState.slots) ? savedState.slots : [];
+    const normalizedSlots = savedSlots.map(slot => slot && getGenerator(slot.id) ? { id: slot.id } : null);
+    if (Number.isSafeInteger(savedState.level) && savedState.level >= 1) {
+      state.level = savedState.level;
+      const savedXp = Number(state.xp);
+      const savedMultiplier = Number(state.multiplier);
+      state.xp = Number.isFinite(savedXp) ? Math.max(0, savedXp) : 0;
+      state.multiplier = Number.isFinite(savedMultiplier) ? Math.max(1, Math.round(savedMultiplier * 100) / 100) : 1;
+      state.slots = normalizedSlots;
+      while (state.slots.length < state.level) state.slots.push(null);
+    } else {
+      const previousGenerators = normalizedSlots.filter(Boolean);
+      state.level = Math.max(1, previousGenerators.length);
+      state.xp = 0;
+      state.multiplier = 1;
+      state.slots = Array(state.level).fill(null);
+      previousGenerators.forEach((slot, index) => { state.slots[index] = slot; });
+    }
     if (!getGenerator(state.selected) || available(state.selected) <= 0) state.selected = null;
   } catch (e) {
     state = freshState();
@@ -537,14 +567,29 @@ const GENERATORS = GENERATOR_TIERS.map((tier, index) => ({
   index,
   cost: 10 * Math.pow(10, index),
   income: Math.pow(3, index),
+  xpPerSecond: 0.5 * Math.pow(2, index),
   effectDuration: tier.effectDuration || (index > 7 ? Math.max(2, 8 - (index - 8) * 0.28) : 0)
 }));
+
+function xpRequiredForLevel(level) {
+  let previous = 10;
+  let required = 20;
+  for (let currentLevel = 2; currentLevel < level; currentLevel++) {
+    const next = previous + required;
+    previous = required;
+    required = next;
+  }
+  return level <= 1 ? previous : required;
+}
 
 const freshState = () => ({
   money: 10,
   lifetime: 0,
   inventory: {},
-  slots: Array(SLOT_COUNT).fill(null),
+  level: 1,
+  xp: 0,
+  multiplier: 1,
+  slots: [null],
   selected: null
 });
 let state = freshState();
@@ -574,7 +619,11 @@ function canBuy(generator, quantity = getMultiBuyAmount()) {
     && state.money >= generatorPrice(generator) * quantity;
 }
 function totalOwned() { return Object.values(state.inventory).reduce((a, b) => a + b, 0); }
-function totalIncome() { return state.slots.reduce((sum, slot) => sum + (slot ? getGenerator(slot.id).income : 0), 0); }
+function baseIncome() { return state.slots.reduce((sum, slot) => sum + (slot ? getGenerator(slot.id).income : 0), 0); }
+function totalIncome() { return baseIncome() * state.multiplier; }
+function multiplierDropChance(generator) {
+  return Math.min(1, 0.005 * (generator.index + 1) * Math.pow(0.98, state.multiplier - 1));
+}
 
 function notify(message, error = false) {
   $("notice").textContent = message;
@@ -686,10 +735,12 @@ function makeShopRow(generator, mode) {
   price.className = "price";
   price.textContent = cash(generatorPrice(generator));
   const earn = document.createElement("span");
-  earn.textContent = cash(generator.income) + "/sec";
+  earn.textContent = cash(generator.income * state.multiplier) + "/sec";
+  const xpEarn = document.createElement("span");
+  xpEarn.textContent = number(generator.xpPerSecond) + " XP/sec";
   const unplacedText = document.createElement("span");
   unplacedText.textContent = "Unplaced: " + available(generator.id);
-  numbers.append(price, earn, unplacedText);
+  numbers.append(price, earn, xpEarn, unplacedText);
 
   const desc = document.createElement("div");
   desc.className = "item-desc";
@@ -725,7 +776,11 @@ function makeShopRow(generator, mode) {
 function renderStats() {
   $("money").textContent = cash(state.money);
   $("income").textContent = cash(totalIncome());
-  $("placed").textContent = placedTotal() + " / " + SLOT_COUNT;
+  $("placed").textContent = placedTotal() + " / " + state.slots.length;
+  $("level").textContent = state.level;
+  $("xpProgress").textContent = number(state.xp) + " / " + number(xpRequiredForLevel(state.level)) + " XP";
+  $("multiplier").textContent = "×" + number(state.multiplier);
+  $("slotSummary").textContent = "Level " + state.level + " · " + state.slots.length + " slot" + (state.slots.length === 1 ? "" : "s") + " unlocked";
   $("owned").textContent = totalOwned();
   $("inventoryTotal").textContent = totalOwned() + " owned";
   $("lifetime").textContent = cash(state.lifetime);
@@ -734,12 +789,18 @@ function placedTotal() { return state.slots.filter(Boolean).length; }
 function renderSlots() {
   const host = $("slots");
   host.innerHTML = "";
+  const columns = Math.ceil(Math.sqrt(state.slots.length));
+  const scale = Math.min(1, 5 / columns);
+  host.style.setProperty("--slot-columns", columns);
+  host.style.setProperty("--slot-scale", scale);
+  host.style.maxWidth = (columns * 150 + (columns - 1) * 9) + "px";
   $("clearAllBtn").disabled = placedTotal() === 0;
   state.slots.forEach((slot, index) => {
     const button = document.createElement("button");
     button.className = "slot " + (slot ? "filled" : "empty");
     if (slot) {
       const g = getGenerator(slot.id);
+      button.dataset.generatorId = g.id;
       const accent = g.accent || g.color;
       button.style.borderColor = accent;
       if (g.effect) {
@@ -766,9 +827,9 @@ function renderSlots() {
       name.textContent = "Generator";
       const earn = document.createElement("span");
       earn.className = "gen-income";
-      earn.textContent = cash(g.income) + "/s";
+      earn.textContent = cash(g.income * state.multiplier) + "/s";
       button.append(tier, mark, name, earn);
-      button.title = g.name + ": " + cash(g.income) + " per second. Click to inspect.";
+      button.title = g.name + ": " + cash(g.income * state.multiplier) + " per second. Click to inspect.";
     } else {
       const mark = document.createElement("span");
       mark.className = "empty-mark";
@@ -778,6 +839,15 @@ function renderSlots() {
     }
     button.addEventListener("click", () => clickSlot(index));
     host.appendChild(button);
+  });
+}
+function renderSlotEarnings() {
+  document.querySelectorAll("#slots .slot.filled").forEach(button => {
+    const generator = getGenerator(button.dataset.generatorId);
+    if (!generator) return;
+    const earnings = cash(generator.income * state.multiplier);
+    button.querySelector(".gen-income").textContent = earnings + "/s";
+    button.title = generator.name + ": " + earnings + " per second. Click to inspect.";
   });
 }
 function renderShop() {
@@ -828,7 +898,7 @@ function selectGenerator(id) {
 function clearAllGenerators() {
   const returned = placedTotal();
   if (returned === 0) return;
-  state.slots = Array(SLOT_COUNT).fill(null);
+  state.slots = Array(state.slots.length).fill(null);
   render();
   save();
   notify(returned + " generator" + (returned === 1 ? "" : "s") + " returned to your inventory.");
@@ -837,7 +907,7 @@ function clickSlot(index) {
   const slot = state.slots[index];
   if (slot) {
     const g = getGenerator(slot.id);
-    showModal(g.name, "This generator earns " + cash(g.income) + " every second. Remove it to return it to your inventory. Its purchase price is not refunded.", [
+    showModal(g.name, "This generator earns " + cash(g.income * state.multiplier) + " every second at your current multiplier. Remove it to return it to your inventory. Its purchase price is not refunded.", [
       ["Return to inventory", () => {
         state.slots[index] = null;
         state.selected = g.id;
@@ -886,11 +956,20 @@ $("shopToggleBtn").addEventListener("click", () => {
   btn.textContent = open ? "Show shop" : "Hide shop";
   btn.setAttribute("aria-expanded", String(!open));
 });
+function selectShopTab(tab) {
+  const shopSelected = tab === "shop";
+  $("shopTabBtn").setAttribute("aria-selected", String(shopSelected));
+  $("upgradesTabBtn").setAttribute("aria-selected", String(!shopSelected));
+  $("shopTabPanel").hidden = !shopSelected;
+  $("upgradesTabPanel").hidden = shopSelected;
+}
+$("shopTabBtn").addEventListener("click", () => selectShopTab("shop"));
+$("upgradesTabBtn").addEventListener("click", () => selectShopTab("upgrades"));
 $("saveBtn").addEventListener("click", () => save(false));
 $("multiBuyAmount").addEventListener("input", updateShopBuyButtons);
 $("clearAllBtn").addEventListener("click", clearAllGenerators);
 $("resetBtn").addEventListener("click", () => {
-  if (!confirm("Reset all money, inventory, and placed generators? This cannot be undone.")) return;
+  if (!confirm("Reset all progress, including money, level, multiplier, inventory, and placed generators? This cannot be undone.")) return;
   state = freshState();
   render();
   save();
@@ -921,8 +1000,34 @@ setInterval(() => {
   const earned = totalIncome();
   state.money += earned;
   state.lifetime += earned;
+  const activeGenerators = state.slots.filter(Boolean).map(slot => getGenerator(slot.id));
+  state.xp += activeGenerators.reduce((total, generator) => total + generator.xpPerSecond, 0);
+  let levelsGained = 0;
+  while (state.xp >= xpRequiredForLevel(state.level)) {
+    state.xp -= xpRequiredForLevel(state.level);
+    state.level++;
+    state.slots.push(null);
+    levelsGained++;
+  }
+  let multiplierDrops = 0;
+  activeGenerators.forEach(generator => {
+    if (Math.random() < multiplierDropChance(generator)) multiplierDrops++;
+  });
+  state.multiplier = Math.round((state.multiplier + multiplierDrops * 0.01) * 100) / 100;
+  if (levelsGained > 0) {
+    renderSlots();
+    const levelMessage = "Level up! You reached level " + state.level + " and gained " + levelsGained + " generator slot" + (levelsGained === 1 ? "" : "s") + ".";
+    notify(multiplierDrops > 0
+      ? levelMessage + " Multiplier increased to ×" + number(state.multiplier) + "!"
+      : levelMessage);
+    save();
+  } else if (multiplierDrops > 0) {
+    notify("Multiplier increased to ×" + number(state.multiplier) + "!");
+    save();
+  }
   renderStats();
   renderShop();
+  renderSlotEarnings();
 }, 1000);
 setInterval(() => {
   if (currentUser) save(true);
