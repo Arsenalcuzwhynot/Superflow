@@ -46,6 +46,27 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .slot{min-width:0;aspect-ratio:1/1.08;padding:7px 3px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:#10151c;border:1px dashed #394452;border-radius:9px;text-align:center}
 .slot.empty:hover{border-color:#9aafc9;background:#18212d}
 .slot.filled{border-style:solid;background:#1d242d}
+.slot.filled.tier-shifting{animation:tier-hue-shift var(--shift-duration) ease-in-out infinite alternate}
+.slot.filled.effect-chroma,.slot.filled.effect-celestial,.slot.filled.effect-aether,
+.slot.filled.effect-nebulous,.slot.filled.effect-paradox,.slot.filled.effect-singularity{
+  background-size:500% 100%;
+  animation:placed-gradient var(--effect-duration) ease-in-out infinite;
+}
+.slot.filled.effect-chroma{background-image:linear-gradient(100deg,#7444bd,#dc65d0,#499be1,#57c99b,#d8c64b,#7444bd)}
+.slot.filled.effect-celestial{background-image:linear-gradient(100deg,#f18a30,#ed402e,#ec4d78,#a34bc7,#f18a30)}
+.slot.filled.effect-aether{background-image:linear-gradient(100deg,#75c9f4,#b7e6ff,#e7a5d5,#e45fae,#75c9f4)}
+.slot.filled.effect-nebulous{background-image:linear-gradient(100deg,#101d55,#183f87,#14755e,#55a947,#101d55)}
+.slot.filled.effect-paradox{background-image:linear-gradient(100deg,#db2e2e,#f45a32,#ffd52e,#fff06b,#db2e2e)}
+.slot.filled.effect-singularity{background-image:linear-gradient(100deg,#ff4b00,#ff9a00,#ffdc22,#ff6500,#ff3c00)}
+@keyframes tier-hue-shift{
+  from{filter:hue-rotate(0deg) saturate(1)}
+  to{filter:hue-rotate(var(--shift-degrees)) saturate(1.3)}
+}
+@keyframes placed-gradient{
+  0%{background-position:0% 50%;filter:saturate(1)}
+  50%{filter:saturate(1.35)}
+  100%{background-position:100% 50%;filter:saturate(1)}
+}
 .slot .tier{font-size:clamp(8px,1vw,10px);font-weight:800;letter-spacing:.04em}
 .slot .generator-mark{font-size:clamp(20px,3vw,32px);line-height:1}
 .slot .gen-name{font-size:clamp(8px,1vw,11px);font-weight:700;overflow-wrap:anywhere}
@@ -90,6 +111,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 @media(max-width:850px){.layout{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.side .panel:last-child{grid-column:1/-1}}
 @media(max-width:700px){.community-grid{grid-template-columns:1fr}}
 @media(max-width:560px){header{align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start;width:100%}.stat{flex:1;min-width:90px}main{padding:12px}.side{grid-template-columns:1fr}.side .panel:last-child{grid-column:auto}.slot-grid{gap:5px}.slot{border-radius:6px;padding:4px 1px}}
+@media(prefers-reduced-motion:reduce){.slot.filled.tier-shifting,.slot.filled.effect-chroma,.slot.filled.effect-celestial,.slot.filled.effect-aether,.slot.filled.effect-nebulous,.slot.filled.effect-paradox,.slot.filled.effect-singularity{animation:none}}
 
     .side-scroll-controls {
       position: fixed;
@@ -246,15 +268,21 @@ const GENERATOR_TIERS = [
   { id:"plasma",     name:"Plasma",     color:"#ff6b3d", accent:"#ff8b5e" },
   { id:"radiant",    name:"Radiant",    color:"#f4c95d", accent:"#f9e27d" },
   { id:"surge",      name:"Surge",      color:"#2ed7ff", accent:"#6be7ff" },
-  { id:"chroma",     name:"Chroma",     color:"linear-gradient(135deg, #ff5ca8 0%, #8d7dff 22%, #4ad6ff 45%, #9cff6b 70%, #ffd166 100%)", accent:"#ff67d4" },
+  { id:"chroma",     name:"Chroma",     color:"#7547bd", accent:"#bd8cff", effect:"chroma", effectDuration:4 },
   { id:"blossom",    name:"Blossom",    color:"#f6b26a", accent:"#f8d294" },
-  { id:"absolute",   name:"Absolute",   color:"#427c77", accent:"#7fe2d1" },
-  { id:"astral",     name:"Astral",     color:"#6aa9ff", accent:"#9ed0ff" }
+  { id:"absolute",   name:"Absolute",   color:"#527b18", accent:"#a1cf38" },
+  { id:"astral",     name:"Astral",     color:"#6aa9ff", accent:"#9ed0ff" },
+  { id:"celestial",  name:"Celestial",  color:"#f18a30", accent:"#ff9b64", effect:"celestial", effectDuration:5 },
+  { id:"aether",     name:"Aether",     color:"#75c9f4", accent:"#dca2dc", effect:"aether", effectDuration:5 },
+  { id:"nebulous",   name:"Nebulous",   color:"#183f87", accent:"#55a947", effect:"nebulous", effectDuration:5 },
+  { id:"paradox",    name:"Paradox",    color:"#db2e2e", accent:"#ffd52e", effect:"paradox", effectDuration:2.4 },
+  { id:"singularity",name:"Singularity",color:"#ff6500", accent:"#ffdc22", effect:"singularity", effectDuration:0.9 }
 ];
 const SLOT_COUNT = 25;
 const SAVE_KEY = "generatorGridSave_v1";
 const ACCOUNTS_KEY = "generatorGridAccounts_v1";
 const PLAYER_SAVE_PREFIX = "generatorGridSave_player_";
+const FREE_GENERATOR_USERNAME = "ArsenalSuperDev";
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyBwY1KLhbjRU2mk05MQxDDqeyLwhElqexo",
   authDomain: "generator-grid.firebaseapp.com",
@@ -500,7 +528,9 @@ const GENERATORS = GENERATOR_TIERS.map((tier, index) => ({
   ...tier,
   index,
   cost: 10 * Math.pow(10, index),
-  income: Math.pow(3, index)
+  income: Math.pow(3, index),
+  shiftDegrees: index >= 8 ? Math.min(66, 10 + (index - 8) * 3) : 0,
+  shiftDuration: Math.max(2, 8 - Math.max(0, index - 8) * 0.28)
 }));
 
 const freshState = () => ({
@@ -523,6 +553,7 @@ function number(n) {
 }
 function cash(n) { return "$" + number(n); }
 function getGenerator(id) { return GENERATORS.find(g => g.id === id); }
+function generatorPrice(generator) { return currentUsername === FREE_GENERATOR_USERNAME ? 0 : generator.cost; }
 function owned(id) { return state.inventory[id] || 0; }
 function placed(id) { return state.slots.filter(x => x && x.id === id).length; }
 function available(id) { return Math.max(0, owned(id) - placed(id)); }
@@ -637,7 +668,7 @@ function makeShopRow(generator, mode) {
   numbers.className = "item-numbers";
   const price = document.createElement("span");
   price.className = "price";
-  price.textContent = cash(generator.cost);
+  price.textContent = cash(generatorPrice(generator));
   const earn = document.createElement("span");
   earn.textContent = cash(generator.income) + "/sec";
   const unplacedText = document.createElement("span");
@@ -656,7 +687,7 @@ function makeShopRow(generator, mode) {
   actionGroup.style.flexDirection = "row";
   actionGroup.style.alignItems = "stretch";
 
-  const buyButton = makeButton("Buy", () => buy(generator.id), state.money < generator.cost, "");
+  const buyButton = makeButton("Buy", () => buy(generator.id), state.money < generatorPrice(generator), "");
   const sellButton = makeButton("Sell", () => sell(generator.id), owned(generator.id) <= 0, "");
   const placeLabel = state.selected === generator.id ? "Placed" : "Place";
   const placeButton = makeButton(placeLabel, () => selectGenerator(generator.id),
@@ -687,7 +718,17 @@ function renderSlots() {
       const g = getGenerator(slot.id);
       const accent = g.accent || g.color;
       button.style.borderColor = accent;
-      button.style.background = "linear-gradient(145deg, " + (accent + "44") + ", #10151c)";
+      if (g.effect) {
+        button.classList.add("effect-" + g.effect);
+        button.style.setProperty("--effect-duration", g.effectDuration + "s");
+      } else if (g.shiftDegrees) {
+        button.classList.add("tier-shifting");
+        button.style.setProperty("--shift-degrees", g.shiftDegrees + "deg");
+        button.style.setProperty("--shift-duration", g.shiftDuration + "s");
+        button.style.background = "linear-gradient(145deg, " + (accent + "44") + ", #10151c)";
+      } else {
+        button.style.background = "linear-gradient(145deg, " + (accent + "44") + ", #10151c)";
+      }
       const tier = document.createElement("span");
       tier.className = "tier";
       tier.textContent = g.name.toUpperCase();
@@ -727,8 +768,9 @@ function renderInventory() {
 function render() { renderStats(); renderSlots(); renderShop(); renderInventory(); }
 function buy(id) {
   const g = getGenerator(id);
-  if (!g || state.money < g.cost) return;
-  state.money -= g.cost;
+  const price = g ? generatorPrice(g) : 0;
+  if (!g || state.money < price) return;
+  state.money -= price;
   state.inventory[id] = owned(id) + 1;
   state.selected = id;
   notify("Bought " + g.name + ". Click an empty slot to place it.");
@@ -738,7 +780,7 @@ function buy(id) {
 function sell(id) {
   const g = getGenerator(id);
   if (!g || owned(id) <= 0) return;
-  const refund = Math.floor(g.cost * 0.7);
+  const refund = Math.floor(generatorPrice(g) * 0.7);
   state.inventory[id] = owned(id) - 1;
   state.money += refund;
   if (state.selected === id && available(id) <= 0) state.selected = null;
