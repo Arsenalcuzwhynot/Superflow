@@ -1,1 +1,717 @@
-C:\Users\james\Downloads\generator_grid_free_gens.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generator Grid</title>
+<style>
+:root{
+  --bg:#0d1015;--panel:#171c24;--panel2:#1d242e;--line:#303946;
+  --text:#edf1f5;--muted:#9ca8b6;--green:#7ad7a6;--gold:#f0cb75;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer;background:#28313e;border:1px solid #3a4655;border-radius:8px;padding:9px 12px}
+button:hover:not(:disabled){filter:brightness(1.12)}
+button:disabled{opacity:.4;cursor:not-allowed}
+input{font:inherit;background:#0f141b;border:1px solid #3b4a5d;border-radius:8px;padding:10px 12px;color:#edf1f5}
+input::placeholder{color:#8a98ab}
+[hidden]{display:none!important}
+.auth-screen{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at 18% 82%,#263b3b 0,transparent 42%),radial-gradient(ellipse at 83% 18%,#41352a 0,transparent 38%),var(--bg)}
+.auth-card{width:min(440px,100%);background:#121922;border:1px solid var(--line);border-radius:12px;padding:28px;box-shadow:0 24px 80px #0008}
+.auth-heading{font-size:23px;font-weight:900;letter-spacing:.04em;margin-bottom:5px}
+.auth-status{color:var(--muted);font-size:12px;margin-bottom:20px}
+.auth-form{display:grid;gap:10px}
+.auth-form input{width:100%;min-height:46px}
+.auth-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.auth-actions button{min-height:44px}
+.auth-card .secondary{background:#1b2734}
+.auth-hint{margin-top:14px;color:var(--muted);font-size:11px}
+.game-shell{min-height:100vh}
+.game-account{display:flex;align-items:center;gap:10px}
+.game-account .auth-status{margin:0}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px clamp(14px,3vw,32px);border-bottom:1px solid var(--line);background:#11161d;position:sticky;top:0;z-index:4}
+.brand{font-size:19px;font-weight:900;letter-spacing:.09em}.brand span{color:#8ea0b4}
+.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.stat{min-width:112px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:7px 11px}
+.stat small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.stat strong{font-size:16px}
+main{max-width:1250px;margin:auto;padding:20px}
+.layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.9fr);gap:16px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.panel-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
+.body{padding:15px}
+.slot-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+.slot{min-width:0;aspect-ratio:1/1.08;padding:7px 3px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:#10151c;border:1px dashed #394452;border-radius:9px;text-align:center}
+.slot.empty:hover{border-color:#9aafc9;background:#18212d}
+.slot.filled{border-style:solid;background:#1d242d}
+.slot .tier{font-size:clamp(8px,1vw,10px);font-weight:800;letter-spacing:.04em}
+.slot .generator-mark{font-size:clamp(20px,3vw,32px);line-height:1}
+.slot .gen-name{font-size:clamp(8px,1vw,11px);font-weight:700;overflow-wrap:anywhere}
+.slot .gen-income{font-size:clamp(8px,.95vw,10px);color:#dce4ee}
+.empty-mark{font-size:25px;color:#4a596a}
+.tip{margin:13px 2px 0;color:var(--muted);font-size:11px;text-align:center}
+.side{display:grid;gap:16px}
+.shop-list{display:grid;gap:8px}
+.shop-item{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px;background:#11161d;border:1px solid var(--line);border-radius:9px}
+.swatch{width:40px;height:40px;border-radius:8px;border:1px solid #ffffff30;display:grid;place-items:center;font-size:22px;color:#fff}
+.item-title{font-size:12px;font-weight:800}
+.item-desc{font-size:10px;color:var(--muted);margin-top:2px}
+.item-numbers{font-size:11px;margin-top:4px;display:flex;flex-wrap:wrap;gap:7px}
+.price{color:var(--gold);font-weight:800}
+.shop-item button{font-size:11px;padding:8px 10px}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.summary-card{background:#10151c;border:1px solid var(--line);border-radius:9px;padding:11px}
+.summary-card small{display:block;color:var(--muted);font-size:10px}
+.summary-card strong{font-size:16px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.note{min-height:19px;font-size:11px;color:var(--green);margin-top:10px}
+.legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:11px;color:#d0d8e2}
+.dot{width:12px;height:12px;border-radius:3px;border:1px solid #ffffff30;flex:none}
+.footer{text-align:center;color:#748092;font-size:11px;padding:22px 10px}
+.modal-bg{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
+.modal-bg.open{display:flex}.modal{width:min(390px,100%);background:#1a222d;border:1px solid #3a4655;border-radius:12px;padding:18px}
+.modal h2{margin-bottom:8px}.modal p{font-size:12px;color:var(--muted)}
+.modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.side .panel:last-child{grid-column:1/-1}}
+@media(max-width:560px){header{align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start;width:100%}.stat{flex:1;min-width:90px}main{padding:12px}.side{grid-template-columns:1fr}.side .panel:last-child{grid-column:auto}.slot-grid{gap:5px}.slot{border-radius:6px;padding:4px 1px}}
+
+    .side-scroll-controls {
+      position: fixed;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .side-scroll-controls button {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      border: 1px solid var(--border, #555);
+      background: var(--panel, #242424);
+      color: var(--text, #fff);
+      font-size: 22px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px #0004;
+    }
+    .side-scroll-controls button:hover { filter: brightness(1.18); }
+    @media (max-width: 700px) {
+      .side-scroll-controls { right: 7px; }
+      .side-scroll-controls button { width: 40px; height: 40px; }
+    }
+
+</style>
+</head>
+<body>
+<section class="auth-screen" id="authScreen">
+  <div class="auth-card">
+    <div class="brand">GENERATOR <span>GRID</span></div>
+    <div class="auth-heading">Player account</div>
+    <div id="authStatus" class="auth-status">Log in or create an account to play.</div>
+    <div class="auth-form">
+      <input id="usernameInput" type="text" placeholder="Username" autocomplete="username" aria-label="Username" />
+      <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" aria-label="Password" />
+      <div class="auth-actions">
+        <button id="loginBtn" type="button">Log in</button>
+        <button id="signupBtn" type="button" class="secondary">Create account</button>
+      </div>
+    </div>
+    <div class="auth-hint">Username capitalization matters.</div>
+  </div>
+</section>
+<div class="game-shell" id="gameShell" hidden>
+<header>
+  <div class="brand">GENERATOR <span>GRID</span></div>
+  <div class="stats">
+    <div class="stat"><small>Money</small><strong id="money">$10</strong></div>
+    <div class="stat"><small>Income / second</small><strong id="income">$0</strong></div>
+    <div class="stat"><small>Generators placed</small><strong id="placed">0 / 25</strong></div>
+  </div>
+  <div class="game-account"><span id="gamePlayerName" class="auth-status"></span><button id="logoutBtn" type="button">Log out</button></div>
+</header>
+<main>
+  <div class="layout">
+    <section class="panel">
+      <div class="panel-head">
+        <div><h2>Generator Slots</h2><div class="muted small">Buy generators, then place them in an empty slot.</div></div>
+      </div>
+      <div class="body">
+        <div class="slot-grid" id="slots"></div>
+        <p class="tip">Click an empty slot to place your selected generator. Click a generator to inspect or remove it.</p>
+        <div class="note" id="notice"></div>
+      </div>
+    </section>
+    <div class="side">
+      <section class="panel">
+        <div class="panel-head">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <h2>Generator Shop</h2>
+            <span class="muted small" id="inventoryTotal">0 owned</span>
+          </div>
+          <button id="shopToggleBtn" type="button" aria-expanded="true">Hide shop</button>
+        </div>
+        <div class="body" id="shopBody" style="max-height:520px;overflow:auto;padding-right:4px;display:block;">
+          <div class="shop-list" id="shop"></div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><h2>Overview</h2></div>
+        <div class="body">
+          <div class="summary">
+            <div class="summary-card"><small>Total owned</small><strong id="owned">0</strong></div>
+            <div class="summary-card"><small>Lifetime earned</small><strong id="lifetime">$0</strong></div>
+          </div>
+          <div class="actions">
+            <button id="saveBtn">Save now</button>
+            <button id="resetBtn">Reset game</button>
+          </div>
+          <p class="muted small">Progress saves automatically in this browser on this device.</p>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><h2>Tier Colors</h2></div>
+        <div class="body"><div id="legend" class="legend"></div></div>
+      </section>
+    </div>
+  </div>
+  <div class="footer">GENERATOR GRID · A simple money-and-generators game</div>
+</main>
+<div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-actions" id="modalActions"></div></div></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+"use strict";
+
+/*
+  EASY CUSTOMIZATION:
+  Every tier is defined in GENERATOR_TIERS below.
+  Cost follows the 10x progression. Income follows the 3x progression.
+  To add a new tier later, add one object and give it a color.
+*/
+const GENERATOR_TIERS = [
+  { id:"basic",      name:"Basic",      color:"#666b72", accent:"#666b72" },
+  { id:"common",     name:"Common",     color:"#858b93", accent:"#858b93" },
+  { id:"uncommon",   name:"Uncommon",   color:"#bdc98a", accent:"#bdc98a" },
+  { id:"rare",       name:"Rare",       color:"#83b9df", accent:"#83b9df" },
+  { id:"epic",       name:"Epic",       color:"#50346f", accent:"#50346f" },
+  { id:"legendary",  name:"Legendary",  color:"#c5ad54", accent:"#c5ad54" },
+  { id:"mythical",   name:"Mythical",   color:"#a9434a", accent:"#a9434a" },
+  { id:"ethereal",   name:"Ethereal",   color:"#45484d", accent:"#45484d" },
+  { id:"ultimate",   name:"Ultimate",   color:"#e58a43", accent:"#e58a43" },
+  { id:"hyper",      name:"Hyper",      color:"#7c252d", accent:"#7c252d" },
+  { id:"supreme",    name:"Supreme",    color:"#244d83", accent:"#244d83" },
+  { id:"divine",     name:"Divine",     color:"#d98cae", accent:"#d98cae" },
+  { id:"godly",      name:"Godly",      color:"#e9fff9", accent:"#d6fffa" },
+  { id:"quantum",    name:"Quantum",    color:"#5f4bb6", accent:"#8f7ae6" },
+  { id:"plasma",     name:"Plasma",     color:"#ff6b3d", accent:"#ff8b5e" },
+  { id:"radiant",    name:"Radiant",    color:"#f4c95d", accent:"#f9e27d" },
+  { id:"surge",      name:"Surge",      color:"#2ed7ff", accent:"#6be7ff" },
+  { id:"chroma",     name:"Chroma",     color:"linear-gradient(135deg, #ff5ca8 0%, #8d7dff 22%, #4ad6ff 45%, #9cff6b 70%, #ffd166 100%)", accent:"#ff67d4" },
+  { id:"blossom",    name:"Blossom",    color:"#f6b26a", accent:"#f8d294" },
+  { id:"absolute",   name:"Absolute",   color:"#427c77", accent:"#7fe2d1" },
+  { id:"astral",     name:"Astral",     color:"#6aa9ff", accent:"#9ed0ff" }
+];
+const SLOT_COUNT = 25;
+const SAVE_KEY = "generatorGridSave_v1";
+const ACCOUNTS_KEY = "generatorGridAccounts_v1";
+const PLAYER_SAVE_PREFIX = "generatorGridSave_player_";
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBwY1KLhbjRU2mk05MQxDDqeyLwhElqexo",
+  authDomain: "generator-grid.firebaseapp.com",
+  projectId: "generator-grid",
+  storageBucket: "generator-grid.firebasestorage.app",
+  messagingSenderId: "323556243603",
+  appId: "1:323556243603:web:1972b4700eb2175167f566",
+  measurementId: "G-630WK6FZ9Z"
+};
+const $ = id => document.getElementById(id);
+let authRef = null;
+let dbRef = null;
+let currentUser = null;
+let currentUsername = null;
+let firebaseReady = false;
+
+function getAccountStore() {
+  try {
+    const raw = localStorage.getItem(ACCOUNTS_KEY);
+    const parsed = raw ? JSON.parse(raw) : {};
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveAccountStore(accounts) {
+  localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+}
+
+function getPlayerSaveKey(username) {
+  return PLAYER_SAVE_PREFIX + encodeURIComponent(username);
+}
+
+function usernameToAuthEmail(username) {
+  const usernameHex = Array.from(new TextEncoder().encode(username), byte => byte.toString(16).padStart(2, "0")).join("");
+  return "player-" + usernameHex + "@accounts.generator-grid.invalid";
+}
+
+function initFirebase() {
+  if (typeof window.firebase === "undefined") return false;
+  const ready = FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.projectId;
+  if (!ready) return false;
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+  authRef = firebase.auth();
+  dbRef = firebase.firestore();
+  firebaseReady = true;
+  return true;
+}
+
+function updateAuthUI() {
+  const statusEl = $("authStatus");
+  statusEl.style.color = "";
+  if (currentUser) {
+    $("gamePlayerName").textContent = "Player: " + currentUsername;
+  } else {
+    statusEl.textContent = "Log in or create an account to play.";
+    $("gamePlayerName").textContent = "";
+  }
+}
+
+function showAuthError(message) {
+  const statusEl = $("authStatus");
+  statusEl.textContent = message;
+  statusEl.style.color = "#ff8c8c";
+}
+
+async function enterGame(username, user) {
+  currentUser = user;
+  currentUsername = username;
+  state = freshState();
+  await load();
+  await save();
+  renderLegend();
+  render();
+  updateAuthUI();
+  $("authScreen").hidden = true;
+  $("gameShell").hidden = false;
+}
+
+async function loadUserSave() {
+  try {
+    if (!currentUser || !dbRef) {
+      state = freshState();
+      return;
+    }
+
+    const userDoc = dbRef.collection("users").doc(currentUser.uid);
+    const snapshot = await userDoc.get();
+    let data;
+    if (snapshot.exists) {
+      data = snapshot.data();
+    } else {
+      const localRaw = localStorage.getItem(getPlayerSaveKey(currentUsername));
+      if (localRaw) {
+        const localData = JSON.parse(localRaw);
+        if (localData && localData.state) {
+          await userDoc.set({ state: localData.state, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+          data = localData;
+        }
+      }
+    }
+    if (!data || typeof data !== "object") return;
+    state = { ...freshState(), ...data.state };
+    state.money = Math.max(0, Number(state.money) || 0);
+    state.lifetime = Math.max(0, Number(state.lifetime) || 0);
+    state.inventory = state.inventory && typeof state.inventory === "object" ? state.inventory : {};
+    for (const g of GENERATORS) state.inventory[g.id] = Math.max(0, Math.floor(Number(state.inventory[g.id]) || 0));
+    state.slots = Array.isArray(state.slots) ? state.slots.slice(0, SLOT_COUNT) : Array(SLOT_COUNT).fill(null);
+    while (state.slots.length < SLOT_COUNT) state.slots.push(null);
+    state.slots = state.slots.map(slot => slot && getGenerator(slot.id) ? { id: slot.id } : null);
+    if (!getGenerator(state.selected) || available(state.selected) <= 0) state.selected = null;
+  } catch (e) {
+    state = freshState();
+  }
+}
+
+async function saveUserState(silent = true) {
+  try {
+    if (!currentUser || !dbRef) return;
+    await dbRef.collection("users").doc(currentUser.uid).set({
+      state,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    if (!silent) notify("Saved to your account.");
+  } catch (e) {
+    if (!silent) notify("Cloud save failed. Check your Firestore rules and connection.", true);
+  }
+}
+
+// Standard progression: each next tier costs 10x and earns 3x more.
+const GENERATORS = GENERATOR_TIERS.map((tier, index) => ({
+  ...tier,
+  index,
+  cost: 10 * Math.pow(10, index),
+  income: Math.pow(3, index)
+}));
+
+const freshState = () => ({
+  money: 10,
+  lifetime: 0,
+  inventory: {},
+  slots: Array(SLOT_COUNT).fill(null),
+  selected: null
+});
+let state = freshState();
+let noticeTimer = null;
+
+function number(n) {
+  if (!Number.isFinite(n)) return "∞";
+  if (Math.abs(n) < 1000) return n.toLocaleString("en-CA", { maximumFractionDigits: 2 });
+  const units = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Ud"];
+  let unit = 0;
+  while (Math.abs(n) >= 1000 && unit < units.length - 1) { n /= 1000; unit++; }
+  return n.toLocaleString("en-CA", { maximumFractionDigits: 2 }) + units[unit];
+}
+function cash(n) { return "$" + number(n); }
+function getGenerator(id) { return GENERATORS.find(g => g.id === id); }
+function owned(id) { return state.inventory[id] || 0; }
+function placed(id) { return state.slots.filter(x => x && x.id === id).length; }
+function available(id) { return Math.max(0, owned(id) - placed(id)); }
+function totalOwned() { return Object.values(state.inventory).reduce((a, b) => a + b, 0); }
+function totalIncome() { return state.slots.reduce((sum, slot) => sum + (slot ? getGenerator(slot.id).income : 0), 0); }
+
+function notify(message, error = false) {
+  $("notice").textContent = message;
+  $("notice").style.color = error ? "#ff8c8c" : "var(--green)";
+  clearTimeout(noticeTimer);
+  noticeTimer = setTimeout(() => $("notice").textContent = "", 3500);
+}
+function save(silent = true) {
+  return saveUserState(silent);
+}
+async function load() {
+  await loadUserSave();
+}
+function makeButton(text, onClick, disabled = false, className = "") {
+  const button = document.createElement("button");
+  button.textContent = text;
+  button.disabled = disabled;
+  if (className) button.className = className;
+  button.addEventListener("click", onClick);
+  return button;
+}
+
+async function createAccountWithUsername() {
+  const username = $("usernameInput").value.trim();
+  const password = $("passwordInput").value;
+  if (!username || !password || !authRef || !dbRef) {
+    showAuthError(!authRef || !dbRef ? "Firebase is not available. Check your connection." : "Enter a username and password.");
+    return;
+  }
+  if (!/^[A-Za-z0-9_]{2,20}$/.test(username)) {
+    showAuthError("Use 2 to 20 letters, numbers, or underscores for your username.");
+    return;
+  }
+  if (password.length < 6) {
+    showAuthError("Password must be at least 6 characters.");
+    return;
+  }
+  try {
+    await authRef.setPersistence(firebase.auth.Auth.Persistence.NONE);
+    const credential = await authRef.createUserWithEmailAndPassword(usernameToAuthEmail(username), password);
+    const accounts = getAccountStore();
+    delete accounts[username];
+    saveAccountStore(accounts);
+    await enterGame(username, credential.user);
+    notify("Player account created for " + username + ".");
+  } catch (e) {
+    showAuthError(e.code === "auth/email-already-in-use" ? "That username already exists." : e.message || "Could not create account.");
+  }
+}
+
+async function loginWithUsername() {
+  const username = $("usernameInput").value.trim();
+  const password = $("passwordInput").value;
+  if (!username || !password || !authRef || !dbRef) {
+    showAuthError(!authRef || !dbRef ? "Firebase is not available. Check your connection." : "Enter your username and password.");
+    return;
+  }
+  if (!/^[A-Za-z0-9_]{2,20}$/.test(username)) {
+    showAuthError("Enter your username with the same capitalization you used before.");
+    return;
+  }
+  try {
+    await authRef.setPersistence(firebase.auth.Auth.Persistence.NONE);
+    const credential = await authRef.signInWithEmailAndPassword(usernameToAuthEmail(username), password);
+    const accounts = getAccountStore();
+    delete accounts[username];
+    saveAccountStore(accounts);
+    await enterGame(username, credential.user);
+    notify("Welcome back, " + username + ".");
+  } catch (e) {
+    showAuthError(e.code === "auth/invalid-credential" || e.code === "auth/user-not-found" || e.code === "auth/wrong-password"
+      ? "Username or password is incorrect."
+      : e.message || "Login failed.");
+  }
+}
+
+async function logoutUser() {
+  await save();
+  await authRef.signOut();
+  currentUser = null;
+  currentUsername = null;
+  state = freshState();
+  updateAuthUI();
+  $("gameShell").hidden = true;
+  $("authScreen").hidden = false;
+  $("usernameInput").value = "";
+  $("passwordInput").value = "";
+}
+function makeShopRow(generator, mode) {
+  const row = document.createElement("div");
+  row.className = "shop-item";
+  const swatch = document.createElement("div");
+  swatch.className = "swatch";
+  swatch.style.background = generator.color;
+  swatch.style.color = generator.id === "godly" ? "#427c77" : "#ffffff";
+  swatch.textContent = "◆";
+  const details = document.createElement("div");
+  const title = document.createElement("div");
+  title.className = "item-title";
+  title.textContent = generator.name;
+  title.style.color = generator.accent || generator.color;
+
+  const numbers = document.createElement("div");
+  numbers.className = "item-numbers";
+  const price = document.createElement("span");
+  price.className = "price";
+  price.textContent = cash(generator.cost);
+  const earn = document.createElement("span");
+  earn.textContent = cash(generator.income) + "/sec";
+  const unplacedText = document.createElement("span");
+  unplacedText.textContent = "Unplaced: " + available(generator.id);
+  numbers.append(price, earn, unplacedText);
+
+  const desc = document.createElement("div");
+  desc.className = "item-desc";
+  desc.textContent = mode === "shop" ? "Buy and place directly from this row." : "Available to place in a slot.";
+  details.append(title, desc, numbers);
+  row.append(swatch, details);
+
+  const actionGroup = document.createElement("div");
+  actionGroup.style.display = "flex";
+  actionGroup.style.gap = "6px";
+  actionGroup.style.flexDirection = "row";
+  actionGroup.style.alignItems = "stretch";
+
+  const buyButton = makeButton("Buy", () => buy(generator.id), state.money < generator.cost, "");
+  const sellButton = makeButton("Sell", () => sell(generator.id), owned(generator.id) <= 0, "");
+  const placeLabel = state.selected === generator.id ? "Placed" : "Place";
+  const placeButton = makeButton(placeLabel, () => selectGenerator(generator.id),
+    available(generator.id) <= 0 && state.selected !== generator.id,
+    state.selected === generator.id ? "active" : ""
+  );
+
+  actionGroup.append(buyButton, sellButton, placeButton);
+  row.append(actionGroup);
+  return row;
+}
+function renderStats() {
+  $("money").textContent = cash(state.money);
+  $("income").textContent = cash(totalIncome());
+  $("placed").textContent = placedTotal() + " / " + SLOT_COUNT;
+  $("owned").textContent = totalOwned();
+  $("inventoryTotal").textContent = totalOwned() + " owned";
+  $("lifetime").textContent = cash(state.lifetime);
+}
+function placedTotal() { return state.slots.filter(Boolean).length; }
+function renderSlots() {
+  const host = $("slots");
+  host.innerHTML = "";
+  state.slots.forEach((slot, index) => {
+    const button = document.createElement("button");
+    button.className = "slot " + (slot ? "filled" : "empty");
+    if (slot) {
+      const g = getGenerator(slot.id);
+      const accent = g.accent || g.color;
+      button.style.borderColor = accent;
+      button.style.background = "linear-gradient(145deg, " + (accent + "44") + ", #10151c)";
+      const tier = document.createElement("span");
+      tier.className = "tier";
+      tier.textContent = g.name.toUpperCase();
+      tier.style.color = accent;
+      const mark = document.createElement("span");
+      mark.className = "generator-mark";
+      mark.textContent = "◆";
+      mark.style.color = accent;
+      const name = document.createElement("span");
+      name.className = "gen-name";
+      name.textContent = "Generator";
+      const earn = document.createElement("span");
+      earn.className = "gen-income";
+      earn.textContent = cash(g.income) + "/s";
+      button.append(tier, mark, name, earn);
+      button.title = g.name + ": " + cash(g.income) + " per second. Click to inspect.";
+    } else {
+      const mark = document.createElement("span");
+      mark.className = "empty-mark";
+      mark.textContent = state.selected ? "+" : "·";
+      button.append(mark);
+      button.title = state.selected ? "Place " + getGenerator(state.selected).name : "Empty slot";
+    }
+    button.addEventListener("click", () => clickSlot(index));
+    host.appendChild(button);
+  });
+}
+function renderShop() {
+  const host = $("shop");
+  host.innerHTML = "";
+  GENERATORS.forEach(g => host.appendChild(makeShopRow(g, "shop")));
+}
+function renderInventory() {
+  const host = $("inventory");
+  if (host) host.innerHTML = "";
+}
+function render() { renderStats(); renderSlots(); renderShop(); renderInventory(); }
+function buy(id) {
+  const g = getGenerator(id);
+  if (!g || state.money < g.cost) return;
+  state.money -= g.cost;
+  state.inventory[id] = owned(id) + 1;
+  state.selected = id;
+  notify("Bought " + g.name + ". Click an empty slot to place it.");
+  render();
+  save();
+}
+function sell(id) {
+  const g = getGenerator(id);
+  if (!g || owned(id) <= 0) return;
+  const refund = Math.floor(g.cost * 0.7);
+  state.inventory[id] = owned(id) - 1;
+  state.money += refund;
+  if (state.selected === id && available(id) <= 0) state.selected = null;
+  notify(g.name + " sold for " + cash(refund) + ".");
+  render();
+  save();
+}
+function selectGenerator(id) {
+  if (available(id) <= 0 && state.selected !== id) return;
+  state.selected = state.selected === id ? null : id;
+  render();
+  save();
+}
+function clickSlot(index) {
+  const slot = state.slots[index];
+  if (slot) {
+    const g = getGenerator(slot.id);
+    showModal(g.name, "This generator earns " + cash(g.income) + " every second. Remove it to return it to your inventory. Its purchase price is not refunded.", [
+      ["Return to inventory", () => {
+        state.slots[index] = null;
+        state.selected = g.id;
+        closeModal();
+        notify(g.name + " returned to inventory.");
+        render(); save();
+      }],
+      ["Close", closeModal]
+    ]);
+    return;
+  }
+  if (!state.selected) {
+    notify("Buy a generator or select one in Inventory first.", true);
+    return;
+  }
+  if (available(state.selected) <= 0) {
+    notify("You don't have an available copy of that generator.", true);
+    state.selected = null; render(); return;
+  }
+  const g = getGenerator(state.selected);
+  state.slots[index] = { id: g.id };
+  notify(g.name + " placed in slot " + (index + 1) + ".");
+  if (available(g.id) <= 0) state.selected = null;
+  render();
+  save();
+}
+function showModal(title, text, actions) {
+  $("modalTitle").textContent = title;
+  $("modalText").textContent = text;
+  const host = $("modalActions");
+  host.innerHTML = "";
+  actions.forEach(([label, fn]) => host.append(makeButton(label, fn)));
+  $("modalBg").classList.add("open");
+}
+function closeModal() { $("modalBg").classList.remove("open"); }
+$("modalBg").addEventListener("click", e => { if (e.target === $("modalBg")) closeModal(); });
+$("loginBtn").addEventListener("click", loginWithUsername);
+$("signupBtn").addEventListener("click", createAccountWithUsername);
+$("logoutBtn").addEventListener("click", logoutUser);
+$("shopToggleBtn").addEventListener("click", () => {
+  const body = $("shopBody");
+  const btn = $("shopToggleBtn");
+  const open = body.style.display !== "none";
+  body.style.display = open ? "none" : "block";
+  btn.textContent = open ? "Show shop" : "Hide shop";
+  btn.setAttribute("aria-expanded", String(!open));
+});
+$("saveBtn").addEventListener("click", () => save(false));
+$("resetBtn").addEventListener("click", () => {
+  if (!confirm("Reset all money, inventory, and placed generators? This cannot be undone.")) return;
+  state = freshState();
+  render();
+  save();
+  notify("Game reset.");
+});
+window.addEventListener("beforeunload", () => save());
+
+function renderLegend() {
+  const host = $("legend");
+  host.innerHTML = "";
+  GENERATOR_TIERS.forEach(g => {
+    const item = document.createElement("div");
+    item.className = "legend-item";
+    const dot = document.createElement("span");
+    dot.className = "dot";
+    dot.style.background = g.color;
+    const label = document.createElement("span");
+    label.textContent = g.name;
+    item.append(dot, label);
+    host.appendChild(item);
+  });
+}
+const firebaseEnabled = initFirebase();
+if (firebaseEnabled) authRef.setPersistence(firebase.auth.Auth.Persistence.NONE).catch(() => {});
+updateAuthUI();
+setInterval(() => {
+  if (!currentUser) return;
+  const earned = totalIncome();
+  state.money += earned;
+  state.lifetime += earned;
+  renderStats();
+  renderShop();
+}, 1000);
+setInterval(() => {
+  if (currentUser) save(true);
+}, 60000);
+
+document.getElementById("scrollUpBtn")?.addEventListener("click", () => {
+  window.scrollBy({ top: -Math.max(350, window.innerHeight * 0.75), behavior: "smooth" });
+});
+document.getElementById("scrollDownBtn")?.addEventListener("click", () => {
+  window.scrollBy({ top: Math.max(350, window.innerHeight * 0.75), behavior: "smooth" });
+});
+
+</script>
+
+  <div class="side-scroll-controls" aria-label="Page scroll controls">
+    <button type="button" id="scrollUpBtn" title="Scroll up" aria-label="Scroll up">↑</button>
+    <button type="button" id="scrollDownBtn" title="Scroll down" aria-label="Scroll down">↓</button>
+  </div>
+</div>
+
+</body>
+</html>
