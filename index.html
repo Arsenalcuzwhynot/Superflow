@@ -46,10 +46,14 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .slot{min-width:0;aspect-ratio:1/1.08;padding:7px 3px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:#10151c;border:1px dashed #394452;border-radius:9px;text-align:center}
 .slot.empty:hover{border-color:#9aafc9;background:#18212d}
 .slot.filled{border-style:solid;background:#1d242d}
-.slot.filled.tier-shifting{animation:tier-hue-shift var(--shift-duration) ease-in-out infinite alternate}
 .slot.filled.effect-chroma,.slot.filled.effect-celestial,.slot.filled.effect-aether,
 .slot.filled.effect-nebulous,.slot.filled.effect-paradox,.slot.filled.effect-singularity{
   background-size:500% 100%;
+  animation:placed-gradient var(--effect-duration) ease-in-out infinite;
+}
+.slot.filled.effect-tier{
+  background-image:linear-gradient(125deg,var(--tier-color),var(--tier-accent),color-mix(in srgb,var(--tier-color) 45%,#10151c),var(--tier-accent));
+  background-size:300% 300%;
   animation:placed-gradient var(--effect-duration) ease-in-out infinite;
 }
 .slot.filled.effect-chroma{background-image:linear-gradient(100deg,#7444bd,#dc65d0,#499be1,#57c99b,#d8c64b,#7444bd)}
@@ -58,10 +62,6 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .slot.filled.effect-nebulous{background-image:linear-gradient(100deg,#101d55,#183f87,#14755e,#55a947,#101d55)}
 .slot.filled.effect-paradox{background-image:linear-gradient(100deg,#db2e2e,#f45a32,#ffd52e,#fff06b,#db2e2e)}
 .slot.filled.effect-singularity{background-image:linear-gradient(100deg,#ff4b00,#ff9a00,#ffdc22,#ff6500,#ff3c00)}
-@keyframes tier-hue-shift{
-  from{filter:hue-rotate(0deg) saturate(1)}
-  to{filter:hue-rotate(var(--shift-degrees)) saturate(1.3)}
-}
 @keyframes placed-gradient{
   0%{background-position:0% 50%;filter:saturate(1)}
   50%{filter:saturate(1.35)}
@@ -87,6 +87,9 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .chat-compose input{min-width:0}
 .chat-status{min-height:18px;margin-top:6px}
 .shop-list{display:grid;gap:8px}
+.multibuy-control{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.multibuy-control label{font-size:11px;font-weight:700}
+.multibuy-control input{width:88px;padding:7px 9px}
 .shop-item{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px;background:#11161d;border:1px solid var(--line);border-radius:9px}
 .swatch{width:40px;height:40px;border-radius:8px;border:1px solid #ffffff30;display:grid;place-items:center;font-size:22px;color:#fff}
 .item-title{font-size:12px;font-weight:800}
@@ -111,7 +114,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 @media(max-width:850px){.layout{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.side .panel:last-child{grid-column:1/-1}}
 @media(max-width:700px){.community-grid{grid-template-columns:1fr}}
 @media(max-width:560px){header{align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start;width:100%}.stat{flex:1;min-width:90px}main{padding:12px}.side{grid-template-columns:1fr}.side .panel:last-child{grid-column:auto}.slot-grid{gap:5px}.slot{border-radius:6px;padding:4px 1px}}
-@media(prefers-reduced-motion:reduce){.slot.filled.tier-shifting,.slot.filled.effect-chroma,.slot.filled.effect-celestial,.slot.filled.effect-aether,.slot.filled.effect-nebulous,.slot.filled.effect-paradox,.slot.filled.effect-singularity{animation:none}}
+@media(prefers-reduced-motion:reduce){.slot.filled.effect-tier,.slot.filled.effect-chroma,.slot.filled.effect-celestial,.slot.filled.effect-aether,.slot.filled.effect-nebulous,.slot.filled.effect-paradox,.slot.filled.effect-singularity{animation:none}}
 
     .side-scroll-controls {
       position: fixed;
@@ -175,6 +178,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
     <section class="panel">
       <div class="panel-head">
         <div><h2>Generator Slots</h2><div class="muted small">Buy generators, then place them in an empty slot.</div></div>
+        <button id="clearAllBtn" type="button" disabled>Clear all</button>
       </div>
       <div class="body">
         <div class="slot-grid" id="slots"></div>
@@ -192,6 +196,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
           <button id="shopToggleBtn" type="button" aria-expanded="true">Hide shop</button>
         </div>
         <div class="body" id="shopBody" style="max-height:520px;overflow:auto;padding-right:4px;display:block;">
+          <div class="multibuy-control">
+            <label for="multiBuyAmount">Multibuy quantity</label>
+            <input id="multiBuyAmount" type="number" min="1" step="1" value="1" inputmode="numeric">
+          </div>
           <div class="shop-list" id="shop"></div>
         </div>
       </section>
@@ -529,8 +537,7 @@ const GENERATORS = GENERATOR_TIERS.map((tier, index) => ({
   index,
   cost: 10 * Math.pow(10, index),
   income: Math.pow(3, index),
-  shiftDegrees: index >= 8 ? Math.min(66, 10 + (index - 8) * 3) : 0,
-  shiftDuration: Math.max(2, 8 - Math.max(0, index - 8) * 0.28)
+  effectDuration: tier.effectDuration || (index > 7 ? Math.max(2, 8 - (index - 8) * 0.28) : 0)
 }));
 
 const freshState = () => ({
@@ -557,6 +564,15 @@ function generatorPrice(generator) { return currentUsername === FREE_GENERATOR_U
 function owned(id) { return state.inventory[id] || 0; }
 function placed(id) { return state.slots.filter(x => x && x.id === id).length; }
 function available(id) { return Math.max(0, owned(id) - placed(id)); }
+function getMultiBuyAmount() {
+  const amount = Number($("multiBuyAmount").value);
+  return Number.isSafeInteger(amount) && amount > 0 ? amount : null;
+}
+function canBuy(generator, quantity = getMultiBuyAmount()) {
+  return quantity !== null
+    && Number.isSafeInteger(owned(generator.id) + quantity)
+    && state.money >= generatorPrice(generator) * quantity;
+}
 function totalOwned() { return Object.values(state.inventory).reduce((a, b) => a + b, 0); }
 function totalIncome() { return state.slots.reduce((sum, slot) => sum + (slot ? getGenerator(slot.id).income : 0), 0); }
 
@@ -687,7 +703,14 @@ function makeShopRow(generator, mode) {
   actionGroup.style.flexDirection = "row";
   actionGroup.style.alignItems = "stretch";
 
-  const buyButton = makeButton("Buy", () => buy(generator.id), state.money < generatorPrice(generator), "");
+  const quantity = getMultiBuyAmount();
+  const buyButton = makeButton(
+    quantity === null || quantity === 1 ? "Buy" : "Buy ×" + quantity,
+    () => buy(generator.id, getMultiBuyAmount()),
+    !canBuy(generator, quantity),
+    "buy-button"
+  );
+  buyButton.dataset.generatorId = generator.id;
   const sellButton = makeButton("Sell", () => sell(generator.id), owned(generator.id) <= 0, "");
   const placeLabel = state.selected === generator.id ? "Placed" : "Place";
   const placeButton = makeButton(placeLabel, () => selectGenerator(generator.id),
@@ -711,6 +734,7 @@ function placedTotal() { return state.slots.filter(Boolean).length; }
 function renderSlots() {
   const host = $("slots");
   host.innerHTML = "";
+  $("clearAllBtn").disabled = placedTotal() === 0;
   state.slots.forEach((slot, index) => {
     const button = document.createElement("button");
     button.className = "slot " + (slot ? "filled" : "empty");
@@ -721,11 +745,11 @@ function renderSlots() {
       if (g.effect) {
         button.classList.add("effect-" + g.effect);
         button.style.setProperty("--effect-duration", g.effectDuration + "s");
-      } else if (g.shiftDegrees) {
-        button.classList.add("tier-shifting");
-        button.style.setProperty("--shift-degrees", g.shiftDegrees + "deg");
-        button.style.setProperty("--shift-duration", g.shiftDuration + "s");
-        button.style.background = "linear-gradient(145deg, " + (accent + "44") + ", #10151c)";
+      } else if (g.index > 7) {
+        button.classList.add("effect-tier");
+        button.style.setProperty("--tier-color", g.color);
+        button.style.setProperty("--tier-accent", accent);
+        button.style.setProperty("--effect-duration", g.effectDuration + "s");
       } else {
         button.style.background = "linear-gradient(145deg, " + (accent + "44") + ", #10151c)";
       }
@@ -761,19 +785,26 @@ function renderShop() {
   host.innerHTML = "";
   GENERATORS.forEach(g => host.appendChild(makeShopRow(g, "shop")));
 }
+function updateShopBuyButtons() {
+  const quantity = getMultiBuyAmount();
+  document.querySelectorAll(".buy-button").forEach(button => {
+    const generator = getGenerator(button.dataset.generatorId);
+    button.textContent = quantity === null || quantity === 1 ? "Buy" : "Buy ×" + quantity;
+    button.disabled = !generator || !canBuy(generator, quantity);
+  });
+}
 function renderInventory() {
   const host = $("inventory");
   if (host) host.innerHTML = "";
 }
 function render() { renderStats(); renderSlots(); renderShop(); renderInventory(); }
-function buy(id) {
+function buy(id, quantity = 1) {
   const g = getGenerator(id);
-  const price = g ? generatorPrice(g) : 0;
-  if (!g || state.money < price) return;
-  state.money -= price;
-  state.inventory[id] = owned(id) + 1;
+  if (!g || !Number.isSafeInteger(quantity) || quantity < 1 || !canBuy(g, quantity)) return;
+  state.money -= generatorPrice(g) * quantity;
+  state.inventory[id] = owned(id) + quantity;
   state.selected = id;
-  notify("Bought " + g.name + ". Click an empty slot to place it.");
+  notify("Bought " + quantity + " " + g.name + (quantity === 1 ? "" : " generators") + ". Click an empty slot to place it.");
   render();
   save();
 }
@@ -793,6 +824,14 @@ function selectGenerator(id) {
   state.selected = state.selected === id ? null : id;
   render();
   save();
+}
+function clearAllGenerators() {
+  const returned = placedTotal();
+  if (returned === 0) return;
+  state.slots = Array(SLOT_COUNT).fill(null);
+  render();
+  save();
+  notify(returned + " generator" + (returned === 1 ? "" : "s") + " returned to your inventory.");
 }
 function clickSlot(index) {
   const slot = state.slots[index];
@@ -848,6 +887,8 @@ $("shopToggleBtn").addEventListener("click", () => {
   btn.setAttribute("aria-expanded", String(!open));
 });
 $("saveBtn").addEventListener("click", () => save(false));
+$("multiBuyAmount").addEventListener("input", updateShopBuyButtons);
+$("clearAllBtn").addEventListener("click", clearAllGenerators);
 $("resetBtn").addEventListener("click", () => {
   if (!confirm("Reset all money, inventory, and placed generators? This cannot be undone.")) return;
   state = freshState();
