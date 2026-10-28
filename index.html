@@ -11,11 +11,6 @@
   --text:#edf1f5;--muted:#9ca8b6;--green:#7ad7a6;--gold:#f0cb75;
   color-scheme:dark;
 }
-:root[data-theme="light"]{
-  --bg:#f3f7f4;--panel:#ffffff;--panel2:#e8f0eb;--line:#d5e0d9;
-  --text:#26332c;--muted:#65746b;--green:#26734c;--gold:#916717;
-  color-scheme:light;
-}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
 button{font:inherit;color:inherit;cursor:pointer;background:#28313e;border:1px solid #3a4655;border-radius:8px;padding:9px 12px}
@@ -35,7 +30,6 @@ input::placeholder{color:#8a98ab}
 .auth-actions button{min-height:44px}
 .auth-card .secondary{background:#1b2734}
 .auth-hint{margin-top:14px;color:var(--muted);font-size:11px}
-.theme-toggle{white-space:nowrap;font-size:12px;padding:8px 10px}
 .game-shell{min-height:100vh}
 .game-account{display:flex;align-items:center;gap:10px}
 .game-account .auth-status{margin:0}
@@ -100,6 +94,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .slot .generator-mark{position:relative;z-index:1;font-size:clamp(9px,calc(32px * var(--slot-scale,1)),32px);line-height:1}
 .slot .gen-name{font-size:clamp(5px,calc(11px * var(--slot-scale,1)),11px);font-weight:700;overflow-wrap:anywhere}
 .slot .gen-income{font-size:clamp(5px,calc(10px * var(--slot-scale,1)),10px);color:#dce4ee}
+.slot[data-generator-id="common"] .tier,.slot[data-generator-id="common"] .gen-name,.slot[data-generator-id="common"] .gen-income{color:#46514d!important}
+.slot[data-generator-id="common"] .generator-mark{color:#626f69!important}
+.slot[data-generator-id="ethereal"] .tier,.slot[data-generator-id="ethereal"] .gen-name,.slot[data-generator-id="ethereal"] .gen-income{color:#e8f4f1!important}
+.slot[data-generator-id="ethereal"] .generator-mark{color:#d8fff6!important}
 .empty-mark{font-size:25px;color:#4a596a}
 .tip{margin:13px 2px 0;color:var(--muted);font-size:11px;text-align:center}
 .community-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;margin-top:16px}
@@ -108,10 +106,6 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .leaderboard-rank{color:var(--gold);font-weight:800}
 .leaderboard-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .leaderboard-cash{font-variant-numeric:tabular-nums;color:var(--green)}
-.leaderboard-tabs{display:flex;gap:8px;margin-bottom:12px;border-bottom:1px solid var(--line)}
-.leaderboard-tab{background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;padding:8px 10px;color:var(--muted)}
-.leaderboard-tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--green)}
-.leaderboard-score{font-variant-numeric:tabular-nums;color:var(--gold);white-space:nowrap}
 .chat-messages{height:320px;overflow:auto;display:flex;flex-direction:column-reverse;gap:8px;padding:10px;background:#10151c;border:1px solid var(--line);border-radius:8px}
 .chat-message{overflow-wrap:anywhere;font-size:12px}
 .chat-meta{color:var(--muted);font-size:10px;margin-right:6px}
@@ -149,71 +143,11 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .modal-bg.open{display:flex}.modal{width:min(390px,100%);background:#1a222d;border:1px solid #3a4655;border-radius:12px;padding:18px}
 .modal h2{margin-bottom:8px}.modal p{font-size:12px;color:var(--muted)}
 .modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-:root[data-theme="light"] button{background:#e8efea;border-color:#cbd8d0}
-:root[data-theme="light"] input{background:#fff;border-color:#c5d2c9;color:var(--text)}
-:root[data-theme="light"] input::placeholder{color:#7d8b82}
-:root[data-theme="light"] .auth-screen{background:radial-gradient(ellipse at 18% 82%,#dcebe1 0,transparent 42%),radial-gradient(ellipse at 83% 18%,#eee5d5 0,transparent 38%),var(--bg)}
-:root[data-theme="light"] .auth-card{background:#fff;box-shadow:0 24px 80px #2644341a}
-:root[data-theme="light"] header{background:#e8f0eb}
-:root[data-theme="light"] .auth-card .secondary{background:#eef3ef}
-:root[data-theme="light"] .slot.empty{background:#f4f7f5;border-color:#c7d4cb}
-:root[data-theme="light"] .slot.empty:hover{background:#e7f0e9;border-color:#7ca88b}
-:root[data-theme="light"] .slot.filled{background-color:#fff;background-image:linear-gradient(145deg,color-mix(in srgb,var(--tier-color) 80%,#fff),color-mix(in srgb,var(--tier-color) 66%,#fff))}
-:root[data-theme="light"] .slot.filled::before{opacity:.23}
-:root[data-theme="light"] .slot[data-generator-id="ethereal"]{background-color:#090b0e;background-image:linear-gradient(145deg,#090b0e,#121518)}
-:root[data-theme="light"] .slot[data-generator-id="ethereal"]::before{display:none}
-:root[data-theme="light"] .slot.filled:not([data-generator-id="common"]):not([data-generator-id="ethereal"]){border-color:color-mix(in srgb,var(--tier-color) 70%,#34473d)!important}
-:root[data-theme="light"] .slot .generator-mark{filter:brightness(.72) saturate(1.08)}
-:root[data-theme="light"] .slot .tier,:root[data-theme="light"] .slot .gen-name,:root[data-theme="light"] .slot .gen-income{color:#26332c!important}
-:root[data-theme="light"] .slot[data-generator-id="ethereal"] .tier,:root[data-theme="light"] .slot[data-generator-id="ethereal"] .gen-name,:root[data-theme="light"] .slot[data-generator-id="ethereal"] .gen-income{color:#f2f5f8!important}
-:root[data-theme="light"] .slot[data-generator-id="common"] .generator-mark{color:#717a78!important}
-:root[data-theme="light"] .slot[data-generator-id="ethereal"] .generator-mark{color:#d8fff6!important}
-:root[data-theme="light"] .slot[data-generator-id="common"]{border-color:#b8c2bc!important}
-:root:not([data-theme="light"]) .slot[data-generator-id="common"] .tier,:root:not([data-theme="light"]) .slot[data-generator-id="common"] .gen-name,:root:not([data-theme="light"]) .slot[data-generator-id="common"] .gen-income{color:#46514d!important}
-:root:not([data-theme="light"]) .slot[data-generator-id="common"] .generator-mark{color:#626f69!important}
-:root:not([data-theme="light"]) .slot[data-generator-id="ethereal"] .tier,:root:not([data-theme="light"]) .slot[data-generator-id="ethereal"] .gen-name,:root:not([data-theme="light"]) .slot[data-generator-id="ethereal"] .gen-income{color:#e8f4f1!important}
-:root[data-theme="light"] .leaderboard-row,
-:root[data-theme="light"] .chat-messages,
-:root[data-theme="light"] .rebirth-panel,
-:root[data-theme="light"] .upgrade-points,
-:root[data-theme="light"] .upgrade-card,
-:root[data-theme="light"] .shop-item{background:#f5f8f6;border-color:var(--line)}
-:root[data-theme="light"] .shop-tabs{background:var(--panel)}
-:root[data-theme="light"] .modal{background:#fff;border-color:var(--line)}
-:root[data-theme="light"] .empty-mark{color:#8a9a8f}
 @media(prefers-reduced-motion:reduce){.slot.filled::before,.generator-particles span{animation:none!important}}
 @media(max-width:700px){.community-grid{grid-template-columns:1fr}}
 @media(max-width:850px){.layout{grid-template-columns:minmax(0,1fr) minmax(280px,.9fr)}}
 @media(max-width:700px){.layout{grid-template-columns:1fr}}
 @media(max-width:560px){header{align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start;width:100%}.stat{flex:1;min-width:90px}main{padding:12px}}
-
-    .side-scroll-controls {
-      position: fixed;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .side-scroll-controls button {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      border: 1px solid var(--border, #555);
-      background: var(--panel, #242424);
-      color: var(--text, #fff);
-      font-size: 22px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 14px #0004;
-    }
-    .side-scroll-controls button:hover { filter: brightness(1.18); }
-    @media (max-width: 700px) {
-      .side-scroll-controls { right: 7px; }
-      .side-scroll-controls button { width: 40px; height: 40px; }
-    }
 
 </style>
 </head>
@@ -230,7 +164,6 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         </svg>
         <span class="brand-name">Superflow<span>!</span></span>
       </div>
-      <button class="theme-toggle" id="authThemeToggleBtn" type="button" aria-label="Switch to light mode">Light mode</button>
     </div>
     <div class="auth-heading">Welcome to the flow</div>
     <div id="authStatus" class="auth-status">Sign in or create an account to start playing.</div>
@@ -261,9 +194,9 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
     <div class="stat"><small>Income / second</small><strong id="income">$0</strong></div>
     <div class="stat"><small>Generators placed</small><strong id="placed">0 / 1</strong></div>
     <div class="stat"><small>Level · XP to next</small><strong><span id="level">1</span> · <span id="xpProgress">0 / 10 XP</span></strong></div>
-    <div class="stat"><small>Money multiplier</small><strong id="multiplier">×1</strong></div>
+    <div class="stat"><small>Money / XP multiplier</small><strong id="multiplier">×1</strong></div>
   </div>
-  <div class="game-account"><span id="gamePlayerName" class="auth-status"></span><button class="theme-toggle" id="gameThemeToggleBtn" type="button" aria-label="Switch to light mode">Light mode</button><button id="logoutBtn" type="button">Log out</button></div>
+  <div class="game-account"><span id="gamePlayerName" class="auth-status"></span><button id="logoutBtn" type="button">Log out</button></div>
 </header>
 <main>
   <div class="layout">
@@ -351,19 +284,11 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
   </div>
   <div class="community-grid">
     <section class="panel">
-      <div class="panel-head"><h2>Leaderboards</h2><span class="muted small">Top 100 players</span></div>
+      <div class="panel-head"><h2>Cash leaderboard</h2><span class="muted small">Top 100 players</span></div>
       <div class="body">
-        <div class="leaderboard-tabs" role="tablist" aria-label="Leaderboard types">
-          <button class="leaderboard-tab" id="cashLeaderboardTabBtn" type="button" role="tab" aria-selected="true" aria-controls="cashLeaderboardPanel">Cash</button>
-          <button class="leaderboard-tab" id="levelsLeaderboardTabBtn" type="button" role="tab" aria-selected="false" aria-controls="levelsLeaderboardPanel">Levels</button>
-        </div>
-        <div id="cashLeaderboardPanel" role="tabpanel" aria-labelledby="cashLeaderboardTabBtn">
+        <div id="cashLeaderboardPanel">
           <ol class="leaderboard-list" id="leaderboardList"></ol>
           <div class="muted small" id="leaderboardStatus">Sign in to see the leaderboard.</div>
-        </div>
-        <div id="levelsLeaderboardPanel" role="tabpanel" aria-labelledby="levelsLeaderboardTabBtn" hidden>
-          <ol class="leaderboard-list" id="levelsLeaderboardList"></ol>
-          <div class="muted small" id="levelsLeaderboardStatus">Sign in to see the leaderboard.</div>
         </div>
       </div>
     </section>
@@ -421,12 +346,16 @@ const GENERATOR_TIERS = [
   { id:"aether",     name:"Aether",     color:"#61b4e2", accent:"#f1a9e3", effect:"aether", cycleFrom:"#61b4e2", cycleTo:"#ff20d8", cycleDuration:1.65 },
   { id:"nebulous",   name:"Nebulous",   color:"#294a8d", accent:"#61c97b", effect:"fog", cycleFrom:"#172c62", cycleTo:"#174c32", cycleDuration:1.65 },
   { id:"paradox",    name:"Paradox",    color:"#e02c32", accent:"#ffbb42", effect:"paradox", cycleFrom:"#e02c32", cycleTo:"#101d62", cycleDuration:1.35 },
-  { id:"singularity",name:"Singularity",color:"#ed650d", accent:"#ffc431", effect:"singularity", cycleFrom:"#ed4a12", cycleTo:"#70500b", cycleDuration:1.05 }
+  { id:"singularity",name:"Singularity",color:"#ed650d", accent:"#ffc431", effect:"singularity", cycleFrom:"#ed4a12", cycleTo:"#70500b", cycleDuration:1.05 },
+  { id:"eventHorizon",name:"Event Horizon",color:"#21164d", accent:"#a886ff",effect:"stars",cycleFrom:"#090711",cycleTo:"#44206f",cycleDuration:1.8 },
+  { id:"hypernova", name:"Hypernova", color:"#b82762", accent:"#ffcf65",effect:"lightning",cycleFrom:"#69245e",cycleTo:"#fa743e",cycleDuration:1.25 },
+  { id:"eternity",  name:"Eternity",  color:"#c5b5e8", accent:"#fff3c4",effect:"glow",cycleFrom:"#8075bc",cycleTo:"#fff0b0",cycleDuration:2.1 },
+  { id:"omniverse",name:"Omniverse",color:"#44228c", accent:"#50e0c3",effect:"chroma",cycleFrom:"#30106b",cycleTo:"#109b91",cycleDuration:1.4 },
+  { id:"superflow",name:"Superflow",color:"#50c998", accent:"#9dfcff",effect:"aether",cycleFrom:"#177e83",cycleTo:"#b64cff",cycleDuration:1.1 }
 ];
 const SAVE_KEY = "generatorGridSave_v1";
 const ACCOUNTS_KEY = "generatorGridAccounts_v1";
 const PLAYER_SAVE_PREFIX = "generatorGridSave_player_";
-const THEME_STORAGE_KEY = "superflowTheme";
 const FREE_GENERATOR_USERNAME = "ArsenalSuperDev";
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyBwY1KLhbjRU2mk05MQxDDqeyLwhElqexo",
@@ -622,7 +551,6 @@ async function publishLeaderboardEntry() {
     }, { merge: true });
   } catch (e) {
     $("leaderboardStatus").textContent = "Leaderboard could not update. Check Firestore rules.";
-    $("levelsLeaderboardStatus").textContent = "Leaderboard could not update. Check Firestore rules.";
   }
 }
 
@@ -646,32 +574,6 @@ function renderLeaderboard(snapshot) {
     host.appendChild(row);
   });
   $("leaderboardStatus").textContent = snapshot.empty ? "No scores yet. Be the first on the board!" : "Showing the top " + snapshot.size + " players.";
-}
-
-function renderLevelsLeaderboard(snapshot) {
-  const host = $("levelsLeaderboardList");
-  host.innerHTML = "";
-  snapshot.docs.forEach((entry, index) => {
-    const data = entry.data();
-    const rebirths = Number.isSafeInteger(data.rebirths) && data.rebirths >= 0 ? data.rebirths : 0;
-    const level = Number.isSafeInteger(data.level) && data.level >= 1 ? data.level : 1;
-    const row = document.createElement("li");
-    row.className = "leaderboard-row";
-    const rank = document.createElement("span");
-    rank.className = "leaderboard-rank";
-    rank.textContent = "#" + (index + 1);
-    const username = document.createElement("span");
-    username.className = "leaderboard-name";
-    username.textContent = data.username || "Player";
-    const score = document.createElement("span");
-    score.className = "leaderboard-score";
-    score.textContent = (rebirths === 0 ? "0" : romanNumeral(rebirths)) + "-" + level;
-    row.append(rank, username, score);
-    host.appendChild(row);
-  });
-  $("levelsLeaderboardStatus").textContent = snapshot.empty
-    ? "No levels yet. Be the first on the board!"
-    : "Ranked by rebirths, level, then who reached that level first.";
 }
 
 function renderChat(snapshot) {
@@ -698,17 +600,9 @@ function startCommunityListeners() {
   communityUnsubscribers = [];
   if (!currentUser || !dbRef) return;
   const leaderboardQuery = dbRef.collection("leaderboard").orderBy("cashEarned", "desc").limit(100);
-  const levelsLeaderboardQuery = dbRef.collection("leaderboard")
-    .orderBy("rebirths", "desc")
-    .orderBy("level", "desc")
-    .orderBy("levelReachedAt", "asc")
-    .limit(100);
   const chatQuery = dbRef.collection("chatMessages").orderBy("createdAt", "desc").limit(50);
   communityUnsubscribers.push(leaderboardQuery.onSnapshot(renderLeaderboard, () => {
     $("leaderboardStatus").textContent = "Leaderboard unavailable. Check Firestore rules.";
-  }));
-  communityUnsubscribers.push(levelsLeaderboardQuery.onSnapshot(renderLevelsLeaderboard, () => {
-    $("levelsLeaderboardStatus").textContent = "Levels leaderboard unavailable. Deploy the leaderboard index and check Firestore rules.";
   }));
   communityUnsubscribers.push(chatQuery.onSnapshot(renderChat, () => {
     $("chatStatus").textContent = "Chat unavailable. Check Firestore rules.";
@@ -872,35 +766,6 @@ function notify(message, error = false) {
   clearTimeout(noticeTimer);
   noticeTimer = setTimeout(() => $("notice").textContent = "", 3500);
 }
-function setTheme(theme, persist = true) {
-  const selectedTheme = theme === "light" ? "light" : "dark";
-  document.documentElement.dataset.theme = selectedTheme;
-  const nextTheme = selectedTheme === "light" ? "dark" : "light";
-  const buttonText = nextTheme === "light" ? "Light mode" : "Dark mode";
-  ["authThemeToggleBtn", "gameThemeToggleBtn"].forEach(id => {
-    const button = $(id);
-    button.textContent = buttonText;
-    button.setAttribute("aria-label", "Switch to " + nextTheme + " mode");
-    button.title = "Switch to " + nextTheme + " mode";
-  });
-  document.querySelector('meta[name="theme-color"]').content = selectedTheme === "light" ? "#f3f7f4" : "#0d1015";
-  if (persist) {
-    try {
-      localStorage.setItem(THEME_STORAGE_KEY, selectedTheme);
-    } catch (error) {
-      console.warn("Could not save the Superflow theme preference.", error);
-    }
-  }
-}
-function loadTheme() {
-  try {
-    return localStorage.getItem(THEME_STORAGE_KEY) === "light" ? "light" : "dark";
-  } catch (error) {
-    console.warn("Could not load the saved Superflow theme preference.", error);
-    return "dark";
-  }
-}
-setTheme(loadTheme(), false);
 function save(silent = true) {
   return saveUserState(silent);
 }
@@ -1326,12 +1191,6 @@ $("modalBg").addEventListener("click", e => { if (e.target === $("modalBg")) clo
 $("loginBtn").addEventListener("click", loginWithUsername);
 $("signupBtn").addEventListener("click", createAccountWithUsername);
 $("logoutBtn").addEventListener("click", logoutUser);
-$("authThemeToggleBtn").addEventListener("click", () => {
-  setTheme(document.documentElement.dataset.theme === "light" ? "dark" : "light");
-});
-$("gameThemeToggleBtn").addEventListener("click", () => {
-  setTheme(document.documentElement.dataset.theme === "light" ? "dark" : "light");
-});
 $("chatForm").addEventListener("submit", sendChatMessage);
 function selectShopTab(tab) {
   ["shop", "rebirth", "upgrades"].forEach(name => {
@@ -1343,15 +1202,6 @@ function selectShopTab(tab) {
 $("shopTabBtn").addEventListener("click", () => selectShopTab("shop"));
 $("rebirthTabBtn").addEventListener("click", () => selectShopTab("rebirth"));
 $("upgradesTabBtn").addEventListener("click", () => selectShopTab("upgrades"));
-function selectLeaderboardTab(tab) {
-  const cashSelected = tab === "cash";
-  $("cashLeaderboardTabBtn").setAttribute("aria-selected", String(cashSelected));
-  $("levelsLeaderboardTabBtn").setAttribute("aria-selected", String(!cashSelected));
-  $("cashLeaderboardPanel").hidden = !cashSelected;
-  $("levelsLeaderboardPanel").hidden = cashSelected;
-}
-$("cashLeaderboardTabBtn").addEventListener("click", () => selectLeaderboardTab("cash"));
-$("levelsLeaderboardTabBtn").addEventListener("click", () => selectLeaderboardTab("levels"));
 $("saveBtn").addEventListener("click", () => save(false));
 $("multiBuyAmount").addEventListener("input", updateShopBuyButtons);
 $("clearAllBtn").addEventListener("click", clearAllGenerators);
@@ -1422,7 +1272,7 @@ function gameTick() {
   state.money += earned;
   state.lifetime += earned;
   const activeGenerators = state.slots.filter(Boolean).map(slot => getGenerator(slot.id));
-  state.xp += activeGenerators.reduce((total, generator) => total + generator.xpPerSecond, 0) * intervalSeconds;
+  state.xp += activeGenerators.reduce((total, generator) => total + generator.xpPerSecond, 0) * state.multiplier * intervalSeconds;
   let levelsGained = 0;
   while (state.xp >= xpRequiredForLevel(state.level)) {
     state.xp -= xpRequiredForLevel(state.level);
@@ -1465,20 +1315,7 @@ setInterval(() => {
   if (currentUser) publishLeaderboardEntry();
 }, 120000);
 
-document.getElementById("scrollUpBtn")?.addEventListener("click", () => {
-  window.scrollBy({ top: -Math.max(350, window.innerHeight * 0.75), behavior: "smooth" });
-});
-document.getElementById("scrollDownBtn")?.addEventListener("click", () => {
-  window.scrollBy({ top: Math.max(350, window.innerHeight * 0.75), behavior: "smooth" });
-});
-
 </script>
-
-  <div class="side-scroll-controls" aria-label="Page scroll controls">
-    <button type="button" id="scrollUpBtn" title="Scroll up" aria-label="Scroll up">↑</button>
-    <button type="button" id="scrollDownBtn" title="Scroll down" aria-label="Scroll down">↓</button>
-  </div>
-</div>
 
 </body>
 </html>
