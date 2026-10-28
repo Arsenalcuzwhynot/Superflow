@@ -16,6 +16,17 @@ body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-a
 button{font:inherit;color:inherit;cursor:pointer;background:#28313e;border:1px solid #3a4655;border-radius:8px;padding:9px 12px}
 button:hover:not(:disabled){filter:brightness(1.12)}
 button:disabled{opacity:.4;cursor:not-allowed}
+.buy-button{background:#185a3d;border-color:#2a9a64;color:#e5fff0}
+.sell-button{background:#612832;border-color:#a94350;color:#fff0f0}
+.place-button{background:#234c70;border-color:#3678ad}
+.give-button{background:#49346d;border-color:#7555a8}
+.crate-open-button{background:#45306d;border-color:#7d59b3}
+.claim-task-button{background:#745418;border-color:#d6a53c;color:#fff5d5}
+.rebirth-panel button:not(:disabled),.upgrade-card button:not(:disabled){background:#245c47;border-color:#3a9d73}
+.task-card.completed{border-color:#b78a34;background:linear-gradient(110deg,#3b2e18,#11161d 76%);box-shadow:0 0 18px #f0cb7530}
+.task-card.completed h3{color:#ffe49a}
+.task-card.completed .task-objective{color:#ffe6a9}
+.task-card.claimed{order:1;opacity:.72}
 input{font:inherit;background:#0f141b;border:1px solid #3b4a5d;border-radius:8px;padding:10px 12px;color:#edf1f5}
 input::placeholder{color:#8a98ab}
 [hidden]{display:none!important}
@@ -195,6 +206,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .summary-card strong{font-size:16px}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .note{min-height:19px;font-size:11px;color:var(--green);margin-top:10px}
+.note.task-notice{padding:9px 11px;border:1px solid #d6a53c;border-radius:8px;background:linear-gradient(100deg,#5b4218,#241d12);color:#fff0bd;font-size:12px;font-weight:800;box-shadow:0 0 16px #f0cb7540}
 .tutorial-guide{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0;padding:12px 14px;border:1px solid #6c5735;border-radius:10px;background:linear-gradient(110deg,#352919,#181b20 72%);box-shadow:0 0 20px #f4bf3a12}
 .tutorial-guide strong{display:block;color:#ffdc81;font-size:13px}
 .tutorial-guide span{display:block;color:var(--muted);font-size:11px;margin-top:3px}
@@ -386,7 +398,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
   </div>
   <div class="community-grid">
     <section class="panel">
-      <div class="panel-head"><h2>Cash leaderboard</h2><span class="muted small">Top 100 players</span></div>
+      <div class="panel-head"><h2>Generator cash leaderboard</h2><span class="muted small">Generator-produced cash · Top 100</span></div>
       <div class="body">
         <div id="cashLeaderboardPanel">
           <ol class="leaderboard-list" id="leaderboardList"></ol>
@@ -444,27 +456,14 @@ const GENERATOR_TIERS = [
   { id:"chroma",     name:"Chroma",     color:"#7547bd", accent:"#bd8cff", effect:"chroma", cycleDuration:2.2 },
   { id:"blossom",    name:"Blossom",    color:"#f39752", accent:"#ffb8d5", effect:"fog", cycleFrom:"#f39752", cycleTo:"#d62e9a", cycleDuration:1.4 },
   { id:"absolute",   name:"Absolute",   color:"#60a92d", accent:"#c5f176", effect:"squares", cycleDuration:1.05 },
-  { id:"astral",     name:"Astral",     color:"#28569b", accent:"#739de2", cycleDuration:1.05 },
-  { id:"celestial",  name:"Celestial",  color:"#e78434", accent:"#ffc177", effect:"dots", cycleDuration:1.05 },
-  { id:"aether",     name:"Aether",     color:"#61b4e2", accent:"#f1a9e3", effect:"aether", cycleFrom:"#61b4e2", cycleTo:"#ff20d8", cycleDuration:1.65 },
-  { id:"nebulous",   name:"Nebulous",   color:"#294a8d", accent:"#61c97b", effect:"fog", cycleFrom:"#172c62", cycleTo:"#174c32", cycleDuration:1.65 },
-  { id:"paradox",    name:"Paradox",    color:"#e02c32", accent:"#ffbb42", effect:"paradox", cycleFrom:"#e02c32", cycleTo:"#101d62", cycleDuration:1.35 },
-  { id:"singularity",name:"Singularity",color:"#ed650d", accent:"#ffc431", effect:"singularity", cycleFrom:"#ed4a12", cycleTo:"#70500b", cycleDuration:1.05 },
-  { id:"eventHorizon",name:"Extravagent",color:"#21164d", accent:"#a886ff",effect:"stars",cycleFrom:"#090711",cycleTo:"#44206f",cycleDuration:1.8 },
-  { id:"hypernova", name:"Hypernova", color:"#b82762", accent:"#ffcf65",effect:"lightning",cycleFrom:"#69245e",cycleTo:"#fa743e",cycleDuration:1.25 },
-  { id:"eternity",  name:"Eternity",  color:"#c5b5e8", accent:"#fff3c4",effect:"glow",cycleFrom:"#8075bc",cycleTo:"#fff0b0",cycleDuration:2.1 },
-  { id:"omniverse",name:"Omniverse",color:"#44228c", accent:"#50e0c3",effect:"chroma",cycleFrom:"#30106b",cycleTo:"#109b91",cycleDuration:1.4 },
-  { id:"superflow",name:"Arsenal",color:"#ff382f",accent:"#ffe59a",effect:"arsenal",cycleFrom:"#ff2738",cycleTo:"#ffe25b",cycleDuration:1.15 },
-  { id:"solstice",name:"Solstice",color:"#f6b900",accent:"#fff3a0",effect:"solstice",cycleFrom:"#ffab00",cycleTo:"#fff15c",cycleDuration:1.1 },
-  { id:"obsidian",name:"Obsidian",color:"#09070e",accent:"#c9a8ff",effect:"obsidian",cycleFrom:"#08060d",cycleTo:"#321448",cycleDuration:1.25 },
-  { id:"aurora",name:"Aurora",color:"#10b99c",accent:"#ffd2fb",effect:"aurora",cycleFrom:"#0e827b",cycleTo:"#ba36be",cycleDuration:1.2 },
-  { id:"cataclysm",name:"Cataclysm",color:"#d20a52",accent:"#ffc065",effect:"cataclysm",cycleFrom:"#7600a6",cycleTo:"#ff452d",cycleDuration:.72 },
-  { id:"tempest",name:"Tempest",color:"#087ab8",accent:"#b0fbff",effect:"tempest",cycleFrom:"#092b80",cycleTo:"#21e6d1",cycleDuration:.8 }
 ];
 const SAVE_KEY = "generatorGridSave_v1";
 const ACCOUNTS_KEY = "generatorGridAccounts_v1";
 const PLAYER_SAVE_PREFIX = "generatorGridSave_player_";
 const FREE_GENERATOR_USERNAME = "ArsenalSuperDev";
+const PERMANENT_GENERATOR_SPEED_MULTIPLIER = 2;
+const PERMANENT_CASH_MULTIPLIER = 2;
+const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyBwY1KLhbjRU2mk05MQxDDqeyLwhElqexo",
   authDomain: "generator-grid.firebaseapp.com",
@@ -480,6 +479,8 @@ let dbRef = null;
 let functionsRef = null;
 let currentUser = null;
 let currentUsername = null;
+let newAccountBoostUntil = 0;
+let newAccountBoostTimer = null;
 let hideFromLeaderboard = false;
 let leaderboardPrivacyLoaded = false;
 let firebaseReady = false;
@@ -572,7 +573,9 @@ async function enterGame(username, user, firstTime = false) {
     state.tutorialComplete = false;
     state.tutorialStep = 0;
     state.tutorialStartLevel = state.level;
+    state.newAccountBoostRemainingMs = NEW_ACCOUNT_BOOST_DURATION_MS;
   }
+  startNewAccountBoost();
   if (state.tutorialStarted && state.tutorialComplete) grantTutorialBasicCrate();
   selectShopTab(firstTime ? "rebirth" : "shop");
   configureGameTickTimer();
@@ -628,6 +631,9 @@ async function loadUserSave() {
     state.completedTaskObjectives = Array.isArray(savedState.completedTaskObjectives)
       ? [...new Set(savedState.completedTaskObjectives.filter(id => Object.prototype.hasOwnProperty.call(TASK_OBJECTIVES, id)))]
       : [];
+    state.announcedTaskCompletions = Array.isArray(savedState.announcedTaskCompletions)
+      ? [...new Set(savedState.announcedTaskCompletions.filter(id => TASKS.some(task => task.id === id)))]
+      : [];
     state.claimedTaskRewards = Array.isArray(savedState.claimedTaskRewards)
       ? [...new Set(savedState.claimedTaskRewards.filter(id => TASKS.some(task => task.id === id)))]
       : [];
@@ -635,7 +641,18 @@ async function loadUserSave() {
     state.taskGenerationsPlaced = Number.isSafeInteger(savedPlacements) ? Math.max(0, savedPlacements) : 0;
     const savedStars = Number(savedState.taskStarsCollected);
     state.taskStarsCollected = Number.isSafeInteger(savedStars) ? Math.max(0, savedStars) : 0;
+    const savedBonusStarEvents = Number(savedState.taskBonusStarEvents);
+    state.taskBonusStarEvents = Number.isSafeInteger(savedBonusStarEvents) ? Math.max(0, savedBonusStarEvents) : 0;
+    const savedRebirthPointsSpent = Number(savedState.taskRebirthPointsSpent);
+    state.taskRebirthPointsSpent = Number.isSafeInteger(savedRebirthPointsSpent) ? Math.max(0, savedRebirthPointsSpent) : 0;
+    state.taskSpentAllRebirthPoints = savedState.taskSpentAllRebirthPoints === true;
     state.tutorialCrateAwarded = savedState.tutorialCrateAwarded === true;
+    const savedGeneratorCash = Number(savedState.generatorCashEarned);
+    state.generatorCashEarned = Number.isFinite(savedGeneratorCash) ? Math.max(0, savedGeneratorCash) : 0;
+    const savedNewAccountBoost = Number(savedState.newAccountBoostRemainingMs);
+    state.newAccountBoostRemainingMs = Number.isFinite(savedNewAccountBoost)
+      ? Math.max(0, Math.min(NEW_ACCOUNT_BOOST_DURATION_MS, savedNewAccountBoost))
+      : 0;
     const savedLevelReachedAt = Number(savedState.levelReachedAt);
     state.levelReachedAt = Number.isSafeInteger(savedLevelReachedAt) && savedLevelReachedAt > 0
       ? savedLevelReachedAt
@@ -661,8 +678,9 @@ async function loadUserSave() {
     state.genSpeedBoostUntil = Number.isSafeInteger(savedBoostUntil) && savedBoostUntil > Date.now()
       ? savedBoostUntil
       : 0;
-    state.inventory = state.inventory && typeof state.inventory === "object" ? state.inventory : {};
-    for (const g of GENERATORS) state.inventory[g.id] = Math.max(0, Math.floor(Number(state.inventory[g.id]) || 0));
+    const savedInventory = state.inventory && typeof state.inventory === "object" ? state.inventory : {};
+    state.inventory = {};
+    for (const g of GENERATORS) state.inventory[g.id] = Math.max(0, Math.floor(Number(savedInventory[g.id]) || 0));
     const savedSlots = Array.isArray(savedState.slots) ? savedState.slots : [];
     const normalizedSlots = savedSlots.map(slot => slot && getGenerator(slot.id) ? { id: slot.id } : null);
     if (Number.isSafeInteger(savedState.level) && savedState.level >= 1) {
@@ -697,6 +715,42 @@ function renderLeaderboardPrivacySetting() {
   setting.disabled = !currentUser || !leaderboardPrivacyLoaded;
 }
 
+function syncNewAccountBoostRemaining() {
+  if (newAccountBoostUntil > 0) {
+    state.newAccountBoostRemainingMs = Math.max(0, newAccountBoostUntil - Date.now());
+    if (state.newAccountBoostRemainingMs === 0) newAccountBoostUntil = 0;
+  }
+}
+
+function startNewAccountBoost() {
+  if (newAccountBoostTimer !== null) clearTimeout(newAccountBoostTimer);
+  newAccountBoostTimer = null;
+  syncNewAccountBoostRemaining();
+  if (state.newAccountBoostRemainingMs <= 0) return;
+  newAccountBoostUntil = Date.now() + state.newAccountBoostRemainingMs;
+  const updateBoost = () => {
+    const hadBoost = newAccountBoostUntil > 0;
+    syncNewAccountBoostRemaining();
+    if (state.newAccountBoostRemainingMs === 0) {
+      newAccountBoostTimer = null;
+      if (hadBoost) {
+        save();
+        notify("Your new-player speed boost has ended.");
+      }
+      return;
+    }
+    newAccountBoostTimer = setTimeout(updateBoost, Math.min(1000, state.newAccountBoostRemainingMs));
+  };
+  newAccountBoostTimer = setTimeout(updateBoost, Math.min(1000, state.newAccountBoostRemainingMs));
+}
+
+function stopNewAccountBoost() {
+  syncNewAccountBoostRemaining();
+  if (newAccountBoostTimer !== null) clearTimeout(newAccountBoostTimer);
+  newAccountBoostTimer = null;
+  newAccountBoostUntil = 0;
+}
+
 async function updateLeaderboardPrivacy(event) {
   const setting = event.currentTarget;
   const hide = setting.checked;
@@ -726,6 +780,7 @@ async function updateLeaderboardPrivacy(event) {
 async function saveUserState(silent = true) {
   try {
     if (!currentUser || !dbRef) return;
+    syncNewAccountBoostRemaining();
     await dbRef.collection("users").doc(currentUser.uid).set({
       state,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -747,7 +802,7 @@ async function publishLeaderboardEntry() {
     await leaderboardEntry.set({
       uid: currentUser.uid,
       username: currentUsername,
-      cashEarned: Math.max(0, Number(state.lifetime) || 0),
+      cashEarned: Math.max(0, Number(state.generatorCashEarned) || 0),
       rebirths: Math.max(0, Number.isSafeInteger(state.rebirths) ? state.rebirths : 0),
       level: Math.max(1, Number.isSafeInteger(state.level) ? state.level : 1),
       levelReachedAt: Number.isSafeInteger(state.levelReachedAt) && state.levelReachedAt > 0
@@ -875,10 +930,15 @@ const TASK_OBJECTIVES = {
   allSlotsFilled: "Fill every unlocked generator slot",
   placedTen: "Place 10 generators in total",
   placedFifteen: "Place 15 generators in total",
+  placedTwenty: "Place 20 generators in total",
   collectedStar: "Collect a Star",
+  collectedTenStars: "Collect 10 Stars",
+  starProducedTwo: "Have a Star produce 2 more",
   levelSeventeen: "Reach level 17",
   levelTwenty: "Reach level 20",
-  rebirth: "Complete a rebirth"
+  rebirth: "Complete a rebirth",
+  rebirthTwo: "Reach rebirth 2",
+  spentAllRebirthPoints: "Spend all rebirth points"
 };
 const TASKS = [
   { id: "placed-three", title: "Have 3 generators placed", crate: "common", objectives: ["placedThree"] },
@@ -887,7 +947,12 @@ const TASKS = [
   { id: "placed-fifteen", title: "Place 15 generators", crate: "epic", objectives: ["placedFifteen"] },
   { id: "star-level-seventeen", title: "Collect a Star and reach level 17", crate: "epic", objectives: ["collectedStar", "levelSeventeen"] },
   { id: "level-twenty", title: "Reach level 20", crate: "legendary", objectives: ["levelTwenty"] },
-  { id: "first-rebirth", title: "Rebirth", crate: "legendary", objectives: ["rebirth"] }
+  { id: "first-rebirth", title: "Rebirth", crate: "legendary", objectives: ["rebirth"] },
+  { id: "spent-all-rebirth-points", title: "Spend all rebirth points", crate: "legendary", objectives: ["spentAllRebirthPoints"] },
+  { id: "placed-twenty", title: "Place 20 generators", crate: "legendary", objectives: ["placedTwenty"] },
+  { id: "rebirth-two", title: "Reach rebirth 2", crate: "legendary", objectives: ["rebirthTwo"] },
+  { id: "collect-ten-stars", title: "Collect 10 Stars", crate: "mythical", objectives: ["collectedTenStars"] },
+  { id: "star-spawns-two", title: "Have a Star produce 2 more", crate: "mythical", objectives: ["starProducedTwo"] }
 ];
 
 const CASH_ACHIEVEMENTS = [
@@ -933,12 +998,17 @@ function xpRequiredForLevel(level) {
 const freshState = () => ({
   money: 10,
   lifetime: 0,
+  generatorCashEarned: 0,
   inventory: {},
   crateInventory: {},
   completedTaskObjectives: [],
+  announcedTaskCompletions: [],
   claimedTaskRewards: [],
   taskGenerationsPlaced: 0,
   taskStarsCollected: 0,
+  taskBonusStarEvents: 0,
+  taskRebirthPointsSpent: 0,
+  taskSpentAllRebirthPoints: false,
   tutorialCrateAwarded: false,
   claimedAchievements: [],
   tutorialStarted: false,
@@ -953,6 +1023,7 @@ const freshState = () => ({
   xp: 0,
   multiplier: 1,
   genSpeedBoostUntil: 0,
+  newAccountBoostRemainingMs: 0,
   slots: [null],
   selected: null
 });
@@ -1024,8 +1095,12 @@ function claimedAchievementCount(category) {
 }
 function permanentNoteSpeedMultiplier() { return 1 + claimedAchievementCount("rebirth") * 0.01; }
 function temporaryGeneratorSpeedMultiplier() { return state.genSpeedBoostUntil > Date.now() ? 1.5 : 1; }
+function newAccountGeneratorSpeedMultiplier() {
+  return newAccountBoostUntil > Date.now() && state.newAccountBoostRemainingMs > 0 ? 2 : 1;
+}
 function generatorSpeedMultiplier() {
-  return permanentNoteSpeedMultiplier() * temporaryGeneratorSpeedMultiplier();
+  return PERMANENT_GENERATOR_SPEED_MULTIPLIER * permanentNoteSpeedMultiplier()
+    * temporaryGeneratorSpeedMultiplier() * newAccountGeneratorSpeedMultiplier();
 }
 function achievementReached(achievement) {
   return achievement.category === "cash"
@@ -1055,17 +1130,26 @@ function canBuy(generator, quantity = getMultiBuyAmount()) {
 }
 function totalOwned() { return Object.values(state.inventory).reduce((a, b) => a + b, 0); }
 function baseIncome() { return state.slots.reduce((sum, slot) => sum + (slot ? getGenerator(slot.id).income : 0), 0); }
-function totalIncome() { return baseIncome() * state.multiplier * generatorSpeedMultiplier() / tickIntervalSeconds(); }
+function totalIncome() {
+  return baseIncome() * state.multiplier * generatorSpeedMultiplier()
+    * PERMANENT_CASH_MULTIPLIER / tickIntervalSeconds();
+}
 function multiplierDropChance(generator) {
   const baseChance = Math.min(1, 0.0005 * (generator.index + 1) * Math.pow(0.95, state.multiplier - 1));
   return 1 - Math.pow(1 - baseChance, 1 + state.upgrades.multiChance * 0.25 + claimedAchievementCount("cash") * 0.01);
 }
 
-function notify(message, error = false) {
-  $("notice").textContent = message;
-  $("notice").style.color = error ? "#ff8c8c" : "var(--green)";
+function notify(message, error = false, taskComplete = false) {
+  const notice = $("notice");
+  notice.textContent = message;
+  notice.classList.toggle("task-notice", taskComplete);
+  notice.style.color = error ? "#ff8c8c" : taskComplete ? "" : "var(--green)";
   clearTimeout(noticeTimer);
-  noticeTimer = setTimeout(() => $("notice").textContent = "", 3500);
+  noticeTimer = setTimeout(() => {
+    notice.textContent = "";
+    notice.classList.remove("task-notice");
+    notice.style.color = "";
+  }, 5000);
 }
 function spawnStar(isCashReward = false, position = null) {
   const layer = $("starLayer");
@@ -1073,8 +1157,8 @@ function spawnStar(isCashReward = false, position = null) {
     star.remove();
     if (!currentUser) return;
     state.taskStarsCollected++;
-    const taskObjectivesChanged = updateTaskObjectives();
-    if (taskObjectivesChanged && !$("tasksTabPanel").hidden) renderTasks();
+    const taskReady = updateTaskObjectives(true);
+    if (!$("tasksTabPanel").hidden) renderTasks();
     if (isCashReward) {
       const reward = state.money * 0.01;
       state.money += reward;
@@ -1083,7 +1167,8 @@ function spawnStar(isCashReward = false, position = null) {
       renderStats();
       save();
       publishLeaderboardEntry();
-      notify("Cash star collected for " + cash(reward) + ".");
+      notify("Cash star collected for " + cash(reward) + "."
+        + (taskReady ? " Task complete! Check the Tasks tab." : ""), false, taskReady);
       return;
     }
     if (Math.random() < 0.2) {
@@ -1091,13 +1176,17 @@ function spawnStar(isCashReward = false, position = null) {
       const top = Number.parseFloat(star.style.top);
       spawnStar(true, { left: left - 40, top: top - 40 });
       spawnStar(true, { left: left + 40, top: top + 40 });
-      notify("Two cash stars appeared nearby!");
+      state.taskBonusStarEvents++;
+      const bonusTaskReady = updateTaskObjectives(true);
+      if (!$("tasksTabPanel").hidden) renderTasks();
+      if (!taskReady && !bonusTaskReady) notify("Two cash stars appeared nearby!");
       return;
     }
     state.genSpeedBoostUntil = Math.max(Date.now(), state.genSpeedBoostUntil) + 2 * 60 * 1000;
     renderStats();
     save();
-    notify("Generator speed increased to ×1.5 for 2 minutes!");
+    notify("Generator speed increased to ×1.5 for 2 minutes!"
+      + (taskReady ? " Task complete! Check the Tasks tab." : ""), false, taskReady);
   }, false, "bonus-star");
   star.type = "button";
   star.classList.toggle("cash-star", isCashReward);
@@ -1165,8 +1254,8 @@ async function createAccountWithUsername() {
     await enterGame(username, credential.user, true);
     const usernameRegistered = await usernameSync;
     notify(usernameRegistered
-      ? "Your Superflow account is ready, " + username + "."
-      : "Account created and signed in. Username registration is unavailable; generator gifting needs the updated Firebase functions deployed.");
+    ? "Your Superflow account is ready, " + username + ". Your 2× newcomer speed boost lasts for your first 15 minutes online."
+    : "Account created and signed in. Your 2× newcomer speed boost lasts for your first 15 minutes online. Username registration is unavailable; generator gifting needs the updated Firebase functions deployed.");
   } catch (e) {
     showAuthError(e.code === "auth/email-already-in-use" ? "That username already exists." : e.message || "Could not create account.");
   }
@@ -1213,6 +1302,7 @@ async function loginWithUsername() {
 async function logoutUser() {
   await save();
   await publishLeaderboardEntry();
+  stopNewAccountBoost();
   stopStarSpawns();
   communityUnsubscribers.forEach(unsubscribe => unsubscribe());
   communityUnsubscribers = [];
@@ -1260,6 +1350,7 @@ async function deletePlayerAccount() {
   }
 
   stopStarSpawns();
+  stopNewAccountBoost();
   communityUnsubscribers.forEach(unsubscribe => unsubscribe());
   communityUnsubscribers = [];
   try {
@@ -1305,7 +1396,8 @@ function makeShopRow(generator, mode) {
   price.className = "price";
   price.textContent = cash(generatorPrice(generator));
   const earn = document.createElement("span");
-  earn.textContent = cash(generator.income * state.multiplier * generatorSpeedMultiplier() / tickIntervalSeconds()) + "/sec";
+  earn.textContent = cash(generator.income * state.multiplier * generatorSpeedMultiplier()
+    * PERMANENT_CASH_MULTIPLIER / tickIntervalSeconds()) + "/sec";
   const xpEarn = document.createElement("span");
   xpEarn.textContent = number(generator.xpPerSecond) + " XP/sec";
   const unplacedText = document.createElement("span");
@@ -1329,11 +1421,11 @@ function makeShopRow(generator, mode) {
     "buy-button"
   );
   buyButton.dataset.generatorId = generator.id;
-  const sellButton = makeButton("Sell", () => sell(generator.id), available(generator.id) <= 0, "");
+  const sellButton = makeButton("Sell", () => sell(generator.id), available(generator.id) <= 0, "sell-button");
   const placeLabel = state.selected === generator.id ? "Equipped" : "Place";
   const placeButton = makeButton(placeLabel, () => selectGenerator(generator.id),
     available(generator.id) <= 0 && state.selected !== generator.id,
-    state.selected === generator.id ? "active" : ""
+    "place-button" + (state.selected === generator.id ? " active" : "")
   );
   const giveButton = makeButton("Give", () => giveGenerator(generator), available(generator.id) <= 0, "give-button");
 
@@ -1351,7 +1443,9 @@ function renderStats() {
   const boostRemaining = Math.max(0, state.genSpeedBoostUntil - Date.now());
   const boostSeconds = Math.ceil(boostRemaining / 1000);
   const boostClock = String(Math.floor(boostSeconds / 60)).padStart(2, "0") + ":" + String(boostSeconds % 60).padStart(2, "0");
-  $("generatorSpeed").textContent = "×" + number(generatorSpeedMultiplier())
+  $("generatorSpeed").textContent = "×" + number(
+    generatorSpeedMultiplier() / PERMANENT_GENERATOR_SPEED_MULTIPLIER
+  )
     + (boostRemaining > 0 ? " · " + boostClock : "");
   $("slotSummary").textContent = "Level " + rebirthLevelLabel() + " · " + state.slots.length
     + " slot" + (state.slots.length === 1 ? "" : "s") + " (" + permanentBonusSlots() + " permanent bonus)";
@@ -1463,14 +1557,19 @@ function taskObjectiveReached(id) {
     case "allSlotsFilled": return state.slots.length > 0 && placedTotal() === state.slots.length;
     case "placedTen": return state.taskGenerationsPlaced >= 10;
     case "placedFifteen": return state.taskGenerationsPlaced >= 15;
+    case "placedTwenty": return state.taskGenerationsPlaced >= 20;
     case "collectedStar": return state.taskStarsCollected >= 1;
+    case "collectedTenStars": return state.taskStarsCollected >= 10;
+    case "starProducedTwo": return state.taskBonusStarEvents >= 1;
     case "levelSeventeen": return state.level >= 17;
     case "levelTwenty": return state.level >= 20;
     case "rebirth": return state.rebirths >= 1;
+    case "rebirthTwo": return state.rebirths >= 2;
+    case "spentAllRebirthPoints": return state.taskSpentAllRebirthPoints;
     default: return false;
   }
 }
-function updateTaskObjectives() {
+function updateTaskObjectives(announce = false) {
   let changed = false;
   Object.keys(TASK_OBJECTIVES).forEach(id => {
     if (taskObjectiveReached(id) && !state.completedTaskObjectives.includes(id)) {
@@ -1478,8 +1577,21 @@ function updateTaskObjectives() {
       changed = true;
     }
   });
+  const readyTasks = TASKS.filter(task =>
+    !state.claimedTaskRewards.includes(task.id)
+    && task.objectives.every(id => state.completedTaskObjectives.includes(id))
+    && !state.announcedTaskCompletions.includes(task.id)
+  );
+  if (announce && readyTasks.length) {
+    readyTasks.forEach(task => state.announcedTaskCompletions.push(task.id));
+    const titles = readyTasks.map(task => task.title);
+    notify(titles.length === 1
+      ? "TASK COMPLETE: " + titles[0] + " — claim your crate in the Tasks tab!"
+      : titles.length + " TASKS COMPLETE — claim your crates in the Tasks tab!", false, true);
+    changed = true;
+  }
   if (changed) save();
-  return changed;
+  return announce && readyTasks.length > 0;
 }
 function taskObjectiveProgress(id) {
   switch (id) {
@@ -1488,10 +1600,18 @@ function taskObjectiveProgress(id) {
     case "allSlotsFilled": return placedTotal() + " / " + state.slots.length + " slots filled";
     case "placedTen": return state.taskGenerationsPlaced + " / 10 placements";
     case "placedFifteen": return state.taskGenerationsPlaced + " / 15 placements";
+    case "placedTwenty": return state.taskGenerationsPlaced + " / 20 placements";
     case "collectedStar": return Math.min(1, state.taskStarsCollected) + " / 1 star collected";
+    case "collectedTenStars": return Math.min(10, state.taskStarsCollected) + " / 10 stars collected";
+    case "starProducedTwo": return Math.min(1, state.taskBonusStarEvents) + " / 1 two-star result";
     case "levelSeventeen": return "Level " + state.level + " / 17";
     case "levelTwenty": return "Level " + state.level + " / 20";
     case "rebirth": return Math.min(1, state.rebirths) + " / 1 rebirth";
+    case "rebirthTwo": return "Rebirth " + state.rebirths + " / 2";
+    case "spentAllRebirthPoints":
+      return state.taskSpentAllRebirthPoints
+        ? "All rebirth points spent"
+        : state.taskRebirthPointsSpent + " points spent · " + state.rebirthPoints + " remaining";
     default: return "";
   }
 }
@@ -1524,7 +1644,7 @@ function renderTasks() {
       const name = document.createElement("strong");
       name.textContent = tier.name + " crate ×" + count;
       name.style.color = tier.accent || tier.color;
-      const openButton = makeButton("Open", () => openGeneratorCrate(tier.id));
+      const openButton = makeButton("Open", () => openGeneratorCrate(tier.id), false, "crate-open-button");
       row.append(name, openButton);
       cratesHost.append(row);
     });
@@ -1532,12 +1652,16 @@ function renderTasks() {
 
   const taskHost = $("taskList");
   taskHost.replaceChildren();
-  TASKS.forEach(task => {
+  const orderedTasks = [...TASKS].sort((a, b) =>
+    Number(state.claimedTaskRewards.includes(a.id)) - Number(state.claimedTaskRewards.includes(b.id))
+  );
+  orderedTasks.forEach(task => {
     const complete = task.objectives.every(id => state.completedTaskObjectives.includes(id));
     const claimed = state.claimedTaskRewards.includes(task.id);
     const card = document.createElement("section");
     card.className = "task-card";
     card.classList.toggle("completed", complete);
+    card.classList.toggle("claimed", claimed);
     const details = document.createElement("div");
     const title = document.createElement("h3");
     title.textContent = task.title;
@@ -1557,7 +1681,8 @@ function renderTasks() {
     const button = makeButton(
       claimed ? "Claimed" : complete ? "Claim crate" : "In progress",
       () => claimTaskReward(task.id),
-      claimed || !complete
+      claimed || !complete,
+      complete && !claimed ? "claim-task-button" : ""
     );
     card.append(details, button);
     taskHost.append(card);
@@ -1710,7 +1835,8 @@ function renderSlots() {
     }
     if (slot) {
       const g = getGenerator(slot.id);
-      const earnings = cash(g.income * state.multiplier * generatorSpeedMultiplier() / tickIntervalSeconds());
+      const earnings = cash(g.income * state.multiplier * generatorSpeedMultiplier()
+        * PERMANENT_CASH_MULTIPLIER / tickIntervalSeconds());
       button.querySelector(".gen-income").textContent = earnings + "/s";
       button.title = g.name + ": " + earnings + " per second. Click to inspect.";
     }
@@ -1720,7 +1846,8 @@ function renderSlotEarnings() {
   document.querySelectorAll("#slots .slot.filled").forEach(button => {
     const generator = getGenerator(button.dataset.generatorId);
     if (!generator) return;
-    const earnings = cash(generator.income * state.multiplier * generatorSpeedMultiplier() / tickIntervalSeconds());
+    const earnings = cash(generator.income * state.multiplier * generatorSpeedMultiplier()
+      * PERMANENT_CASH_MULTIPLIER / tickIntervalSeconds());
     button.querySelector(".gen-income").textContent = earnings + "/s";
     button.title = generator.name + ": " + earnings + " per second. Click to inspect.";
   });
@@ -1918,14 +2045,18 @@ function purchaseUpgrade(id) {
   const upgrade = UPGRADE_DEFINITIONS.find(item => item.id === id);
   if (!upgrade || state.upgrades[id] >= upgrade.max || state.rebirthPoints < 1) return;
   state.rebirthPoints--;
+  state.taskRebirthPointsSpent++;
+  if (state.rebirthPoints === 0) state.taskSpentAllRebirthPoints = true;
   state.upgrades[id]++;
   if (id === "genSlots") {
     state.slots.push(null, null);
   }
+  const taskReady = updateTaskObjectives(true);
   render();
   if (id === "dropSpeed") configureGameTickTimer();
   save();
-  notify(upgrade.title + " upgraded to " + state.upgrades[id] + "/" + upgrade.max + ".");
+  notify(upgrade.title + " upgraded to " + state.upgrades[id] + "/" + upgrade.max
+    + (taskReady ? ". Task complete! Check the Tasks tab." : "."), false, taskReady);
 }
 function rebirth() {
   const requiredLevel = rebirthLevelRequirement();
@@ -1940,17 +2071,20 @@ function rebirth() {
   state.xp = 0;
   state.slots = Array(1 + permanentBonusSlots()).fill(null);
   state.selected = null;
+  const taskReady = updateTaskObjectives(true);
   render();
   save();
   publishLeaderboardEntry();
-  notify("Rebirth complete! You are now " + rebirthLevelLabel() + ".");
+  notify("Rebirth complete! You are now " + rebirthLevelLabel()
+    + (taskReady ? ". Task complete! Check the Tasks tab." : "."), false, taskReady);
 }
 function clickSlot(index) {
   const slot = state.slots[index];
   if (slot) {
     const g = getGenerator(slot.id);
     const refund = Math.floor(generatorPrice(g) * 0.7);
-    showModal(g.name, "This generator earns " + cash(g.income * state.multiplier * generatorSpeedMultiplier() / tickIntervalSeconds())
+    showModal(g.name, "This generator earns " + cash(g.income * state.multiplier * generatorSpeedMultiplier()
+      * PERMANENT_CASH_MULTIPLIER / tickIntervalSeconds())
       + " per second. You can return it to inventory or sell it now for " + cash(refund) + ".", [
       ["Return to inventory", () => {
         state.slots[index] = null;
@@ -1978,9 +2112,10 @@ function clickSlot(index) {
   const g = getGenerator(state.selected);
   state.slots[index] = { id: g.id };
   state.taskGenerationsPlaced++;
-  updateTaskObjectives();
+  const taskReady = updateTaskObjectives(true);
   if (g.id === "basic") advanceTutorial("place-basic");
-  notify(g.name + " equipped in slot " + (index + 1) + ".");
+  notify(g.name + " equipped in slot " + (index + 1) + "."
+    + (taskReady ? " Task complete! Check the Tasks tab." : ""), false, taskReady);
   if (available(g.id) <= 0) state.selected = null;
   render();
   save();
@@ -1991,7 +2126,12 @@ function showModal(title, text, actions) {
   $("modalFields").replaceChildren();
   const host = $("modalActions");
   host.innerHTML = "";
-  actions.forEach(([label, fn]) => host.append(makeButton(label, fn)));
+  actions.forEach(([label, fn]) => host.append(makeButton(
+    label,
+    fn,
+    false,
+    label.startsWith("Sell") ? "sell-button" : ""
+  )));
   $("modalBg").classList.add("open");
 }
 function closeModal() { $("modalBg").classList.remove("open"); }
@@ -2078,13 +2218,19 @@ $("adminLevelBtn").addEventListener("click", () => {
 $("rebirthBtn").addEventListener("click", rebirth);
 $("resetBtn").addEventListener("click", () => {
   if (!confirm("Reset your money, lifetime earnings, inventory, level, rebirths, rebirth points, upgrades, achievements, XP, multiplier, speed boost, and placed generators? Crates and task progress are kept. This cannot be undone.")) return;
+  syncNewAccountBoostRemaining();
   const taskProgress = {
     crateInventory: state.crateInventory,
     completedTaskObjectives: state.completedTaskObjectives,
+    announcedTaskCompletions: state.announcedTaskCompletions,
     claimedTaskRewards: state.claimedTaskRewards,
     taskGenerationsPlaced: state.taskGenerationsPlaced,
     taskStarsCollected: state.taskStarsCollected,
-    tutorialCrateAwarded: state.tutorialCrateAwarded
+    taskBonusStarEvents: state.taskBonusStarEvents,
+    taskRebirthPointsSpent: state.taskRebirthPointsSpent,
+    taskSpentAllRebirthPoints: state.taskSpentAllRebirthPoints,
+    tutorialCrateAwarded: state.tutorialCrateAwarded,
+    newAccountBoostRemainingMs: state.newAccountBoostRemainingMs
   };
   state = { ...freshState(), ...taskProgress };
   currentSlotPage = 0;
@@ -2103,12 +2249,13 @@ function gameTick() {
   if (!currentUser) return;
   const intervalSeconds = tickIntervalSeconds();
   const earned = baseIncome() * state.multiplier * generatorSpeedMultiplier();
-  state.money += earned;
-  state.lifetime += earned;
+  const generatedCash = earned * PERMANENT_CASH_MULTIPLIER;
+  state.money += generatedCash;
+  state.lifetime += generatedCash;
+  state.generatorCashEarned += generatedCash;
   const activeGenerators = state.slots.filter(Boolean).map(slot => getGenerator(slot.id));
-  const temporarySpeed = temporaryGeneratorSpeedMultiplier();
   state.xp += activeGenerators.reduce((total, generator) => total + generator.xpPerSecond, 0)
-    * state.multiplier * temporarySpeed * intervalSeconds;
+    * state.multiplier * generatorSpeedMultiplier() * intervalSeconds;
   let levelsGained = 0;
   while (state.xp >= xpRequiredForLevel(state.level)) {
     state.xp -= xpRequiredForLevel(state.level);
@@ -2117,27 +2264,28 @@ function gameTick() {
     levelsGained++;
   }
   if (levelsGained > 0) state.levelReachedAt = Date.now();
-  const taskObjectivesChanged = updateTaskObjectives();
-  if ((taskObjectivesChanged || levelsGained > 0) && !$("tasksTabPanel").hidden) renderTasks();
+  const taskReady = updateTaskObjectives(true);
+  if ((taskReady || levelsGained > 0) && !$("tasksTabPanel").hidden) renderTasks();
   if (levelsGained > 0 && state.tutorialStep === 3 && state.level > state.tutorialStartLevel) {
     advanceTutorial("level-up");
   }
   let multiplierDrops = 0;
   activeGenerators.forEach(generator => {
-    const chanceThisTick = 1 - Math.pow(1 - multiplierDropChance(generator), intervalSeconds * temporarySpeed);
+    const chanceThisTick = 1 - Math.pow(1 - multiplierDropChance(generator), intervalSeconds * generatorSpeedMultiplier());
     if (Math.random() < chanceThisTick) multiplierDrops++;
   });
   state.multiplier = Math.round((state.multiplier + multiplierDrops * 0.01) * 100) / 100;
   if (levelsGained > 0) {
     renderSlots();
     const levelMessage = "Level up! You reached level " + state.level + " and gained " + levelsGained + " generator slot" + (levelsGained === 1 ? "" : "s") + ".";
-    notify(multiplierDrops > 0
-      ? levelMessage + " Multiplier increased to ×" + number(state.multiplier) + "!"
-      : levelMessage);
+    notify(levelMessage
+      + (multiplierDrops > 0 ? " Multiplier increased to ×" + number(state.multiplier) + "!" : "")
+      + (taskReady ? " Task complete! Check the Tasks tab." : ""), false, taskReady);
     save();
     publishLeaderboardEntry();
-  } else if (multiplierDrops > 0) {
-    notify("Multiplier increased to ×" + number(state.multiplier) + "!");
+  } else if (multiplierDrops > 0 || taskReady) {
+    notify((multiplierDrops > 0 ? "Multiplier increased to ×" + number(state.multiplier) + "!" : "")
+      + (taskReady ? " Task complete! Check the Tasks tab." : ""), false, taskReady);
     save();
   }
   renderStats();
