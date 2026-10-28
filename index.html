@@ -56,9 +56,13 @@ main{max-width:1250px;margin:auto;padding:20px}
 .panel-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
 h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .body{padding:15px}
-.slot-grid{display:grid;grid-template-columns:repeat(var(--slot-columns,1),minmax(0,1fr));gap:clamp(2px,calc(9px * var(--slot-scale,1)),9px);width:100%;margin-inline:auto}
+.slot-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(5,1fr);gap:clamp(2px,calc(9px * var(--slot-scale,1)),9px);width:100%;max-width:786px;margin-inline:auto}
 .slot{position:relative;isolation:isolate;min-width:0;aspect-ratio:1/1.08;padding:calc(7px * var(--slot-scale,1)) calc(3px * var(--slot-scale,1));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(5px * var(--slot-scale,1));background:#10151c;border:1px dashed #394452;border-radius:calc(9px * var(--slot-scale,1));text-align:center;overflow:hidden}
 .slot.empty:hover{border-color:#9aafc9;background:#18212d}
+.slot.locked{background:#0d1117;border-style:dotted;color:#586372;cursor:not-allowed}
+.slot-pagination{display:flex;align-items:center;justify-content:center;gap:12px;margin:12px auto 0}
+.slot-pagination button{padding:6px 10px}
+.slot-pagination span{min-width:78px;text-align:center}
 .slot.filled{border-style:solid;background-color:#17221e;background-image:linear-gradient(145deg,color-mix(in srgb,var(--tier-color) 78%,#10151c),color-mix(in srgb,var(--tier-color) 58%,#10151c))}
 .slot.filled::before{content:"";display:none;position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;opacity:.38;background:var(--cycle-from,var(--tier-color))}
 .slot.filled.color-cycling::before{display:block;animation:tier-color-cycle var(--cycle-duration,2.4s) ease-in-out infinite alternate}
@@ -125,7 +129,14 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .upgrade-card h3{margin:0;font-size:13px}
 .upgrade-card p{margin:0;color:var(--muted);font-size:11px}
 .upgrade-card .upgrade-footer{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.achievement-list{display:grid;gap:9px}
+.achievement-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:11px;background:#11161d;border:1px solid var(--line);border-radius:9px}
+.achievement-card h3{margin:0;font-size:12px}
+.achievement-card p{margin:4px 0 0;color:var(--muted);font-size:11px}
+.achievement-card.claimed{border-color:#476b59}
+.achievement-status{display:block;margin-top:4px;color:var(--muted);font-size:10px}
 .shop-item{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px;background:#11161d;border:1px solid var(--line);border-radius:9px}
+.shop-actions{display:flex;gap:6px;align-items:stretch}
 .swatch{width:40px;height:40px;border-radius:8px;border:1px solid #ffffff30;display:grid;place-items:center;font-size:22px;color:#fff}
 .item-title{font-size:12px;font-weight:800}
 .item-desc{font-size:10px;color:var(--muted);margin-top:2px}
@@ -143,11 +154,15 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .modal-bg.open{display:flex}.modal{width:min(390px,100%);background:#1a222d;border:1px solid #3a4655;border-radius:12px;padding:18px}
 .modal h2{margin-bottom:8px}.modal p{font-size:12px;color:var(--muted)}
 .modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-@media(prefers-reduced-motion:reduce){.slot.filled::before,.generator-particles span{animation:none!important}}
+.star-layer{position:fixed;inset:0;z-index:8;pointer-events:none;overflow:hidden}
+.bonus-star{position:absolute;pointer-events:auto;display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid #ffe69a;border-radius:50%;background:radial-gradient(circle,#fff6bd 0,#f6c84c 46%,#d18a1c 100%);color:#fff7c8;font-size:27px;line-height:1;text-shadow:0 1px 5px #704a00;box-shadow:0 0 18px #f4c34d99;animation:star-pulse 1.2s ease-in-out infinite alternate}
+.bonus-star.cash-star{width:38px;height:38px;font-size:23px}
+@keyframes star-pulse{to{transform:scale(1.13);box-shadow:0 0 25px #ffe58bcc}}
+@media(prefers-reduced-motion:reduce){.slot.filled::before,.generator-particles span,.bonus-star{animation:none!important}}
 @media(max-width:700px){.community-grid{grid-template-columns:1fr}}
 @media(max-width:850px){.layout{grid-template-columns:minmax(0,1fr) minmax(280px,.9fr)}}
 @media(max-width:700px){.layout{grid-template-columns:1fr}}
-@media(max-width:560px){header{align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start;width:100%}.stat{flex:1;min-width:90px}main{padding:12px}}
+@media(max-width:560px){header{align-items:flex-start;flex-direction:column;padding:12px}.stats{justify-content:flex-start;width:100%;gap:6px}.stat{flex:1 1 calc(50% - 6px);min-width:0;padding:6px 8px}.stat strong{font-size:14px}.game-account{width:100%;justify-content:space-between}main{padding:10px}.panel-head{padding:11px 12px}.body{padding:11px}.shop-item{grid-template-columns:34px minmax(0,1fr);gap:8px}.swatch{width:32px;height:32px;font-size:18px}.shop-actions{grid-column:1/-1}.shop-actions button{flex:1;min-height:40px;padding:7px 6px}.shop-content{max-height:min(520px,70vh)}.slot-grid{gap:3px}.slot-pagination{gap:6px}}
 
 </style>
 </head>
@@ -195,6 +210,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
     <div class="stat"><small>Generators placed</small><strong id="placed">0 / 1</strong></div>
     <div class="stat"><small>Level · XP to next</small><strong><span id="level">1</span> · <span id="xpProgress">0 / 10 XP</span></strong></div>
     <div class="stat"><small>Money / XP multiplier</small><strong id="multiplier">×1</strong></div>
+    <div class="stat"><small>Generator speed</small><strong id="generatorSpeed">×1</strong></div>
   </div>
   <div class="game-account"><span id="gamePlayerName" class="auth-status"></span><button id="logoutBtn" type="button">Log out</button></div>
 </header>
@@ -207,6 +223,11 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
       </div>
       <div class="body">
         <div class="slot-grid" id="slots"></div>
+        <div class="slot-pagination" id="slotPagination" hidden>
+          <button id="previousSlotPage" type="button" aria-label="Previous generator page">Previous</button>
+          <span class="muted small" id="slotPageLabel"></span>
+          <button id="nextSlotPage" type="button" aria-label="Next generator page">Next</button>
+        </div>
         <p class="tip">Click an empty slot to place your selected generator. Click a generator to inspect or remove it.</p>
         <div class="note" id="notice"></div>
       </div>
@@ -220,10 +241,11 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         </div>
       </div>
       <div class="body shop-content">
-        <div class="shop-tabs" role="tablist" aria-label="Shop, rebirth, and upgrade sections">
+        <div class="shop-tabs" role="tablist" aria-label="Shop, rebirth, upgrades, and achievements">
           <button class="shop-tab" id="shopTabBtn" type="button" role="tab" aria-selected="true" aria-controls="shopTabPanel">Shop</button>
           <button class="shop-tab" id="rebirthTabBtn" type="button" role="tab" aria-selected="false" aria-controls="rebirthTabPanel">Rebirth</button>
           <button class="shop-tab" id="upgradesTabBtn" type="button" role="tab" aria-selected="false" aria-controls="upgradesTabPanel">Upgrades</button>
+          <button class="shop-tab" id="achievementsTabBtn" type="button" role="tab" aria-selected="false" aria-controls="achievementsTabPanel">Achievements</button>
         </div>
         <div id="shopTabPanel" role="tabpanel" aria-labelledby="shopTabBtn">
           <div class="multibuy-control">
@@ -242,6 +264,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         <div id="upgradesTabPanel" role="tabpanel" aria-labelledby="upgradesTabBtn" hidden>
           <div class="upgrade-points">Rebirth points: <span id="upgradePoints">0</span></div>
           <div class="upgrade-list" id="upgradeList"></div>
+        </div>
+        <div id="achievementsTabPanel" role="tabpanel" aria-labelledby="achievementsTabBtn" hidden>
+          <p class="muted small">Milestones are quiet until you visit here. Claim each completed achievement to collect its permanent bonus.</p>
+          <div class="achievement-list" id="achievementList"></div>
         </div>
       </div>
       </section>
@@ -307,6 +333,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
   <div class="footer">Superflow! · Build your flow, one generator at a time.</div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-actions" id="modalActions"></div></div></div>
+<div class="star-layer" id="starLayer" aria-live="polite"></div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -317,7 +344,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 /*
   EASY CUSTOMIZATION:
   Every tier is defined in GENERATOR_TIERS below.
-  Cost follows the 10x progression. Income follows the 3x progression.
+  Cost follows the 10x progression. Income and XP follow the 3x progression.
   To add a new tier later, add one object and give it a color.
 */
 const GENERATOR_TIERS = [
@@ -456,6 +483,7 @@ async function enterGame(username, user) {
   await updateAdminUI();
   $("authScreen").hidden = true;
   $("gameShell").hidden = false;
+  startStarSpawns();
 }
 
 async function loadUserSave() {
@@ -493,6 +521,13 @@ async function loadUserSave() {
       ? savedState.rebirthPoints
       : 0;
     state.upgrades = normalizeUpgrades(savedState.upgrades);
+    state.claimedAchievements = Array.isArray(savedState.claimedAchievements)
+      ? [...new Set(savedState.claimedAchievements.filter(id => ACHIEVEMENTS.some(item => item.id === id)))]
+      : [];
+    const savedBoostUntil = Number(savedState.genSpeedBoostUntil);
+    state.genSpeedBoostUntil = Number.isSafeInteger(savedBoostUntil) && savedBoostUntil > Date.now()
+      ? savedBoostUntil
+      : 0;
     state.inventory = state.inventory && typeof state.inventory === "object" ? state.inventory : {};
     for (const g of GENERATORS) state.inventory[g.id] = Math.max(0, Math.floor(Number(state.inventory[g.id]) || 0));
     const savedSlots = Array.isArray(savedState.slots) ? savedState.slots : [];
@@ -646,15 +681,44 @@ async function sendChatMessage(event) {
   }
 }
 
-// Standard progression: each next tier costs 10x and earns 3x more.
+// Standard progression: each next tier costs 10x and earns 3x more income and XP.
 const GENERATORS = GENERATOR_TIERS.map((tier, index) => ({
   ...tier,
   index,
   cost: 10 * Math.pow(10, index),
   income: Math.pow(3, index),
-  xpPerSecond: 0.5 * Math.pow(2, index),
+  xpPerSecond: 0.5 * Math.pow(3, index),
   effectDuration: tier.effectDuration || (index > 7 ? Math.max(2, 8 - (index - 8) * 0.28) : 0)
 }));
+
+const CASH_ACHIEVEMENTS = [
+  { id: "cash-1k", title: "$1K lifetime notes", target: 1e3 },
+  { id: "cash-10k", title: "$10K lifetime notes", target: 1e4 },
+  { id: "cash-100k", title: "$100K lifetime notes", target: 1e5 },
+  { id: "cash-1m", title: "$1M lifetime notes", target: 1e6 },
+  { id: "cash-1b", title: "$1B lifetime notes", target: 1e9 },
+  { id: "cash-1t", title: "$1T lifetime notes", target: 1e12 },
+  { id: "cash-1qd", title: "$1Qd lifetime notes", target: 1e15 },
+  { id: "cash-1qn", title: "$1Qn lifetime notes", target: 1e18 },
+  { id: "cash-1sx", title: "$1sx lifetime notes", target: 1e21 },
+  { id: "cash-1sp", title: "$1sp lifetime notes", target: 1e24 },
+  { id: "cash-1oc", title: "$1oc lifetime notes", target: 1e27 },
+  { id: "cash-1no", title: "$1no lifetime notes", target: 1e30 }
+];
+const REBIRTH_ACHIEVEMENTS = [1, 3, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+  .map(count => ({ id: "rebirth-" + count, title: count + " rebirth" + (count === 1 ? "" : "s"), target: count }));
+const ACHIEVEMENTS = [
+  ...CASH_ACHIEVEMENTS.map(item => ({
+    ...item,
+    category: "cash",
+    description: "Claim for a permanent 1% increase to your multiplier drop chance."
+  })),
+  ...REBIRTH_ACHIEVEMENTS.map(item => ({
+    ...item,
+    category: "rebirth",
+    description: "Claim for a permanent 1% increase to note production speed."
+  }))
+];
 
 function xpRequiredForLevel(level) {
   let previous = 10;
@@ -671,6 +735,7 @@ const freshState = () => ({
   money: 10,
   lifetime: 0,
   inventory: {},
+  claimedAchievements: [],
   level: 1,
   rebirths: 0,
   rebirthPoints: 0,
@@ -678,12 +743,15 @@ const freshState = () => ({
   levelReachedAt: Date.now(),
   xp: 0,
   multiplier: 1,
+  genSpeedBoostUntil: 0,
   slots: [null],
   selected: null
 });
 let state = freshState();
 let noticeTimer = null;
 let gameTickTimer = null;
+let starSpawnTimer = null;
+let currentSlotPage = 0;
 const UPGRADE_DEFINITIONS = [
   { id: "dropSpeed", title: "Note Drop Speed", max: 5, description: "Generators pay more frequently. Each rank shortens the drop interval by 0.1 seconds, down to 0.5 seconds." },
   { id: "multiChance", title: "Multi Chance", max: 10, description: "Raises multiplier drop odds by 25% per rank. Costs 1 rebirth point per rank." },
@@ -694,10 +762,18 @@ const UPGRADE_DEFINITIONS = [
 function number(n) {
   if (!Number.isFinite(n)) return "∞";
   if (Math.abs(n) < 1000) return n.toLocaleString("en-CA", { maximumFractionDigits: 2 });
-  const units = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Ud"];
+  const units = ["", "K", "M", "B", "T", "Qd", "Qn", "Sx", "Sp", "Oc", "No", "Dc", "Ud"];
   let unit = 0;
   while (Math.abs(n) >= 1000 && unit < units.length - 1) { n /= 1000; unit++; }
-  return n.toLocaleString("en-CA", { maximumFractionDigits: 2 }) + units[unit];
+  let rounded = Math.round((n + Math.sign(n) * Number.EPSILON) * 100) / 100;
+  if (Math.abs(rounded) >= 1000 && unit < units.length - 1) {
+    n /= 1000;
+    unit++;
+    rounded = Math.round((n + Math.sign(n) * Number.EPSILON) * 100) / 100;
+  } else if (Math.abs(rounded) >= 1000) {
+    return (n * Math.pow(1000, unit)).toExponential(2);
+  }
+  return rounded.toLocaleString("en-CA", { maximumFractionDigits: 2 }) + units[unit];
 }
 function cash(n) { return "$" + number(n); }
 function romanNumeral(value) {
@@ -734,6 +810,22 @@ function normalizeUpgrades(upgrades) {
 function permanentBonusSlots() { return state.upgrades.genSlots * 2; }
 function tickIntervalSeconds() { return 1 - state.upgrades.dropSpeed * 0.1; }
 function tickIntervalMilliseconds() { return tickIntervalSeconds() * 1000; }
+function claimedAchievementCount(category) {
+  return ACHIEVEMENTS.filter(item => item.category === category && state.claimedAchievements.includes(item.id)).length;
+}
+function permanentNoteSpeedMultiplier() { return 1 + claimedAchievementCount("rebirth") * 0.01; }
+function temporaryGeneratorSpeedMultiplier() { return state.genSpeedBoostUntil > Date.now() ? 1.5 : 1; }
+function generatorSpeedMultiplier() {
+  return permanentNoteSpeedMultiplier() * temporaryGeneratorSpeedMultiplier();
+}
+function achievementReached(achievement) {
+  return achievement.category === "cash"
+    ? state.lifetime >= achievement.target
+    : state.rebirths >= achievement.target;
+}
+function isAchievementClaimed(achievement) {
+  return state.claimedAchievements.includes(achievement.id);
+}
 function getGenerator(id) { return GENERATORS.find(g => g.id === id); }
 function generatorPrice(generator) {
   return currentUsername === FREE_GENERATOR_USERNAME
@@ -754,10 +846,10 @@ function canBuy(generator, quantity = getMultiBuyAmount()) {
 }
 function totalOwned() { return Object.values(state.inventory).reduce((a, b) => a + b, 0); }
 function baseIncome() { return state.slots.reduce((sum, slot) => sum + (slot ? getGenerator(slot.id).income : 0), 0); }
-function totalIncome() { return baseIncome() * state.multiplier / tickIntervalSeconds(); }
+function totalIncome() { return baseIncome() * state.multiplier * generatorSpeedMultiplier() / tickIntervalSeconds(); }
 function multiplierDropChance(generator) {
   const baseChance = Math.min(1, 0.0005 * (generator.index + 1) * Math.pow(0.95, state.multiplier - 1));
-  return 1 - Math.pow(1 - baseChance, 1 + state.upgrades.multiChance * 0.25);
+  return 1 - Math.pow(1 - baseChance, 1 + state.upgrades.multiChance * 0.25 + claimedAchievementCount("cash") * 0.01);
 }
 
 function notify(message, error = false) {
@@ -765,6 +857,61 @@ function notify(message, error = false) {
   $("notice").style.color = error ? "#ff8c8c" : "var(--green)";
   clearTimeout(noticeTimer);
   noticeTimer = setTimeout(() => $("notice").textContent = "", 3500);
+}
+function spawnStar(isCashReward = false, position = null) {
+  const layer = $("starLayer");
+  const star = makeButton("★", () => {
+    star.remove();
+    if (!currentUser) return;
+    if (isCashReward) {
+      const reward = state.money * 0.01;
+      state.money += reward;
+      state.lifetime += reward;
+      updateAchievementAvailability();
+      renderStats();
+      save();
+      publishLeaderboardEntry();
+      notify("Cash star collected for " + cash(reward) + ".");
+      return;
+    }
+    if (Math.random() < 0.2) {
+      const left = Number.parseFloat(star.style.left);
+      const top = Number.parseFloat(star.style.top);
+      spawnStar(true, { left: left - 40, top: top - 40 });
+      spawnStar(true, { left: left + 40, top: top + 40 });
+      notify("Two cash stars appeared nearby!");
+      return;
+    }
+    state.genSpeedBoostUntil = Math.max(Date.now(), state.genSpeedBoostUntil) + 2 * 60 * 1000;
+    renderStats();
+    save();
+    notify("Generator speed increased to ×1.5 for 2 minutes!");
+  }, false, "bonus-star");
+  star.type = "button";
+  star.classList.toggle("cash-star", isCashReward);
+  star.setAttribute("aria-label", isCashReward ? "Collect a cash star" : "Collect a generator speed star");
+  star.title = isCashReward
+    ? "Collect 1% of your current notes"
+    : "80% chance at 1.5x generator speed for 2 minutes; 20% chance of two cash stars";
+  const size = isCashReward ? 38 : 44;
+  const maxLeft = Math.max(8, window.innerWidth - size - 8);
+  const maxTop = Math.max(8, window.innerHeight - size - 8);
+  const left = position ? position.left : 8 + Math.random() * (maxLeft - 8);
+  const top = position ? position.top : 8 + Math.random() * (maxTop - 8);
+  star.style.left = Math.max(8, Math.min(maxLeft, left)) + "px";
+  star.style.top = Math.max(8, Math.min(maxTop, top)) + "px";
+  layer.appendChild(star);
+}
+function startStarSpawns() {
+  stopStarSpawns();
+  starSpawnTimer = setInterval(() => {
+    if (currentUser && !$("gameShell").hidden) spawnStar();
+  }, 5 * 60 * 1000);
+}
+function stopStarSpawns() {
+  if (starSpawnTimer !== null) clearInterval(starSpawnTimer);
+  starSpawnTimer = null;
+  $("starLayer").replaceChildren();
 }
 function save(silent = true) {
   return saveUserState(silent);
@@ -838,6 +985,7 @@ async function loginWithUsername() {
 async function logoutUser() {
   await save();
   await publishLeaderboardEntry();
+  stopStarSpawns();
   communityUnsubscribers.forEach(unsubscribe => unsubscribe());
   communityUnsubscribers = [];
   await authRef.signOut();
@@ -871,7 +1019,7 @@ function makeShopRow(generator, mode) {
   price.className = "price";
   price.textContent = cash(generatorPrice(generator));
   const earn = document.createElement("span");
-  earn.textContent = cash(generator.income * state.multiplier / tickIntervalSeconds()) + "/sec";
+  earn.textContent = cash(generator.income * state.multiplier * generatorSpeedMultiplier() / tickIntervalSeconds()) + "/sec";
   const xpEarn = document.createElement("span");
   xpEarn.textContent = number(generator.xpPerSecond) + " XP/sec";
   const unplacedText = document.createElement("span");
@@ -885,10 +1033,7 @@ function makeShopRow(generator, mode) {
   row.append(swatch, details);
 
   const actionGroup = document.createElement("div");
-  actionGroup.style.display = "flex";
-  actionGroup.style.gap = "6px";
-  actionGroup.style.flexDirection = "row";
-  actionGroup.style.alignItems = "stretch";
+  actionGroup.className = "shop-actions";
 
   const quantity = getMultiBuyAmount();
   const buyButton = makeButton(
@@ -898,7 +1043,7 @@ function makeShopRow(generator, mode) {
     "buy-button"
   );
   buyButton.dataset.generatorId = generator.id;
-  const sellButton = makeButton("Sell", () => sell(generator.id), owned(generator.id) <= 0, "");
+  const sellButton = makeButton("Sell", () => sell(generator.id), available(generator.id) <= 0, "");
   const placeLabel = state.selected === generator.id ? "Placed" : "Place";
   const placeButton = makeButton(placeLabel, () => selectGenerator(generator.id),
     available(generator.id) <= 0 && state.selected !== generator.id,
@@ -916,6 +1061,11 @@ function renderStats() {
   $("level").textContent = rebirthLevelLabel();
   $("xpProgress").textContent = number(state.xp) + " / " + number(xpRequiredForLevel(state.level)) + " XP";
   $("multiplier").textContent = "×" + number(state.multiplier);
+  const boostRemaining = Math.max(0, state.genSpeedBoostUntil - Date.now());
+  const boostSeconds = Math.ceil(boostRemaining / 1000);
+  const boostClock = String(Math.floor(boostSeconds / 60)).padStart(2, "0") + ":" + String(boostSeconds % 60).padStart(2, "0");
+  $("generatorSpeed").textContent = "×" + number(generatorSpeedMultiplier())
+    + (boostRemaining > 0 ? " · " + boostClock : "");
   $("slotSummary").textContent = "Level " + rebirthLevelLabel() + " · " + state.slots.length
     + " slot" + (state.slots.length === 1 ? "" : "s") + " (" + permanentBonusSlots() + " permanent bonus)";
   const requiredLevel = rebirthLevelRequirement();
@@ -962,13 +1112,82 @@ function renderUpgrades() {
     host.appendChild(card);
   });
 }
+function updateAchievementAvailability() {
+  const host = $("achievementList");
+  ["cash", "rebirth"].forEach(category => {
+    const card = host.querySelector('[data-achievement-category="' + category + '"]');
+    if (!card) return;
+    const title = card.querySelector("h3");
+    const description = card.querySelector("p");
+    const status = card.querySelector(".achievement-status");
+    const button = card.querySelector("button");
+    const achievement = ACHIEVEMENTS.find(item => item.category === category && !isAchievementClaimed(item));
+    if (!achievement) {
+      title.textContent = category === "cash" ? "Lifetime notes milestones complete" : "Rebirth milestones complete";
+      description.textContent = "All achievements in this group have been claimed.";
+      status.textContent = "All milestones claimed";
+      card.classList.add("claimed");
+      button.textContent = "Complete";
+      button.disabled = true;
+      return;
+    }
+    const reached = achievementReached(achievement);
+    title.textContent = category === "cash"
+      ? "Lifetime notes: " + cash(achievement.target)
+      : "Rebirths: " + achievement.target;
+    description.textContent = achievement.description;
+    status.textContent = reached
+      ? "Ready to claim"
+      : category === "cash"
+        ? "Progress: " + cash(state.lifetime) + " / " + cash(achievement.target)
+        : "Progress: " + state.rebirths + " / " + achievement.target + " rebirths";
+    card.classList.toggle("claimed", false);
+    button.textContent = reached
+      ? "Claim " + (category === "cash" ? cash(achievement.target) : achievement.target + " rebirths")
+      : "Not reached";
+    button.disabled = !reached;
+  });
+}
+function renderAchievements() {
+  const host = $("achievementList");
+  host.innerHTML = "";
+  ["cash", "rebirth"].forEach(category => {
+    const card = document.createElement("section");
+    card.className = "achievement-card";
+    card.dataset.achievementCategory = category;
+    const details = document.createElement("div");
+    const title = document.createElement("h3");
+    title.textContent = category === "cash" ? "Lifetime notes" : "Rebirths";
+    const description = document.createElement("p");
+    description.textContent = "";
+    const status = document.createElement("span");
+    status.className = "achievement-status";
+    details.append(title, description, status);
+    const button = makeButton("Not reached", () => claimAchievement(category), true);
+    card.append(details, button);
+    host.appendChild(card);
+  });
+  updateAchievementAvailability();
+}
 function placedTotal() { return state.slots.filter(Boolean).length; }
 function makeSlotButton(index, slot) {
   const button = document.createElement("button");
   button.className = "slot";
+  button.dataset.slotIndex = String(index);
+  if (index >= state.slots.length) {
+    button.classList.add("locked");
+    button.disabled = true;
+    button.setAttribute("aria-label", "Locked generator slot");
+    button.title = "Locked generator slot";
+    const mark = document.createElement("span");
+    mark.textContent = "🔒";
+    button.append(mark);
+    return button;
+  }
   button.addEventListener("click", () => clickSlot(index));
   if (!slot) {
     button.classList.add("empty");
+    button.setAttribute("aria-label", "Empty generator slot");
     const mark = document.createElement("span");
     mark.className = "empty-mark";
     button.append(mark);
@@ -1024,40 +1243,47 @@ function makeSlotButton(index, slot) {
 }
 function renderSlots() {
   const host = $("slots");
-  const columns = Math.ceil(Math.sqrt(state.slots.length));
-  const scale = Math.min(1, 5 / columns);
-  host.style.setProperty("--slot-columns", columns);
+  const pageCount = Math.max(1, Math.ceil(state.slots.length / 25));
+  currentSlotPage = Math.min(currentSlotPage, pageCount - 1);
+  const firstSlot = currentSlotPage * 25;
+  const scale = Math.min(1, Math.max(0.5, (window.innerWidth - 32) / 786));
   host.style.setProperty("--slot-scale", scale);
-  host.style.maxWidth = (columns * 150 + (columns - 1) * 9) + "px";
+  const pagination = $("slotPagination");
+  pagination.hidden = pageCount <= 1;
+  $("slotPageLabel").textContent = "Page " + (currentSlotPage + 1) + " of " + pageCount;
+  $("previousSlotPage").disabled = currentSlotPage === 0;
+  $("nextSlotPage").disabled = currentSlotPage >= pageCount - 1;
   $("clearAllBtn").disabled = placedTotal() === 0;
-  state.slots.forEach((slot, index) => {
-    const existing = host.children[index];
+  for (let visibleIndex = 0; visibleIndex < 25; visibleIndex++) {
+    const index = firstSlot + visibleIndex;
+    const slot = state.slots[index];
+    const existing = host.children[visibleIndex];
     const expectedId = slot ? getGenerator(slot.id).id : null;
     const existingId = existing && existing.dataset.generatorId || null;
     let button = existing;
-    if (!existing || existingId !== expectedId) {
+    if (!existing || existing.dataset.slotIndex !== String(index)
+      || existingId !== expectedId || existing.classList.contains("locked") !== (index >= state.slots.length)) {
       button = makeSlotButton(index, slot);
       if (existing) existing.replaceWith(button);
       else host.appendChild(button);
-    } else if (!slot) {
+    } else if (index < state.slots.length && !slot) {
       const mark = existing.querySelector(".empty-mark");
-      mark.textContent = state.selected ? "+" : "·";
+      if (mark) mark.textContent = state.selected ? "+" : "·";
       existing.title = state.selected ? "Place " + getGenerator(state.selected).name : "Empty slot";
     }
     if (slot) {
       const g = getGenerator(slot.id);
-      const earnings = cash(g.income * state.multiplier / tickIntervalSeconds());
+      const earnings = cash(g.income * state.multiplier * generatorSpeedMultiplier() / tickIntervalSeconds());
       button.querySelector(".gen-income").textContent = earnings + "/s";
       button.title = g.name + ": " + earnings + " per second. Click to inspect.";
     }
-  });
-  while (host.children.length > state.slots.length) host.lastElementChild.remove();
+  }
 }
 function renderSlotEarnings() {
   document.querySelectorAll("#slots .slot.filled").forEach(button => {
     const generator = getGenerator(button.dataset.generatorId);
     if (!generator) return;
-    const earnings = cash(generator.income * state.multiplier / tickIntervalSeconds());
+    const earnings = cash(generator.income * state.multiplier * generatorSpeedMultiplier() / tickIntervalSeconds());
     button.querySelector(".gen-income").textContent = earnings + "/s";
     button.title = generator.name + ": " + earnings + " per second. Click to inspect.";
   });
@@ -1079,7 +1305,7 @@ function renderInventory() {
   const host = $("inventory");
   if (host) host.innerHTML = "";
 }
-function render() { renderStats(); renderSlots(); renderShop(); renderInventory(); renderUpgrades(); }
+function render() { renderStats(); renderSlots(); renderShop(); renderInventory(); renderUpgrades(); renderAchievements(); }
 function buy(id, quantity = 1) {
   const g = getGenerator(id);
   if (!g || !Number.isSafeInteger(quantity) || quantity < 1 || !canBuy(g, quantity)) return;
@@ -1090,16 +1316,29 @@ function buy(id, quantity = 1) {
   render();
   save();
 }
-function sell(id) {
+function sell(id, slotIndex = null) {
   const g = getGenerator(id);
-  if (!g || owned(id) <= 0) return;
+  if (!g || owned(id) <= 0
+    || (slotIndex === null ? available(id) <= 0 : !state.slots[slotIndex] || state.slots[slotIndex].id !== id)) return;
   const refund = Math.floor(generatorPrice(g) * 0.7);
+  if (slotIndex !== null) state.slots[slotIndex] = null;
   state.inventory[id] = owned(id) - 1;
   state.money += refund;
   if (state.selected === id && available(id) <= 0) state.selected = null;
   notify(g.name + " sold for " + cash(refund) + ".");
   render();
   save();
+}
+function claimAchievement(category) {
+  const achievement = ACHIEVEMENTS.find(item => item.category === category && !isAchievementClaimed(item));
+  if (!achievement || !achievementReached(achievement)) return;
+  state.claimedAchievements.push(achievement.id);
+  updateAchievementAvailability();
+  renderStats();
+  renderShop();
+  renderSlotEarnings();
+  save();
+  notify(achievement.title + " claimed: " + achievement.description);
 }
 function selectGenerator(id) {
   if (available(id) <= 0 && state.selected !== id) return;
@@ -1138,6 +1377,7 @@ function rebirth() {
   state.rebirths++;
   state.rebirthPoints++;
   state.level = 1;
+  currentSlotPage = 0;
   state.levelReachedAt = Date.now();
   state.xp = 0;
   state.slots = Array(1 + permanentBonusSlots()).fill(null);
@@ -1151,13 +1391,19 @@ function clickSlot(index) {
   const slot = state.slots[index];
   if (slot) {
     const g = getGenerator(slot.id);
-    showModal(g.name, "This generator earns " + cash(g.income * state.multiplier) + " every second at your current multiplier. Remove it to return it to your inventory. Its purchase price is not refunded.", [
+    const refund = Math.floor(generatorPrice(g) * 0.7);
+    showModal(g.name, "This generator earns " + cash(g.income * state.multiplier * generatorSpeedMultiplier() / tickIntervalSeconds())
+      + " per second. You can return it to inventory or sell it now for " + cash(refund) + ".", [
       ["Return to inventory", () => {
         state.slots[index] = null;
         state.selected = g.id;
         closeModal();
         notify(g.name + " returned to inventory.");
         render(); save();
+      }],
+      ["Sell for " + cash(refund), () => {
+        closeModal();
+        sell(g.id, index);
       }],
       ["Close", closeModal]
     ]);
@@ -1193,18 +1439,29 @@ $("signupBtn").addEventListener("click", createAccountWithUsername);
 $("logoutBtn").addEventListener("click", logoutUser);
 $("chatForm").addEventListener("submit", sendChatMessage);
 function selectShopTab(tab) {
-  ["shop", "rebirth", "upgrades"].forEach(name => {
+  ["shop", "rebirth", "upgrades", "achievements"].forEach(name => {
     const selected = name === tab;
     $(name + "TabBtn").setAttribute("aria-selected", String(selected));
     $(name + "TabPanel").hidden = !selected;
   });
+  if (tab === "achievements") updateAchievementAvailability();
 }
 $("shopTabBtn").addEventListener("click", () => selectShopTab("shop"));
 $("rebirthTabBtn").addEventListener("click", () => selectShopTab("rebirth"));
 $("upgradesTabBtn").addEventListener("click", () => selectShopTab("upgrades"));
+$("achievementsTabBtn").addEventListener("click", () => selectShopTab("achievements"));
 $("saveBtn").addEventListener("click", () => save(false));
 $("multiBuyAmount").addEventListener("input", updateShopBuyButtons);
 $("clearAllBtn").addEventListener("click", clearAllGenerators);
+$("previousSlotPage").addEventListener("click", () => {
+  currentSlotPage = Math.max(0, currentSlotPage - 1);
+  renderSlots();
+});
+$("nextSlotPage").addEventListener("click", () => {
+  const pageCount = Math.ceil(state.slots.length / 25);
+  currentSlotPage = Math.min(pageCount - 1, currentSlotPage + 1);
+  renderSlots();
+});
 async function runAdminAction(action, amount) {
   const status = $("adminStatus");
   const controls = Array.from($("adminPanel").querySelectorAll("input, button"));
@@ -1252,8 +1509,9 @@ $("adminLevelBtn").addEventListener("click", () => {
 });
 $("rebirthBtn").addEventListener("click", rebirth);
 $("resetBtn").addEventListener("click", () => {
-  if (!confirm("Reset your money, lifetime earnings, inventory, level, rebirths, rebirth points, upgrades, XP, multiplier, and placed generators? This cannot be undone.")) return;
+  if (!confirm("Reset your money, lifetime earnings, inventory, level, rebirths, rebirth points, upgrades, achievements, XP, multiplier, speed boost, and placed generators? This cannot be undone.")) return;
   state = freshState();
+  currentSlotPage = 0;
   configureGameTickTimer();
   render();
   save();
@@ -1268,11 +1526,13 @@ updateAuthUI();
 function gameTick() {
   if (!currentUser) return;
   const intervalSeconds = tickIntervalSeconds();
-  const earned = baseIncome() * state.multiplier;
+  const earned = baseIncome() * state.multiplier * generatorSpeedMultiplier();
   state.money += earned;
   state.lifetime += earned;
   const activeGenerators = state.slots.filter(Boolean).map(slot => getGenerator(slot.id));
-  state.xp += activeGenerators.reduce((total, generator) => total + generator.xpPerSecond, 0) * state.multiplier * intervalSeconds;
+  const temporarySpeed = temporaryGeneratorSpeedMultiplier();
+  state.xp += activeGenerators.reduce((total, generator) => total + generator.xpPerSecond, 0)
+    * state.multiplier * temporarySpeed * intervalSeconds;
   let levelsGained = 0;
   while (state.xp >= xpRequiredForLevel(state.level)) {
     state.xp -= xpRequiredForLevel(state.level);
@@ -1283,7 +1543,7 @@ function gameTick() {
   if (levelsGained > 0) state.levelReachedAt = Date.now();
   let multiplierDrops = 0;
   activeGenerators.forEach(generator => {
-    const chanceThisTick = 1 - Math.pow(1 - multiplierDropChance(generator), intervalSeconds);
+    const chanceThisTick = 1 - Math.pow(1 - multiplierDropChance(generator), intervalSeconds * temporarySpeed);
     if (Math.random() < chanceThisTick) multiplierDrops++;
   });
   state.multiplier = Math.round((state.multiplier + multiplierDrops * 0.01) * 100) / 100;
@@ -1302,6 +1562,7 @@ function gameTick() {
   renderStats();
   renderShop();
   renderSlotEarnings();
+  if (!$("achievementsTabPanel").hidden) updateAchievementAvailability();
 }
 function configureGameTickTimer() {
   if (gameTickTimer !== null) clearInterval(gameTickTimer);
