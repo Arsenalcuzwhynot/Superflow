@@ -19,7 +19,6 @@ button:disabled{opacity:.4;cursor:not-allowed}
 .buy-button{background:#185a3d;border-color:#2a9a64;color:#e5fff0}
 .sell-button{background:#612832;border-color:#a94350;color:#fff0f0}
 .place-button{background:#234c70;border-color:#3678ad}
-.give-button{background:#49346d;border-color:#7555a8}
 .crate-open-button{background:#45306d;border-color:#7d59b3}
 .claim-task-button{background:#745418;border-color:#d6a53c;color:#fff5d5}
 .rebirth-panel button:not(:disabled),.upgrade-card button:not(:disabled){background:#245c47;border-color:#3a9d73}
@@ -154,6 +153,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .leaderboard-rank{color:var(--gold);font-weight:800}
 .leaderboard-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .leaderboard-cash{font-variant-numeric:tabular-nums;color:var(--green)}
+.leaderboard-tabs{position:static;margin:0 0 10px;padding:0;background:transparent}
 .chat-messages{height:320px;overflow:auto;display:flex;flex-direction:column-reverse;gap:8px;padding:10px;background:#10151c;border:1px solid var(--line);border-radius:8px}
 .chat-message{overflow-wrap:anywhere;font-size:12px}
 .chat-meta{color:var(--muted);font-size:10px;margin-right:6px}
@@ -398,12 +398,15 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
   </div>
   <div class="community-grid">
     <section class="panel">
-      <div class="panel-head"><h2>Generator cash leaderboard</h2><span class="muted small">Generator-produced cash · Top 100</span></div>
+      <div class="panel-head"><h2 id="leaderboardHeading">Cash leaderboard</h2><span class="muted small" id="leaderboardDescription">Generator-produced cash · Top 100</span></div>
       <div class="body">
-        <div id="cashLeaderboardPanel">
-          <ol class="leaderboard-list" id="leaderboardList"></ol>
-          <div class="muted small" id="leaderboardStatus">Sign in to see the leaderboard.</div>
+        <div class="shop-tabs leaderboard-tabs" role="tablist" aria-label="Leaderboard type">
+          <button class="shop-tab" type="button" role="tab" aria-selected="true" data-leaderboard="cashEarned">Cash</button>
+          <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="multiplier">Multiplier</button>
+          <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="level">Level</button>
         </div>
+        <ol class="leaderboard-list" id="leaderboardList"></ol>
+        <div class="muted small" id="leaderboardStatus">Sign in to see the leaderboard.</div>
       </div>
     </section>
     <section class="panel">
@@ -485,6 +488,8 @@ let hideFromLeaderboard = false;
 let leaderboardPrivacyLoaded = false;
 let firebaseReady = false;
 let communityUnsubscribers = [];
+let leaderboardUnsubscribe = null;
+let activeLeaderboard = "cashEarned";
 let lastChatSentAt = 0;
 
 function getAccountStore() {
@@ -508,16 +513,6 @@ function getPlayerSaveKey(username) {
 function usernameToAuthEmail(username) {
   const usernameHex = Array.from(new TextEncoder().encode(username), byte => byte.toString(16).padStart(2, "0")).join("");
   return "player-" + usernameHex + "@accounts.generator-grid.invalid";
-}
-
-async function syncUsernameDirectory(username) {
-  try {
-    await functionsRef.httpsCallable("registerUsername")({ username });
-    return true;
-  } catch (error) {
-    console.error("Username directory registration failed:", error);
-    return false;
-  }
 }
 
 function initFirebase() {
@@ -779,15 +774,17 @@ async function updateLeaderboardPrivacy(event) {
 
 async function saveUserState(silent = true) {
   try {
-    if (!currentUser || !dbRef) return;
+    if (!currentUser || !dbRef) return false;
     syncNewAccountBoostRemaining();
     await dbRef.collection("users").doc(currentUser.uid).set({
       state,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
     if (!silent) notify("Saved to your account.");
+    return true;
   } catch (e) {
     if (!silent) notify("Cloud save failed. Check your Firestore rules and connection.", true);
+    return false;
   }
 }
 
@@ -803,6 +800,7 @@ async function publishLeaderboardEntry() {
       uid: currentUser.uid,
       username: currentUsername,
       cashEarned: Math.max(0, Number(state.generatorCashEarned) || 0),
+      multiplier: Math.max(1, Number(state.multiplier) || 1),
       rebirths: Math.max(0, Number.isSafeInteger(state.rebirths) ? state.rebirths : 0),
       level: Math.max(1, Number.isSafeInteger(state.level) ? state.level : 1),
       levelReachedAt: Number.isSafeInteger(state.levelReachedAt) && state.levelReachedAt > 0
@@ -817,7 +815,29 @@ async function publishLeaderboardEntry() {
   }
 }
 
-function renderLeaderboard(snapshot) {
+const LEADERBOARD_METRICS = {
+  cashEarned: {
+    label: "Cash",
+    heading: "Generator cash leaderboard",
+    description: "Generator-produced cash · Top 100",
+    format: value => cash(Math.max(0, Number(value) || 0))
+  },
+  multiplier: {
+    label: "Multiplier",
+    heading: "Multiplier leaderboard",
+    description: "Highest generator multiplier · Top 100",
+    format: value => "×" + number(Math.max(1, Number(value) || 1))
+  },
+  level: {
+    label: "Level",
+    heading: "Level leaderboard",
+    description: "Highest current level · Top 100",
+    format: value => number(Math.max(1, Number.isSafeInteger(value) ? value : 1))
+  }
+};
+
+function renderLeaderboard(snapshot, metricName) {
+  const metric = LEADERBOARD_METRICS[metricName];
   const host = $("leaderboardList");
   host.innerHTML = "";
   snapshot.docs.forEach((entry, index) => {
@@ -830,13 +850,48 @@ function renderLeaderboard(snapshot) {
     const username = document.createElement("span");
     username.className = "leaderboard-name";
     username.textContent = data.username || "Player";
-    const cashEarned = document.createElement("span");
-    cashEarned.className = "leaderboard-cash";
-    cashEarned.textContent = cash(Math.max(0, Number(data.cashEarned) || 0));
-    row.append(rank, username, cashEarned);
+    const value = document.createElement("span");
+    value.className = "leaderboard-cash";
+    value.textContent = metric.format(data[metricName], data);
+    row.append(rank, username, value);
     host.appendChild(row);
   });
-  $("leaderboardStatus").textContent = snapshot.empty ? "No scores yet. Be the first on the board!" : "Showing the top " + snapshot.size + " players.";
+  $("leaderboardStatus").textContent = snapshot.empty
+    ? "No scores yet. Be the first on the board!"
+    : "Showing the top " + snapshot.size + " players by " + metric.label.toLowerCase() + ".";
+}
+
+function stopLeaderboardListener() {
+  if (!leaderboardUnsubscribe) return;
+  leaderboardUnsubscribe();
+  leaderboardUnsubscribe = null;
+}
+
+function selectLeaderboard(metricName) {
+  const metric = LEADERBOARD_METRICS[metricName];
+  if (!metric) return;
+  activeLeaderboard = metricName;
+  document.querySelectorAll("[data-leaderboard]").forEach(button => {
+    button.setAttribute("aria-selected", String(button.dataset.leaderboard === metricName));
+  });
+  $("leaderboardHeading").textContent = metric.heading;
+  $("leaderboardDescription").textContent = metric.description;
+  $("leaderboardList").replaceChildren();
+  stopLeaderboardListener();
+  if (!currentUser || !dbRef) {
+    $("leaderboardStatus").textContent = "Sign in to see the leaderboard.";
+    return;
+  }
+  $("leaderboardStatus").textContent = "Loading leaderboard...";
+  leaderboardUnsubscribe = dbRef.collection("leaderboard")
+    .orderBy(metricName, "desc")
+    .limit(100)
+    .onSnapshot(
+      snapshot => renderLeaderboard(snapshot, metricName),
+      () => {
+        $("leaderboardStatus").textContent = "Leaderboard unavailable. Check Firestore rules.";
+      }
+    );
 }
 
 function renderChat(snapshot) {
@@ -861,12 +916,10 @@ function renderChat(snapshot) {
 function startCommunityListeners() {
   communityUnsubscribers.forEach(unsubscribe => unsubscribe());
   communityUnsubscribers = [];
+  stopLeaderboardListener();
   if (!currentUser || !dbRef) return;
-  const leaderboardQuery = dbRef.collection("leaderboard").orderBy("cashEarned", "desc").limit(100);
   const chatQuery = dbRef.collection("chatMessages").orderBy("createdAt", "desc").limit(50);
-  communityUnsubscribers.push(leaderboardQuery.onSnapshot(renderLeaderboard, () => {
-    $("leaderboardStatus").textContent = "Leaderboard unavailable. Check Firestore rules.";
-  }));
+  selectLeaderboard(activeLeaderboard);
   communityUnsubscribers.push(chatQuery.onSnapshot(renderChat, () => {
     $("chatStatus").textContent = "Chat unavailable. Check Firestore rules.";
   }));
@@ -1247,15 +1300,11 @@ async function createAccountWithUsername() {
   try {
     await authRef.setPersistence(firebase.auth.Auth.Persistence.NONE);
     const credential = await authRef.createUserWithEmailAndPassword(usernameToAuthEmail(username), password);
-    const usernameSync = syncUsernameDirectory(username);
     const accounts = getAccountStore();
     delete accounts[username];
     saveAccountStore(accounts);
     await enterGame(username, credential.user, true);
-    const usernameRegistered = await usernameSync;
-    notify(usernameRegistered
-    ? "Your Superflow account is ready, " + username + ". Your 2× newcomer speed boost lasts for your first 15 minutes online."
-    : "Account created and signed in. Your 2× newcomer speed boost lasts for your first 15 minutes online. Username registration is unavailable; generator gifting needs the updated Firebase functions deployed.");
+    notify("Your Superflow account is ready, " + username + ". Your 2× newcomer speed boost lasts for your first 15 minutes online.");
   } catch (e) {
     showAuthError(e.code === "auth/email-already-in-use" ? "That username already exists." : e.message || "Could not create account.");
   }
@@ -1275,15 +1324,11 @@ async function loginWithUsername() {
   try {
     await authRef.setPersistence(firebase.auth.Auth.Persistence.NONE);
     const credential = await authRef.signInWithEmailAndPassword(usernameToAuthEmail(username), password);
-    const usernameSync = syncUsernameDirectory(username);
     const accounts = getAccountStore();
     delete accounts[username];
     saveAccountStore(accounts);
     await enterGame(username, credential.user);
-    const usernameRegistered = await usernameSync;
-    notify(usernameRegistered
-      ? "Welcome back, " + username + "."
-      : "Signed in as " + username + ". Username registration is unavailable; generator gifting needs the updated Firebase functions deployed.");
+    notify("Welcome back, " + username + ".");
   } catch (e) {
     console.error("Username sign-in failed:", e.code || "unknown error");
     const code = typeof e.code === "string" ? e.code : "";
@@ -1306,6 +1351,7 @@ async function logoutUser() {
   stopStarSpawns();
   communityUnsubscribers.forEach(unsubscribe => unsubscribe());
   communityUnsubscribers = [];
+  stopLeaderboardListener();
   await authRef.signOut();
   currentUser = null;
   currentUsername = null;
@@ -1353,6 +1399,7 @@ async function deletePlayerAccount() {
   stopNewAccountBoost();
   communityUnsubscribers.forEach(unsubscribe => unsubscribe());
   communityUnsubscribers = [];
+  stopLeaderboardListener();
   try {
     await authRef.signOut();
   } catch (error) {
@@ -1427,9 +1474,7 @@ function makeShopRow(generator, mode) {
     available(generator.id) <= 0 && state.selected !== generator.id,
     "place-button" + (state.selected === generator.id ? " active" : "")
   );
-  const giveButton = makeButton("Give", () => giveGenerator(generator), available(generator.id) <= 0, "give-button");
-
-  actionGroup.append(buyButton, sellButton, placeButton, giveButton);
+  actionGroup.append(buyButton, sellButton, placeButton);
   row.append(actionGroup);
   return row;
 }
@@ -1938,71 +1983,6 @@ function buy(id, quantity = 1) {
   render();
   save();
 }
-function giveGenerator(generator) {
-  const maximum = available(generator.id);
-  if (!currentUser || !functionsRef || maximum <= 0) {
-    notify("You need an unplaced copy and an active account to give this generator.", true);
-    return;
-  }
-  showModal("Give " + generator.name, "Enter the recipient's exact, case-sensitive username and how many unplaced generators to send.", [
-    ["Send", async () => {
-      const username = $("giftUsername").value.trim();
-      const quantity = Number($("giftQuantity").value);
-      if (!/^[A-Za-z0-9_]{2,20}$/.test(username)) {
-        notify("Enter a valid case-sensitive username.", true);
-        return;
-      }
-      if (!Number.isSafeInteger(quantity) || quantity < 1 || quantity > maximum) {
-        notify("Choose a whole number from 1 to " + maximum + ".", true);
-        return;
-      }
-      const sendButton = $("modalActions").querySelector("button");
-      sendButton.disabled = true;
-      try {
-        await save(false);
-        const result = await functionsRef.httpsCallable("giftGenerator")({
-          username,
-          generatorId: generator.id,
-          quantity
-        });
-        if (result.data.state && result.data.state.inventory) {
-          state.inventory = { ...state.inventory, ...result.data.state.inventory };
-          if (state.selected === generator.id && available(generator.id) <= 0) state.selected = null;
-        }
-        closeModal();
-        render();
-        notify(result.data.message || "Generator gift sent.");
-      } catch (error) {
-        sendButton.disabled = false;
-        notify(error.message || "Could not send this generator gift.", true);
-      }
-    }],
-    ["Cancel", closeModal]
-  ]);
-  const fields = $("modalFields");
-  const usernameLabel = document.createElement("label");
-  usernameLabel.textContent = "Username (case-sensitive)";
-  const usernameInput = document.createElement("input");
-  usernameInput.id = "giftUsername";
-  usernameInput.type = "text";
-  usernameInput.autocomplete = "off";
-  usernameInput.maxLength = 20;
-  usernameInput.placeholder = "Recipient username";
-  usernameLabel.appendChild(usernameInput);
-  const quantityLabel = document.createElement("label");
-  quantityLabel.textContent = "Number to give (up to " + maximum + ")";
-  const quantityInput = document.createElement("input");
-  quantityInput.id = "giftQuantity";
-  quantityInput.type = "number";
-  quantityInput.min = "1";
-  quantityInput.max = String(maximum);
-  quantityInput.step = "1";
-  quantityInput.value = "1";
-  quantityInput.inputMode = "numeric";
-  quantityLabel.appendChild(quantityInput);
-  fields.append(usernameLabel, quantityLabel);
-  usernameInput.focus();
-}
 function sell(id, slotIndex = null) {
   const g = getGenerator(id);
   if (!g || owned(id) <= 0
@@ -2142,6 +2122,9 @@ $("logoutBtn").addEventListener("click", logoutUser);
 $("deleteAccountBtn").addEventListener("click", deletePlayerAccount);
 $("hideFromLeaderboard").addEventListener("change", updateLeaderboardPrivacy);
 $("chatForm").addEventListener("submit", sendChatMessage);
+document.querySelectorAll("[data-leaderboard]").forEach(button => {
+  button.addEventListener("click", () => selectLeaderboard(button.dataset.leaderboard));
+});
 function selectShopTab(tab) {
   ["shop", "tasks", "rebirth", "upgrades", "achievements"].forEach(name => {
     const selected = name === tab;
