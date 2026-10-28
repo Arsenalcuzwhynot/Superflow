@@ -205,8 +205,11 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .summary-card small{display:block;color:var(--muted);font-size:10px}
 .summary-card strong{font-size:16px}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.note{min-height:19px;font-size:11px;color:var(--green);margin-top:10px}
-.note.task-notice{padding:9px 11px;border:1px solid #d6a53c;border-radius:8px;background:linear-gradient(100deg,#5b4218,#241d12);color:#fff0bd;font-size:12px;font-weight:800;box-shadow:0 0 16px #f0cb7540}
+.note{position:fixed;top:max(12px,env(safe-area-inset-top));left:50%;z-index:20;width:min(680px,calc(100vw - 24px));max-height:30vh;overflow:auto;margin:0;padding:13px 17px;border:1px solid #368d67;border-radius:12px;background:linear-gradient(110deg,#163d30,#14221f);color:#dffff0!important;font-size:15px;font-weight:800;line-height:1.45;text-align:center;box-shadow:0 10px 38px #000b,0 0 25px #54d89b55;opacity:0;visibility:hidden;transform:translate(-50%,-10px);transition:opacity .18s ease,transform .18s ease,visibility .18s;pointer-events:none}
+.note.notice-visible{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.note.task-notice{border-color:#e4b747;background:linear-gradient(110deg,#654918,#382913);color:#fff3c4!important;box-shadow:0 10px 38px #000b,0 0 28px #f0cb7580}
+.note.bonus-notice{border-color:#e4b747;background:linear-gradient(110deg,#5a4818,#302716);color:#fff4bd!important;box-shadow:0 10px 38px #000b,0 0 28px #ffe16b70}
+.note.error-notice{border-color:#df5968;background:linear-gradient(110deg,#57202b,#30191e);color:#ffe7eb!important;box-shadow:0 10px 38px #000b,0 0 26px #ec586b70}
 .tutorial-guide{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0;padding:12px 14px;border:1px solid #6c5735;border-radius:10px;background:linear-gradient(110deg,#352919,#181b20 72%);box-shadow:0 0 20px #f4bf3a12}
 .tutorial-guide strong{display:block;color:#ffdc81;font-size:13px}
 .tutorial-guide span{display:block;color:var(--muted);font-size:11px;margin-top:3px}
@@ -227,7 +230,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 @media(max-width:700px){.community-grid{grid-template-columns:1fr}}
 @media(max-width:850px){.layout{grid-template-columns:minmax(0,1fr) minmax(280px,.9fr)}}
 @media(max-width:700px){.layout{grid-template-columns:1fr}}
-@media(max-width:560px){header{align-items:flex-start;flex-direction:column;padding:12px}.stats{justify-content:flex-start;width:100%;gap:6px}.stat{flex:1 1 calc(50% - 6px);min-width:0;padding:6px 8px}.stat strong{font-size:14px}.game-account{width:100%;justify-content:space-between}.game-account-actions{gap:5px}.game-account-actions button{padding:7px 8px;font-size:11px}main{padding:10px}.panel-head{padding:11px 12px}.body{padding:11px}.shop-item{grid-template-columns:34px minmax(0,1fr);gap:8px}.swatch{width:32px;height:32px;font-size:18px}.shop-actions{grid-column:1/-1;flex-wrap:wrap}.shop-actions button{flex:1 1 calc(50% - 6px);min-height:40px;padding:7px 6px}.shop-content{max-height:min(520px,70vh)}.slot-grid{gap:3px}.slot-pagination{gap:6px}}
+@media(max-width:560px){.note{top:max(8px,env(safe-area-inset-top));width:calc(100vw - 16px);padding:11px 13px;font-size:14px;max-height:34vh}header{align-items:flex-start;flex-direction:column;padding:12px}.stats{justify-content:flex-start;width:100%;gap:6px}.stat{flex:1 1 calc(50% - 6px);min-width:0;padding:6px 8px}.stat strong{font-size:14px}.game-account{width:100%;justify-content:space-between}.game-account-actions{gap:5px}.game-account-actions button{padding:7px 8px;font-size:11px}main{padding:10px}.panel-head{padding:11px 12px}.body{padding:11px}.shop-item{grid-template-columns:34px minmax(0,1fr);gap:8px}.swatch{width:32px;height:32px;font-size:18px}.shop-actions{grid-column:1/-1;flex-wrap:wrap}.shop-actions button{flex:1 1 calc(50% - 6px);min-height:40px;padding:7px 6px}.shop-content{max-height:min(520px,70vh)}.slot-grid{gap:3px}.slot-pagination{gap:6px}}
 @media(max-width:560px){.shop-tabs{gap:2px;padding-inline:8px}.shop-tab{font-size:10px;padding-inline:2px}}
 
 </style>
@@ -305,7 +308,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
           <button id="nextSlotPage" type="button" aria-label="Next generator page">Next</button>
         </div>
         <p class="tip">Click an empty slot to place your selected generator. Click a generator to inspect or remove it.</p>
-        <div class="note" id="notice"></div>
+        <div class="note" id="notice" role="status" aria-live="polite" aria-atomic="true"></div>
       </div>
     </section>
     <div class="side">
@@ -441,24 +444,24 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 const GENERATOR_TIERS = [
   { id:"basic",      name:"Basic",      color:"#74777b", accent:"#a3a6a8" },
   { id:"common",     name:"Common",     color:"#f3f5ef", accent:"#ffffff" },
-  { id:"uncommon",   name:"Uncommon",   color:"#77734f", accent:"#a7a078" },
-  { id:"rare",       name:"Rare",       color:"#557984", accent:"#89aeb2" },
-  { id:"epic",       name:"Epic",       color:"#655b70", accent:"#9c8da8" },
+  { id:"uncommon",   name:"Uncommon",   color:"#94833a", accent:"#c9b64f" },
+  { id:"rare",       name:"Rare",       color:"#397f91", accent:"#72bdca" },
+  { id:"epic",       name:"Epic",       color:"#805282", accent:"#b879bc" },
   { id:"legendary",  name:"Legendary",  color:"#a47a39", accent:"#d0ad66" },
-  { id:"mythical",   name:"Mythical",   color:"#94565e", accent:"#c17c83" },
-  { id:"ethereal",   name:"Ethereal",   color:"#080a0c", accent:"#bfeee4" },
+  { id:"mythical",   name:"Mythical",   color:"#a94e65", accent:"#d9778e" },
+  { id:"ethereal",   name:"Ethereal",   color:"#242a30", accent:"#687681" },
   { id:"ultimate",   name:"Ultimate",   color:"#e27a36", accent:"#ffc979" },
   { id:"hyper",      name:"Hyper",      color:"#cf4058", accent:"#ff9a79" },
-  { id:"supreme",    name:"Supreme",    color:"#7551a5", accent:"#b99bdc" },
+  { id:"supreme",    name:"Supreme",    color:"#243c70", accent:"#8db1ed" },
   { id:"divine",     name:"Divine",     color:"#dc72ad", accent:"#ffc1df", effect:"dots" },
-  { id:"godly",      name:"Godly",      color:"#a2d9d0", accent:"#f4fff0", effect:"dots" },
+  { id:"godly",      name:"Godly",      color:"#c5f8e9", accent:"#ffffff", effect:"dots" },
   { id:"quantum",    name:"Quantum",    color:"#7254c7", accent:"#d1a2ff", effect:"stars" },
   { id:"plasma",     name:"Plasma",     color:"#e84b3c", accent:"#ff9a77", effect:"squares" },
   { id:"radiant",    name:"Radiant",    color:"#ffe04a", accent:"#fff9bf", effect:"glow" },
   { id:"surge",      name:"Surge",      color:"#249fc9", accent:"#a9efff", effect:"lightning" },
-  { id:"chroma",     name:"Chroma",     color:"#7547bd", accent:"#bd8cff", effect:"chroma", cycleDuration:2.2 },
+  { id:"chroma",     name:"Chroma",     color:"#b83b9d", accent:"#ff83dc", effect:"chroma", cycleDuration:2.2 },
   { id:"blossom",    name:"Blossom",    color:"#f39752", accent:"#ffb8d5", effect:"fog", cycleFrom:"#f39752", cycleTo:"#d62e9a", cycleDuration:1.4 },
-  { id:"absolute",   name:"Absolute",   color:"#60a92d", accent:"#c5f176", effect:"squares", cycleDuration:1.05 },
+  { id:"absolute",   name:"Absolute",   color:"#45bd32", accent:"#b4ff66", effect:"squares", cycleDuration:1.05 },
 ];
 const SAVE_KEY = "generatorGridSave_v1";
 const ACCOUNTS_KEY = "generatorGridAccounts_v1";
@@ -830,9 +833,14 @@ const LEADERBOARD_METRICS = {
   },
   level: {
     label: "Level",
-    heading: "Level leaderboard",
-    description: "Highest current level · Top 100",
-    format: value => number(Math.max(1, Number.isSafeInteger(value) ? value : 1))
+    heading: "Rebirth & level leaderboard",
+    description: "Highest rebirth first, then level · Top 100",
+    fields: ["rebirths", "level"],
+    format: (value, data) => {
+      const rebirths = Math.max(0, Number.isSafeInteger(data.rebirths) ? data.rebirths : 0);
+      return (rebirths === 0 ? "0" : romanNumeral(rebirths))
+        + "-" + number(Math.max(1, Number.isSafeInteger(value) ? value : 1));
+    }
   }
 };
 
@@ -883,9 +891,11 @@ function selectLeaderboard(metricName) {
     return;
   }
   $("leaderboardStatus").textContent = "Loading leaderboard...";
-  leaderboardUnsubscribe = dbRef.collection("leaderboard")
-    .orderBy(metricName, "desc")
-    .limit(100)
+  let leaderboardQuery = dbRef.collection("leaderboard");
+  (metric.fields || [metricName]).forEach(field => {
+    leaderboardQuery = leaderboardQuery.orderBy(field, "desc");
+  });
+  leaderboardUnsubscribe = leaderboardQuery.limit(100)
     .onSnapshot(
       snapshot => renderLeaderboard(snapshot, metricName),
       () => {
@@ -1195,14 +1205,22 @@ function multiplierDropChance(generator) {
 function notify(message, error = false, taskComplete = false) {
   const notice = $("notice");
   notice.textContent = message;
-  notice.classList.toggle("task-notice", taskComplete);
-  notice.style.color = error ? "#ff8c8c" : taskComplete ? "" : "var(--green)";
+  const isTaskNotice = taskComplete === true;
+  const isBonusNotice = taskComplete === "bonus-star";
+  notice.classList.toggle("task-notice", isTaskNotice);
+  notice.classList.toggle("bonus-notice", isBonusNotice);
+  notice.classList.toggle("error-notice", error);
+  notice.classList.add("notice-visible");
   clearTimeout(noticeTimer);
   noticeTimer = setTimeout(() => {
-    notice.textContent = "";
-    notice.classList.remove("task-notice");
-    notice.style.color = "";
-  }, 5000);
+    notice.classList.remove("notice-visible");
+    setTimeout(() => {
+      if (!notice.classList.contains("notice-visible")) {
+        notice.textContent = "";
+        notice.classList.remove("task-notice", "bonus-notice", "error-notice");
+      }
+    }, 220);
+  }, 6500);
 }
 function spawnStar(isCashReward = false, position = null) {
   const layer = $("starLayer");
