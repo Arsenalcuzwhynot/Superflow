@@ -168,6 +168,16 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .achievement-card p{margin:4px 0 0;color:var(--muted);font-size:11px}
 .achievement-card.claimed{border-color:#476b59}
 .achievement-status{display:block;margin-top:4px;color:var(--muted);font-size:10px}
+.task-section-title{font-size:12px;margin:12px 0 8px}
+.task-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:11px;background:#11161d;border:1px solid var(--line);border-radius:9px}
+.task-card h3{margin:0;font-size:12px}
+.task-card p{margin:4px 0 0;color:var(--muted);font-size:11px}
+.task-card.completed{border-color:#476b59}
+.task-objective{display:block;margin-top:4px;color:var(--muted);font-size:10px}
+.crate-list{display:grid;gap:8px}
+.crate-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;background:#11161d;border:1px solid var(--line);border-radius:9px}
+.crate-card strong{font-size:12px}
+.crate-card button{padding:7px 10px}
 .shop-item{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px;background:#11161d;border:1px solid var(--line);border-radius:9px}
 .shop-actions{display:flex;gap:6px;align-items:stretch}
 .swatch{width:40px;height:40px;border-radius:8px;border:1px solid #ffffff30;display:grid;place-items:center;font-size:22px;color:#fff}
@@ -178,6 +188,9 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .shop-item button{font-size:11px;padding:8px 10px}
 .summary{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .summary-card{background:#10151c;border:1px solid var(--line);border-radius:9px;padding:11px}
+.privacy-setting{display:flex;align-items:flex-start;gap:8px;margin-top:12px}
+.privacy-setting input{width:auto;margin:3px 0 0}
+.privacy-setting span{display:grid;gap:2px}
 .summary-card small{display:block;color:var(--muted);font-size:10px}
 .summary-card strong{font-size:16px}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
@@ -203,6 +216,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 @media(max-width:850px){.layout{grid-template-columns:minmax(0,1fr) minmax(280px,.9fr)}}
 @media(max-width:700px){.layout{grid-template-columns:1fr}}
 @media(max-width:560px){header{align-items:flex-start;flex-direction:column;padding:12px}.stats{justify-content:flex-start;width:100%;gap:6px}.stat{flex:1 1 calc(50% - 6px);min-width:0;padding:6px 8px}.stat strong{font-size:14px}.game-account{width:100%;justify-content:space-between}.game-account-actions{gap:5px}.game-account-actions button{padding:7px 8px;font-size:11px}main{padding:10px}.panel-head{padding:11px 12px}.body{padding:11px}.shop-item{grid-template-columns:34px minmax(0,1fr);gap:8px}.swatch{width:32px;height:32px;font-size:18px}.shop-actions{grid-column:1/-1;flex-wrap:wrap}.shop-actions button{flex:1 1 calc(50% - 6px);min-height:40px;padding:7px 6px}.shop-content{max-height:min(520px,70vh)}.slot-grid{gap:3px}.slot-pagination{gap:6px}}
+@media(max-width:560px){.shop-tabs{gap:2px;padding-inline:8px}.shop-tab{font-size:10px;padding-inline:2px}}
 
 </style>
 </head>
@@ -291,8 +305,9 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         </div>
       </div>
       <div class="body shop-content">
-        <div class="shop-tabs" role="tablist" aria-label="Shop, rebirth, upgrades, and achievements">
+        <div class="shop-tabs" role="tablist" aria-label="Shop, tasks, rebirth, upgrades, and achievements">
           <button class="shop-tab" id="shopTabBtn" type="button" role="tab" aria-selected="true" aria-controls="shopTabPanel">Shop</button>
+          <button class="shop-tab" id="tasksTabBtn" type="button" role="tab" aria-selected="false" aria-controls="tasksTabPanel">Tasks</button>
           <button class="shop-tab" id="rebirthTabBtn" type="button" role="tab" aria-selected="false" aria-controls="rebirthTabPanel">Rebirth</button>
           <button class="shop-tab" id="upgradesTabBtn" type="button" role="tab" aria-selected="false" aria-controls="upgradesTabPanel">Upgrades</button>
           <button class="shop-tab" id="achievementsTabBtn" type="button" role="tab" aria-selected="false" aria-controls="achievementsTabPanel">Achievements</button>
@@ -303,6 +318,13 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
             <input id="multiBuyAmount" type="number" min="1" step="1" value="1" inputmode="numeric">
           </div>
           <div class="shop-list" id="shop"></div>
+        </div>
+        <div id="tasksTabPanel" role="tabpanel" aria-labelledby="tasksTabBtn" hidden>
+          <p class="muted small">Complete objectives to claim generator crates. Each crate awards one generator. Basic and Common crates can roll up to two tiers above their tier; other crates can roll up to two tiers below. Eligible tiers currently have equal odds.</p>
+          <h3 class="task-section-title">Generator crates</h3>
+          <div class="crate-list" id="crateList"></div>
+          <h3 class="task-section-title">Objectives</h3>
+          <div class="achievement-list" id="taskList"></div>
         </div>
         <div id="rebirthTabPanel" role="tabpanel" aria-labelledby="rebirthTabBtn" hidden>
         <div class="rebirth-panel">
@@ -333,6 +355,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
             <button id="resetBtn">Reset game</button>
           </div>
           <p class="muted small">Progress saves to your account. Avoid playing on two devices at the same time.</p>
+          <label class="privacy-setting muted small" for="hideFromLeaderboard">
+            <input id="hideFromLeaderboard" type="checkbox" disabled>
+            <span><strong>Hide my account from the leaderboard</strong><span>Removes your score from the public board. You can turn this off anytime.</span></span>
+          </label>
         </div>
       </section>
       <section class="panel" id="adminPanel" hidden>
@@ -454,6 +480,8 @@ let dbRef = null;
 let functionsRef = null;
 let currentUser = null;
 let currentUsername = null;
+let hideFromLeaderboard = false;
+let leaderboardPrivacyLoaded = false;
 let firebaseReady = false;
 let communityUnsubscribers = [];
 let lastChatSentAt = 0;
@@ -538,12 +566,14 @@ async function enterGame(username, user, firstTime = false) {
   currentUsername = username;
   state = freshState();
   await load();
+  renderLeaderboardPrivacySetting();
   if (firstTime) {
     state.tutorialStarted = true;
     state.tutorialComplete = false;
     state.tutorialStep = 0;
     state.tutorialStartLevel = state.level;
   }
+  if (state.tutorialStarted && state.tutorialComplete) grantTutorialBasicCrate();
   selectShopTab(firstTime ? "rebirth" : "shop");
   configureGameTickTimer();
   await save();
@@ -559,6 +589,8 @@ async function enterGame(username, user, firstTime = false) {
 }
 
 async function loadUserSave() {
+  hideFromLeaderboard = false;
+  leaderboardPrivacyLoaded = false;
   try {
     if (!currentUser || !dbRef) {
       state = freshState();
@@ -580,9 +612,30 @@ async function loadUserSave() {
         }
       }
     }
+    hideFromLeaderboard = !!(data && data.hideFromLeaderboard === true);
+    leaderboardPrivacyLoaded = true;
     if (!data || typeof data !== "object") return;
     const savedState = data.state && typeof data.state === "object" ? data.state : {};
     state = { ...freshState(), ...savedState };
+    const savedCrates = savedState.crateInventory && typeof savedState.crateInventory === "object"
+      ? savedState.crateInventory
+      : {};
+    state.crateInventory = {};
+    CRATE_TIERS.forEach(tier => {
+      const count = Number(savedCrates[tier.id]);
+      state.crateInventory[tier.id] = Number.isSafeInteger(count) ? Math.max(0, count) : 0;
+    });
+    state.completedTaskObjectives = Array.isArray(savedState.completedTaskObjectives)
+      ? [...new Set(savedState.completedTaskObjectives.filter(id => Object.prototype.hasOwnProperty.call(TASK_OBJECTIVES, id)))]
+      : [];
+    state.claimedTaskRewards = Array.isArray(savedState.claimedTaskRewards)
+      ? [...new Set(savedState.claimedTaskRewards.filter(id => TASKS.some(task => task.id === id)))]
+      : [];
+    const savedPlacements = Number(savedState.taskGenerationsPlaced);
+    state.taskGenerationsPlaced = Number.isSafeInteger(savedPlacements) ? Math.max(0, savedPlacements) : 0;
+    const savedStars = Number(savedState.taskStarsCollected);
+    state.taskStarsCollected = Number.isSafeInteger(savedStars) ? Math.max(0, savedStars) : 0;
+    state.tutorialCrateAwarded = savedState.tutorialCrateAwarded === true;
     const savedLevelReachedAt = Number(savedState.levelReachedAt);
     state.levelReachedAt = Number.isSafeInteger(savedLevelReachedAt) && savedLevelReachedAt > 0
       ? savedLevelReachedAt
@@ -634,6 +687,39 @@ async function loadUserSave() {
     if (!getGenerator(state.selected) || available(state.selected) <= 0) state.selected = null;
   } catch (e) {
     state = freshState();
+    $("leaderboardStatus").textContent = "Could not load leaderboard privacy settings. Your score will not be published until this is resolved.";
+  }
+}
+
+function renderLeaderboardPrivacySetting() {
+  const setting = $("hideFromLeaderboard");
+  setting.checked = hideFromLeaderboard;
+  setting.disabled = !currentUser || !leaderboardPrivacyLoaded;
+}
+
+async function updateLeaderboardPrivacy(event) {
+  const setting = event.currentTarget;
+  const hide = setting.checked;
+  setting.disabled = true;
+  try {
+    await dbRef.collection("users").doc(currentUser.uid).set({
+      hideFromLeaderboard: hide,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    hideFromLeaderboard = hide;
+    const published = await publishLeaderboardEntry();
+    if (!published) {
+      notify(hide
+        ? "Your privacy setting was saved, but your leaderboard entry could not be removed yet."
+        : "Your privacy setting was saved, but your leaderboard entry could not be restored yet.", true);
+      return;
+    }
+    notify(hide ? "Your account is hidden from the leaderboard." : "Your account is visible on the leaderboard.");
+  } catch (error) {
+    setting.checked = hideFromLeaderboard;
+    notify("Could not save your leaderboard privacy setting. Try again.", true);
+  } finally {
+    renderLeaderboardPrivacySetting();
   }
 }
 
@@ -651,9 +737,14 @@ async function saveUserState(silent = true) {
 }
 
 async function publishLeaderboardEntry() {
-  if (!currentUser || !dbRef) return;
+  if (!currentUser || !dbRef || !leaderboardPrivacyLoaded) return false;
   try {
-    await dbRef.collection("leaderboard").doc(currentUser.uid).set({
+    const leaderboardEntry = dbRef.collection("leaderboard").doc(currentUser.uid);
+    if (hideFromLeaderboard) {
+      await leaderboardEntry.delete();
+      return true;
+    }
+    await leaderboardEntry.set({
       uid: currentUser.uid,
       username: currentUsername,
       cashEarned: Math.max(0, Number(state.lifetime) || 0),
@@ -664,8 +755,10 @@ async function publishLeaderboardEntry() {
         : Date.now(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
+    return true;
   } catch (e) {
     $("leaderboardStatus").textContent = "Leaderboard could not update. Check Firestore rules.";
+    return false;
   }
 }
 
@@ -771,6 +864,32 @@ const GENERATORS = GENERATOR_TIERS.map((tier, index) => ({
   effectDuration: tier.effectDuration || (index > 7 ? Math.max(2, 8 - (index - 8) * 0.28) : 0)
 }));
 
+const CRATE_TIERS = GENERATOR_TIERS;
+const CRATE_TIER_WEIGHTS = {
+  basic: { basic: 50, common: 35, uncommon: 15 },
+  common: { basic: 10, common: 40, uncommon: 35, rare: 15 }
+};
+const TASK_OBJECTIVES = {
+  placedThree: "Have at least 3 generators placed at once",
+  levelFive: "Reach level 5",
+  allSlotsFilled: "Fill every unlocked generator slot",
+  placedTen: "Place 10 generators in total",
+  placedFifteen: "Place 15 generators in total",
+  collectedStar: "Collect a Star",
+  levelSeventeen: "Reach level 17",
+  levelTwenty: "Reach level 20",
+  rebirth: "Complete a rebirth"
+};
+const TASKS = [
+  { id: "placed-three", title: "Have 3 generators placed", crate: "common", objectives: ["placedThree"] },
+  { id: "uncommon-ready", title: "Reach level 5 and fill all generator slots", crate: "uncommon", objectives: ["levelFive", "allSlotsFilled"] },
+  { id: "placed-ten", title: "Place 10 generators", crate: "rare", objectives: ["placedTen"] },
+  { id: "placed-fifteen", title: "Place 15 generators", crate: "epic", objectives: ["placedFifteen"] },
+  { id: "star-level-seventeen", title: "Collect a Star and reach level 17", crate: "epic", objectives: ["collectedStar", "levelSeventeen"] },
+  { id: "level-twenty", title: "Reach level 20", crate: "legendary", objectives: ["levelTwenty"] },
+  { id: "first-rebirth", title: "Rebirth", crate: "legendary", objectives: ["rebirth"] }
+];
+
 const CASH_ACHIEVEMENTS = [
   { id: "cash-1k", title: "$1K lifetime notes", target: 1e3 },
   { id: "cash-10k", title: "$10K lifetime notes", target: 1e4 },
@@ -815,6 +934,12 @@ const freshState = () => ({
   money: 10,
   lifetime: 0,
   inventory: {},
+  crateInventory: {},
+  completedTaskObjectives: [],
+  claimedTaskRewards: [],
+  taskGenerationsPlaced: 0,
+  taskStarsCollected: 0,
+  tutorialCrateAwarded: false,
   claimedAchievements: [],
   tutorialStarted: false,
   tutorialComplete: true,
@@ -947,6 +1072,9 @@ function spawnStar(isCashReward = false, position = null) {
   const star = makeButton("★", () => {
     star.remove();
     if (!currentUser) return;
+    state.taskStarsCollected++;
+    const taskObjectivesChanged = updateTaskObjectives();
+    if (taskObjectivesChanged && !$("tasksTabPanel").hidden) renderTasks();
     if (isCashReward) {
       const reward = state.money * 0.01;
       state.money += reward;
@@ -1091,6 +1219,9 @@ async function logoutUser() {
   await authRef.signOut();
   currentUser = null;
   currentUsername = null;
+  hideFromLeaderboard = false;
+  leaderboardPrivacyLoaded = false;
+  renderLeaderboardPrivacySetting();
   state = freshState();
   configureGameTickTimer();
   updateAuthUI();
@@ -1106,29 +1237,53 @@ async function deletePlayerAccount() {
   }
   if (!confirm("Permanently delete " + currentUsername + "? This removes your game save, leaderboard entry, chat messages, and account. This cannot be undone.")) return;
   const username = currentUsername;
+  const deleteButton = $("deleteAccountBtn");
+  deleteButton.disabled = true;
+  deleteButton.textContent = "Deleting account...";
+  notify("Deleting your account and removing its leaderboard entry...");
   try {
-    await functionsRef.httpsCallable("deleteAccount")();
-    stopStarSpawns();
-    communityUnsubscribers.forEach(unsubscribe => unsubscribe());
-    communityUnsubscribers = [];
-    await authRef.signOut();
-    const accounts = getAccountStore();
-    delete accounts[username];
-    saveAccountStore(accounts);
-    localStorage.removeItem(getPlayerSaveKey(username));
-    currentUser = null;
-    currentUsername = null;
-    state = freshState();
-    configureGameTickTimer();
-    updateAuthUI();
-    $("gameShell").hidden = true;
-    $("authScreen").hidden = false;
-    $("usernameInput").value = "";
-    $("passwordInput").value = "";
-    $("authStatus").textContent = "Your account and leaderboard entry have been permanently deleted.";
+    const result = await functionsRef.httpsCallable("deleteAccount")({ username });
+    if (!result.data || result.data.deleted !== true) {
+      throw new Error("The server did not confirm account deletion. Your account is still active.");
+    }
   } catch (error) {
-    notify(error.message || "Account deletion failed. Your account is still active.", true);
+    console.error("Account deletion failed:", error.code || "unknown error");
+    const code = typeof error.code === "string" ? error.code : "";
+    const message = code === "functions/not-found"
+      ? "Account deletion is not available on the game server yet. Deploy the Firebase deleteAccount function, then try again. Your account has not been deleted."
+      : error.message || "Account deletion failed. Your account has not been deleted.";
+    notify(message, true);
+    showModal("Account was not deleted", message, [["Close", closeModal]]);
+    deleteButton.disabled = false;
+    deleteButton.textContent = "Delete account";
+    return;
   }
+
+  stopStarSpawns();
+  communityUnsubscribers.forEach(unsubscribe => unsubscribe());
+  communityUnsubscribers = [];
+  try {
+    await authRef.signOut();
+  } catch (error) {
+    console.error("Sign-out after account deletion failed:", error.code || "unknown error");
+  }
+  const accounts = getAccountStore();
+  delete accounts[username];
+  saveAccountStore(accounts);
+  localStorage.removeItem(getPlayerSaveKey(username));
+  currentUser = null;
+  currentUsername = null;
+  state = freshState();
+  currentSlotPage = 0;
+  configureGameTickTimer();
+  updateAuthUI();
+  $("gameShell").hidden = true;
+  $("authScreen").hidden = false;
+  $("usernameInput").value = "";
+  $("passwordInput").value = "";
+  $("authStatus").textContent = "Your account and leaderboard entry were deleted. The username is available for a new account.";
+  deleteButton.disabled = false;
+  deleteButton.textContent = "Delete account";
 }
 function makeShopRow(generator, mode) {
   const row = document.createElement("div");
@@ -1301,6 +1456,156 @@ function renderAchievements() {
   });
   updateAchievementAvailability();
 }
+function taskObjectiveReached(id) {
+  switch (id) {
+    case "placedThree": return placedTotal() >= 3;
+    case "levelFive": return state.level >= 5;
+    case "allSlotsFilled": return state.slots.length > 0 && placedTotal() === state.slots.length;
+    case "placedTen": return state.taskGenerationsPlaced >= 10;
+    case "placedFifteen": return state.taskGenerationsPlaced >= 15;
+    case "collectedStar": return state.taskStarsCollected >= 1;
+    case "levelSeventeen": return state.level >= 17;
+    case "levelTwenty": return state.level >= 20;
+    case "rebirth": return state.rebirths >= 1;
+    default: return false;
+  }
+}
+function updateTaskObjectives() {
+  let changed = false;
+  Object.keys(TASK_OBJECTIVES).forEach(id => {
+    if (taskObjectiveReached(id) && !state.completedTaskObjectives.includes(id)) {
+      state.completedTaskObjectives.push(id);
+      changed = true;
+    }
+  });
+  if (changed) save();
+  return changed;
+}
+function taskObjectiveProgress(id) {
+  switch (id) {
+    case "placedThree": return placedTotal() + " / 3 currently placed";
+    case "levelFive": return "Level " + state.level + " / 5";
+    case "allSlotsFilled": return placedTotal() + " / " + state.slots.length + " slots filled";
+    case "placedTen": return state.taskGenerationsPlaced + " / 10 placements";
+    case "placedFifteen": return state.taskGenerationsPlaced + " / 15 placements";
+    case "collectedStar": return Math.min(1, state.taskStarsCollected) + " / 1 star collected";
+    case "levelSeventeen": return "Level " + state.level + " / 17";
+    case "levelTwenty": return "Level " + state.level + " / 20";
+    case "rebirth": return Math.min(1, state.rebirths) + " / 1 rebirth";
+    default: return "";
+  }
+}
+function claimTaskReward(taskId) {
+  const task = TASKS.find(item => item.id === taskId);
+  if (!task || state.claimedTaskRewards.includes(task.id)
+    || !task.objectives.every(id => state.completedTaskObjectives.includes(id))) return;
+  state.claimedTaskRewards.push(task.id);
+  state.crateInventory[task.crate] = (state.crateInventory[task.crate] || 0) + 1;
+  renderTasks();
+  save();
+  notify(task.crate[0].toUpperCase() + task.crate.slice(1) + " crate claimed!");
+}
+function renderTasks() {
+  updateTaskObjectives();
+  const cratesHost = $("crateList");
+  cratesHost.replaceChildren();
+  const cratesOwned = CRATE_TIERS.filter(tier => (state.crateInventory[tier.id] || 0) > 0);
+  if (cratesOwned.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "muted small";
+    empty.textContent = "No crates yet. Finish the tutorial and claim task rewards to earn crates.";
+    cratesHost.append(empty);
+  } else {
+    CRATE_TIERS.forEach(tier => {
+      const count = state.crateInventory[tier.id] || 0;
+      if (count === 0) return;
+      const row = document.createElement("div");
+      row.className = "crate-card";
+      const name = document.createElement("strong");
+      name.textContent = tier.name + " crate ×" + count;
+      name.style.color = tier.accent || tier.color;
+      const openButton = makeButton("Open", () => openGeneratorCrate(tier.id));
+      row.append(name, openButton);
+      cratesHost.append(row);
+    });
+  }
+
+  const taskHost = $("taskList");
+  taskHost.replaceChildren();
+  TASKS.forEach(task => {
+    const complete = task.objectives.every(id => state.completedTaskObjectives.includes(id));
+    const claimed = state.claimedTaskRewards.includes(task.id);
+    const card = document.createElement("section");
+    card.className = "task-card";
+    card.classList.toggle("completed", complete);
+    const details = document.createElement("div");
+    const title = document.createElement("h3");
+    title.textContent = task.title;
+    const reward = document.createElement("p");
+    const crateTier = CRATE_TIERS.find(tier => tier.id === task.crate);
+    reward.textContent = "Reward: " + crateTier.name + " crate";
+    const objectives = document.createElement("div");
+    task.objectives.forEach(id => {
+      const progress = document.createElement("span");
+      progress.className = "task-objective";
+      const objectiveComplete = state.completedTaskObjectives.includes(id);
+      progress.textContent = (objectiveComplete ? "✓ " : "") + TASK_OBJECTIVES[id]
+        + " · " + (objectiveComplete ? "Complete" : taskObjectiveProgress(id));
+      objectives.append(progress);
+    });
+    details.append(title, reward, objectives);
+    const button = makeButton(
+      claimed ? "Claimed" : complete ? "Claim crate" : "In progress",
+      () => claimTaskReward(task.id),
+      claimed || !complete
+    );
+    card.append(details, button);
+    taskHost.append(card);
+  });
+}
+function grantTutorialBasicCrate() {
+  if (state.tutorialCrateAwarded) return;
+  state.tutorialCrateAwarded = true;
+  state.crateInventory.basic = (state.crateInventory.basic || 0) + 1;
+  renderTasks();
+  save();
+  notify("Tutorial complete! You received a Basic crate.");
+}
+function openGeneratorCrate(crateId) {
+  const crateTierIndex = CRATE_TIERS.findIndex(tier => tier.id === crateId);
+  if (crateTierIndex < 0 || (state.crateInventory[crateId] || 0) <= 0) return;
+  const minimumIndex = Math.max(0, crateTierIndex - 2);
+  const maximumIndex = crateTierIndex <= 1
+    ? Math.min(GENERATORS.length - 1, crateTierIndex + 2)
+    : crateTierIndex;
+  const weights = CRATE_TIER_WEIGHTS[crateId] || {};
+  if (!CRATE_TIER_WEIGHTS[crateId]) {
+    const ownTierWeight = crateTierIndex >= GENERATOR_TIERS.findIndex(tier => tier.id === "divine") ? 20 : 30;
+    for (let index = minimumIndex; index < crateTierIndex; index++) {
+      weights[GENERATORS[index].id] = ownTierWeight === 20 ? 40 : 35;
+    }
+    weights[GENERATORS[crateTierIndex].id] = ownTierWeight;
+  }
+  const possibleGenerators = GENERATORS.filter(generator =>
+    generator.index >= minimumIndex && generator.index <= maximumIndex
+  ).map(generator => ({
+    generator,
+    weight: weights[generator.id] === undefined ? 1 : Math.max(0, Number(weights[generator.id]) || 0)
+  })).filter(item => item.weight > 0);
+  const totalWeight = possibleGenerators.reduce((total, item) => total + item.weight, 0);
+  if (totalWeight <= 0) {
+    notify("This crate has no valid generator odds configured.", true);
+    return;
+  }
+  let roll = Math.random() * totalWeight;
+  const selected = possibleGenerators.find(item => (roll -= item.weight) < 0) || possibleGenerators[possibleGenerators.length - 1];
+  const generator = selected.generator;
+  state.crateInventory[crateId]--;
+  state.inventory[generator.id] = owned(generator.id) + 1;
+  render();
+  save();
+  notify(CRATE_TIERS[crateTierIndex].name + " crate opened: " + generator.name + " added to inventory!");
+}
 function placedTotal() { return state.slots.filter(Boolean).length; }
 function makeSlotButton(index, slot) {
   const button = document.createElement("button");
@@ -1437,7 +1742,7 @@ function renderInventory() {
   const host = $("inventory");
   if (host) host.innerHTML = "";
 }
-function render() { renderStats(); renderSlots(); renderShop(); renderInventory(); renderUpgrades(); renderAchievements(); }
+function render() { renderStats(); renderSlots(); renderShop(); renderInventory(); renderUpgrades(); renderAchievements(); renderTasks(); }
 function renderTutorial() {
   const guide = $("tutorialGuide");
   guide.hidden = !state.tutorialStarted;
@@ -1480,22 +1785,29 @@ function advanceTutorial(action) {
     progressed = true;
   }
   if (!progressed) return;
+  if (state.tutorialComplete) grantTutorialBasicCrate();
   renderTutorial();
   save();
 }
 function skipTutorial() {
   state.tutorialComplete = true;
+  grantTutorialBasicCrate();
   renderTutorial();
   save();
 }
 function buy(id, quantity = 1) {
   const g = getGenerator(id);
   if (!g || !Number.isSafeInteger(quantity) || quantity < 1 || !canBuy(g, quantity)) return;
+  const tutorialWasIncomplete = state.tutorialStarted && !state.tutorialComplete;
   state.money -= generatorPrice(g) * quantity;
   state.inventory[id] = owned(id) + quantity;
   state.selected = id;
   if (id === "basic") advanceTutorial("buy-basic");
-  notify("Bought " + quantity + " " + g.name + (quantity === 1 ? "" : " generators") + ". Click an empty slot to place it.");
+  const tutorialReward = tutorialWasIncomplete && state.tutorialComplete
+    ? " Tutorial complete! You received a Basic crate."
+    : "";
+  notify("Bought " + quantity + " " + g.name + (quantity === 1 ? "" : " generators")
+    + ". Click an empty slot to place it." + tutorialReward);
   render();
   save();
 }
@@ -1665,6 +1977,8 @@ function clickSlot(index) {
   }
   const g = getGenerator(state.selected);
   state.slots[index] = { id: g.id };
+  state.taskGenerationsPlaced++;
+  updateTaskObjectives();
   if (g.id === "basic") advanceTutorial("place-basic");
   notify(g.name + " equipped in slot " + (index + 1) + ".");
   if (available(g.id) <= 0) state.selected = null;
@@ -1686,17 +2000,20 @@ $("loginBtn").addEventListener("click", loginWithUsername);
 $("signupBtn").addEventListener("click", createAccountWithUsername);
 $("logoutBtn").addEventListener("click", logoutUser);
 $("deleteAccountBtn").addEventListener("click", deletePlayerAccount);
+$("hideFromLeaderboard").addEventListener("change", updateLeaderboardPrivacy);
 $("chatForm").addEventListener("submit", sendChatMessage);
 function selectShopTab(tab) {
-  ["shop", "rebirth", "upgrades", "achievements"].forEach(name => {
+  ["shop", "tasks", "rebirth", "upgrades", "achievements"].forEach(name => {
     const selected = name === tab;
     $(name + "TabBtn").setAttribute("aria-selected", String(selected));
     $(name + "TabPanel").hidden = !selected;
   });
+  if (tab === "tasks") renderTasks();
   if (tab === "achievements") updateAchievementAvailability();
   if (tab === "shop") advanceTutorial("shop");
 }
 $("shopTabBtn").addEventListener("click", () => selectShopTab("shop"));
+$("tasksTabBtn").addEventListener("click", () => selectShopTab("tasks"));
 $("rebirthTabBtn").addEventListener("click", () => selectShopTab("rebirth"));
 $("upgradesTabBtn").addEventListener("click", () => selectShopTab("upgrades"));
 $("achievementsTabBtn").addEventListener("click", () => selectShopTab("achievements"));
@@ -1760,8 +2077,16 @@ $("adminLevelBtn").addEventListener("click", () => {
 });
 $("rebirthBtn").addEventListener("click", rebirth);
 $("resetBtn").addEventListener("click", () => {
-  if (!confirm("Reset your money, lifetime earnings, inventory, level, rebirths, rebirth points, upgrades, achievements, XP, multiplier, speed boost, and placed generators? This cannot be undone.")) return;
-  state = freshState();
+  if (!confirm("Reset your money, lifetime earnings, inventory, level, rebirths, rebirth points, upgrades, achievements, XP, multiplier, speed boost, and placed generators? Crates and task progress are kept. This cannot be undone.")) return;
+  const taskProgress = {
+    crateInventory: state.crateInventory,
+    completedTaskObjectives: state.completedTaskObjectives,
+    claimedTaskRewards: state.claimedTaskRewards,
+    taskGenerationsPlaced: state.taskGenerationsPlaced,
+    taskStarsCollected: state.taskStarsCollected,
+    tutorialCrateAwarded: state.tutorialCrateAwarded
+  };
+  state = { ...freshState(), ...taskProgress };
   currentSlotPage = 0;
   configureGameTickTimer();
   render();
@@ -1792,6 +2117,8 @@ function gameTick() {
     levelsGained++;
   }
   if (levelsGained > 0) state.levelReachedAt = Date.now();
+  const taskObjectivesChanged = updateTaskObjectives();
+  if ((taskObjectivesChanged || levelsGained > 0) && !$("tasksTabPanel").hidden) renderTasks();
   if (levelsGained > 0 && state.tutorialStep === 3 && state.level > state.tutorialStartLevel) {
     advanceTutorial("level-up");
   }
