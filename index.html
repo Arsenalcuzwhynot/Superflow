@@ -481,6 +481,16 @@ function usernameToAuthEmail(username) {
   return "player-" + usernameHex + "@accounts.generator-grid.invalid";
 }
 
+async function syncUsernameDirectory(username) {
+  try {
+    await functionsRef.httpsCallable("registerUsername")({ username });
+    return true;
+  } catch (error) {
+    console.error("Username directory registration failed:", error);
+    return false;
+  }
+}
+
 function initFirebase() {
   if (typeof window.firebase === "undefined") return false;
   const ready = FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.projectId;
@@ -1017,27 +1027,19 @@ async function createAccountWithUsername() {
     showAuthError("Password must be at least 6 characters.");
     return;
   }
-  let createdUser = null;
   try {
     await authRef.setPersistence(firebase.auth.Auth.Persistence.NONE);
     const credential = await authRef.createUserWithEmailAndPassword(usernameToAuthEmail(username), password);
-    createdUser = credential.user;
-    await functionsRef.httpsCallable("registerUsername")({ username });
+    const usernameSync = syncUsernameDirectory(username);
     const accounts = getAccountStore();
     delete accounts[username];
     saveAccountStore(accounts);
     await enterGame(username, credential.user, true);
-    notify("Your Superflow account is ready, " + username + ".");
+    const usernameRegistered = await usernameSync;
+    notify(usernameRegistered
+      ? "Your Superflow account is ready, " + username + "."
+      : "Account created and signed in. Username registration is unavailable; generator gifting needs the updated Firebase functions deployed.");
   } catch (e) {
-    if (createdUser) {
-      try {
-        await functionsRef.httpsCallable("deleteAccount")();
-      } catch (cleanupError) {
-        showAuthError((e.message || "Could not create account.")
-          + " The incomplete account could not be removed; contact support before retrying.");
-        return;
-      }
-    }
     showAuthError(e.code === "auth/email-already-in-use" ? "That username already exists." : e.message || "Could not create account.");
   }
 }
@@ -1056,16 +1058,27 @@ async function loginWithUsername() {
   try {
     await authRef.setPersistence(firebase.auth.Auth.Persistence.NONE);
     const credential = await authRef.signInWithEmailAndPassword(usernameToAuthEmail(username), password);
-    await functionsRef.httpsCallable("registerUsername")({ username });
+    const usernameSync = syncUsernameDirectory(username);
     const accounts = getAccountStore();
     delete accounts[username];
     saveAccountStore(accounts);
     await enterGame(username, credential.user);
-    notify("Welcome back, " + username + ".");
+    const usernameRegistered = await usernameSync;
+    notify(usernameRegistered
+      ? "Welcome back, " + username + "."
+      : "Signed in as " + username + ". Username registration is unavailable; generator gifting needs the updated Firebase functions deployed.");
   } catch (e) {
-    showAuthError(e.code === "auth/invalid-credential" || e.code === "auth/user-not-found" || e.code === "auth/wrong-password"
-      ? "Username or password is incorrect."
-      : e.message || "Login failed.");
+    console.error("Username sign-in failed:", e.code || "unknown error");
+    const code = typeof e.code === "string" ? e.code : "";
+    const message = String(e.message || "").toLowerCase();
+    showAuthError(code === "auth/invalid-credential" || code === "auth/user-not-found"
+      || code === "auth/wrong-password" || code === "auth/invalid-email"
+      ? "Username or password is incorrect. Usernames are case-sensitive."
+      : code === "auth/network-request-failed"
+        ? "Could not reach Firebase. Check your internet connection and try again."
+        : message === "internal" || code === "auth/internal-error"
+          ? "Firebase returned an internal sign-in error. Refresh the game and try again. If it continues, check Firebase Authentication status."
+          : e.message || "Login failed. Please try again.");
   }
 }
 
