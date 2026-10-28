@@ -32,6 +32,8 @@ input::placeholder{color:#8a98ab}
 .auth-hint{margin-top:14px;color:var(--muted);font-size:11px}
 .game-shell{min-height:100vh}
 .game-account{display:flex;align-items:center;gap:10px}
+.game-account-actions{display:flex;align-items:center;gap:8px}
+.danger-button{background:#46262d;border-color:#78414b}
 .game-account .auth-status{margin:0}
 header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px clamp(14px,3vw,32px);border-bottom:1px solid var(--line);background:#11161d;position:relative;z-index:4}
 .brand{display:flex;align-items:center;gap:9px;font-size:20px;font-weight:800;letter-spacing:-.045em;white-space:nowrap}
@@ -79,8 +81,39 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .generator-particles span:nth-child(6){--start-x:-15px;--start-y:0px;--drift-x:-18px;--drift-y:3px}
 .generator-particles span:nth-child(7){--start-x:0px;--start-y:-15px;--drift-x:2px;--drift-y:-20px}
 .generator-particles span:nth-child(8){--start-x:0px;--start-y:14px;--drift-x:-2px;--drift-y:20px}
+.generator-particles span:nth-child(9){--start-x:-7px;--start-y:-7px;--drift-x:-22px;--drift-y:-12px}
+.generator-particles span:nth-child(10){--start-x:7px;--start-y:-7px;--drift-x:22px;--drift-y:-12px}
+.generator-particles span:nth-child(11){--start-x:7px;--start-y:7px;--drift-x:22px;--drift-y:12px}
+.generator-particles span:nth-child(12){--start-x:-7px;--start-y:7px;--drift-x:-22px;--drift-y:12px}
+.generator-particles span:nth-child(13){--start-x:0px;--start-y:-6px;--drift-x:-2px;--drift-y:-26px}
+.generator-particles span:nth-child(14){--start-x:0px;--start-y:6px;--drift-x:2px;--drift-y:26px}
+.generator-particles span:nth-child(15){--start-x:-6px;--start-y:0px;--drift-x:-26px;--drift-y:2px}
+.generator-particles span:nth-child(16){--start-x:6px;--start-y:0px;--drift-x:26px;--drift-y:-2px}
 .generator-particles span:nth-child(2n){animation-delay:-1.1s}
 .generator-particles span:nth-child(3n){animation-delay:-2s}
+.effect-arsenal .generator-particles span{width:5px;height:5px;background:#ffe4a0;box-shadow:0 0 11px 3px #ff3c33,0 0 22px 4px #ffb528}
+.effect-arsenal .generator-particles span:nth-child(3n)::before{content:"✦";color:#fff3ce;text-shadow:0 0 10px #ff3b32,0 0 18px #ffbe34}
+.effect-solstice .generator-particles span{width:5px;height:9px;border-radius:50%;background:#fff5a2;box-shadow:0 0 12px 4px #ffc928}
+.effect-solstice .generator-particles span:nth-child(odd)::before{content:"✧";color:#fff6ae;text-shadow:0 0 9px #ffb500}
+.effect-obsidian .generator-particles span{width:5px;height:5px;background:#e6d9ff;box-shadow:0 0 9px 3px #32134e}
+.effect-obsidian .generator-particles span::before{content:"◆";color:#09070e;text-shadow:0 0 8px #b58aff}
+.effect-aurora .generator-particles span{width:3px;height:13px;border-radius:50%;background:#e2fff7;box-shadow:0 0 12px 3px #4affc5}
+.effect-aurora .generator-particles span:nth-child(odd)::before{content:"✧";color:#ff81ed;text-shadow:0 0 10px #57fff0}
+.effect-cataclysm .generator-particles span{width:3px;height:15px;border-radius:3px;background:#ffb1e3;box-shadow:0 0 12px 4px #ff386e;transform:translate(-50%,-50%) rotate(35deg)}
+.effect-cataclysm .generator-particles span:nth-child(odd)::before{content:"ϟ";color:#fff;text-shadow:0 0 12px #ff2779}
+.effect-tempest .generator-particles span{width:2px;height:17px;border-radius:4px;background:#e4ffff;box-shadow:0 0 11px 3px #16d8ff,0 0 18px 4px #783dff}
+.effect-tempest .generator-particles span:nth-child(3n)::before{content:"ϟ";color:#eaffff;text-shadow:0 0 10px #22e8ff,0 0 17px #9a5dff}
+.effect-arsenal .generator-visual::before,.effect-arsenal .generator-visual::after,.effect-solstice .generator-visual::before,.effect-obsidian .generator-visual::before,.effect-aurora .generator-visual::before,.effect-cataclysm .generator-visual::before,.effect-tempest .generator-visual::before{content:"";position:absolute;inset:1px;border-radius:50%;pointer-events:none}
+.effect-arsenal .generator-visual::before{border:2px solid #ff5656;box-shadow:0 0 12px 3px #ff3535;animation:arsenal-ring 1.5s ease-out infinite}
+.effect-arsenal .generator-visual::after{inset:-5px;border:1px solid #ffd36b;box-shadow:0 0 14px #ffbf42;animation:arsenal-ring 1.5s ease-out .75s infinite}
+.effect-solstice .generator-visual::before{inset:-3px;border:2px dotted #ffe47b;box-shadow:0 0 14px #ffbb25;animation:particle-orbit 4s linear infinite}
+.effect-obsidian .generator-visual::before{inset:-3px;border:2px solid #a87bff;box-shadow:inset 0 0 12px #140b20,0 0 12px #7f39cb;animation:obsidian-pulse 2s ease-in-out infinite alternate}
+.effect-aurora .generator-visual::before{inset:-4px;border:2px dashed #73ffe0;box-shadow:0 0 14px #4dffa4;animation:particle-orbit 3s linear infinite}
+.effect-cataclysm .generator-visual::before{inset:-4px;border:2px solid #ff64be;box-shadow:0 0 15px #ff3765;animation:obsidian-pulse .65s ease-in-out infinite alternate}
+.effect-tempest .generator-visual::before{inset:-5px;border:2px dashed #7cf5ff;box-shadow:0 0 14px #11cfff;animation:particle-orbit 1.1s linear infinite}
+@keyframes arsenal-ring{0%{transform:scale(.62);opacity:.95}100%{transform:scale(1.7);opacity:0}}
+@keyframes obsidian-pulse{from{transform:scale(.82) rotate(-8deg);opacity:.45}to{transform:scale(1.16) rotate(8deg);opacity:1}}
+@keyframes particle-orbit{to{transform:rotate(360deg)}}
 .effect-stars .generator-particles span{width:auto;height:auto;background:none;box-shadow:none;font-size:9px;line-height:1}
 .effect-stars .generator-particles span::before{content:"✦";color:var(--particle-color);text-shadow:0 0 5px var(--particle-color)}
 .effect-squares .generator-particles span{border-radius:1px}
@@ -149,20 +182,27 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .summary-card strong{font-size:16px}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .note{min-height:19px;font-size:11px;color:var(--green);margin-top:10px}
+.tutorial-guide{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0;padding:12px 14px;border:1px solid #6c5735;border-radius:10px;background:linear-gradient(110deg,#352919,#181b20 72%);box-shadow:0 0 20px #f4bf3a12}
+.tutorial-guide strong{display:block;color:#ffdc81;font-size:13px}
+.tutorial-guide span{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.tutorial-guide button{flex:none}
 .footer{text-align:center;color:#748092;font-size:11px;padding:22px 10px}
 .modal-bg{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
 .modal-bg.open{display:flex}.modal{width:min(390px,100%);background:#1a222d;border:1px solid #3a4655;border-radius:12px;padding:18px}
 .modal h2{margin-bottom:8px}.modal p{font-size:12px;color:var(--muted)}
 .modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.modal-fields{display:grid;gap:10px;margin-top:12px}
+.modal-fields label{display:grid;gap:5px;color:var(--muted);font-size:11px}
+.modal-fields input{width:100%;min-height:42px}
 .star-layer{position:fixed;inset:0;z-index:8;pointer-events:none;overflow:hidden}
-.bonus-star{position:absolute;pointer-events:auto;display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid #ffe69a;border-radius:50%;background:radial-gradient(circle,#fff6bd 0,#f6c84c 46%,#d18a1c 100%);color:#fff7c8;font-size:27px;line-height:1;text-shadow:0 1px 5px #704a00;box-shadow:0 0 18px #f4c34d99;animation:star-pulse 1.2s ease-in-out infinite alternate}
-.bonus-star.cash-star{width:38px;height:38px;font-size:23px}
+.bonus-star{position:absolute;pointer-events:auto;display:grid;place-items:center;width:62px;height:62px;padding:0;border:2px solid #fff0a0;border-radius:50%;background:radial-gradient(circle,#fffde0 0,#ffe35b 35%,#f6ae22 65%,#c96b12 100%);color:#fffbd1;font-size:40px;line-height:1;text-shadow:0 1px 7px #704a00,0 0 14px #fff4ad;box-shadow:0 0 18px 5px #f4c34dcc,0 0 40px 8px #ffdb4d66;animation:star-pulse 1.2s ease-in-out infinite alternate}
+.bonus-star.cash-star{width:52px;height:52px;font-size:34px}
 @keyframes star-pulse{to{transform:scale(1.13);box-shadow:0 0 25px #ffe58bcc}}
-@media(prefers-reduced-motion:reduce){.slot.filled::before,.generator-particles span,.bonus-star{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.slot.filled::before,.generator-particles span,.bonus-star,.generator-visual::before,.generator-visual::after{animation:none!important}}
 @media(max-width:700px){.community-grid{grid-template-columns:1fr}}
 @media(max-width:850px){.layout{grid-template-columns:minmax(0,1fr) minmax(280px,.9fr)}}
 @media(max-width:700px){.layout{grid-template-columns:1fr}}
-@media(max-width:560px){header{align-items:flex-start;flex-direction:column;padding:12px}.stats{justify-content:flex-start;width:100%;gap:6px}.stat{flex:1 1 calc(50% - 6px);min-width:0;padding:6px 8px}.stat strong{font-size:14px}.game-account{width:100%;justify-content:space-between}main{padding:10px}.panel-head{padding:11px 12px}.body{padding:11px}.shop-item{grid-template-columns:34px minmax(0,1fr);gap:8px}.swatch{width:32px;height:32px;font-size:18px}.shop-actions{grid-column:1/-1}.shop-actions button{flex:1;min-height:40px;padding:7px 6px}.shop-content{max-height:min(520px,70vh)}.slot-grid{gap:3px}.slot-pagination{gap:6px}}
+@media(max-width:560px){header{align-items:flex-start;flex-direction:column;padding:12px}.stats{justify-content:flex-start;width:100%;gap:6px}.stat{flex:1 1 calc(50% - 6px);min-width:0;padding:6px 8px}.stat strong{font-size:14px}.game-account{width:100%;justify-content:space-between}.game-account-actions{gap:5px}.game-account-actions button{padding:7px 8px;font-size:11px}main{padding:10px}.panel-head{padding:11px 12px}.body{padding:11px}.shop-item{grid-template-columns:34px minmax(0,1fr);gap:8px}.swatch{width:32px;height:32px;font-size:18px}.shop-actions{grid-column:1/-1;flex-wrap:wrap}.shop-actions button{flex:1 1 calc(50% - 6px);min-height:40px;padding:7px 6px}.shop-content{max-height:min(520px,70vh)}.slot-grid{gap:3px}.slot-pagination{gap:6px}}
 
 </style>
 </head>
@@ -212,7 +252,13 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
     <div class="stat"><small>Money / XP multiplier</small><strong id="multiplier">×1</strong></div>
     <div class="stat"><small>Generator speed</small><strong id="generatorSpeed">×1</strong></div>
   </div>
-  <div class="game-account"><span id="gamePlayerName" class="auth-status"></span><button id="logoutBtn" type="button">Log out</button></div>
+  <div class="game-account">
+    <span id="gamePlayerName" class="auth-status"></span>
+    <div class="game-account-actions">
+      <button id="deleteAccountBtn" class="danger-button" type="button">Delete account</button>
+      <button id="logoutBtn" type="button">Log out</button>
+    </div>
+  </div>
 </header>
 <main>
   <div class="layout">
@@ -222,6 +268,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         <button id="clearAllBtn" type="button" disabled>Clear all</button>
       </div>
       <div class="body">
+        <div class="tutorial-guide" id="tutorialGuide" hidden>
+          <div><strong id="tutorialTitle"></strong><span id="tutorialDescription"></span></div>
+          <button id="skipTutorialBtn" type="button">Skip</button>
+        </div>
         <div class="slot-grid" id="slots"></div>
         <div class="slot-pagination" id="slotPagination" hidden>
           <button id="previousSlotPage" type="button" aria-label="Previous generator page">Previous</button>
@@ -332,7 +382,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
   </div>
   <div class="footer">Superflow! · Build your flow, one generator at a time.</div>
 </main>
-<div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-actions" id="modalActions"></div></div></div>
+<div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -374,11 +424,16 @@ const GENERATOR_TIERS = [
   { id:"nebulous",   name:"Nebulous",   color:"#294a8d", accent:"#61c97b", effect:"fog", cycleFrom:"#172c62", cycleTo:"#174c32", cycleDuration:1.65 },
   { id:"paradox",    name:"Paradox",    color:"#e02c32", accent:"#ffbb42", effect:"paradox", cycleFrom:"#e02c32", cycleTo:"#101d62", cycleDuration:1.35 },
   { id:"singularity",name:"Singularity",color:"#ed650d", accent:"#ffc431", effect:"singularity", cycleFrom:"#ed4a12", cycleTo:"#70500b", cycleDuration:1.05 },
-  { id:"eventHorizon",name:"Event Horizon",color:"#21164d", accent:"#a886ff",effect:"stars",cycleFrom:"#090711",cycleTo:"#44206f",cycleDuration:1.8 },
+  { id:"eventHorizon",name:"Extravagent",color:"#21164d", accent:"#a886ff",effect:"stars",cycleFrom:"#090711",cycleTo:"#44206f",cycleDuration:1.8 },
   { id:"hypernova", name:"Hypernova", color:"#b82762", accent:"#ffcf65",effect:"lightning",cycleFrom:"#69245e",cycleTo:"#fa743e",cycleDuration:1.25 },
   { id:"eternity",  name:"Eternity",  color:"#c5b5e8", accent:"#fff3c4",effect:"glow",cycleFrom:"#8075bc",cycleTo:"#fff0b0",cycleDuration:2.1 },
   { id:"omniverse",name:"Omniverse",color:"#44228c", accent:"#50e0c3",effect:"chroma",cycleFrom:"#30106b",cycleTo:"#109b91",cycleDuration:1.4 },
-  { id:"superflow",name:"Superflow",color:"#50c998", accent:"#9dfcff",effect:"aether",cycleFrom:"#177e83",cycleTo:"#b64cff",cycleDuration:1.1 }
+  { id:"superflow",name:"Arsenal",color:"#ff382f",accent:"#ffe59a",effect:"arsenal",cycleFrom:"#ff2738",cycleTo:"#ffe25b",cycleDuration:1.15 },
+  { id:"solstice",name:"Solstice",color:"#f6b900",accent:"#fff3a0",effect:"solstice",cycleFrom:"#ffab00",cycleTo:"#fff15c",cycleDuration:1.1 },
+  { id:"obsidian",name:"Obsidian",color:"#09070e",accent:"#c9a8ff",effect:"obsidian",cycleFrom:"#08060d",cycleTo:"#321448",cycleDuration:1.25 },
+  { id:"aurora",name:"Aurora",color:"#10b99c",accent:"#ffd2fb",effect:"aurora",cycleFrom:"#0e827b",cycleTo:"#ba36be",cycleDuration:1.2 },
+  { id:"cataclysm",name:"Cataclysm",color:"#d20a52",accent:"#ffc065",effect:"cataclysm",cycleFrom:"#7600a6",cycleTo:"#ff452d",cycleDuration:.72 },
+  { id:"tempest",name:"Tempest",color:"#087ab8",accent:"#b0fbff",effect:"tempest",cycleFrom:"#092b80",cycleTo:"#21e6d1",cycleDuration:.8 }
 ];
 const SAVE_KEY = "generatorGridSave_v1";
 const ACCOUNTS_KEY = "generatorGridAccounts_v1";
@@ -468,12 +523,18 @@ function showAuthError(message) {
   statusEl.style.color = "#ff8c8c";
 }
 
-async function enterGame(username, user) {
+async function enterGame(username, user, firstTime = false) {
   currentUser = user;
   currentUsername = username;
   state = freshState();
   await load();
-  selectShopTab("shop");
+  if (firstTime) {
+    state.tutorialStarted = true;
+    state.tutorialComplete = false;
+    state.tutorialStep = 0;
+    state.tutorialStartLevel = state.level;
+  }
+  selectShopTab(firstTime ? "rebirth" : "shop");
   configureGameTickTimer();
   await save();
   await publishLeaderboardEntry();
@@ -484,6 +545,7 @@ async function enterGame(username, user) {
   $("authScreen").hidden = true;
   $("gameShell").hidden = false;
   startStarSpawns();
+  renderTutorial();
 }
 
 async function loadUserSave() {
@@ -524,6 +586,14 @@ async function loadUserSave() {
     state.claimedAchievements = Array.isArray(savedState.claimedAchievements)
       ? [...new Set(savedState.claimedAchievements.filter(id => ACHIEVEMENTS.some(item => item.id === id)))]
       : [];
+    state.tutorialStarted = savedState.tutorialStarted === true;
+    state.tutorialComplete = !state.tutorialStarted || savedState.tutorialComplete !== false;
+    state.tutorialStep = Number.isSafeInteger(savedState.tutorialStep)
+      ? Math.max(0, Math.min(4, savedState.tutorialStep))
+      : 0;
+    state.tutorialStartLevel = Number.isSafeInteger(savedState.tutorialStartLevel) && savedState.tutorialStartLevel >= 1
+      ? savedState.tutorialStartLevel
+      : 1;
     const savedBoostUntil = Number(savedState.genSpeedBoostUntil);
     state.genSpeedBoostUntil = Number.isSafeInteger(savedBoostUntil) && savedBoostUntil > Date.now()
       ? savedBoostUntil
@@ -736,6 +806,10 @@ const freshState = () => ({
   lifetime: 0,
   inventory: {},
   claimedAchievements: [],
+  tutorialStarted: false,
+  tutorialComplete: true,
+  tutorialStep: 0,
+  tutorialStartLevel: 1,
   level: 1,
   rebirths: 0,
   rebirthPoints: 0,
@@ -893,7 +967,7 @@ function spawnStar(isCashReward = false, position = null) {
   star.title = isCashReward
     ? "Collect 1% of your current notes"
     : "80% chance at 1.5x generator speed for 2 minutes; 20% chance of two cash stars";
-  const size = isCashReward ? 38 : 44;
+  const size = isCashReward ? 52 : 62;
   const maxLeft = Math.max(8, window.innerWidth - size - 8);
   const maxTop = Math.max(8, window.innerHeight - size - 8);
   const left = position ? position.left : 8 + Math.random() * (maxLeft - 8);
@@ -943,15 +1017,27 @@ async function createAccountWithUsername() {
     showAuthError("Password must be at least 6 characters.");
     return;
   }
+  let createdUser = null;
   try {
     await authRef.setPersistence(firebase.auth.Auth.Persistence.NONE);
     const credential = await authRef.createUserWithEmailAndPassword(usernameToAuthEmail(username), password);
+    createdUser = credential.user;
+    await functionsRef.httpsCallable("registerUsername")({ username });
     const accounts = getAccountStore();
     delete accounts[username];
     saveAccountStore(accounts);
-    await enterGame(username, credential.user);
+    await enterGame(username, credential.user, true);
     notify("Your Superflow account is ready, " + username + ".");
   } catch (e) {
+    if (createdUser) {
+      try {
+        await functionsRef.httpsCallable("deleteAccount")();
+      } catch (cleanupError) {
+        showAuthError((e.message || "Could not create account.")
+          + " The incomplete account could not be removed; contact support before retrying.");
+        return;
+      }
+    }
     showAuthError(e.code === "auth/email-already-in-use" ? "That username already exists." : e.message || "Could not create account.");
   }
 }
@@ -970,6 +1056,7 @@ async function loginWithUsername() {
   try {
     await authRef.setPersistence(firebase.auth.Auth.Persistence.NONE);
     const credential = await authRef.signInWithEmailAndPassword(usernameToAuthEmail(username), password);
+    await functionsRef.httpsCallable("registerUsername")({ username });
     const accounts = getAccountStore();
     delete accounts[username];
     saveAccountStore(accounts);
@@ -998,6 +1085,37 @@ async function logoutUser() {
   $("authScreen").hidden = false;
   $("usernameInput").value = "";
   $("passwordInput").value = "";
+}
+async function deletePlayerAccount() {
+  if (!currentUser || !functionsRef) {
+    notify("Sign in before deleting your account.", true);
+    return;
+  }
+  if (!confirm("Permanently delete " + currentUsername + "? This removes your game save, leaderboard entry, chat messages, and account. This cannot be undone.")) return;
+  const username = currentUsername;
+  try {
+    await functionsRef.httpsCallable("deleteAccount")();
+    stopStarSpawns();
+    communityUnsubscribers.forEach(unsubscribe => unsubscribe());
+    communityUnsubscribers = [];
+    await authRef.signOut();
+    const accounts = getAccountStore();
+    delete accounts[username];
+    saveAccountStore(accounts);
+    localStorage.removeItem(getPlayerSaveKey(username));
+    currentUser = null;
+    currentUsername = null;
+    state = freshState();
+    configureGameTickTimer();
+    updateAuthUI();
+    $("gameShell").hidden = true;
+    $("authScreen").hidden = false;
+    $("usernameInput").value = "";
+    $("passwordInput").value = "";
+    $("authStatus").textContent = "Your account and leaderboard entry have been permanently deleted.";
+  } catch (error) {
+    notify(error.message || "Account deletion failed. Your account is still active.", true);
+  }
 }
 function makeShopRow(generator, mode) {
   const row = document.createElement("div");
@@ -1044,13 +1162,14 @@ function makeShopRow(generator, mode) {
   );
   buyButton.dataset.generatorId = generator.id;
   const sellButton = makeButton("Sell", () => sell(generator.id), available(generator.id) <= 0, "");
-  const placeLabel = state.selected === generator.id ? "Placed" : "Place";
+  const placeLabel = state.selected === generator.id ? "Equipped" : "Place";
   const placeButton = makeButton(placeLabel, () => selectGenerator(generator.id),
     available(generator.id) <= 0 && state.selected !== generator.id,
     state.selected === generator.id ? "active" : ""
   );
+  const giveButton = makeButton("Give", () => giveGenerator(generator), available(generator.id) <= 0, "give-button");
 
-  actionGroup.append(buyButton, sellButton, placeButton);
+  actionGroup.append(buyButton, sellButton, placeButton, giveButton);
   row.append(actionGroup);
   return row;
 }
@@ -1220,9 +1339,9 @@ function makeSlotButton(index, slot) {
     const particles = document.createElement("span");
     particles.className = "generator-particles";
     particles.setAttribute("aria-hidden", "true");
-    for (let particleIndex = 0; particleIndex < 8; particleIndex++) {
+    for (let particleIndex = 0; particleIndex < 16; particleIndex++) {
       const particle = document.createElement("span");
-      particle.style.animationDuration = (2.4 + Math.random() * 1.8).toFixed(2) + "s";
+      particle.style.animationDuration = (1.2 + Math.random() * 2.4).toFixed(2) + "s";
       particle.style.animationDelay = (-Math.random() * 3.5).toFixed(2) + "s";
       particles.appendChild(particle);
     }
@@ -1306,15 +1425,131 @@ function renderInventory() {
   if (host) host.innerHTML = "";
 }
 function render() { renderStats(); renderSlots(); renderShop(); renderInventory(); renderUpgrades(); renderAchievements(); }
+function renderTutorial() {
+  const guide = $("tutorialGuide");
+  guide.hidden = !state.tutorialStarted;
+  if (!state.tutorialStarted) return;
+  const steps = [
+    ["Open Shop", "Tap the Shop tab to get started."],
+    ["Buy a basic", "Use the Shop to buy one Basic generator."],
+    ["Place a basic", "Choose an empty generator slot and place your Basic."],
+    ["Wait until you level up", "Keep earning XP until you reach the next level."],
+    ["Buy another basic", "Return to the Shop and buy another Basic generator."]
+  ];
+  if (state.tutorialComplete) {
+    $("tutorialTitle").textContent = "Make money. Be the #1. Have fun!";
+    $("tutorialDescription").textContent = "You're ready to build your generator empire.";
+    $("skipTutorialBtn").hidden = true;
+    return;
+  }
+  const [title, description] = steps[state.tutorialStep] || steps[0];
+  $("tutorialTitle").textContent = title;
+  $("tutorialDescription").textContent = description;
+  $("skipTutorialBtn").hidden = false;
+}
+function advanceTutorial(action) {
+  if (!state.tutorialStarted || state.tutorialComplete) return;
+  let progressed = false;
+  if (state.tutorialStep === 0 && action === "shop") {
+    state.tutorialStep = 1;
+    progressed = true;
+  } else if (state.tutorialStep === 1 && action === "buy-basic") {
+    state.tutorialStep = 2;
+    progressed = true;
+  } else if (state.tutorialStep === 2 && action === "place-basic") {
+    state.tutorialStep = 3;
+    progressed = true;
+  } else if (state.tutorialStep === 3 && state.level > state.tutorialStartLevel) {
+    state.tutorialStep = 4;
+    progressed = true;
+  } else if (state.tutorialStep === 4 && action === "buy-basic") {
+    state.tutorialComplete = true;
+    progressed = true;
+  }
+  if (!progressed) return;
+  renderTutorial();
+  save();
+}
+function skipTutorial() {
+  state.tutorialComplete = true;
+  renderTutorial();
+  save();
+}
 function buy(id, quantity = 1) {
   const g = getGenerator(id);
   if (!g || !Number.isSafeInteger(quantity) || quantity < 1 || !canBuy(g, quantity)) return;
   state.money -= generatorPrice(g) * quantity;
   state.inventory[id] = owned(id) + quantity;
   state.selected = id;
+  if (id === "basic") advanceTutorial("buy-basic");
   notify("Bought " + quantity + " " + g.name + (quantity === 1 ? "" : " generators") + ". Click an empty slot to place it.");
   render();
   save();
+}
+function giveGenerator(generator) {
+  const maximum = available(generator.id);
+  if (!currentUser || !functionsRef || maximum <= 0) {
+    notify("You need an unplaced copy and an active account to give this generator.", true);
+    return;
+  }
+  showModal("Give " + generator.name, "Enter the recipient's exact, case-sensitive username and how many unplaced generators to send.", [
+    ["Send", async () => {
+      const username = $("giftUsername").value.trim();
+      const quantity = Number($("giftQuantity").value);
+      if (!/^[A-Za-z0-9_]{2,20}$/.test(username)) {
+        notify("Enter a valid case-sensitive username.", true);
+        return;
+      }
+      if (!Number.isSafeInteger(quantity) || quantity < 1 || quantity > maximum) {
+        notify("Choose a whole number from 1 to " + maximum + ".", true);
+        return;
+      }
+      const sendButton = $("modalActions").querySelector("button");
+      sendButton.disabled = true;
+      try {
+        await save(false);
+        const result = await functionsRef.httpsCallable("giftGenerator")({
+          username,
+          generatorId: generator.id,
+          quantity
+        });
+        if (result.data.state && result.data.state.inventory) {
+          state.inventory = { ...state.inventory, ...result.data.state.inventory };
+          if (state.selected === generator.id && available(generator.id) <= 0) state.selected = null;
+        }
+        closeModal();
+        render();
+        notify(result.data.message || "Generator gift sent.");
+      } catch (error) {
+        sendButton.disabled = false;
+        notify(error.message || "Could not send this generator gift.", true);
+      }
+    }],
+    ["Cancel", closeModal]
+  ]);
+  const fields = $("modalFields");
+  const usernameLabel = document.createElement("label");
+  usernameLabel.textContent = "Username (case-sensitive)";
+  const usernameInput = document.createElement("input");
+  usernameInput.id = "giftUsername";
+  usernameInput.type = "text";
+  usernameInput.autocomplete = "off";
+  usernameInput.maxLength = 20;
+  usernameInput.placeholder = "Recipient username";
+  usernameLabel.appendChild(usernameInput);
+  const quantityLabel = document.createElement("label");
+  quantityLabel.textContent = "Number to give (up to " + maximum + ")";
+  const quantityInput = document.createElement("input");
+  quantityInput.id = "giftQuantity";
+  quantityInput.type = "number";
+  quantityInput.min = "1";
+  quantityInput.max = String(maximum);
+  quantityInput.step = "1";
+  quantityInput.value = "1";
+  quantityInput.inputMode = "numeric";
+  quantityLabel.appendChild(quantityInput);
+  fields.append(usernameLabel, quantityLabel);
+  usernameInput.focus();
 }
 function sell(id, slotIndex = null) {
   const g = getGenerator(id);
@@ -1371,8 +1606,6 @@ function rebirth() {
   const requiredLevel = rebirthLevelRequirement();
   const cost = rebirthCost();
   if (state.level < requiredLevel || state.money < cost) return;
-  if (!confirm("Rebirth " + romanNumeral(state.rebirths + 1) + "? This costs " + cash(cost)
-    + " and resets your level and XP. Your cash, generators, and multiplier are kept.")) return;
   state.money -= cost;
   state.rebirths++;
   state.rebirthPoints++;
@@ -1419,7 +1652,8 @@ function clickSlot(index) {
   }
   const g = getGenerator(state.selected);
   state.slots[index] = { id: g.id };
-  notify(g.name + " placed in slot " + (index + 1) + ".");
+  if (g.id === "basic") advanceTutorial("place-basic");
+  notify(g.name + " equipped in slot " + (index + 1) + ".");
   if (available(g.id) <= 0) state.selected = null;
   render();
   save();
@@ -1427,6 +1661,7 @@ function clickSlot(index) {
 function showModal(title, text, actions) {
   $("modalTitle").textContent = title;
   $("modalText").textContent = text;
+  $("modalFields").replaceChildren();
   const host = $("modalActions");
   host.innerHTML = "";
   actions.forEach(([label, fn]) => host.append(makeButton(label, fn)));
@@ -1437,6 +1672,7 @@ $("modalBg").addEventListener("click", e => { if (e.target === $("modalBg")) clo
 $("loginBtn").addEventListener("click", loginWithUsername);
 $("signupBtn").addEventListener("click", createAccountWithUsername);
 $("logoutBtn").addEventListener("click", logoutUser);
+$("deleteAccountBtn").addEventListener("click", deletePlayerAccount);
 $("chatForm").addEventListener("submit", sendChatMessage);
 function selectShopTab(tab) {
   ["shop", "rebirth", "upgrades", "achievements"].forEach(name => {
@@ -1445,6 +1681,7 @@ function selectShopTab(tab) {
     $(name + "TabPanel").hidden = !selected;
   });
   if (tab === "achievements") updateAchievementAvailability();
+  if (tab === "shop") advanceTutorial("shop");
 }
 $("shopTabBtn").addEventListener("click", () => selectShopTab("shop"));
 $("rebirthTabBtn").addEventListener("click", () => selectShopTab("rebirth"));
@@ -1452,6 +1689,7 @@ $("upgradesTabBtn").addEventListener("click", () => selectShopTab("upgrades"));
 $("achievementsTabBtn").addEventListener("click", () => selectShopTab("achievements"));
 $("saveBtn").addEventListener("click", () => save(false));
 $("multiBuyAmount").addEventListener("input", updateShopBuyButtons);
+$("skipTutorialBtn").addEventListener("click", skipTutorial);
 $("clearAllBtn").addEventListener("click", clearAllGenerators);
 $("previousSlotPage").addEventListener("click", () => {
   currentSlotPage = Math.max(0, currentSlotPage - 1);
@@ -1541,6 +1779,9 @@ function gameTick() {
     levelsGained++;
   }
   if (levelsGained > 0) state.levelReachedAt = Date.now();
+  if (levelsGained > 0 && state.tutorialStep === 3 && state.level > state.tutorialStartLevel) {
+    advanceTutorial("level-up");
+  }
   let multiplierDrops = 0;
   activeGenerators.forEach(generator => {
     const chanceThisTick = 1 - Math.pow(1 - multiplierDropChance(generator), intervalSeconds * temporarySpeed);
