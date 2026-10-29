@@ -189,14 +189,14 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .crate-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;background:#11161d;border:1px solid var(--line);border-radius:9px}
 .crate-card strong{font-size:12px}
 .crate-card button{padding:7px 10px}
-.shop-item{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px;background:#11161d;border:1px solid var(--line);border-radius:9px}
-.shop-actions{display:flex;gap:6px;align-items:stretch}
+.shop-item{display:grid;grid-template-columns:42px minmax(0,1fr) minmax(130px,38%);align-items:start;gap:10px;padding:9px;background:#11161d;border:1px solid var(--line);border-radius:9px}
+.shop-actions{display:flex;flex-wrap:nowrap;gap:6px;align-items:stretch;min-width:0}
 .swatch{width:40px;height:40px;border-radius:8px;border:1px solid #ffffff30;display:grid;place-items:center;font-size:22px;color:#fff}
-.item-title{font-size:12px;font-weight:800}
+.item-title{font-size:12px;font-weight:800;overflow-wrap:anywhere}
 .item-desc{font-size:10px;color:var(--muted);margin-top:2px}
 .item-numbers{font-size:11px;margin-top:4px;display:flex;flex-wrap:wrap;gap:7px}
 .price{color:var(--gold);font-weight:800}
-.shop-item button{font-size:11px;padding:8px 10px}
+.shop-item button{flex:1 1 0;min-width:0;font-size:11px;padding:8px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .summary{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .summary-card{background:#10151c;border:1px solid var(--line);border-radius:9px;padding:11px}
 .privacy-setting{display:flex;align-items:flex-start;gap:8px;margin-top:12px}
@@ -209,8 +209,9 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .fever-progress{height:8px;margin-top:8px;overflow:hidden;border-radius:99px;background:#28313e}
 .fever-progress span{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#7ad7a6,#ffe16b);transition:width .2s ease}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.note{position:fixed;top:max(12px,env(safe-area-inset-top));left:50%;z-index:20;width:min(680px,calc(100vw - 24px));max-height:30vh;overflow:auto;margin:0;padding:13px 17px;border:1px solid #368d67;border-radius:12px;background:linear-gradient(110deg,#163d30,#14221f);color:#dffff0!important;font-size:15px;font-weight:800;line-height:1.45;text-align:center;box-shadow:0 10px 38px #000b,0 0 25px #54d89b55;opacity:0;visibility:hidden;transform:translate(-50%,-10px);transition:opacity .18s ease,transform .18s ease,visibility .18s;pointer-events:none}
-.note.notice-visible{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.notice-area{min-height:82px;display:grid;place-items:center;padding:10px clamp(14px,3vw,32px) 0}
+.note{position:relative;top:auto;left:auto;z-index:1;width:min(680px,100%);max-height:30vh;overflow:auto;margin:0;padding:13px 17px;border:1px solid #368d67;border-radius:12px;background:linear-gradient(110deg,#163d30,#14221f);color:#dffff0!important;font-size:15px;font-weight:800;line-height:1.45;text-align:center;box-shadow:0 10px 38px #000b,0 0 25px #54d89b55;opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .18s ease,transform .18s ease,visibility .18s;pointer-events:none}
+.note.notice-visible{opacity:1;visibility:visible;transform:translateY(0)}
 .note.task-notice{border-color:#e4b747;background:linear-gradient(110deg,#654918,#382913);color:#fff3c4!important;box-shadow:0 10px 38px #000b,0 0 28px #f0cb7580}
 .note.bonus-notice{border-color:#e4b747;background:linear-gradient(110deg,#5a4818,#302716);color:#fff4bd!important;box-shadow:0 10px 38px #000b,0 0 28px #ffe16b70}
 .note.error-notice{border-color:#df5968;background:linear-gradient(110deg,#57202b,#30191e);color:#ffe7eb!important;box-shadow:0 10px 38px #000b,0 0 26px #ec586b70}
@@ -238,7 +239,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 @media(max-width:700px){.community-grid{grid-template-columns:1fr}}
 @media(max-width:850px){.layout{grid-template-columns:minmax(0,1fr) minmax(280px,.9fr)}}
 @media(max-width:700px){.layout{grid-template-columns:1fr}}
-@media(max-width:560px){.note{top:max(8px,env(safe-area-inset-top));width:calc(100vw - 16px);padding:11px 13px;font-size:14px;max-height:34vh}header{align-items:flex-start;flex-direction:column;padding:12px}.stats{justify-content:flex-start;width:100%;gap:6px}.stat{flex:1 1 calc(50% - 6px);min-width:0;padding:6px 8px}.stat strong{font-size:14px}.game-account{width:100%;justify-content:space-between}.game-account-actions{gap:5px}.game-account-actions button{padding:7px 8px;font-size:11px}main{padding:10px}.panel-head{padding:11px 12px}.body{padding:11px}.shop-item{grid-template-columns:34px minmax(0,1fr);gap:8px}.swatch{width:32px;height:32px;font-size:18px}.shop-actions{grid-column:1/-1;flex-wrap:wrap}.shop-actions button{flex:1 1 calc(50% - 6px);min-height:40px;padding:7px 6px}.shop-content{max-height:min(520px,70vh)}.slot-grid{gap:3px}.slot-pagination{gap:6px}}
+@media(max-width:560px){.notice-area{min-height:72px;padding:8px 10px 0}.note{width:100%;padding:11px 13px;font-size:14px;max-height:34vh}header{align-items:flex-start;flex-direction:column;padding:12px}.stats{justify-content:flex-start;width:100%;gap:6px}.stat{flex:1 1 calc(50% - 6px);min-width:0;padding:6px 8px}.stat strong{font-size:14px}.game-account{width:100%;justify-content:space-between}.game-account-actions{gap:5px}.game-account-actions button{padding:7px 8px;font-size:11px}main{padding:10px}.panel-head{padding:11px 12px}.body{padding:11px}.shop-item{grid-template-columns:34px minmax(0,1fr);gap:8px}.swatch{width:32px;height:32px;font-size:18px}.shop-actions{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.shop-actions button{min-height:40px;padding:7px 6px}.shop-content{max-height:min(520px,70vh)}.slot-grid{gap:3px}.slot-pagination{gap:6px}}
 @media(max-width:560px){.shop-tabs{gap:2px;padding-inline:8px}.shop-tab{font-size:10px;padding-inline:2px}}
 
 </style>
@@ -297,6 +298,9 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
     </div>
   </div>
 </header>
+<div class="notice-area">
+  <div class="note" id="notice" role="status" aria-live="polite" aria-atomic="true"></div>
+</div>
 <main>
   <div class="layout">
     <section class="panel">
@@ -310,6 +314,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
       <div class="body">
         <div class="tutorial-guide" id="tutorialGuide" hidden>
           <div><strong id="tutorialTitle"></strong><span id="tutorialDescription"></span></div>
+          <button id="dismissTutorialBtn" type="button" hidden>OK</button>
           <button id="skipTutorialBtn" type="button">Skip</button>
         </div>
         <div class="slot-grid" id="slots"></div>
@@ -319,7 +324,6 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
           <button id="nextSlotPage" type="button" aria-label="Next generator page">Next</button>
         </div>
         <p class="tip">Click an empty slot to place your selected generator. Click a generator to inspect or remove it.</p>
-        <div class="note" id="notice" role="status" aria-live="polite" aria-atomic="true"></div>
       </div>
     </section>
     <div class="side">
@@ -487,11 +491,21 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 1000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "0.9.0";
+const GAME_VERSION = "0.9.1";
 const UPDATE_HISTORY = [
   {
     version: GAME_VERSION,
     status: "Current",
+    changes: [
+      "Reserved space below the stats for notifications so they never cover game values.",
+      "Added an OK button to dismiss the completed tutorial message.",
+      "Applied the multibuy quantity to selling unplaced generators.",
+      "Kept shop action buttons aligned when quantities and generator details grow."
+    ]
+  },
+  {
+    version: "0.9.0",
+    status: "Previous",
     changes: [
       "Added Personal Note Fever at 1,000 generator notes, plus a 10% chance for a 3× Hyper Fever.",
       "Rebalanced Stars with five outcomes: 1% cash, instant Fever, two Stars, an extra 2× speed boost, or +1 multiplier.",
@@ -1567,7 +1581,16 @@ function makeShopRow(generator, mode) {
     "buy-button"
   );
   buyButton.dataset.generatorId = generator.id;
-  const sellButton = makeButton("Sell", () => sell(generator.id), available(generator.id) <= 0, "sell-button");
+  buyButton.title = "Buy " + (quantity || 1) + " " + generator.name + (quantity === 1 ? "" : " generators");
+  const sellButton = makeButton(
+    quantity === null || quantity === 1 ? "Sell" : "Sell ×" + quantity,
+    () => sell(generator.id, null, getMultiBuyAmount()),
+    quantity === null || available(generator.id) < quantity,
+    "sell-button"
+  );
+  sellButton.dataset.generatorId = generator.id;
+  sellButton.title = "Sell " + (quantity || 1) + " unplaced " + generator.name
+    + (quantity === 1 ? " generator" : " generators");
   const placeLabel = state.selected === generator.id ? "Equipped" : "Place";
   const placeButton = makeButton(placeLabel, () => selectGenerator(generator.id),
     available(generator.id) <= 0 && state.selected !== generator.id,
@@ -2023,6 +2046,15 @@ function updateShopBuyButtons() {
     const generator = getGenerator(button.dataset.generatorId);
     button.textContent = quantity === null || quantity === 1 ? "Buy" : "Buy ×" + quantity;
     button.disabled = !generator || !canBuy(generator, quantity);
+    if (generator) button.title = "Buy " + (quantity || 1) + " " + generator.name
+      + (quantity === 1 ? "" : " generators");
+  });
+  document.querySelectorAll(".sell-button").forEach(button => {
+    const generator = getGenerator(button.dataset.generatorId);
+    button.textContent = quantity === null || quantity === 1 ? "Sell" : "Sell ×" + quantity;
+    button.disabled = !generator || quantity === null || available(generator.id) < quantity;
+    if (generator) button.title = "Sell " + (quantity || 1) + " unplaced " + generator.name
+      + (quantity === 1 ? " generator" : " generators");
   });
 }
 function renderInventory() {
@@ -2033,7 +2065,11 @@ function render() { renderStats(); renderSlots(); renderShop(); renderInventory(
 function renderTutorial() {
   const guide = $("tutorialGuide");
   guide.hidden = !state.tutorialStarted;
-  if (!state.tutorialStarted) return;
+  if (!state.tutorialStarted) {
+    $("dismissTutorialBtn").hidden = true;
+    $("skipTutorialBtn").hidden = true;
+    return;
+  }
   const steps = [
     ["Open Shop", "Tap the Shop tab to get started."],
     ["Buy a basic", "Use the Shop to buy one Basic generator."],
@@ -2045,12 +2081,19 @@ function renderTutorial() {
     $("tutorialTitle").textContent = "Make money. Be the #1. Have fun!";
     $("tutorialDescription").textContent = "You're ready to build your generator empire.";
     $("skipTutorialBtn").hidden = true;
+    $("dismissTutorialBtn").hidden = false;
     return;
   }
   const [title, description] = steps[state.tutorialStep] || steps[0];
   $("tutorialTitle").textContent = title;
   $("tutorialDescription").textContent = description;
   $("skipTutorialBtn").hidden = false;
+  $("dismissTutorialBtn").hidden = true;
+}
+function dismissTutorial() {
+  state.tutorialStarted = false;
+  renderTutorial();
+  save();
 }
 function advanceTutorial(action) {
   if (!state.tutorialStarted || state.tutorialComplete) return;
@@ -2098,16 +2141,18 @@ function buy(id, quantity = 1) {
   render();
   save();
 }
-function sell(id, slotIndex = null) {
+function sell(id, slotIndex = null, quantity = 1) {
   const g = getGenerator(id);
-  if (!g || owned(id) <= 0
-    || (slotIndex === null ? available(id) <= 0 : !state.slots[slotIndex] || state.slots[slotIndex].id !== id)) return;
-  const refund = Math.floor(generatorPrice(g) * 0.7);
+  if (!g || !Number.isSafeInteger(quantity) || quantity < 1
+    || (slotIndex === null ? available(id) < quantity
+      : quantity !== 1 || !state.slots[slotIndex] || state.slots[slotIndex].id !== id)) return;
+  const refund = Math.floor(generatorPrice(g) * 0.7) * quantity;
   if (slotIndex !== null) state.slots[slotIndex] = null;
-  state.inventory[id] = owned(id) - 1;
+  state.inventory[id] = owned(id) - quantity;
   state.money += refund;
   if (state.selected === id && available(id) <= 0) state.selected = null;
-  notify(g.name + " sold for " + cash(refund) + ".");
+  notify("Sold " + quantity + " " + g.name + (quantity === 1 ? "" : " generators")
+    + " for " + cash(refund) + ".");
   render();
   save();
 }
@@ -2313,6 +2358,7 @@ $("achievementsTabBtn").addEventListener("click", () => selectShopTab("achieveme
 $("saveBtn").addEventListener("click", () => save(false));
 $("multiBuyAmount").addEventListener("input", updateShopBuyButtons);
 $("skipTutorialBtn").addEventListener("click", skipTutorial);
+$("dismissTutorialBtn").addEventListener("click", dismissTutorial);
 $("clearAllBtn").addEventListener("click", clearAllGenerators);
 $("placeBestBtn").addEventListener("click", placeBestGenerators);
 $("updateHistoryBtn").addEventListener("click", showUpdateHistory);
