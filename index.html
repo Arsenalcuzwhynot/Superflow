@@ -204,6 +204,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .privacy-setting span{display:grid;gap:2px}
 .summary-card small{display:block;color:var(--muted);font-size:10px}
 .summary-card strong{font-size:16px}
+.fever-card{margin-top:8px;background:#10151c;border:1px solid var(--line);border-radius:9px;padding:11px}
+.fever-card strong{display:block;font-size:13px}
+.fever-progress{height:8px;margin-top:8px;overflow:hidden;border-radius:99px;background:#28313e}
+.fever-progress span{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#7ad7a6,#ffe16b);transition:width .2s ease}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .note{position:fixed;top:max(12px,env(safe-area-inset-top));left:50%;z-index:20;width:min(680px,calc(100vw - 24px));max-height:30vh;overflow:auto;margin:0;padding:13px 17px;border:1px solid #368d67;border-radius:12px;background:linear-gradient(110deg,#163d30,#14221f);color:#dffff0!important;font-size:15px;font-weight:800;line-height:1.45;text-align:center;box-shadow:0 10px 38px #000b,0 0 25px #54d89b55;opacity:0;visibility:hidden;transform:translate(-50%,-10px);transition:opacity .18s ease,transform .18s ease,visibility .18s;pointer-events:none}
 .note.notice-visible{opacity:1;visibility:visible;transform:translate(-50%,0)}
@@ -214,7 +218,12 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .tutorial-guide strong{display:block;color:#ffdc81;font-size:13px}
 .tutorial-guide span{display:block;color:var(--muted);font-size:11px;margin-top:3px}
 .tutorial-guide button{flex:none}
-.footer{text-align:center;color:#748092;font-size:11px;padding:22px 10px}
+.footer{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;text-align:center;color:#748092;font-size:11px;padding:22px 10px}
+.footer button{padding:5px 9px;font-size:11px}
+.update-history-entry{padding:11px;background:#11161d;border:1px solid var(--line);border-radius:9px}
+.update-history-entry+.update-history-entry{margin-top:9px}
+.update-history-entry h3{margin:0 0 6px;font-size:13px}
+.update-history-entry ul{margin:0;padding-left:18px;color:var(--muted);font-size:11px}
 .modal-bg{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
 .modal-bg.open{display:flex}.modal{width:min(390px,100%);background:#1a222d;border:1px solid #3a4655;border-radius:12px;padding:18px}
 .modal h2{margin-bottom:8px}.modal p{font-size:12px;color:var(--muted)}
@@ -223,8 +232,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .modal-fields label{display:grid;gap:5px;color:var(--muted);font-size:11px}
 .modal-fields input{width:100%;min-height:42px}
 .star-layer{position:fixed;inset:0;z-index:8;pointer-events:none;overflow:hidden}
-.bonus-star{position:absolute;pointer-events:auto;display:grid;place-items:center;width:62px;height:62px;padding:0;border:2px solid #fff0a0;border-radius:50%;background:radial-gradient(circle,#fffde0 0,#ffe35b 35%,#f6ae22 65%,#c96b12 100%);color:#fffbd1;font-size:40px;line-height:1;text-shadow:0 1px 7px #704a00,0 0 14px #fff4ad;box-shadow:0 0 18px 5px #f4c34dcc,0 0 40px 8px #ffdb4d66;animation:star-pulse 1.2s ease-in-out infinite alternate}
-.bonus-star.cash-star{width:52px;height:52px;font-size:34px}
+.bonus-star{position:absolute;pointer-events:auto;display:grid;place-items:center;width:78px;height:78px;padding:0;border:3px solid #fff0a0;border-radius:50%;background:radial-gradient(circle,#fffde0 0,#ffe35b 35%,#f6ae22 65%,#c96b12 100%);color:#fffbd1;font-size:54px;line-height:1;text-shadow:0 1px 7px #704a00,0 0 14px #fff4ad;box-shadow:0 0 24px 7px #f4c34dcc,0 0 50px 12px #ffdb4d66;animation:star-pulse 1.2s ease-in-out infinite alternate}
 @keyframes star-pulse{to{transform:scale(1.13);box-shadow:0 0 25px #ffe58bcc}}
 @media(prefers-reduced-motion:reduce){.slot.filled::before,.generator-particles span,.bonus-star,.generator-visual::before,.generator-visual::after{animation:none!important}}
 @media(max-width:700px){.community-grid{grid-template-columns:1fr}}
@@ -294,7 +302,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
     <section class="panel">
       <div class="panel-head">
         <div><h2>Generator Slots</h2><div class="muted small" id="slotSummary">Level 1 · 1 slot unlocked</div></div>
+        <div class="game-account-actions">
+        <button id="placeBestBtn" class="place-button" type="button">Place Best</button>
         <button id="clearAllBtn" type="button" disabled>Clear all</button>
+        </div>
       </div>
       <div class="body">
         <div class="tutorial-guide" id="tutorialGuide" hidden>
@@ -365,6 +376,11 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
             <div class="summary-card"><small>Total owned</small><strong id="owned">0</strong></div>
             <div class="summary-card"><small>Lifetime earned</small><strong id="lifetime">$0</strong></div>
           </div>
+          <div class="fever-card">
+            <small class="muted">Personal Note Fever · 1 note per generator payout</small>
+            <strong id="noteFeverStatus">0 / 1,000 notes</strong>
+            <div class="fever-progress" id="noteFeverProgress" role="progressbar" aria-label="Personal Note Fever progress" aria-valuemin="0" aria-valuemax="1000" aria-valuenow="0"><span id="noteFeverProgressBar"></span></div>
+          </div>
           <div class="actions">
             <button id="saveBtn">Save now</button>
             <button id="resetBtn">Reset game</button>
@@ -406,7 +422,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         <div class="shop-tabs leaderboard-tabs" role="tablist" aria-label="Leaderboard type">
           <button class="shop-tab" type="button" role="tab" aria-selected="true" data-leaderboard="cashEarned">Cash</button>
           <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="multiplier">Multiplier</button>
-          <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="level">Level</button>
+          <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="starsCollected">Stars</button>
         </div>
         <ol class="leaderboard-list" id="leaderboardList"></ol>
         <div class="muted small" id="leaderboardStatus">Sign in to see the leaderboard.</div>
@@ -424,7 +440,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
       </div>
     </section>
   </div>
-  <div class="footer">Superflow! · Build your flow, one generator at a time.</div>
+  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">0.9.0</span><button id="updateHistoryBtn" type="button">Update history</button></div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
@@ -466,10 +482,26 @@ const GENERATOR_TIERS = [
 const SAVE_KEY = "generatorGridSave_v1";
 const ACCOUNTS_KEY = "generatorGridAccounts_v1";
 const PLAYER_SAVE_PREFIX = "generatorGridSave_player_";
-const FREE_GENERATOR_USERNAME = "ArsenalSuperDev";
 const PERMANENT_GENERATOR_SPEED_MULTIPLIER = 2;
 const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
+const PERSONAL_FEVER_NOTE_TARGET = 1000;
+const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
+const GAME_VERSION = "0.9.0";
+const UPDATE_HISTORY = [
+  {
+    version: GAME_VERSION,
+    status: "Current",
+    changes: [
+      "Added Personal Note Fever at 1,000 generator notes, plus a 10% chance for a 3× Hyper Fever.",
+      "Rebalanced Stars with five outcomes: 1% cash, instant Fever, two Stars, an extra 2× speed boost, or +1 multiplier.",
+      "Stars always grant the 1.5× speed boost and can create more Stars with the same odds.",
+      "Added Place Best to fill slots with your highest-tier generators.",
+      "Replaced the level leaderboard with a Stars Collected leaderboard.",
+      "Added version history and made Stars larger and easier to spot."
+    ]
+  }
+];
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyBwY1KLhbjRU2mk05MQxDDqeyLwhElqexo",
   authDomain: "generator-grid.firebaseapp.com",
@@ -544,7 +576,7 @@ function updateAuthUI() {
 async function updateAdminUI() {
   const panel = $("adminPanel");
   panel.hidden = true;
-  if (!currentUser || currentUsername !== FREE_GENERATOR_USERNAME || !functionsRef) return;
+  if (!currentUser || !functionsRef) return;
   try {
     const token = await currentUser.getIdTokenResult(true);
     panel.hidden = token.claims.admin !== true;
@@ -647,6 +679,28 @@ async function loadUserSave() {
     state.tutorialCrateAwarded = savedState.tutorialCrateAwarded === true;
     const savedGeneratorCash = Number(savedState.generatorCashEarned);
     state.generatorCashEarned = Number.isFinite(savedGeneratorCash) ? Math.max(0, savedGeneratorCash) : 0;
+    const savedPersonalNotes = Number(savedState.personalNotes);
+    state.personalNotes = Number.isSafeInteger(savedPersonalNotes)
+      ? Math.max(0, Math.min(PERSONAL_FEVER_NOTE_TARGET, savedPersonalNotes))
+      : 0;
+    const savedPersonalFeverUntil = Number(savedState.personalFeverUntil);
+    const savedPersonalFeverMultiplier = Number(savedState.personalFeverMultiplier);
+    if (Number.isSafeInteger(savedPersonalFeverUntil) && savedPersonalFeverUntil > Date.now()
+      && (savedPersonalFeverMultiplier === 2 || savedPersonalFeverMultiplier === 3)) {
+      state.personalFeverUntil = savedPersonalFeverUntil;
+      state.personalFeverMultiplier = savedPersonalFeverMultiplier;
+      state.personalNotes = PERSONAL_FEVER_NOTE_TARGET;
+    } else {
+      state.personalFeverUntil = 0;
+      state.personalFeverMultiplier = 1;
+      if (Number.isSafeInteger(savedPersonalFeverUntil) && savedPersonalFeverUntil > 0) {
+        state.personalNotes = 0;
+      }
+    }
+    const savedStarDoubleBoostUntil = Number(savedState.starDoubleBoostUntil);
+    state.starDoubleBoostUntil = Number.isSafeInteger(savedStarDoubleBoostUntil) && savedStarDoubleBoostUntil > Date.now()
+      ? savedStarDoubleBoostUntil
+      : 0;
     const savedNewAccountBoost = Number(savedState.newAccountBoostRemainingMs);
     state.newAccountBoostRemainingMs = Number.isFinite(savedNewAccountBoost)
       ? Math.max(0, Math.min(NEW_ACCOUNT_BOOST_DURATION_MS, savedNewAccountBoost))
@@ -803,12 +857,8 @@ async function publishLeaderboardEntry() {
       uid: currentUser.uid,
       username: currentUsername,
       cashEarned: Math.max(0, Number(state.generatorCashEarned) || 0),
+      starsCollected: Math.max(0, Number(state.taskStarsCollected) || 0),
       multiplier: Math.max(1, Number(state.multiplier) || 1),
-      rebirths: Math.max(0, Number.isSafeInteger(state.rebirths) ? state.rebirths : 0),
-      level: Math.max(1, Number.isSafeInteger(state.level) ? state.level : 1),
-      levelReachedAt: Number.isSafeInteger(state.levelReachedAt) && state.levelReachedAt > 0
-        ? state.levelReachedAt
-        : Date.now(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
     return true;
@@ -831,16 +881,11 @@ const LEADERBOARD_METRICS = {
     description: "Highest generator multiplier · Top 100",
     format: value => "×" + number(Math.max(1, Number(value) || 1))
   },
-  level: {
-    label: "Level",
-    heading: "Rebirth & level leaderboard",
-    description: "Highest rebirth first, then level · Top 100",
-    fields: ["rebirths", "level"],
-    format: (value, data) => {
-      const rebirths = Math.max(0, Number.isSafeInteger(data.rebirths) ? data.rebirths : 0);
-      return (rebirths === 0 ? "0" : romanNumeral(rebirths))
-        + "-" + number(Math.max(1, Number.isSafeInteger(value) ? value : 1));
-    }
+  starsCollected: {
+    label: "Stars",
+    heading: "Stars collected leaderboard",
+    description: "Lifetime Stars collected · Top 100",
+    format: value => number(Math.max(0, Number(value) || 0))
   }
 };
 
@@ -898,8 +943,11 @@ function selectLeaderboard(metricName) {
   leaderboardUnsubscribe = leaderboardQuery.limit(100)
     .onSnapshot(
       snapshot => renderLeaderboard(snapshot, metricName),
-      () => {
-        $("leaderboardStatus").textContent = "Leaderboard unavailable. Check Firestore rules.";
+      error => {
+        console.error("Leaderboard query failed for " + metricName + ":", error);
+        const code = error && error.code ? " (" + error.code + ")" : "";
+        const message = error && error.message ? " " + error.message : "";
+        $("leaderboardStatus").textContent = "Leaderboard unavailable" + code + "." + message;
       }
     );
 }
@@ -1062,6 +1110,10 @@ const freshState = () => ({
   money: 10,
   lifetime: 0,
   generatorCashEarned: 0,
+  personalNotes: 0,
+  personalFeverUntil: 0,
+  personalFeverMultiplier: 1,
+  starDoubleBoostUntil: 0,
   inventory: {},
   crateInventory: {},
   completedTaskObjectives: [],
@@ -1158,12 +1210,17 @@ function claimedAchievementCount(category) {
 }
 function permanentNoteSpeedMultiplier() { return 1 + claimedAchievementCount("rebirth") * 0.01; }
 function temporaryGeneratorSpeedMultiplier() { return state.genSpeedBoostUntil > Date.now() ? 1.5 : 1; }
+function starDoubleSpeedMultiplier() { return state.starDoubleBoostUntil > Date.now() ? 2 : 1; }
+function personalFeverSpeedMultiplier() {
+  return state.personalFeverUntil > Date.now() ? state.personalFeverMultiplier : 1;
+}
 function newAccountGeneratorSpeedMultiplier() {
   return newAccountBoostUntil > Date.now() && state.newAccountBoostRemainingMs > 0 ? 2 : 1;
 }
 function generatorSpeedMultiplier() {
   return PERMANENT_GENERATOR_SPEED_MULTIPLIER * permanentNoteSpeedMultiplier()
-    * temporaryGeneratorSpeedMultiplier() * newAccountGeneratorSpeedMultiplier();
+    * temporaryGeneratorSpeedMultiplier() * starDoubleSpeedMultiplier()
+    * personalFeverSpeedMultiplier() * newAccountGeneratorSpeedMultiplier();
 }
 function achievementReached(achievement) {
   return achievement.category === "cash"
@@ -1175,7 +1232,7 @@ function isAchievementClaimed(achievement) {
 }
 function getGenerator(id) { return GENERATORS.find(g => g.id === id); }
 function generatorPrice(generator) {
-  return currentUsername === FREE_GENERATOR_USERNAME
+  return typeof FREE_GENERATOR_USERNAME !== "undefined" && currentUsername === FREE_GENERATOR_USERNAME
     ? 0
     : generator.cost * (1 - state.upgrades.genCost * 0.02);
 }
@@ -1222,50 +1279,74 @@ function notify(message, error = false, taskComplete = false) {
     }, 220);
   }, 6500);
 }
-function spawnStar(isCashReward = false, position = null) {
+function activatePersonalFever() {
+  const now = Date.now();
+  const hyperFever = Math.random() < 0.1;
+  const alreadyActive = state.personalFeverUntil > now;
+  state.personalFeverMultiplier = Math.max(
+    alreadyActive ? state.personalFeverMultiplier : 1,
+    hyperFever ? 3 : 2
+  );
+  state.personalFeverUntil = Math.max(now, state.personalFeverUntil) + PERSONAL_FEVER_DURATION_MS;
+  state.personalNotes = PERSONAL_FEVER_NOTE_TARGET;
+  return (state.personalFeverMultiplier === 3 ? "Hyper Fever" : "Personal Note Fever")
+    + (alreadyActive ? " extended" : " started") + " at ×" + state.personalFeverMultiplier + " for 2 minutes.";
+}
+function expirePersonalFever() {
+  if (!state.personalFeverUntil || state.personalFeverUntil > Date.now()) return false;
+  state.personalFeverUntil = 0;
+  state.personalFeverMultiplier = 1;
+  state.personalNotes = 0;
+  return true;
+}
+function spawnStar(position = null) {
   const layer = $("starLayer");
   const star = makeButton("★", () => {
     star.remove();
     if (!currentUser) return;
     state.taskStarsCollected++;
-    const taskReady = updateTaskObjectives(true);
+    let taskReady = updateTaskObjectives(true);
     if (!$("tasksTabPanel").hidden) renderTasks();
-    if (isCashReward) {
+    state.genSpeedBoostUntil = Math.max(Date.now(), state.genSpeedBoostUntil) + PERSONAL_FEVER_DURATION_MS;
+    const roll = Math.random();
+    let resultMessage;
+    if (roll < 0.25) {
       const reward = state.money * 0.01;
       state.money += reward;
       state.lifetime += reward;
       updateAchievementAvailability();
-      renderStats();
-      save();
-      publishLeaderboardEntry();
-      notify("Cash star collected for " + cash(reward) + "."
-        + (taskReady ? " Task complete! Check the Tasks tab." : ""), false, taskReady);
-      return;
-    }
-    if (Math.random() < 0.2) {
+      resultMessage = "Gained 1% of your current cash: " + cash(reward) + ".";
+    } else if (roll < 0.45) {
+      resultMessage = activatePersonalFever();
+    } else if (roll < 0.65) {
       const left = Number.parseFloat(star.style.left);
       const top = Number.parseFloat(star.style.top);
-      spawnStar(true, { left: left - 40, top: top - 40 });
-      spawnStar(true, { left: left + 40, top: top + 40 });
+      spawnStar({ left: left - 50, top: top - 50 });
+      spawnStar({ left: left + 50, top: top + 50 });
       state.taskBonusStarEvents++;
       const bonusTaskReady = updateTaskObjectives(true);
       if (!$("tasksTabPanel").hidden) renderTasks();
-      if (!taskReady && !bonusTaskReady) notify("Two cash stars appeared nearby!");
-      return;
+      taskReady = taskReady || bonusTaskReady;
+      resultMessage = "Two more Stars appeared nearby!";
+    } else if (roll < 0.9) {
+      state.starDoubleBoostUntil = Math.max(Date.now(), state.starDoubleBoostUntil) + 3 * 60 * 1000;
+      resultMessage = "Extra ×2 generator speed for 3 minutes!";
+    } else {
+      state.multiplier = Math.round((state.multiplier + 1) * 100) / 100;
+      resultMessage = "Your multiplier increased by a full ×1!";
     }
-    state.genSpeedBoostUntil = Math.max(Date.now(), state.genSpeedBoostUntil) + 2 * 60 * 1000;
     renderStats();
+    renderShop();
+    renderSlotEarnings();
     save();
-    notify("Generator speed increased to ×1.5 for 2 minutes!"
+    publishLeaderboardEntry();
+    notify("Star collected! ×1.5 generator speed for 2 minutes. " + resultMessage
       + (taskReady ? " Task complete! Check the Tasks tab." : ""), false, taskReady);
   }, false, "bonus-star");
   star.type = "button";
-  star.classList.toggle("cash-star", isCashReward);
-  star.setAttribute("aria-label", isCashReward ? "Collect a cash star" : "Collect a generator speed star");
-  star.title = isCashReward
-    ? "Collect 1% of your current notes"
-    : "80% chance at 1.5x generator speed for 2 minutes; 20% chance of two cash stars";
-  const size = isCashReward ? 52 : 62;
+  star.setAttribute("aria-label", "Collect a Star");
+  star.title = "Always grants ×1.5 speed for 2 minutes. Extra odds: 25% 1% cash, 20% Fever, 20% two Stars, 25% ×2 speed for 3 minutes, 10% +1 multiplier.";
+  const size = 78;
   const maxLeft = Math.max(8, window.innerWidth - size - 8);
   const maxTop = Math.max(8, window.innerHeight - size - 8);
   const left = position ? position.left : 8 + Math.random() * (maxLeft - 8);
@@ -1506,10 +1587,24 @@ function renderStats() {
   const boostRemaining = Math.max(0, state.genSpeedBoostUntil - Date.now());
   const boostSeconds = Math.ceil(boostRemaining / 1000);
   const boostClock = String(Math.floor(boostSeconds / 60)).padStart(2, "0") + ":" + String(boostSeconds % 60).padStart(2, "0");
+  const starBoostRemaining = Math.max(0, state.starDoubleBoostUntil - Date.now());
+  const starBoostSeconds = Math.ceil(starBoostRemaining / 1000);
+  const starBoostClock = String(Math.floor(starBoostSeconds / 60)).padStart(2, "0") + ":" + String(starBoostSeconds % 60).padStart(2, "0");
   $("generatorSpeed").textContent = "×" + number(
     generatorSpeedMultiplier() / PERMANENT_GENERATOR_SPEED_MULTIPLIER
   )
-    + (boostRemaining > 0 ? " · " + boostClock : "");
+    + (boostRemaining > 0 ? " · " + boostClock : "")
+    + (starBoostRemaining > 0 ? " · ×2 " + starBoostClock : "");
+  const feverRemaining = Math.max(0, state.personalFeverUntil - Date.now());
+  const feverSeconds = Math.ceil(feverRemaining / 1000);
+  const feverClock = String(Math.floor(feverSeconds / 60)).padStart(2, "0") + ":" + String(feverSeconds % 60).padStart(2, "0");
+  const feverActive = feverRemaining > 0;
+  const feverProgress = feverActive ? PERSONAL_FEVER_NOTE_TARGET : state.personalNotes;
+  $("noteFeverStatus").textContent = feverActive
+    ? (state.personalFeverMultiplier === 3 ? "HYPER FEVER" : "FEVER") + " ×" + state.personalFeverMultiplier + " · " + feverClock
+    : number(state.personalNotes) + " / " + number(PERSONAL_FEVER_NOTE_TARGET) + " notes";
+  $("noteFeverProgress").setAttribute("aria-valuenow", String(feverProgress));
+  $("noteFeverProgressBar").style.width = (feverProgress / PERSONAL_FEVER_NOTE_TARGET * 100) + "%";
   $("slotSummary").textContent = "Level " + rebirthLevelLabel() + " · " + state.slots.length
     + " slot" + (state.slots.length === 1 ? "" : "s") + " (" + permanentBonusSlots() + " permanent bonus)";
   const requiredLevel = rebirthLevelRequirement();
@@ -1522,6 +1617,7 @@ function renderStats() {
   $("owned").textContent = totalOwned();
   $("inventoryTotal").textContent = totalOwned() + " owned";
   $("lifetime").textContent = cash(state.lifetime);
+  $("gameVersion").textContent = GAME_VERSION;
 }
 function renderUpgrades() {
   const host = $("upgradeList");
@@ -1879,6 +1975,7 @@ function renderSlots() {
   $("previousSlotPage").disabled = currentSlotPage === 0;
   $("nextSlotPage").disabled = currentSlotPage >= pageCount - 1;
   $("clearAllBtn").disabled = placedTotal() === 0;
+  $("placeBestBtn").disabled = totalOwned() === 0;
   for (let visibleIndex = 0; visibleIndex < 25; visibleIndex++) {
     const index = firstSlot + visibleIndex;
     const slot = state.slots[index];
@@ -2039,6 +2136,34 @@ function clearAllGenerators() {
   save();
   notify(returned + " generator" + (returned === 1 ? "" : "s") + " returned to your inventory.");
 }
+function placeBestGenerators() {
+  const bestSlots = [];
+  for (let index = GENERATORS.length - 1; index >= 0 && bestSlots.length < state.slots.length; index--) {
+    const generator = GENERATORS[index];
+    const count = Math.min(owned(generator.id), state.slots.length - bestSlots.length);
+    for (let placedCount = 0; placedCount < count; placedCount++) {
+      bestSlots.push({ id: generator.id });
+    }
+  }
+  while (bestSlots.length < state.slots.length) bestSlots.push(null);
+  const sameLayout = bestSlots.every((slot, index) =>
+    (slot ? slot.id : null) === (state.slots[index] ? state.slots[index].id : null)
+  );
+  if (sameLayout) {
+    notify("Your best generators are already placed.");
+    return;
+  }
+  const newlyPlaced = bestSlots.reduce((count, slot, index) => count
+    + (slot && (!state.slots[index] || state.slots[index].id !== slot.id) ? 1 : 0), 0);
+  state.slots = bestSlots;
+  state.selected = null;
+  state.taskGenerationsPlaced += newlyPlaced;
+  const taskReady = updateTaskObjectives(true);
+  render();
+  save();
+  notify("Placed your best available generators."
+    + (taskReady ? " Task complete! Check the Tasks tab." : ""), false, taskReady);
+}
 function purchaseUpgrade(id) {
   const upgrade = UPGRADE_DEFINITIONS.find(item => item.id === id);
   if (!upgrade || state.upgrades[id] >= upgrade.max || state.rebirthPoints < 1) return;
@@ -2132,6 +2257,33 @@ function showModal(title, text, actions) {
   )));
   $("modalBg").classList.add("open");
 }
+function showUpdateHistory() {
+  showModal("Update History", "Updates are summarized by game version.", [["Close", closeModal]]);
+  const host = $("modalFields");
+  UPDATE_HISTORY.forEach(update => {
+    const entry = document.createElement("section");
+    entry.className = "update-history-entry";
+    const heading = document.createElement("h3");
+    heading.textContent = update.version + " · " + update.status;
+    const changes = document.createElement("ul");
+    update.changes.forEach(change => {
+      const item = document.createElement("li");
+      item.textContent = change;
+      changes.appendChild(item);
+    });
+    entry.append(heading, changes);
+    host.appendChild(entry);
+  });
+  const future = document.createElement("section");
+  future.className = "update-history-entry";
+  const futureHeading = document.createElement("h3");
+  futureHeading.textContent = "Future updates · Coming soon";
+  const futureText = document.createElement("p");
+  futureText.className = "muted small";
+  futureText.textContent = "Future update summaries will appear here when announced.";
+  future.append(futureHeading, futureText);
+  host.appendChild(future);
+}
 function closeModal() { $("modalBg").classList.remove("open"); }
 $("modalBg").addEventListener("click", e => { if (e.target === $("modalBg")) closeModal(); });
 $("loginBtn").addEventListener("click", loginWithUsername);
@@ -2162,6 +2314,8 @@ $("saveBtn").addEventListener("click", () => save(false));
 $("multiBuyAmount").addEventListener("input", updateShopBuyButtons);
 $("skipTutorialBtn").addEventListener("click", skipTutorial);
 $("clearAllBtn").addEventListener("click", clearAllGenerators);
+$("placeBestBtn").addEventListener("click", placeBestGenerators);
+$("updateHistoryBtn").addEventListener("click", showUpdateHistory);
 $("previousSlotPage").addEventListener("click", () => {
   currentSlotPage = Math.max(0, currentSlotPage - 1);
   renderSlots();
@@ -2218,7 +2372,7 @@ $("adminLevelBtn").addEventListener("click", () => {
 });
 $("rebirthBtn").addEventListener("click", rebirth);
 $("resetBtn").addEventListener("click", () => {
-  if (!confirm("Reset your money, lifetime earnings, inventory, level, rebirths, rebirth points, upgrades, achievements, XP, multiplier, speed boost, and placed generators? Crates and task progress are kept. This cannot be undone.")) return;
+  if (!confirm("Reset your money, lifetime earnings, inventory, level, rebirths, rebirth points, upgrades, achievements, XP, multiplier, Note Fever progress, speed boosts, and placed generators? Crates and task progress are kept. This cannot be undone.")) return;
   syncNewAccountBoostRemaining();
   const taskProgress = {
     crateInventory: state.crateInventory,
@@ -2248,6 +2402,7 @@ if (firebaseEnabled) authRef.setPersistence(firebase.auth.Auth.Persistence.NONE)
 updateAuthUI();
 function gameTick() {
   if (!currentUser) return;
+  const feverEnded = expirePersonalFever();
   const intervalSeconds = tickIntervalSeconds();
   const earned = baseIncome() * state.multiplier * generatorSpeedMultiplier();
   const generatedCash = earned * PERMANENT_CASH_MULTIPLIER;
@@ -2255,6 +2410,13 @@ function gameTick() {
   state.lifetime += generatedCash;
   state.generatorCashEarned += generatedCash;
   const activeGenerators = state.slots.filter(Boolean).map(slot => getGenerator(slot.id));
+  let feverStartedMessage = "";
+  if (state.personalFeverUntil <= Date.now()) {
+    state.personalNotes += activeGenerators.length;
+    if (state.personalNotes >= PERSONAL_FEVER_NOTE_TARGET) {
+      feverStartedMessage = activatePersonalFever();
+    }
+  }
   state.xp += activeGenerators.reduce((total, generator) => total + generator.xpPerSecond, 0)
     * state.multiplier * generatorSpeedMultiplier() * intervalSeconds;
   let levelsGained = 0;
@@ -2281,11 +2443,15 @@ function gameTick() {
     const levelMessage = "Level up! You reached level " + state.level + " and gained " + levelsGained + " generator slot" + (levelsGained === 1 ? "" : "s") + ".";
     notify(levelMessage
       + (multiplierDrops > 0 ? " Multiplier increased to ×" + number(state.multiplier) + "!" : "")
+      + (feverStartedMessage ? " " + feverStartedMessage : "")
+      + (feverEnded ? " Personal Note Fever ended. Collect 1,000 notes for another." : "")
       + (taskReady ? " Task complete! Check the Tasks tab." : ""), false, taskReady);
     save();
     publishLeaderboardEntry();
-  } else if (multiplierDrops > 0 || taskReady) {
+  } else if (multiplierDrops > 0 || taskReady || feverStartedMessage || feverEnded) {
     notify((multiplierDrops > 0 ? "Multiplier increased to ×" + number(state.multiplier) + "!" : "")
+      + (feverStartedMessage ? " " + feverStartedMessage : "")
+      + (feverEnded ? " Personal Note Fever ended. Collect 1,000 notes for another." : "")
       + (taskReady ? " Task complete! Check the Tasks tab." : ""), false, taskReady);
     save();
   }
