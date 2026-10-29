@@ -190,6 +190,8 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .crate-card strong{font-size:12px}
 .crate-card button{padding:7px 10px}
 .shop-item{display:grid;grid-template-columns:42px minmax(0,1fr) minmax(130px,38%);align-items:start;gap:10px;padding:9px;background:#11161d;border:1px solid var(--line);border-radius:9px}
+.shop-item.mystery-generator .swatch{filter:grayscale(1) brightness(.22)}
+.shop-item.mystery-generator .item-title{color:#62676c!important}
 .shop-actions{display:flex;flex-wrap:nowrap;gap:6px;align-items:stretch;min-width:0}
 .swatch{width:40px;height:40px;border-radius:8px;border:1px solid #ffffff30;display:grid;place-items:center;font-size:22px;color:#fff}
 .item-title{font-size:12px;font-weight:800;overflow-wrap:anywhere}
@@ -444,7 +446,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
       </div>
     </section>
   </div>
-  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">0.9.0</span><button id="updateHistoryBtn" type="button">Update history</button></div>
+  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">0.9.3</span><button id="updateHistoryBtn" type="button">Update history</button></div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
@@ -491,11 +493,28 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 1000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "0.9.1";
+const GAME_VERSION = "0.9.3";
 const UPDATE_HISTORY = [
   {
     version: GAME_VERSION,
     status: "Current",
+    changes: [
+      "Raised late-game crate rebirth goals, including 40 for Blossom and 43 for Absolute.",
+      "Added varied non-Star objectives to every generator crate challenge."
+    ]
+  },
+  {
+    version: "0.9.2",
+    status: "Previous",
+    changes: [
+      "Added a tier-by-tier mystery generator preview that reveals after purchase.",
+      "Added one increasingly difficult crate challenge per generator tier.",
+      "Set Blossom and Absolute crate challenges to 500 and 2,000 Stars."
+    ]
+  },
+  {
+    version: "0.9.1",
+    status: "Previous",
     changes: [
       "Reserved space below the stats for notifications so they never cover game values.",
       "Added an OK button to dismiss the completed tutorial message.",
@@ -678,9 +697,17 @@ async function loadUserSave() {
     state.announcedTaskCompletions = Array.isArray(savedState.announcedTaskCompletions)
       ? [...new Set(savedState.announcedTaskCompletions.filter(id => TASKS.some(task => task.id === id)))]
       : [];
-    state.claimedTaskRewards = Array.isArray(savedState.claimedTaskRewards)
-      ? [...new Set(savedState.claimedTaskRewards.filter(id => TASKS.some(task => task.id === id)))]
-      : [];
+    const savedTaskClaims = Array.isArray(savedState.claimedTaskRewards) ? savedState.claimedTaskRewards : [];
+    state.claimedTaskRewards = [...new Set(savedTaskClaims.filter(id => TASKS.some(task => task.id === id)))];
+    const highestLegacyClaimedTier = savedTaskClaims.reduce((highest, id) => {
+      const crateId = LEGACY_TASK_CRATE_REWARDS[id];
+      const tierIndex = CRATE_TIERS.findIndex(tier => tier.id === crateId);
+      return Math.max(highest, tierIndex);
+    }, -1);
+    for (let index = 0; index <= highestLegacyClaimedTier; index++) {
+      const taskId = TASKS[index].id;
+      if (!state.claimedTaskRewards.includes(taskId)) state.claimedTaskRewards.push(taskId);
+    }
     const savedPlacements = Number(savedState.taskGenerationsPlaced);
     state.taskGenerationsPlaced = Number.isSafeInteger(savedPlacements) ? Math.max(0, savedPlacements) : 0;
     const savedStars = Number(savedState.taskStarsCollected);
@@ -747,6 +774,13 @@ async function loadUserSave() {
     const savedInventory = state.inventory && typeof state.inventory === "object" ? state.inventory : {};
     state.inventory = {};
     for (const g of GENERATORS) state.inventory[g.id] = Math.max(0, Math.floor(Number(savedInventory[g.id]) || 0));
+    const savedBestGeneratorIndex = Number(savedState.bestGeneratorIndex);
+    state.bestGeneratorIndex = Number.isSafeInteger(savedBestGeneratorIndex)
+      ? Math.max(-1, Math.min(GENERATORS.length - 1, savedBestGeneratorIndex))
+      : -1;
+    GENERATORS.forEach(generator => {
+      if (owned(generator.id) > 0) state.bestGeneratorIndex = Math.max(state.bestGeneratorIndex, generator.index);
+    });
     const savedSlots = Array.isArray(savedState.slots) ? savedState.slots : [];
     const normalizedSlots = savedSlots.map(slot => slot && getGenerator(slot.id) ? { id: slot.id } : null);
     if (Number.isSafeInteger(savedState.level) && savedState.level >= 1) {
@@ -1049,36 +1083,92 @@ const CRATE_TIER_WEIGHTS = {
   basic: { basic: 50, common: 35, uncommon: 15 },
   common: { basic: 10, common: 40, uncommon: 35, rare: 15 }
 };
-const TASK_OBJECTIVES = {
-  placedThree: "Have at least 3 generators placed at once",
-  levelFive: "Reach level 5",
-  allSlotsFilled: "Fill every unlocked generator slot",
-  placedTen: "Place 10 generators in total",
-  placedFifteen: "Place 15 generators in total",
-  placedTwenty: "Place 20 generators in total",
-  collectedStar: "Collect a Star",
-  collectedTenStars: "Collect 10 Stars",
-  starProducedTwo: "Have a Star produce 2 more",
-  levelSeventeen: "Reach level 17",
-  levelTwenty: "Reach level 20",
-  rebirth: "Complete a rebirth",
-  rebirthTwo: "Reach rebirth 2",
-  spentAllRebirthPoints: "Spend all rebirth points"
-};
-const TASKS = [
-  { id: "placed-three", title: "Have 3 generators placed", crate: "common", objectives: ["placedThree"] },
-  { id: "uncommon-ready", title: "Reach level 5 and fill all generator slots", crate: "uncommon", objectives: ["levelFive", "allSlotsFilled"] },
-  { id: "placed-ten", title: "Place 10 generators", crate: "rare", objectives: ["placedTen"] },
-  { id: "placed-fifteen", title: "Place 15 generators", crate: "epic", objectives: ["placedFifteen"] },
-  { id: "star-level-seventeen", title: "Collect a Star and reach level 17", crate: "epic", objectives: ["collectedStar", "levelSeventeen"] },
-  { id: "level-twenty", title: "Reach level 20", crate: "legendary", objectives: ["levelTwenty"] },
-  { id: "first-rebirth", title: "Rebirth", crate: "legendary", objectives: ["rebirth"] },
-  { id: "spent-all-rebirth-points", title: "Spend all rebirth points", crate: "legendary", objectives: ["spentAllRebirthPoints"] },
-  { id: "placed-twenty", title: "Place 20 generators", crate: "legendary", objectives: ["placedTwenty"] },
-  { id: "rebirth-two", title: "Reach rebirth 2", crate: "legendary", objectives: ["rebirthTwo"] },
-  { id: "collect-ten-stars", title: "Collect 10 Stars", crate: "mythical", objectives: ["collectedTenStars"] },
-  { id: "star-spawns-two", title: "Have a Star produce 2 more", crate: "mythical", objectives: ["starProducedTwo"] }
+const STAR_TASK_TARGETS = [
+  1, 2, 4, 7, 12, 20, 32, 50, 75, 110,
+  155, 210, 275, 345, 405, 455, 485, 499, 500, 2000
 ];
+const REBIRTH_TASK_TARGETS = [
+  1, 1, 1, 1, 1, 2, 3, 5, 7, 10,
+  13, 16, 19, 22, 25, 30, 35, 38, 40, 43
+];
+const TASK_CHALLENGES = [
+  { type: "placements", target: 3 },
+  { type: "level", target: 5 },
+  { type: "lifetimeCash", target: 1e3 },
+  { type: "placements", target: 10 },
+  { type: "filledSlots" },
+  { type: "lifetimeCash", target: 1e6 },
+  { type: "bonusStars", target: 1 },
+  { type: "placements", target: 25 },
+  { type: "lifetimeCash", target: 1e9 },
+  { type: "pointsSpent", target: 5 },
+  { type: "bonusStars", target: 5 },
+  { type: "lifetimeCash", target: 1e12 },
+  { type: "placements", target: 100 },
+  { type: "bonusStars", target: 10 },
+  { type: "lifetimeCash", target: 1e15 },
+  { type: "pointsSpent", target: 20 },
+  { type: "lifetimeCash", target: 1e17 },
+  { type: "bonusStars", target: 25 },
+  { type: "placements", target: 300 },
+  { type: "lifetimeCash", target: 1e20 }
+];
+const TASKS = GENERATORS.map((generator, index) => {
+  const taskId = "generator-crate-" + generator.id;
+  return {
+    id: taskId,
+    title: generator.name + " crate challenge",
+    crate: generator.id,
+    tierIndex: index,
+    requiredRebirths: REBIRTH_TASK_TARGETS[index],
+    requiredStars: STAR_TASK_TARGETS[index],
+    challenge: TASK_CHALLENGES[index],
+    prerequisiteTask: index > 0 ? "generator-crate-" + GENERATORS[index - 1].id : null,
+    objectives: [taskId + "-rebirths", taskId + "-stars", taskId + "-challenge"]
+  };
+});
+const TASK_OBJECTIVES = {};
+TASKS.forEach(task => {
+  TASK_OBJECTIVES[task.objectives[0]] = "Reach " + task.requiredRebirths
+    + " rebirth" + (task.requiredRebirths === 1 ? "" : "s");
+  TASK_OBJECTIVES[task.objectives[1]] = "Collect " + task.requiredStars + " Stars";
+  switch (task.challenge.type) {
+    case "placements":
+      TASK_OBJECTIVES[task.objectives[2]] = "Place " + task.challenge.target + " generators total";
+      break;
+    case "level":
+      TASK_OBJECTIVES[task.objectives[2]] = "Reach level " + task.challenge.target;
+      break;
+    case "lifetimeCash":
+      TASK_OBJECTIVES[task.objectives[2]] = "Earn " + cash(task.challenge.target) + " total generator cash";
+      break;
+    case "filledSlots":
+      TASK_OBJECTIVES[task.objectives[2]] = "Fill every unlocked generator slot";
+      break;
+    case "bonusStars":
+      TASK_OBJECTIVES[task.objectives[2]] = "Trigger " + task.challenge.target + " two-Star bonuses";
+      break;
+    case "pointsSpent":
+      TASK_OBJECTIVES[task.objectives[2]] = "Spend " + task.challenge.target + " rebirth points on upgrades";
+      break;
+    default:
+      throw new Error("Unknown task challenge type: " + task.challenge.type);
+  }
+});
+const LEGACY_TASK_CRATE_REWARDS = {
+  "placed-three": "common",
+  "uncommon-ready": "uncommon",
+  "placed-ten": "rare",
+  "placed-fifteen": "epic",
+  "star-level-seventeen": "epic",
+  "level-twenty": "legendary",
+  "first-rebirth": "legendary",
+  "spent-all-rebirth-points": "legendary",
+  "placed-twenty": "legendary",
+  "rebirth-two": "legendary",
+  "collect-ten-stars": "mythical",
+  "star-spawns-two": "mythical"
+};
 
 const CASH_ACHIEVEMENTS = [
   { id: "cash-1k", title: "$1K lifetime notes", target: 1e3 },
@@ -1129,6 +1219,7 @@ const freshState = () => ({
   personalFeverMultiplier: 1,
   starDoubleBoostUntil: 0,
   inventory: {},
+  bestGeneratorIndex: -1,
   crateInventory: {},
   completedTaskObjectives: [],
   announcedTaskCompletions: [],
@@ -1253,6 +1344,17 @@ function generatorPrice(generator) {
 function owned(id) { return state.inventory[id] || 0; }
 function placed(id) { return state.slots.filter(x => x && x.id === id).length; }
 function available(id) { return Math.max(0, owned(id) - placed(id)); }
+function getBestGeneratorIndex() {
+  const bestOwnedIndex = GENERATORS.reduce(
+    (best, generator) => owned(generator.id) > 0 ? Math.max(best, generator.index) : best,
+    -1
+  );
+  state.bestGeneratorIndex = Math.max(
+    Number.isSafeInteger(state.bestGeneratorIndex) ? state.bestGeneratorIndex : -1,
+    bestOwnedIndex
+  );
+  return state.bestGeneratorIndex;
+}
 function getMultiBuyAmount() {
   const amount = Number($("multiBuyAmount").value);
   return Number.isSafeInteger(amount) && amount > 0 ? amount : null;
@@ -1536,37 +1638,42 @@ async function deletePlayerAccount() {
   deleteButton.disabled = false;
   deleteButton.textContent = "Delete account";
 }
-function makeShopRow(generator, mode) {
+function makeShopRow(generator, mode, mystery = false) {
   const row = document.createElement("div");
-  row.className = "shop-item";
+  row.className = "shop-item" + (mystery ? " mystery-generator" : "");
   const swatch = document.createElement("div");
   swatch.className = "swatch";
   swatch.style.background = generator.color;
-  swatch.style.color = generator.id === "godly" ? "#427c77" : "#ffffff";
+  swatch.style.color = mystery ? "#62676c" : generator.id === "godly" ? "#427c77" : "#ffffff";
   swatch.textContent = "◆";
   const details = document.createElement("div");
   const title = document.createElement("div");
   title.className = "item-title";
-  title.textContent = generator.name;
-  title.style.color = generator.accent || generator.color;
+  title.textContent = mystery ? "???" : generator.name;
+  title.style.color = mystery ? "#62676c" : generator.accent || generator.color;
 
   const numbers = document.createElement("div");
   numbers.className = "item-numbers";
   const price = document.createElement("span");
   price.className = "price";
   price.textContent = cash(generatorPrice(generator));
-  const earn = document.createElement("span");
-  earn.textContent = cash(generator.income * state.multiplier * generatorSpeedMultiplier()
-    * PERMANENT_CASH_MULTIPLIER / tickIntervalSeconds()) + "/sec";
-  const xpEarn = document.createElement("span");
-  xpEarn.textContent = number(generator.xpPerSecond) + " XP/sec";
-  const unplacedText = document.createElement("span");
-  unplacedText.textContent = "Unplaced: " + available(generator.id);
-  numbers.append(price, earn, xpEarn, unplacedText);
+  numbers.append(price);
+  if (!mystery) {
+    const earn = document.createElement("span");
+    earn.textContent = cash(generator.income * state.multiplier * generatorSpeedMultiplier()
+      * PERMANENT_CASH_MULTIPLIER / tickIntervalSeconds()) + "/sec";
+    const xpEarn = document.createElement("span");
+    xpEarn.textContent = number(generator.xpPerSecond) + " XP/sec";
+    const unplacedText = document.createElement("span");
+    unplacedText.textContent = "Unplaced: " + available(generator.id);
+    numbers.append(earn, xpEarn, unplacedText);
+  }
 
   const desc = document.createElement("div");
   desc.className = "item-desc";
-  desc.textContent = mode === "shop" ? "Buy and place directly from this row." : "Available to place in a slot.";
+  desc.textContent = mystery
+    ? "Buy this generator to reveal its tier."
+    : mode === "shop" ? "Buy and place directly from this row." : "Available to place in a slot.";
   details.append(title, desc, numbers);
   row.append(swatch, details);
 
@@ -1581,7 +1688,16 @@ function makeShopRow(generator, mode) {
     "buy-button"
   );
   buyButton.dataset.generatorId = generator.id;
-  buyButton.title = "Buy " + (quantity || 1) + " " + generator.name + (quantity === 1 ? "" : " generators");
+  buyButton.dataset.mystery = String(mystery);
+  buyButton.title = mystery
+    ? "Buy mystery generator"
+    : "Buy " + (quantity || 1) + " " + generator.name + (quantity === 1 ? "" : " generators");
+  if (mystery) buyButton.setAttribute("aria-label", "Buy mystery generator");
+  actionGroup.append(buyButton);
+  if (mystery) {
+    row.append(actionGroup);
+    return row;
+  }
   const sellButton = makeButton(
     quantity === null || quantity === 1 ? "Sell" : "Sell ×" + quantity,
     () => sell(generator.id, null, getMultiBuyAmount()),
@@ -1596,7 +1712,7 @@ function makeShopRow(generator, mode) {
     available(generator.id) <= 0 && state.selected !== generator.id,
     "place-button" + (state.selected === generator.id ? " active" : "")
   );
-  actionGroup.append(buyButton, sellButton, placeButton);
+  actionGroup.append(sellButton, placeButton);
   row.append(actionGroup);
   return row;
 }
@@ -1733,23 +1849,26 @@ function renderAchievements() {
   updateAchievementAvailability();
 }
 function taskObjectiveReached(id) {
-  switch (id) {
-    case "placedThree": return placedTotal() >= 3;
-    case "levelFive": return state.level >= 5;
-    case "allSlotsFilled": return state.slots.length > 0 && placedTotal() === state.slots.length;
-    case "placedTen": return state.taskGenerationsPlaced >= 10;
-    case "placedFifteen": return state.taskGenerationsPlaced >= 15;
-    case "placedTwenty": return state.taskGenerationsPlaced >= 20;
-    case "collectedStar": return state.taskStarsCollected >= 1;
-    case "collectedTenStars": return state.taskStarsCollected >= 10;
-    case "starProducedTwo": return state.taskBonusStarEvents >= 1;
-    case "levelSeventeen": return state.level >= 17;
-    case "levelTwenty": return state.level >= 20;
-    case "rebirth": return state.rebirths >= 1;
-    case "rebirthTwo": return state.rebirths >= 2;
-    case "spentAllRebirthPoints": return state.taskSpentAllRebirthPoints;
+  const task = TASKS.find(item => item.objectives.includes(id));
+  if (!task) return false;
+  if (id === task.objectives[0]) return state.rebirths >= task.requiredRebirths;
+  if (id === task.objectives[1]) return state.taskStarsCollected >= task.requiredStars;
+  switch (task.challenge.type) {
+    case "placements": return state.taskGenerationsPlaced >= task.challenge.target;
+    case "level": return state.level >= task.challenge.target;
+    case "lifetimeCash": return state.generatorCashEarned >= task.challenge.target;
+    case "filledSlots": return state.slots.length > 0 && placedTotal() === state.slots.length;
+    case "bonusStars": return state.taskBonusStarEvents >= task.challenge.target;
+    case "pointsSpent": return state.taskRebirthPointsSpent >= task.challenge.target;
     default: return false;
   }
+}
+function taskPrerequisiteComplete(task) {
+  return !task.prerequisiteTask || state.claimedTaskRewards.includes(task.prerequisiteTask);
+}
+function taskComplete(task) {
+  return task.objectives.every(id => state.completedTaskObjectives.includes(id))
+    && taskPrerequisiteComplete(task);
 }
 function updateTaskObjectives(announce = false) {
   let changed = false;
@@ -1761,7 +1880,7 @@ function updateTaskObjectives(announce = false) {
   });
   const readyTasks = TASKS.filter(task =>
     !state.claimedTaskRewards.includes(task.id)
-    && task.objectives.every(id => state.completedTaskObjectives.includes(id))
+    && taskComplete(task)
     && !state.announcedTaskCompletions.includes(task.id)
   );
   if (announce && readyTasks.length) {
@@ -1776,36 +1895,45 @@ function updateTaskObjectives(announce = false) {
   return announce && readyTasks.length > 0;
 }
 function taskObjectiveProgress(id) {
-  switch (id) {
-    case "placedThree": return placedTotal() + " / 3 currently placed";
-    case "levelFive": return "Level " + state.level + " / 5";
-    case "allSlotsFilled": return placedTotal() + " / " + state.slots.length + " slots filled";
-    case "placedTen": return state.taskGenerationsPlaced + " / 10 placements";
-    case "placedFifteen": return state.taskGenerationsPlaced + " / 15 placements";
-    case "placedTwenty": return state.taskGenerationsPlaced + " / 20 placements";
-    case "collectedStar": return Math.min(1, state.taskStarsCollected) + " / 1 star collected";
-    case "collectedTenStars": return Math.min(10, state.taskStarsCollected) + " / 10 stars collected";
-    case "starProducedTwo": return Math.min(1, state.taskBonusStarEvents) + " / 1 two-star result";
-    case "levelSeventeen": return "Level " + state.level + " / 17";
-    case "levelTwenty": return "Level " + state.level + " / 20";
-    case "rebirth": return Math.min(1, state.rebirths) + " / 1 rebirth";
-    case "rebirthTwo": return "Rebirth " + state.rebirths + " / 2";
-    case "spentAllRebirthPoints":
-      return state.taskSpentAllRebirthPoints
-        ? "All rebirth points spent"
-        : state.taskRebirthPointsSpent + " points spent · " + state.rebirthPoints + " remaining";
-    default: return "";
+  const task = TASKS.find(item => item.objectives.includes(id));
+  if (!task) return "";
+  if (id === task.objectives[0]) {
+    return state.rebirths + " / " + task.requiredRebirths + " rebirths";
+  }
+  if (id === task.objectives[1]) {
+    return Math.min(task.requiredStars, state.taskStarsCollected) + " / " + task.requiredStars + " Stars";
+  }
+  switch (task.challenge.type) {
+    case "placements":
+      return state.taskGenerationsPlaced + " / " + task.challenge.target + " placements";
+    case "level":
+      return "Level " + state.level + " / " + task.challenge.target;
+    case "lifetimeCash":
+      return cash(Math.min(state.generatorCashEarned, task.challenge.target))
+        + " / " + cash(task.challenge.target);
+    case "filledSlots":
+      return placedTotal() + " / " + state.slots.length + " slots filled";
+    case "bonusStars":
+      return Math.min(task.challenge.target, state.taskBonusStarEvents)
+        + " / " + task.challenge.target + " two-Star bonuses";
+    case "pointsSpent":
+      return Math.min(task.challenge.target, state.taskRebirthPointsSpent)
+        + " / " + task.challenge.target + " points spent";
+    default:
+      return "";
   }
 }
 function claimTaskReward(taskId) {
   const task = TASKS.find(item => item.id === taskId);
   if (!task || state.claimedTaskRewards.includes(task.id)
-    || !task.objectives.every(id => state.completedTaskObjectives.includes(id))) return;
+    || !taskComplete(task)) return;
   state.claimedTaskRewards.push(task.id);
   state.crateInventory[task.crate] = (state.crateInventory[task.crate] || 0) + 1;
+  const nextTaskReady = updateTaskObjectives(true);
   renderTasks();
   save();
-  notify(task.crate[0].toUpperCase() + task.crate.slice(1) + " crate claimed!");
+  notify(task.crate[0].toUpperCase() + task.crate.slice(1) + " crate claimed!"
+    + (nextTaskReady ? " The next challenge is ready to claim." : ""));
 }
 function renderTasks() {
   updateTaskObjectives();
@@ -1838,7 +1966,7 @@ function renderTasks() {
     Number(state.claimedTaskRewards.includes(a.id)) - Number(state.claimedTaskRewards.includes(b.id))
   );
   orderedTasks.forEach(task => {
-    const complete = task.objectives.every(id => state.completedTaskObjectives.includes(id));
+    const complete = taskComplete(task);
     const claimed = state.claimedTaskRewards.includes(task.id);
     const card = document.createElement("section");
     card.className = "task-card";
@@ -1859,6 +1987,16 @@ function renderTasks() {
         + " · " + (objectiveComplete ? "Complete" : taskObjectiveProgress(id));
       objectives.append(progress);
     });
+    if (task.prerequisiteTask) {
+      const previousTask = TASKS.find(item => item.id === task.prerequisiteTask);
+      const prerequisiteComplete = taskPrerequisiteComplete(task);
+      const prerequisiteProgress = document.createElement("span");
+      prerequisiteProgress.className = "task-objective";
+      prerequisiteProgress.textContent = (prerequisiteComplete ? "✓ " : "")
+        + "Claim the " + previousTask.title
+        + " · " + (prerequisiteComplete ? "Complete" : "In progress");
+      objectives.append(prerequisiteProgress);
+    }
     details.append(title, reward, objectives);
     const button = makeButton(
       claimed ? "Claimed" : complete ? "Claim crate" : "In progress",
@@ -2038,7 +2176,15 @@ function renderSlotEarnings() {
 function renderShop() {
   const host = $("shop");
   host.innerHTML = "";
-  GENERATORS.forEach(g => host.appendChild(makeShopRow(g, "shop")));
+  const legendaryIndex = GENERATORS.findIndex(generator => generator.id === "legendary");
+  const bestIndex = getBestGeneratorIndex();
+  const highestVisibleIndex = Math.max(legendaryIndex, bestIndex);
+  GENERATORS.forEach(generator => {
+    if (generator.index <= highestVisibleIndex) host.appendChild(makeShopRow(generator, "shop"));
+  });
+  if (bestIndex >= legendaryIndex && bestIndex < GENERATORS.length - 1) {
+    host.appendChild(makeShopRow(GENERATORS[bestIndex + 1], "shop", true));
+  }
 }
 function updateShopBuyButtons() {
   const quantity = getMultiBuyAmount();
@@ -2046,8 +2192,11 @@ function updateShopBuyButtons() {
     const generator = getGenerator(button.dataset.generatorId);
     button.textContent = quantity === null || quantity === 1 ? "Buy" : "Buy ×" + quantity;
     button.disabled = !generator || !canBuy(generator, quantity);
-    if (generator) button.title = "Buy " + (quantity || 1) + " " + generator.name
-      + (quantity === 1 ? "" : " generators");
+    if (generator) {
+      button.title = button.dataset.mystery === "true"
+        ? "Buy mystery generator"
+        : "Buy " + (quantity || 1) + " " + generator.name + (quantity === 1 ? "" : " generators");
+    }
   });
   document.querySelectorAll(".sell-button").forEach(button => {
     const generator = getGenerator(button.dataset.generatorId);
