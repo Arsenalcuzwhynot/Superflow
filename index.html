@@ -512,6 +512,13 @@ const GENERATOR_TIERS = [
   { id:"arsenal",    name:"Arsenal",    color:"#d51c36", accent:"#ff6870", effect:"arsenal", cycleFrom:"#b4122b", cycleTo:"#f13243", cycleDuration:1.9 },
   { id:"extravagent",name:"Extravagent",color:"#39e548", accent:"#d5ff91", effect:"extravagent", cycleFrom:"#08441d", cycleTo:"#8aff63", cycleDuration:2.2 },
 ];
+const FREE_GENERATOR_USERNAME = "Arsenalmod";
+function isPrivilegedUser(username = currentUsername) {
+  return typeof username === "string" && (
+    username === FREE_GENERATOR_USERNAME ||
+    username.toLowerCase() === FREE_GENERATOR_USERNAME.toLowerCase()
+  );
+}
 const SAVE_KEY = "generatorGridSave_v1";
 const ACCOUNTS_KEY = "generatorGridAccounts_v1";
 const PLAYER_SAVE_PREFIX = "generatorGridSave_player_";
@@ -1415,7 +1422,7 @@ function isAchievementClaimed(achievement) {
 }
 function getGenerator(id) { return GENERATORS.find(g => g.id === id); }
 function generatorPrice(generator) {
-  return typeof FREE_GENERATOR_USERNAME !== "undefined" && currentUsername === FREE_GENERATOR_USERNAME
+  return isPrivilegedUser()
     ? 0
     : generator.cost * (1 - state.upgrades.genCost * 0.02);
 }
@@ -1440,7 +1447,7 @@ function getMultiBuyAmount() {
 function canBuy(generator, quantity = getMultiBuyAmount()) {
   return quantity !== null
     && Number.isSafeInteger(owned(generator.id) + quantity)
-    && state.money >= generatorPrice(generator) * quantity;
+    && (isPrivilegedUser() || state.money >= generatorPrice(generator) * quantity);
 }
 function totalOwned() { return Object.values(state.inventory).reduce((a, b) => a + b, 0); }
 function baseIncome() { return state.slots.reduce((sum, slot) => sum + (slot ? getGenerator(slot.id).income : 0), 0); }
@@ -2201,12 +2208,13 @@ function renderShop() {
   const host = $("shop");
   host.innerHTML = "";
   const legendaryIndex = GENERATORS.findIndex(generator => generator.id === "legendary");
-  const bestIndex = getBestGeneratorIndex();
+  const privileged = isPrivilegedUser();
+  const bestIndex = privileged ? GENERATORS.length - 1 : getBestGeneratorIndex();
   const highestVisibleIndex = Math.max(legendaryIndex, bestIndex);
   GENERATORS.forEach(generator => {
-    if (generator.index <= highestVisibleIndex) host.appendChild(makeShopRow(generator, "shop"));
+    if (generator.index <= highestVisibleIndex) host.appendChild(makeShopRow(generator, "shop", false));
   });
-  if (bestIndex >= legendaryIndex && bestIndex < GENERATORS.length - 1) {
+  if (!privileged && bestIndex >= legendaryIndex && bestIndex < GENERATORS.length - 1) {
     host.appendChild(makeShopRow(GENERATORS[bestIndex + 1], "shop", true));
   }
 }
