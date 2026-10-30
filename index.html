@@ -60,8 +60,9 @@ main{max-width:1250px;margin:auto;padding:20px}
 .layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.9fr);gap:16px;align-items:start}
 .side{display:grid;gap:16px}
 .shop-tabs{position:sticky;top:0;z-index:2;display:flex;gap:8px;margin:-15px -15px 12px;padding:8px 15px 0;background:var(--panel);border-bottom:1px solid var(--line)}
-.shop-tab{flex:1;min-width:0;background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;padding:8px 7px;color:var(--muted)}
+.shop-tab{position:relative;flex:1;min-width:0;background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;padding:8px 7px;color:var(--muted)}
 .shop-tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--green)}
+.rebirth-badge{position:absolute;top:0;right:5px;display:grid;place-items:center;min-width:16px;height:16px;padding:0 4px;border-radius:99px;background:#e34859;color:#fff;font-size:11px;font-weight:900;line-height:1;box-shadow:0 0 10px #e3485980}
 .shop-content{max-height:520px;overflow:auto;padding-right:4px}
 .overview-layout{display:grid;gap:16px;align-items:start}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
@@ -79,7 +80,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .slot.filled::before{content:"";display:none;position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;opacity:.38;background:var(--cycle-from,var(--tier-color))}
 .slot.filled.color-cycling::before{display:block;animation:tier-color-cycle var(--cycle-duration,2.4s) ease-in-out infinite alternate}
 .slot.filled.cycle-chroma::before{animation-name:tier-rainbow;animation-timing-function:linear;animation-iteration-count:infinite;animation-direction:normal}
-.slot.filled.cycle-blossom::before,.slot.filled.cycle-absolute::before,.slot.filled.cycle-astral::before,.slot.filled.cycle-celestial::before,.slot.filled.cycle-aether::before,.slot.filled.cycle-nebulous::before,.slot.filled.cycle-paradox::before,.slot.filled.cycle-singularity::before{animation-direction:alternate}
+.slot.filled.cycle-blossom::before,.slot.filled.cycle-absolute::before,.slot.filled.cycle-astral::before,.slot.filled.cycle-celestial::before,.slot.filled.cycle-aether::before,.slot.filled.cycle-nebulous::before,.slot.filled.cycle-paradox::before,.slot.filled.cycle-singularity::before,.slot.filled.cycle-arsenal::before,.slot.filled.cycle-extravagent::before{animation-direction:alternate}
 .generator-visual{position:relative;z-index:1;display:grid;place-items:center;width:clamp(34px,calc(46px * var(--slot-scale,1)),46px);height:clamp(34px,calc(42px * var(--slot-scale,1)),42px);flex:none}
 .generator-particles{position:absolute;inset:0;pointer-events:none}
 .generator-particles span{position:absolute;left:calc(50% + var(--start-x));top:calc(50% + var(--start-y));width:4px;height:4px;border-radius:50%;background:var(--particle-color);box-shadow:0 0 5px var(--particle-color);opacity:0;transform:translate(-50%,-50%);animation:float-particle var(--particle-duration,2.8s) ease-out infinite}
@@ -132,7 +133,25 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .effect-fog .generator-particles span{width:7px;height:7px;filter:blur(2px);opacity:0}
 .effect-glow .generator-particles span{width:5px;height:5px;box-shadow:0 0 9px 2px var(--particle-color)}
 .effect-shimmer .generator-particles span,.effect-chroma .generator-particles span,.effect-aether .generator-particles span{width:2px;height:9px;border-radius:3px;box-shadow:0 0 7px var(--particle-color)}
-.effect-aether .generator-particles span{width:3px;height:12px;box-shadow:0 0 10px 2px var(--particle-color)}
+.effect-aether .generator-particles span{width:3px;height:12px;box-shadow:0 0 12px 3px var(--particle-color)}
+.effect-astral .generator-particles span{width:3px;height:3px;box-shadow:0 0 10px 3px #b9d5ff}
+.effect-astral .generator-particles span:nth-child(odd)::before{content:"✦";color:#eaf4ff;text-shadow:0 0 10px #8bbaff}
+.effect-celestial .generator-particles span{width:5px;height:5px;background:#fff0a6;box-shadow:0 0 12px 4px #ff8a23}
+.effect-celestial .generator-particles span:nth-child(3n)::before{content:"✧";color:#fff3bf;text-shadow:0 0 10px #ff6a00}
+.effect-nebulous .generator-particles span{width:3px;height:3px;background:#9cdbbd;box-shadow:0 0 9px 2px #1c8b60}
+.effect-nebulous .generator-particles span:nth-child(odd)::before{content:"·";color:#98b8ff;text-shadow:0 0 9px #3768d9}
+.effect-paradox .generator-particles span{width:3px;height:11px;border-radius:4px;background:#ffc36a;box-shadow:0 0 10px 3px #e53a22;transform:translate(-50%,-50%) rotate(35deg)}
+.effect-paradox .generator-particles span:nth-child(odd)::before{content:"✦";color:#ffe7c0;text-shadow:0 0 10px #d21d27}
+.effect-singularity .generator-particles span{width:5px;height:5px;background:#fff1a3;box-shadow:0 0 12px 4px #ff7b00}
+.effect-singularity .generator-particles span:nth-child(3n)::before{content:"✧";color:#fff7c2;text-shadow:0 0 11px #ff9400}
+.effect-extravagent .generator-particles span{width:4px;height:6px;border-radius:90% 10% 90% 10%;background:#c9ff9a;box-shadow:0 0 9px 3px #39e75b}
+.effect-extravagent .generator-particles span:nth-child(odd)::before{content:"✦";color:#e4ffb2;text-shadow:0 0 9px #1aa842}
+.effect-astral .generator-visual::before,.effect-nebulous .generator-visual::before,.effect-paradox .generator-visual::before,.effect-singularity .generator-visual::before,.effect-extravagent .generator-visual::before{content:"";position:absolute;inset:-4px;border-radius:50%;pointer-events:none}
+.effect-astral .generator-visual::before{border:2px solid #9fc5ff;box-shadow:0 0 16px 4px #527dde;animation:particle-orbit 1.2s linear infinite}
+.effect-nebulous .generator-visual::before{inset:-3px;border:2px dashed #438d70;box-shadow:0 0 14px 3px #172c75;animation:obsidian-pulse 1.8s ease-in-out infinite alternate}
+.effect-paradox .generator-visual::before{border:2px solid #ff7a27;box-shadow:0 0 15px 3px #a20d21;animation:obsidian-pulse .8s ease-in-out infinite alternate}
+.effect-singularity .generator-visual::before{inset:-5px;border:2px solid #ffcf52;box-shadow:0 0 17px 4px #ff6a00;animation:particle-orbit 2s linear infinite}
+.effect-extravagent .generator-visual::before{border:2px dashed #90ff78;box-shadow:0 0 15px 4px #20aa45;animation:particle-orbit 2.4s linear infinite}
 @keyframes tier-color-cycle{from{background-color:var(--cycle-from,var(--tier-color))}to{background-color:var(--cycle-to,var(--tier-accent))}}
 @keyframes tier-rainbow{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
 @keyframes float-particle{0%{opacity:0;transform:translate(-50%,-50%) scale(.45)}15%{opacity:.95}65%{opacity:.75}100%{opacity:0;transform:translate(calc(-50% + var(--drift-x)),calc(-50% + var(--drift-y))) scale(.7)}}
@@ -156,6 +175,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .leaderboard-tabs{position:static;margin:0 0 10px;padding:0;background:transparent}
 .chat-messages{height:320px;overflow:auto;display:flex;flex-direction:column-reverse;gap:8px;padding:10px;background:#10151c;border:1px solid var(--line);border-radius:8px}
 .chat-message{overflow-wrap:anywhere;font-size:12px}
+.chat-blurred-word{filter:blur(3px);user-select:none}
 .chat-meta{color:var(--muted);font-size:10px;margin-right:6px}
 .chat-compose{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:10px}
 .chat-compose input{min-width:0}
@@ -228,10 +248,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .update-history-entry h3{margin:0 0 6px;font-size:13px}
 .update-history-entry ul{margin:0;padding-left:18px;color:var(--muted);font-size:11px}
 .modal-bg{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
-.modal-bg.open{display:flex}.modal{width:min(390px,100%);background:#1a222d;border:1px solid #3a4655;border-radius:12px;padding:18px}
+.modal-bg.open{display:flex}.modal{width:min(390px,100%);max-height:80vh;display:flex;flex-direction:column;background:#1a222d;border:1px solid #3a4655;border-radius:12px;padding:18px}
 .modal h2{margin-bottom:8px}.modal p{font-size:12px;color:var(--muted)}
 .modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.modal-fields{display:grid;gap:10px;margin-top:12px}
+.modal-fields{display:grid;gap:10px;margin-top:12px;overflow-y:auto;min-height:0}
 .modal-fields label{display:grid;gap:5px;color:var(--muted);font-size:11px}
 .modal-fields input{width:100%;min-height:42px}
 .star-layer{position:fixed;inset:0;z-index:8;pointer-events:none;overflow:hidden}
@@ -295,7 +315,6 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
   <div class="game-account">
     <span id="gamePlayerName" class="auth-status"></span>
     <div class="game-account-actions">
-      <button id="deleteAccountBtn" class="danger-button" type="button">Delete account</button>
       <button id="logoutBtn" type="button">Log out</button>
     </div>
   </div>
@@ -340,7 +359,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         <div class="shop-tabs" role="tablist" aria-label="Shop, tasks, rebirth, upgrades, and achievements">
           <button class="shop-tab" id="shopTabBtn" type="button" role="tab" aria-selected="true" aria-controls="shopTabPanel">Shop</button>
           <button class="shop-tab" id="tasksTabBtn" type="button" role="tab" aria-selected="false" aria-controls="tasksTabPanel">Tasks</button>
-          <button class="shop-tab" id="rebirthTabBtn" type="button" role="tab" aria-selected="false" aria-controls="rebirthTabPanel">Rebirth</button>
+          <button class="shop-tab" id="rebirthTabBtn" type="button" role="tab" aria-label="Rebirth" aria-selected="false" aria-controls="rebirthTabPanel">Rebirth<span class="rebirth-badge" id="rebirthAvailableBadge" aria-hidden="true" hidden>!</span></button>
           <button class="shop-tab" id="upgradesTabBtn" type="button" role="tab" aria-selected="false" aria-controls="upgradesTabPanel">Upgrades</button>
           <button class="shop-tab" id="achievementsTabBtn" type="button" role="tab" aria-selected="false" aria-controls="achievementsTabPanel">Achievements</button>
         </div>
@@ -367,6 +386,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         </div>
         <div id="upgradesTabPanel" role="tabpanel" aria-labelledby="upgradesTabBtn" hidden>
           <div class="upgrade-points">Rebirth points: <span id="upgradePoints">0</span></div>
+          <div class="tutorial-guide" id="upgradeTutorialGuide" hidden>
+            <div><strong>Choose your first upgrade</strong><span>Click an Upgrade button below to spend your rebirth point and gain a permanent bonus.</span></div>
+            <button id="dismissUpgradeTutorialBtn" type="button">Got it</button>
+          </div>
           <div class="upgrade-list" id="upgradeList"></div>
         </div>
         <div id="achievementsTabPanel" role="tabpanel" aria-labelledby="achievementsTabBtn" hidden>
@@ -392,10 +415,6 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
             <button id="resetBtn">Reset game</button>
           </div>
           <p class="muted small">Progress saves to your account. Avoid playing on two devices at the same time.</p>
-          <label class="privacy-setting muted small" for="hideFromLeaderboard">
-            <input id="hideFromLeaderboard" type="checkbox" disabled>
-            <span><strong>Hide my account from the leaderboard</strong><span>Removes your score from the public board. You can turn this off anytime.</span></span>
-          </label>
         </div>
       </section>
       <section class="panel" id="adminPanel" hidden>
@@ -446,7 +465,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
       </div>
     </section>
   </div>
-  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">0.9.3</span><button id="updateHistoryBtn" type="button">Update history</button></div>
+  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">0.9.4</span><button id="updateHistoryBtn" type="button">Update history</button></div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
@@ -484,6 +503,14 @@ const GENERATOR_TIERS = [
   { id:"chroma",     name:"Chroma",     color:"#b83b9d", accent:"#ff83dc", effect:"chroma", cycleDuration:2.2 },
   { id:"blossom",    name:"Blossom",    color:"#f39752", accent:"#ffb8d5", effect:"fog", cycleFrom:"#f39752", cycleTo:"#d62e9a", cycleDuration:1.4 },
   { id:"absolute",   name:"Absolute",   color:"#45bd32", accent:"#b4ff66", effect:"squares", cycleDuration:1.05 },
+  { id:"astral",     name:"Astral",     color:"#243c70", accent:"#c8dcff", effect:"astral", cycleFrom:"#1b2856", cycleTo:"#71a9ff", cycleDuration:1.8 },
+  { id:"celestial",  name:"Celestial",  color:"#ff861d", accent:"#ffe08a", effect:"celestial", cycleFrom:"#d84b12", cycleTo:"#ffbd36", cycleDuration:1.5 },
+  { id:"aether",     name:"Aether",     color:"#18bfd1", accent:"#ff78d1", effect:"aether", cycleFrom:"#00b9d6", cycleTo:"#f35ec5", cycleDuration:1.7 },
+  { id:"nebulous",   name:"Nebulous",   color:"#12563a", accent:"#527bb5", effect:"nebulous", cycleFrom:"#0a4a2d", cycleTo:"#101c52", cycleDuration:2.6 },
+  { id:"paradox",    name:"Paradox",    color:"#f46a1d", accent:"#ff9a49", effect:"paradox", cycleFrom:"#f48220", cycleTo:"#510817", cycleDuration:2.1 },
+  { id:"singularity",name:"Singularity",color:"#ffd13e", accent:"#fff0a0", effect:"singularity", cycleFrom:"#e9bd28", cycleTo:"#ff6500", cycleDuration:1.7 },
+  { id:"arsenal",    name:"Arsenal",    color:"#d51c36", accent:"#ff6870", effect:"arsenal", cycleFrom:"#b4122b", cycleTo:"#f13243", cycleDuration:1.9 },
+  { id:"extravagent",name:"Extravagent",color:"#39e548", accent:"#d5ff91", effect:"extravagent", cycleFrom:"#08441d", cycleTo:"#8aff63", cycleDuration:2.2 },
 ];
 const SAVE_KEY = "generatorGridSave_v1";
 const ACCOUNTS_KEY = "generatorGridAccounts_v1";
@@ -493,12 +520,18 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 1000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "0.9.3";
+const GAME_VERSION = "0.9.4";
+const CHAT_HISTORY_START_AT = Date.now();
 const UPDATE_HISTORY = [
   {
     version: GAME_VERSION,
     status: "Current",
     changes: [
+      "Brought back eight animated, particle-powered generator tiers.",
+      "Added a rebirth-ready alert and a first-rebirth upgrade walkthrough.",
+      "Removed the account deletion and leaderboard-hiding controls.",
+      "Blurred profanity in chat and started a fresh chat history.",
+      "Made update history scrollable and removed early crate rebirth requirements.",
       "Raised late-game crate rebirth goals, including 40 for Blossom and 43 for Absolute.",
       "Added varied non-Star objectives to every generator crate challenge."
     ]
@@ -630,7 +663,6 @@ async function enterGame(username, user, firstTime = false) {
   currentUsername = username;
   state = freshState();
   await load();
-  renderLeaderboardPrivacySetting();
   if (firstTime) {
     state.tutorialStarted = true;
     state.tutorialComplete = false;
@@ -761,6 +793,7 @@ async function loadUserSave() {
       : [];
     state.tutorialStarted = savedState.tutorialStarted === true;
     state.tutorialComplete = !state.tutorialStarted || savedState.tutorialComplete !== false;
+    state.upgradeTutorialPending = savedState.upgradeTutorialPending === true;
     state.tutorialStep = Number.isSafeInteger(savedState.tutorialStep)
       ? Math.max(0, Math.min(4, savedState.tutorialStep))
       : 0;
@@ -809,12 +842,6 @@ async function loadUserSave() {
   }
 }
 
-function renderLeaderboardPrivacySetting() {
-  const setting = $("hideFromLeaderboard");
-  setting.checked = hideFromLeaderboard;
-  setting.disabled = !currentUser || !leaderboardPrivacyLoaded;
-}
-
 function syncNewAccountBoostRemaining() {
   if (newAccountBoostUntil > 0) {
     state.newAccountBoostRemainingMs = Math.max(0, newAccountBoostUntil - Date.now());
@@ -849,32 +876,6 @@ function stopNewAccountBoost() {
   if (newAccountBoostTimer !== null) clearTimeout(newAccountBoostTimer);
   newAccountBoostTimer = null;
   newAccountBoostUntil = 0;
-}
-
-async function updateLeaderboardPrivacy(event) {
-  const setting = event.currentTarget;
-  const hide = setting.checked;
-  setting.disabled = true;
-  try {
-    await dbRef.collection("users").doc(currentUser.uid).set({
-      hideFromLeaderboard: hide,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
-    hideFromLeaderboard = hide;
-    const published = await publishLeaderboardEntry();
-    if (!published) {
-      notify(hide
-        ? "Your privacy setting was saved, but your leaderboard entry could not be removed yet."
-        : "Your privacy setting was saved, but your leaderboard entry could not be restored yet.", true);
-      return;
-    }
-    notify(hide ? "Your account is hidden from the leaderboard." : "Your account is visible on the leaderboard.");
-  } catch (error) {
-    setting.checked = hideFromLeaderboard;
-    notify("Could not save your leaderboard privacy setting. Try again.", true);
-  } finally {
-    renderLeaderboardPrivacySetting();
-  }
 }
 
 async function saveUserState(silent = true) {
@@ -1000,6 +1001,65 @@ function selectLeaderboard(metricName) {
     );
 }
 
+const CHAT_BLURRED_MARKER = "████";
+const CHAT_PROFANITY = new Set([
+  "fuck", "fuk", "fck", "fucking", "fucked", "fucker", "fuckers", "fucks", "fuckface", "fuckwit",
+  "shit", "shite", "shitty", "shits", "shithead", "shitface", "bullshit", "dipshit", "horseshit",
+  "bitch", "bitches", "bitchy", "bitching", "bastard", "bastards", "ass", "asshole", "assholes",
+  "arse", "arsehole", "dumbass", "jackass", "dick", "dicks", "dickhead", "cock", "cocks", "cocksucker",
+  "pussy", "pussies", "cunt", "cunts", "motherfucker", "motherfuckers", "motherfucking",
+  "damn", "dammit", "goddamn", "hell", "crap", "crappy", "piss", "pissed", "pissing",
+  "slut", "sluts", "whore", "whores", "twat", "prick", "pricks", "douche", "douchebag",
+  "wanker", "bollocks", "fag", "faggot", "nigger", "nigga", "retard", "retarded", "wtf", "stfu"
+]);
+
+function normalizeChatToken(token) {
+  return Array.from(token.normalize("NFKD").toLowerCase()).join("")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[0]/g, "o")
+    .replace(/[1!|]/g, "i")
+    .replace(/[2]/g, "z")
+    .replace(/[3]/g, "e")
+    .replace(/[4@]/g, "a")
+    .replace(/[5$]/g, "s")
+    .replace(/[6]/g, "g")
+    .replace(/[7+]/g, "t")
+    .replace(/[8]/g, "b")
+    .replace(/[9]/g, "g")
+    .replace(/\*/g, "u")
+    .replace(/[^a-z]/g, "")
+    .replace(/(.)\1{2,}/g, "$1$1");
+}
+
+function containsChatProfanity(token) {
+  return CHAT_PROFANITY.has(normalizeChatToken(token));
+}
+
+function moderateChatText(value) {
+  const spacedLetters = /(^|[^\p{L}\p{N}])((?:[\p{L}\p{N}][\s._*\-]+){2,}[\p{L}\p{N}])(?=$|[^\p{L}\p{N}])/gu;
+  const separated = String(value).replace(spacedLetters, (match, boundary, token) =>
+    containsChatProfanity(token) ? boundary + CHAT_BLURRED_MARKER : match
+  );
+  const separatedPunctuation = /[\p{L}\p{N}]+(?:[^\p{L}\p{N}\s]+[\p{L}\p{N}]+)*/gu;
+  return separated.replace(separatedPunctuation, token =>
+    containsChatProfanity(token) ? CHAT_BLURRED_MARKER : token
+  );
+}
+
+function renderModeratedChatText(element, value) {
+  const parts = value.split(CHAT_BLURRED_MARKER);
+  parts.forEach((part, index) => {
+    if (part) element.append(document.createTextNode(part));
+    if (index < parts.length - 1) {
+      const blurred = document.createElement("span");
+      blurred.className = "chat-blurred-word";
+      blurred.textContent = CHAT_BLURRED_MARKER;
+      blurred.setAttribute("aria-label", "Profanity blurred");
+      element.append(blurred);
+    }
+  });
+}
+
 function renderChat(snapshot) {
   const host = $("chatMessages");
   host.innerHTML = "";
@@ -1012,11 +1072,11 @@ function renderChat(snapshot) {
     const time = message.createdAt && message.createdAt.toDate ? message.createdAt.toDate().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "";
     meta.textContent = (message.username || "Player") + (time ? " · " + time : "");
     const text = document.createElement("span");
-    text.textContent = message.text || "";
+    renderModeratedChatText(text, moderateChatText(message.text || ""));
     row.append(meta, text);
     host.appendChild(row);
   });
-  $("chatStatus").textContent = "Showing the latest " + snapshot.size + " messages.";
+  $("chatStatus").textContent = "Chat cleared for this session. Showing " + snapshot.size + " new messages.";
 }
 
 function startCommunityListeners() {
@@ -1024,7 +1084,11 @@ function startCommunityListeners() {
   communityUnsubscribers = [];
   stopLeaderboardListener();
   if (!currentUser || !dbRef) return;
-  const chatQuery = dbRef.collection("chatMessages").orderBy("createdAt", "desc").limit(50);
+  const chatStartedAt = firebase.firestore.Timestamp.fromMillis(CHAT_HISTORY_START_AT);
+  const chatQuery = dbRef.collection("chatMessages")
+    .where("createdAt", ">=", chatStartedAt)
+    .orderBy("createdAt", "desc")
+    .limit(50);
   selectLeaderboard(activeLeaderboard);
   communityUnsubscribers.push(chatQuery.onSnapshot(renderChat, () => {
     $("chatStatus").textContent = "Chat unavailable. Check Firestore rules.";
@@ -1034,7 +1098,8 @@ function startCommunityListeners() {
 
 async function sendChatMessage(event) {
   event.preventDefault();
-  const text = $("chatInput").value.trim();
+  const originalText = $("chatInput").value.trim();
+  const text = moderateChatText(originalText);
   if (!currentUser || !dbRef) {
     $("chatStatus").textContent = "Sign in before sending a message.";
     return;
@@ -1061,6 +1126,7 @@ async function sendChatMessage(event) {
     });
     lastChatSentAt = Date.now();
     $("chatInput").value = "";
+    if (text !== originalText) $("chatStatus").textContent = "Profanity is blurred before messages are sent.";
   } catch (e) {
     $("chatStatus").textContent = e.message === "chat-cooldown"
       ? "Please wait a few seconds before sending another message."
@@ -1085,11 +1151,13 @@ const CRATE_TIER_WEIGHTS = {
 };
 const STAR_TASK_TARGETS = [
   1, 2, 4, 7, 12, 20, 32, 50, 75, 110,
-  155, 210, 275, 345, 405, 455, 485, 499, 500, 2000
+  155, 210, 275, 345, 405, 455, 485, 499, 500, 2000,
+  5000, 10000, 20000, 50000, 100000, 250000, 500000, 1000000
 ];
 const REBIRTH_TASK_TARGETS = [
-  1, 1, 1, 1, 1, 2, 3, 5, 7, 10,
-  13, 16, 19, 22, 25, 30, 35, 38, 40, 43
+  0, 0, 0, 0, 0, 1, 3, 5, 7, 10,
+  13, 16, 19, 22, 25, 30, 35, 38, 40, 43,
+  47, 51, 55, 59, 63, 67, 71, 75
 ];
 const TASK_CHALLENGES = [
   { type: "placements", target: 3 },
@@ -1111,7 +1179,15 @@ const TASK_CHALLENGES = [
   { type: "lifetimeCash", target: 1e17 },
   { type: "bonusStars", target: 25 },
   { type: "placements", target: 300 },
-  { type: "lifetimeCash", target: 1e20 }
+  { type: "lifetimeCash", target: 1e20 },
+  { type: "placements", target: 500 },
+  { type: "lifetimeCash", target: 1e22 },
+  { type: "bonusStars", target: 50 },
+  { type: "placements", target: 750 },
+  { type: "pointsSpent", target: 50 },
+  { type: "lifetimeCash", target: 1e25 },
+  { type: "bonusStars", target: 100 },
+  { type: "lifetimeCash", target: 1e30 }
 ];
 const TASKS = GENERATORS.map((generator, index) => {
   const taskId = "generator-crate-" + generator.id;
@@ -1129,8 +1205,9 @@ const TASKS = GENERATORS.map((generator, index) => {
 });
 const TASK_OBJECTIVES = {};
 TASKS.forEach(task => {
-  TASK_OBJECTIVES[task.objectives[0]] = "Reach " + task.requiredRebirths
-    + " rebirth" + (task.requiredRebirths === 1 ? "" : "s");
+  TASK_OBJECTIVES[task.objectives[0]] = task.requiredRebirths === 0
+    ? "No rebirth required"
+    : "Reach " + task.requiredRebirths + " rebirth" + (task.requiredRebirths === 1 ? "" : "s");
   TASK_OBJECTIVES[task.objectives[1]] = "Collect " + task.requiredStars + " Stars";
   switch (task.challenge.type) {
     case "placements":
@@ -1235,6 +1312,7 @@ const freshState = () => ({
   tutorialComplete: true,
   tutorialStep: 0,
   tutorialStartLevel: 1,
+  upgradeTutorialPending: false,
   level: 1,
   rebirths: 0,
   rebirthPoints: 0,
@@ -1572,7 +1650,6 @@ async function logoutUser() {
   currentUsername = null;
   hideFromLeaderboard = false;
   leaderboardPrivacyLoaded = false;
-  renderLeaderboardPrivacySetting();
   state = freshState();
   configureGameTickTimer();
   updateAuthUI();
@@ -1580,63 +1657,6 @@ async function logoutUser() {
   $("authScreen").hidden = false;
   $("usernameInput").value = "";
   $("passwordInput").value = "";
-}
-async function deletePlayerAccount() {
-  if (!currentUser || !functionsRef) {
-    notify("Sign in before deleting your account.", true);
-    return;
-  }
-  if (!confirm("Permanently delete " + currentUsername + "? This removes your game save, leaderboard entry, chat messages, and account. This cannot be undone.")) return;
-  const username = currentUsername;
-  const deleteButton = $("deleteAccountBtn");
-  deleteButton.disabled = true;
-  deleteButton.textContent = "Deleting account...";
-  notify("Deleting your account and removing its leaderboard entry...");
-  try {
-    const result = await functionsRef.httpsCallable("deleteAccount")({ username });
-    if (!result.data || result.data.deleted !== true) {
-      throw new Error("The server did not confirm account deletion. Your account is still active.");
-    }
-  } catch (error) {
-    console.error("Account deletion failed:", error.code || "unknown error");
-    const code = typeof error.code === "string" ? error.code : "";
-    const message = code === "functions/not-found"
-      ? "Account deletion is not available on the game server yet. Deploy the Firebase deleteAccount function, then try again. Your account has not been deleted."
-      : error.message || "Account deletion failed. Your account has not been deleted.";
-    notify(message, true);
-    showModal("Account was not deleted", message, [["Close", closeModal]]);
-    deleteButton.disabled = false;
-    deleteButton.textContent = "Delete account";
-    return;
-  }
-
-  stopStarSpawns();
-  stopNewAccountBoost();
-  communityUnsubscribers.forEach(unsubscribe => unsubscribe());
-  communityUnsubscribers = [];
-  stopLeaderboardListener();
-  try {
-    await authRef.signOut();
-  } catch (error) {
-    console.error("Sign-out after account deletion failed:", error.code || "unknown error");
-  }
-  const accounts = getAccountStore();
-  delete accounts[username];
-  saveAccountStore(accounts);
-  localStorage.removeItem(getPlayerSaveKey(username));
-  currentUser = null;
-  currentUsername = null;
-  state = freshState();
-  currentSlotPage = 0;
-  configureGameTickTimer();
-  updateAuthUI();
-  $("gameShell").hidden = true;
-  $("authScreen").hidden = false;
-  $("usernameInput").value = "";
-  $("passwordInput").value = "";
-  $("authStatus").textContent = "Your account and leaderboard entry were deleted. The username is available for a new account.";
-  deleteButton.disabled = false;
-  deleteButton.textContent = "Delete account";
 }
 function makeShopRow(generator, mode, mystery = false) {
   const row = document.createElement("div");
@@ -1752,6 +1772,7 @@ function renderStats() {
     + " to rebirth. Gain 1 rebirth point. You keep remaining cash, generators, multiplier, and permanent slots; level and XP reset.";
   $("rebirthBtn").disabled = state.level < requiredLevel || state.money < cost;
   $("rebirthBtn").textContent = "Rebirth for " + cash(cost);
+  $("rebirthAvailableBadge").hidden = state.level < requiredLevel || state.money < cost;
   $("upgradePoints").textContent = state.rebirthPoints;
   $("owned").textContent = totalOwned();
   $("inventoryTotal").textContent = totalOwned() + " owned";
@@ -1760,6 +1781,7 @@ function renderStats() {
 }
 function renderUpgrades() {
   const host = $("upgradeList");
+  $("upgradeTutorialGuide").hidden = !state.upgradeTutorialPending;
   host.innerHTML = "";
   UPGRADE_DEFINITIONS.forEach(upgrade => {
     const level = state.upgrades[upgrade.id];
@@ -1898,7 +1920,9 @@ function taskObjectiveProgress(id) {
   const task = TASKS.find(item => item.objectives.includes(id));
   if (!task) return "";
   if (id === task.objectives[0]) {
-    return state.rebirths + " / " + task.requiredRebirths + " rebirths";
+    return task.requiredRebirths === 0
+      ? "No rebirth required"
+      : state.rebirths + " / " + task.requiredRebirths + " rebirths";
   }
   if (id === task.objectives[1]) {
     return Math.min(task.requiredStars, state.taskStarsCollected) + " / " + task.requiredStars + " Stars";
@@ -2361,7 +2385,9 @@ function placeBestGenerators() {
 function purchaseUpgrade(id) {
   const upgrade = UPGRADE_DEFINITIONS.find(item => item.id === id);
   if (!upgrade || state.upgrades[id] >= upgrade.max || state.rebirthPoints < 1) return;
+  const completedUpgradeTutorial = state.upgradeTutorialPending;
   state.rebirthPoints--;
+  state.upgradeTutorialPending = false;
   state.taskRebirthPointsSpent++;
   if (state.rebirthPoints === 0) state.taskSpentAllRebirthPoints = true;
   state.upgrades[id]++;
@@ -2373,15 +2399,18 @@ function purchaseUpgrade(id) {
   if (id === "dropSpeed") configureGameTickTimer();
   save();
   notify(upgrade.title + " upgraded to " + state.upgrades[id] + "/" + upgrade.max
+    + (completedUpgradeTutorial ? ". You bought your first upgrade!" : "")
     + (taskReady ? ". Task complete! Check the Tasks tab." : "."), false, taskReady);
 }
 function rebirth() {
   const requiredLevel = rebirthLevelRequirement();
   const cost = rebirthCost();
   if (state.level < requiredLevel || state.money < cost) return;
+  const firstRebirth = state.rebirths === 0;
   state.money -= cost;
   state.rebirths++;
   state.rebirthPoints++;
+  if (firstRebirth) state.upgradeTutorialPending = true;
   state.level = 1;
   currentSlotPage = 0;
   state.levelReachedAt = Date.now();
@@ -2390,6 +2419,7 @@ function rebirth() {
   state.selected = null;
   const taskReady = updateTaskObjectives(true);
   render();
+  if (firstRebirth) selectShopTab("upgrades");
   save();
   publishLeaderboardEntry();
   notify("Rebirth complete! You are now " + rebirthLevelLabel()
@@ -2483,8 +2513,6 @@ $("modalBg").addEventListener("click", e => { if (e.target === $("modalBg")) clo
 $("loginBtn").addEventListener("click", loginWithUsername);
 $("signupBtn").addEventListener("click", createAccountWithUsername);
 $("logoutBtn").addEventListener("click", logoutUser);
-$("deleteAccountBtn").addEventListener("click", deletePlayerAccount);
-$("hideFromLeaderboard").addEventListener("change", updateLeaderboardPrivacy);
 $("chatForm").addEventListener("submit", sendChatMessage);
 document.querySelectorAll("[data-leaderboard]").forEach(button => {
   button.addEventListener("click", () => selectLeaderboard(button.dataset.leaderboard));
@@ -2508,6 +2536,11 @@ $("saveBtn").addEventListener("click", () => save(false));
 $("multiBuyAmount").addEventListener("input", updateShopBuyButtons);
 $("skipTutorialBtn").addEventListener("click", skipTutorial);
 $("dismissTutorialBtn").addEventListener("click", dismissTutorial);
+$("dismissUpgradeTutorialBtn").addEventListener("click", () => {
+  state.upgradeTutorialPending = false;
+  renderUpgrades();
+  save();
+});
 $("clearAllBtn").addEventListener("click", clearAllGenerators);
 $("placeBestBtn").addEventListener("click", placeBestGenerators);
 $("updateHistoryBtn").addEventListener("click", showUpdateHistory);
