@@ -267,6 +267,47 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 @media(max-width:560px){.notice-area{min-height:72px;padding:8px 10px 0}.note{width:100%;padding:11px 13px;font-size:14px;max-height:34vh}header{align-items:flex-start;flex-direction:column;padding:12px}.stats{justify-content:flex-start;width:100%;gap:6px}.stat{flex:1 1 calc(50% - 6px);min-width:0;padding:6px 8px}.stat strong{font-size:14px}.game-account{width:100%;justify-content:space-between}.game-account-actions{gap:5px}.game-account-actions button{padding:7px 8px;font-size:11px}main{padding:10px}.panel-head{padding:11px 12px}.body{padding:11px}.shop-item{grid-template-columns:34px minmax(0,1fr);gap:8px}.swatch{width:32px;height:32px;font-size:18px}.shop-actions{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.shop-actions button{min-height:40px;padding:7px 6px}.shop-content{max-height:min(520px,70vh)}.slot-grid{gap:3px}.slot-pagination{gap:6px}}
 @media(max-width:560px){.shop-tabs{gap:2px;padding-inline:8px}.shop-tab{font-size:10px;padding-inline:2px}}
 
+
+/* v0.9.6 theme and layout controls */
+.shop-content{position:relative;max-height:520px;overflow:auto;scrollbar-gutter:stable}
+.shop-tabs{margin:-15px -15px 0;padding:0 15px;background:var(--panel);gap:4px}
+.shop-quantity-control{position:sticky;top:40px;z-index:3;margin:0 -15px 10px;padding:10px 15px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.shop-actions{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.shop-actions button{min-width:0;padding:8px 9px}
+.buy-max-button{background:var(--green)!important;border-color:var(--green)!important;color:#fff!important;font-weight:800}
+.sell-all-button{background:#6a3440!important;border-color:#a95060!important;color:#fff!important}
+.settings-option{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--line)}
+.settings-option select{max-width:190px;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px}
+.settings-option input{width:20px;height:20px;accent-color:var(--green)}
+body.particles-off .generator-particles{display:none!important}
+body.particles-off .generator-visual::before,body.particles-off .generator-visual::after{display:none!important}
+body[data-theme="red"]{--bg:#16090b;--panel:#261014;--panel2:#35171d;--line:#612630;--green:#ed4056;--muted:#c39ba2}
+body[data-theme="orange"]{--bg:#180e06;--panel:#2b190d;--panel2:#3b2412;--line:#70431f;--green:#ff922e;--muted:#c7a98d}
+body[data-theme="green"]{--bg:#07120c;--panel:#0e1f15;--panel2:#13291d;--line:#1c3d2a;--green:#40d674;--muted:#8fa899}
+body[data-theme="blue"]{--bg:#07101a;--panel:#0d1b2b;--panel2:#132840;--line:#234968;--green:#399bfa;--muted:#91a9c1}
+body[data-theme="darkblue"]{--bg:#050914;--panel:#0b1224;--panel2:#111d36;--line:#263d68;--green:#527cff;--muted:#929fbe}
+body[data-theme="cyan"]{--bg:#061416;--panel:#0b2225;--panel2:#103238;--line:#1d5960;--green:#28d6df;--muted:#91b9bb}
+body[data-theme="purple"]{--bg:#10091a;--panel:#1c112b;--panel2:#29183d;--line:#49306b;--green:#a66bfa;--muted:#b4a0cb}
+body[data-theme="pink"]{--bg:#190b14;--panel:#2a1221;--panel2:#3b1b30;--line:#68304f;--green:#f05da9;--muted:#cba0b8}
+body[data-theme="rose"]{--bg:#190a10;--panel:#2a111b;--panel2:#3b1926;--line:#713448;--green:#f07891;--muted:#cba1ac}
+body[data-theme="grey"]{--bg:#101214;--panel:#1d2226;--panel2:#292f34;--line:#454e55;--green:#aeb8c0;--muted:#a5afb7}
+body[data-theme="black"]{--bg:#000;--panel:#090909;--panel2:#111;--line:#303030;--green:#f0f0f0;--muted:#999}
+body[data-theme] header{background:var(--panel)}
+body[data-theme] button{background:var(--panel2);border-color:var(--line)}
+body[data-theme] .buy-button,body[data-theme] .place-button,body[data-theme] .rebirth-panel button:not(:disabled),body[data-theme] .upgrade-card button:not(:disabled){background:color-mix(in srgb,var(--green) 28%,var(--panel2));border-color:var(--green)}
+body[data-theme] input{background:var(--bg);border-color:var(--line)}
+body[data-theme] .auth-screen{background:radial-gradient(ellipse at 18% 82%,color-mix(in srgb,var(--green) 18%,var(--bg)) 0,transparent 42%),radial-gradient(ellipse at 83% 18%,color-mix(in srgb,var(--green) 22%,var(--bg)) 0,transparent 38%),var(--bg)}
+body[data-theme] .slot.empty:hover{border-color:var(--green)}
+body[data-theme] .slot.empty{background:var(--bg);border-color:var(--line)}
+body[data-theme] .slot.filled{background-color:var(--panel2);background-image:linear-gradient(145deg,color-mix(in srgb,var(--tier-color) 78%,var(--bg)),color-mix(in srgb,var(--tier-color) 58%,var(--bg)))}
+body[data-theme] .empty-mark{color:color-mix(in srgb,var(--green) 45%,var(--bg))}
+body[data-theme] .leaderboard-row{background:var(--panel2)}
+body[data-theme] .leaderboard-cash{color:var(--green)}
+body[data-theme] .auth-card{background:var(--panel);border-color:var(--line)}
+body[data-theme] .task-card{background:var(--panel2);border-color:var(--line)}
+body[data-theme] .shop-tab[aria-selected="true"]{border-bottom-color:var(--green)}
+@media(max-width:700px){.shop-content{max-height:min(64vh,620px)}.shop-quantity-control{top:38px}.shop-actions{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}.shop-actions button{padding:8px 4px;font-size:11px}.shop-tabs{gap:2px}.shop-tab{font-size:10px}}
+
 </style>
 </head>
 <body>
@@ -287,7 +328,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         <button id="signupBtn" type="button" class="secondary">Create account</button>
       </div>
     </div>
-    <div class="auth-hint">Usernames are case-sensitive.</div>
+    <div class="auth-hint"><strong>DON'T USE YOUR REAL NAME.</strong><br>Usernames are case-sensitive.</div>
   </div>
 </section>
 <div class="game-shell" id="gameShell" hidden>
@@ -355,9 +396,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
           <button class="shop-tab" id="achievementsTabBtn" type="button" role="tab" aria-selected="false" aria-controls="achievementsTabPanel">Achievements</button>
         </div>
         <div id="shopTabPanel" role="tabpanel" aria-labelledby="shopTabBtn">
-          <div class="multibuy-control">
+          <div class="multibuy-control shop-quantity-control">
             <label for="multiBuyAmount">Multibuy quantity</label>
             <input id="multiBuyAmount" type="number" min="1" step="1" value="1" inputmode="numeric">
+            <span class="muted small">Stays visible while browsing</span>
           </div>
           <div class="shop-list" id="shop"></div>
         </div>
@@ -444,19 +486,9 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         <div class="muted small" id="leaderboardStatus">Sign in to see the leaderboard.</div>
       </div>
     </section>
-    <section class="panel">
-      <div class="panel-head"><h2>Chat</h2><span class="muted small">Keep it friendly. 300 characters max.</span></div>
-      <div class="body">
-        <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
-        <form class="chat-compose" id="chatForm">
-          <input id="chatInput" type="text" maxlength="300" placeholder="Write a message" autocomplete="off" aria-label="Chat message" />
-          <button id="sendChatBtn" type="submit">Send</button>
-        </form>
-        <div class="chat-status muted small" id="chatStatus">Sign in to join the chat.</div>
-      </div>
-    </section>
+
   </div>
-  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">0.9.4</span><button id="updateHistoryBtn" type="button">Update history</button></div>
+  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">0.9.6</span><button id="settingsBtn" type="button">Settings</button><button id="updateHistoryBtn" type="button">Update history</button></div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
@@ -520,12 +552,25 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 1000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "0.9.5";
+const GAME_VERSION = "0.9.6";
 const CHAT_HISTORY_START_AT = Date.now();
 const UPDATE_HISTORY = [
   {
-    version: GAME_VERSION,
+    version: "0.9.6",
     status: "Current",
+    changes: [
+      "Added Buy Max beside the regular generator purchase button.",
+      "Added Sell All for each generator's unplaced inventory.",
+      "Kept the multibuy quantity control visible while scrolling the shop.",
+      "Temporarily removed global chat.",
+      "Added an account-screen reminder not to use your real name.",
+      "Added eleven selectable colour themes and particle settings.",
+      "Improved shop spacing and mobile/desktop layout."
+    ]
+  },
+  {
+    version: GAME_VERSION,
+    status: "Previous",
     changes: [
       "Overhauled theme to a dark green aesthetic featuring the official Superflow brush logo.",
       "Added chat leaderboard badges for Cash (💵), Multiplier (✨), and Stars (⭐).",
@@ -554,7 +599,7 @@ const UPDATE_HISTORY = [
     changes: [
       "Added a tier-by-tier mystery generator preview that reveals after purchase.",
       "Added one increasingly difficult crate challenge per generator tier.",
-      "Set Blossom and Absolute crate challenges to 500 and 2,000 Stars."
+      "Set late-game generator crate challenges to higher Star requirements."
     ]
   },
   {
@@ -1166,15 +1211,7 @@ function startCommunityListeners() {
   communityUnsubscribers = [];
   stopLeaderboardListener();
   if (!currentUser || !dbRef) return;
-  const chatStartedAt = firebase.firestore.Timestamp.fromMillis(CHAT_HISTORY_START_AT);
-  const chatQuery = dbRef.collection("chatMessages")
-    .where("createdAt", ">=", chatStartedAt)
-    .orderBy("createdAt", "desc")
-    .limit(50);
   selectLeaderboard(activeLeaderboard);
-  communityUnsubscribers.push(chatQuery.onSnapshot(renderChat, () => {
-    $("chatStatus").textContent = "Chat unavailable. Check Firestore rules.";
-  }));
   const tagsQuery = dbRef.collection("leaderboard").limit(100);
   communityUnsubscribers.push(tagsQuery.onSnapshot(snapshot => {
     const data = snapshot.docs.map(doc => doc.data());
@@ -1862,6 +1899,10 @@ function makeShopRow(generator, mode, mystery = false) {
     : "Buy " + (quantity || 1) + " " + generator.name + (quantity === 1 ? "" : " generators");
   if (mystery) buyButton.setAttribute("aria-label", "Buy mystery generator");
   actionGroup.append(buyButton);
+  const maxButton = makeButton("Buy Max", () => buyMax(generator.id), false, "buy-max-button");
+  maxButton.dataset.generatorId = generator.id;
+  maxButton.title = "Buy the maximum number you can afford";
+  actionGroup.append(maxButton);
   if (mystery) {
     row.append(actionGroup);
     return row;
@@ -1880,7 +1921,10 @@ function makeShopRow(generator, mode, mystery = false) {
     available(generator.id) <= 0 && state.selected !== generator.id,
     "place-button" + (state.selected === generator.id ? " active" : "")
   );
-  actionGroup.append(sellButton, placeButton);
+  const sellAllButton = makeButton("Sell All", () => sellAll(generator.id), available(generator.id) <= 0, "sell-all-button");
+  sellAllButton.dataset.generatorId = generator.id;
+  sellAllButton.title = "Sell all unplaced " + generator.name + " generators";
+  actionGroup.append(sellButton, sellAllButton, placeButton);
   row.append(actionGroup);
   return row;
 }
@@ -2404,6 +2448,13 @@ function updateShopBuyButtons() {
         : "Buy " + (quantity || 1) + " " + generator.name + (quantity === 1 ? "" : " generators");
     }
   });
+  document.querySelectorAll(".buy-max-button").forEach(button => {
+    const generator = getGenerator(button.dataset.generatorId);
+    button.disabled = !generator || maxAffordableQuantity(generator) < 1;
+  });
+  document.querySelectorAll(".sell-all-button").forEach(button => {
+    button.disabled = available(button.dataset.generatorId) < 1;
+  });
   document.querySelectorAll(".sell-button").forEach(button => {
     const generator = getGenerator(button.dataset.generatorId);
     button.textContent = quantity === null || quantity === 1 ? "Sell" : "Sell ×" + quantity;
@@ -2479,6 +2530,24 @@ function skipTutorial() {
   grantTutorialBasicCrate();
   renderTutorial();
   save();
+}
+function maxAffordableQuantity(generator) {
+  if (!generator) return 0;
+  if (isPrivilegedUser()) return Math.max(0, Math.min(100000, Number.MAX_SAFE_INTEGER - owned(generator.id)));
+  const unitPrice = generatorPrice(generator);
+  if (!(unitPrice > 0)) return 0;
+  return Math.max(0, Math.min(Number.MAX_SAFE_INTEGER - owned(generator.id), Math.floor(state.money / unitPrice)));
+}
+function buyMax(id) {
+  const generator = getGenerator(id);
+  const quantity = maxAffordableQuantity(generator);
+  if (!generator || quantity < 1) { notify("You cannot afford another " + (generator?.name || "generator") + ".", true); return; }
+  buy(id, quantity);
+}
+function sellAll(id) {
+  const quantity = available(id);
+  if (quantity < 1) return;
+  sell(id, null, quantity);
 }
 function buy(id, quantity = 1) {
   const g = getGenerator(id);
@@ -2666,6 +2735,42 @@ function showModal(title, text, actions) {
   )));
   $("modalBg").classList.add("open");
 }
+const THEME_OPTIONS = [
+  ["red","Red"],["orange","Orange"],["green","Green"],["blue","Blue"],["darkblue","Dark Blue"],
+  ["cyan","Cyan"],["purple","Purple"],["pink","Pink"],["rose","Rose"],["grey","Grey"],["black","Straight black"]
+];
+function loadGameSettings() {
+  let settings = {};
+  try { settings = JSON.parse(localStorage.getItem("superflowSettings_v096") || "{}"); } catch (_) {}
+  const theme = THEME_OPTIONS.some(([id]) => id === settings.theme) ? settings.theme : "green";
+  const particles = settings.particles !== false;
+  document.body.dataset.theme = theme;
+  document.body.classList.toggle("particles-off", !particles);
+  return { theme, particles };
+}
+let gameSettings = loadGameSettings();
+function applyGameSettings() {
+  document.body.dataset.theme = gameSettings.theme;
+  document.body.classList.toggle("particles-off", !gameSettings.particles);
+  try { localStorage.setItem("superflowSettings_v096", JSON.stringify(gameSettings)); } catch (_) {}
+}
+function showSettings() {
+  showModal("Settings", "Customize the look and effects of Superflow!", [["Close", closeModal]]);
+  const host = $("modalFields");
+  const themeRow = document.createElement("label"); themeRow.className = "settings-option";
+  const themeLabel = document.createElement("span"); themeLabel.textContent = "Theme";
+  const themeSelect = document.createElement("select"); themeSelect.setAttribute("aria-label", "Game theme");
+  THEME_OPTIONS.forEach(([id,label]) => { const option=document.createElement("option"); option.value=id; option.textContent=label; themeSelect.append(option); });
+  themeSelect.value = gameSettings.theme;
+  themeSelect.addEventListener("change", () => { gameSettings.theme=themeSelect.value; applyGameSettings(); });
+  themeRow.append(themeLabel,themeSelect);
+  const particleRow = document.createElement("label"); particleRow.className = "settings-option";
+  const particleLabel = document.createElement("span"); particleLabel.textContent = "Particles and generator effects";
+  const particleToggle = document.createElement("input"); particleToggle.type="checkbox"; particleToggle.checked=gameSettings.particles;
+  particleToggle.addEventListener("change", () => { gameSettings.particles=particleToggle.checked; applyGameSettings(); });
+  particleRow.append(particleLabel,particleToggle);
+  host.append(themeRow,particleRow);
+}
 function showUpdateHistory() {
   showModal("Update History", "Updates are summarized by game version.", [["Close", closeModal]]);
   const host = $("modalFields");
@@ -2698,7 +2803,6 @@ $("modalBg").addEventListener("click", e => { if (e.target === $("modalBg")) clo
 $("loginBtn").addEventListener("click", loginWithUsername);
 $("signupBtn").addEventListener("click", createAccountWithUsername);
 $("logoutBtn").addEventListener("click", logoutUser);
-$("chatForm").addEventListener("submit", sendChatMessage);
 document.querySelectorAll("[data-leaderboard]").forEach(button => {
   button.addEventListener("click", () => selectLeaderboard(button.dataset.leaderboard));
 });
@@ -2729,6 +2833,7 @@ $("dismissUpgradeTutorialBtn").addEventListener("click", () => {
 $("clearAllBtn").addEventListener("click", clearAllGenerators);
 $("placeBestBtn").addEventListener("click", placeBestGenerators);
 $("updateHistoryBtn").addEventListener("click", showUpdateHistory);
+$("settingsBtn").addEventListener("click", showSettings);
 $("previousSlotPage").addEventListener("click", () => {
   currentSlotPage = Math.max(0, currentSlotPage - 1);
   renderSlots();
