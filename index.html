@@ -43,6 +43,8 @@ input::placeholder{color:#6c8a78}
 .auth-card .secondary{background:#152d20;border-color:#264e37}
 .auth-hint{margin-top:14px;color:var(--muted);font-size:11px;text-align:center}
 .game-shell{min-height:100vh}
+.game-shell.save-loading{pointer-events:none}
+.game-shell.save-loading::after{content:"Loading your saved game…";position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:#07120ced;color:var(--text);font-size:16px;font-weight:800}
 .game-account{display:flex;align-items:center;gap:10px}
 .game-account-actions{display:flex;align-items:center;gap:8px}
 .danger-button{background:#46262d;border-color:#78414b}
@@ -612,6 +614,8 @@ let newAccountBoostTimer = null;
 let hideFromLeaderboard = false;
 let leaderboardPrivacyLoaded = false;
 let firebaseReady = false;
+let cloudSaveReady = false;
+let playerSaveLoadGeneration = 0;
 let communityUnsubscribers = [];
 let leaderboardUnsubscribe = null;
 let activeLeaderboard = "cashEarned";
@@ -702,27 +706,61 @@ async function enterGame(username, user, firstTime = false) {
   currentUser = user;
   currentUsername = username;
   state = freshState();
+  const loadGeneration = ++playerSaveLoadGeneration;
+  cloudSaveReady = false;
   if (firstTime) {
     // A new Firebase account has no cloud save to load yet. Avoid a needless
     // Firestore read that can leave account creation waiting at the login screen.
     hideFromLeaderboard = false;
     leaderboardPrivacyLoaded = true;
+    cloudSaveReady = true;
     state.tutorialStarted = true;
     state.tutorialComplete = false;
     state.tutorialStep = 0;
     state.tutorialStartLevel = state.level;
     state.newAccountBoostRemainingMs = NEW_ACCOUNT_BOOST_DURATION_MS;
-  } else {
-    await load();
   }
-  startNewAccountBoost();
-  if (state.tutorialStarted && state.tutorialComplete) grantTutorialBasicCrate();
   selectShopTab(firstTime ? "rebirth" : "shop");
   configureGameTickTimer();
   updateAuthUI();
   $("authScreen").hidden = true;
   $("gameShell").hidden = false;
   startStarSpawns();
+  if (!firstTime) {
+    const gameShell = $("gameShell");
+    gameShell.classList.add("save-loading");
+    gameShell.setAttribute("aria-busy", "true");
+    $("gamePlayerName").textContent = "Player: " + username + " · Loading save";
+    $("leaderboardStatus").textContent = "Loading your saved game...";
+    render();
+    let timeoutId;
+    const loaded = await Promise.race([
+      load(loadGeneration).then(() => true),
+      new Promise(resolve => { timeoutId = setTimeout(() => resolve(false), 8000); })
+    ]);
+    clearTimeout(timeoutId);
+    if (!loaded) {
+      if (loadGeneration === playerSaveLoadGeneration) {
+        playerSaveLoadGeneration++;
+        cloudSaveReady = false;
+        leaderboardPrivacyLoaded = false;
+        hideFromLeaderboard = false;
+        state = freshState();
+        $("leaderboardStatus").textContent = "Save loading timed out. Playing locally; your cloud save was left untouched.";
+        notify("You’re signed in, but your saved game took too long to load. You can play now; cloud saving is paused to protect your existing save.", true);
+      }
+    } else {
+      cloudSaveReady = leaderboardPrivacyLoaded;
+      if (!cloudSaveReady) {
+        notify("You’re signed in, but your cloud save could not be loaded. Playing locally; existing cloud data was left untouched.", true);
+      }
+    }
+    gameShell.classList.remove("save-loading");
+    gameShell.setAttribute("aria-busy", "false");
+  }
+  startNewAccountBoost();
+  if (state.tutorialStarted && state.tutorialComplete) grantTutorialBasicCrate();
+  updateAuthUI();
   render();
   renderTutorial();
   // Cloud writes, live listeners, and admin checks are background work. None
@@ -738,7 +776,7 @@ async function enterGame(username, user, firstTime = false) {
   void updateAdminUI();
 }
 
-async function loadUserSave() {
+async function loadUserSave(generation = playerSaveLoadGeneration) {
   hideFromLeaderboard = false;
   leaderboardPrivacyLoaded = false;
   try {
@@ -749,6 +787,7 @@ async function loadUserSave() {
 
     const userDoc = dbRef.collection("users").doc(currentUser.uid);
     const snapshot = await userDoc.get();
+    if (generation !== playerSaveLoadGeneration) return;
     let data;
     if (snapshot.exists) {
       data = snapshot.data();
@@ -758,6 +797,7 @@ async function loadUserSave() {
         const localData = JSON.parse(localRaw);
         if (localData && localData.state) {
           await userDoc.set({ state: localData.state, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+          if (generation !== playerSaveLoadGeneration) return;
           data = localData;
         }
       }
@@ -889,6 +929,7 @@ async function loadUserSave() {
     }
     if (!getGenerator(state.selected) || available(state.selected) <= 0) state.selected = null;
   } catch (e) {
+    if (generation !== playerSaveLoadGeneration) return;
     // Don't wipe existing state on error — only reset if nothing was loaded at all
     if (!state || state.level === undefined) state = freshState();
     $("leaderboardStatus").textContent = "Could not fully load save data. Your score will not be published until this is resolved.";
@@ -934,8 +975,17 @@ function stopNewAccountBoost() {
 
 async function saveUserState(silent = true) {
   try {
-    if (!currentUser || !dbRef) return false;
+    if (!currentUser) return false;
     syncNewAccountBoostRemaining();
+    try {
+      localStorage.setItem(getPlayerSaveKey(currentUsername), JSON.stringify({ state, hideFromLeaderboard }));
+    } catch (storageError) {
+      console.warn("Could not save a local copy:", storageError);
+    }
+    if (!dbRef || !cloudSaveReady) {
+      if (!silent) notify("Saved on this device only; cloud saving is unavailable until your save loads.", true);
+      return false;
+    }
     await dbRef.collection("users").doc(currentUser.uid).set({
       state,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1760,8 +1810,8 @@ function stopStarSpawns() {
 function save(silent = true) {
   return saveUserState(silent);
 }
-async function load() {
-  await loadUserSave();
+async function load(generation = playerSaveLoadGeneration) {
+  await loadUserSave(generation);
 }
 function makeButton(text, onClick, disabled = false, className = "") {
   const button = document.createElement("button");
@@ -1843,6 +1893,8 @@ async function logoutUser() {
   communityUnsubscribers = [];
   stopLeaderboardListener();
   await authRef.signOut();
+  playerSaveLoadGeneration++;
+  cloudSaveReady = false;
   currentUser = null;
   currentUsername = null;
   hideFromLeaderboard = false;
