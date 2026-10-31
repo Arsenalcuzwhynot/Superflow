@@ -644,12 +644,28 @@ function initFirebase() {
   if (typeof window.firebase === "undefined") return false;
   const ready = FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.projectId;
   if (!ready) return false;
-  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-  authRef = firebase.auth();
-  dbRef = firebase.firestore();
-  functionsRef = firebase.app().functions("us-central1");
-  firebaseReady = true;
-  return true;
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    authRef = firebase.auth();
+    dbRef = firebase.firestore();
+    firebaseReady = Boolean(authRef && dbRef);
+    try {
+      functionsRef = firebase.app().functions("us-central1");
+    } catch (error) {
+      // Cloud Functions only powers admin tools; it must not prevent players
+      // from signing in when that optional SDK or service is unavailable.
+      console.warn("Firebase Functions is unavailable:", error);
+      functionsRef = null;
+    }
+    return firebaseReady;
+  } catch (error) {
+    console.error("Firebase initialization failed:", error);
+    authRef = null;
+    dbRef = null;
+    functionsRef = null;
+    firebaseReady = false;
+    return false;
+  }
 }
 
 function updateAuthUI() {
@@ -686,28 +702,40 @@ async function enterGame(username, user, firstTime = false) {
   currentUser = user;
   currentUsername = username;
   state = freshState();
-  await load();
   if (firstTime) {
+    // A new Firebase account has no cloud save to load yet. Avoid a needless
+    // Firestore read that can leave account creation waiting at the login screen.
+    hideFromLeaderboard = false;
+    leaderboardPrivacyLoaded = true;
     state.tutorialStarted = true;
     state.tutorialComplete = false;
     state.tutorialStep = 0;
     state.tutorialStartLevel = state.level;
     state.newAccountBoostRemainingMs = NEW_ACCOUNT_BOOST_DURATION_MS;
+  } else {
+    await load();
   }
   startNewAccountBoost();
   if (state.tutorialStarted && state.tutorialComplete) grantTutorialBasicCrate();
   selectShopTab(firstTime ? "rebirth" : "shop");
   configureGameTickTimer();
-  await save();
-  await publishLeaderboardEntry();
-  startCommunityListeners();
-  render();
   updateAuthUI();
-  await updateAdminUI();
   $("authScreen").hidden = true;
   $("gameShell").hidden = false;
   startStarSpawns();
+  render();
   renderTutorial();
+  // Cloud writes, live listeners, and admin checks are background work. None
+  // should be able to keep an authenticated player on the sign-in screen.
+  void save();
+  void publishLeaderboardEntry();
+  try {
+    startCommunityListeners();
+  } catch (error) {
+    console.error("Could not start community features:", error);
+    $("chatStatus").textContent = "Chat unavailable. Check your connection.";
+  }
+  void updateAdminUI();
 }
 
 async function loadUserSave() {
@@ -2715,14 +2743,18 @@ function showUpdateHistory() {
   host.appendChild(future);
 }
 function closeModal() { $("modalBg").classList.remove("open"); }
-// Initialize Firebase before binding any auth-dependent event listeners
+// Bind auth controls first so a Firebase startup problem cannot make both
+// buttons inert. The handlers report a useful error when services are absent.
+$("loginBtn").addEventListener("click", loginWithUsername);
+$("signupBtn").addEventListener("click", createAccountWithUsername);
 const firebaseEnabled = initFirebase();
 if (firebaseEnabled) authRef.setPersistence(firebase.auth.Auth.Persistence.NONE).catch(() => {});
 updateAuthUI();
+if (!firebaseEnabled) {
+  showAuthError("Game services could not start. Refresh the page and check your connection.");
+}
 if (typeof initBrandLogos === "function") initBrandLogos();
 $("modalBg").addEventListener("click", e => { if (e.target === $("modalBg")) closeModal(); });
-$("loginBtn").addEventListener("click", loginWithUsername);
-$("signupBtn").addEventListener("click", createAccountWithUsername);
 $("logoutBtn").addEventListener("click", logoutUser);
 $("chatForm").addEventListener("submit", sendChatMessage);
 document.querySelectorAll("[data-leaderboard]").forEach(button => {
