@@ -1121,7 +1121,7 @@ let lastCloudErrorNoticeAt = 0;
 let lastProgressWarningAt = 0;
 let lastLeaderboardPublishAt = 0;
 const CLOUD_SAVE_MIN_MS = 3 * 60 * 1000;
-const LEADERBOARD_MIN_MS = 3 * 60 * 1000;
+const LEADERBOARD_MIN_MS = 10 * 60 * 1000;
 function progressKey(source) { return [Number(source.rebirths) || 0, Number(source.level) || 1]; }
 function progressIsLower(a, b) { return a[0] < b[0] || (a[0] === b[0] && a[1] < b[1]); }
 async function saveUserState(silent = true, force = false) {
@@ -1456,7 +1456,7 @@ function startCommunityListeners() {
   const chatQuery = dbRef.collection("chatMessages")
     .where("createdAt", ">=", chatStartedAt)
     .orderBy("createdAt", "desc")
-    .limit(50);
+    .limit(25);
   selectLeaderboard(activeLeaderboard);
   communityUnsubscribers.push(chatQuery.onSnapshot(renderChat, () => {
     $("chatStatus").textContent = "Chat unavailable. Check Firestore rules.";
@@ -1468,7 +1468,7 @@ function startCommunityListeners() {
     }).catch(() => {});
   };
   refreshLeaderboardTags();
-  const tagsTimer = setInterval(() => { if (!document.hidden) refreshLeaderboardTags(); }, 10 * 60 * 1000);
+  const tagsTimer = setInterval(() => { if (!document.hidden) refreshLeaderboardTags(); }, 30 * 60 * 1000);
   communityUnsubscribers.push(() => clearInterval(tagsTimer));
   $("chatStatus").textContent = "Connecting to global chat...";
 }
@@ -3308,7 +3308,20 @@ function stopCommunityListeners() {
   communityUnsubscribers = [];
   stopLeaderboardListener();
   communityPaused = true;
+  $("chatStatus").textContent = "Chat paused while you were away. Move your mouse to reconnect.";
+  $("leaderboardStatus").textContent = "Paused while you were away. Move your mouse to reconnect.";
 }
+let lastActivityAt = Date.now();
+function markActive() {
+  lastActivityAt = Date.now();
+  if (communityPaused && currentUser && !document.hidden) {
+    try { startCommunityListeners(); } catch (error) { console.error("Could not resume community features:", error); }
+  }
+}
+["pointerdown", "mousemove", "keydown", "touchstart", "wheel"].forEach(name => window.addEventListener(name, markActive, { passive: true }));
+setInterval(() => {
+  if (currentUser && !communityPaused && Date.now() - lastActivityAt > 10 * 60 * 1000) stopCommunityListeners();
+}, 60000);
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
     if (currentUser && cloudSaveReady && Date.now() - lastHiddenFlushAt > 60000) {
@@ -3330,7 +3343,7 @@ setInterval(() => {
 }, 60000);
 setInterval(() => {
   if (currentUser) publishLeaderboardEntry();
-}, 300000);
+}, 600000);
 
 
 })();
