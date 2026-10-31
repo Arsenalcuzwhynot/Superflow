@@ -284,6 +284,9 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .theme-swatch.selected{border-color:var(--green);box-shadow:0 0 0 1px var(--green)}
 .shop-content{padding-top:0}
 .shop-content>.shop-tabs{margin-top:0}
+.ac-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.flag-list{display:grid;gap:6px;margin-top:8px}
+.flag-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 8px;border:1px solid #ffffff20;border-radius:8px;font-size:12px}
 </style>
 </head>
 <body>
@@ -422,7 +425,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
             <button id="saveBtn">Save now</button>
             <button id="resetBtn">Reset game</button>
           </div>
-          <p class="muted small">Progress saves to your account. Avoid playing on two devices at the same time.</p>
+          <p class="muted small">Progress saves to your account every few minutes and when you leave this tab. Avoid playing on two devices at the same time.</p>
         </div>
       </section>
       <section class="panel" id="themePanel">
@@ -430,6 +433,18 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         <div class="body">
           <p class="muted small">Pick a color scheme. Every scheme is paired with black.</p>
           <div class="theme-grid" id="themeGrid" role="radiogroup" aria-label="Color scheme"></div>
+        </div>
+      </section>
+      <section class="panel" id="antiCheatPanel" hidden>
+        <div class="panel-head"><h2>Anti-cheat</h2><span class="muted small">Flags and bans</span></div>
+        <div class="body">
+          <label class="muted small" for="banTarget">Username or account ID</label>
+          <input id="banTarget" type="text" autocomplete="off" />
+          <label class="muted small" for="banReason">Reason</label>
+          <input id="banReason" type="text" maxlength="120" autocomplete="off" />
+          <div class="ac-actions"><button id="banBtn" type="button">Ban</button><button id="unbanBtn" type="button">Unban</button><button id="refreshFlagsBtn" type="button">Refresh flags</button></div>
+          <div class="muted small" id="antiCheatStatus"></div>
+          <div class="flag-list" id="flagList"></div>
         </div>
       </section>
       <section class="panel" id="adminPanel" hidden>
@@ -457,7 +472,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
   </div>
   <div class="community-grid">
     <section class="panel">
-      <div class="panel-head"><h2 id="leaderboardHeading">Cash leaderboard</h2><span class="muted small" id="leaderboardDescription">Generator-produced cash · Top 100</span></div>
+      <div class="panel-head"><h2 id="leaderboardHeading">Cash leaderboard</h2><span class="muted small" id="leaderboardDescription">Generator-produced cash · Top 25</span></div>
       <div class="body">
         <div class="shop-tabs leaderboard-tabs" role="tablist" aria-label="Leaderboard type">
           <button class="shop-tab" type="button" role="tab" aria-selected="true" data-leaderboard="cashEarned">Cash</button>
@@ -489,6 +504,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 <script>
+(function () {
 "use strict";
 
 /*
@@ -553,6 +569,9 @@ const UPDATE_HISTORY = [
     status: "Current",
     changes: [
       "Added Theme Customization panel — choose from 18 color schemes (always paired with black).",
+      "Cut database usage: cloud saves and leaderboard updates are less frequent, the leaderboard shows the Top 25, and live chat pauses in background tabs.",
+      "Cloud saves can no longer overwrite a larger save with a smaller one, and a save that failed to load can no longer replace your local copy.",
+      "Added anti-cheat: impossible values are corrected, suspicious accounts are flagged for review, and admins can ban accounts.",
       "Seasonal Halloween logo for October 30–31. 🎃",
       "Fixed a bug where load errors could silently reset player accounts to level 1.",
       "Fixed shop tab scroll bleed where content was briefly visible above the tab bar.",
@@ -731,6 +750,13 @@ async function enterGame(username, user, firstTime = false) {
   state = freshState();
   const loadGeneration = ++playerSaveLoadGeneration;
   cloudSaveReady = false;
+  saveLoadedOk = false;
+  progressHigh = null;
+  lastCloudSaveAt = 0;
+  lastLeaderboardPublishAt = 0;
+  acBaseline = null;
+  acSuspicious = false;
+  lastFlagAt = 0;
   if (firstTime) {
     // A new Firebase account has no cloud save to load yet. Avoid a needless
     // Firestore read that can leave account creation waiting at the login screen.
@@ -743,6 +769,8 @@ async function enterGame(username, user, firstTime = false) {
     state.tutorialStartLevel = state.level;
     state.newAccountBoostRemainingMs = NEW_ACCOUNT_BOOST_DURATION_MS;
   }
+  if (await isBannedAccount()) return;
+  setupAntiCheatPanel();
   selectShopTab(firstTime ? "rebirth" : "shop");
   configureGameTickTimer();
   updateAuthUI();
@@ -773,7 +801,7 @@ async function enterGame(username, user, firstTime = false) {
         notify("You’re signed in, but your saved game took too long to load. You can play now; cloud saving is paused to protect your existing save.", true);
       }
     } else {
-      cloudSaveReady = leaderboardPrivacyLoaded;
+      cloudSaveReady = leaderboardPrivacyLoaded && saveLoadedOk;
       if (!cloudSaveReady) {
         notify("You’re signed in, but your cloud save could not be loaded. Playing locally; existing cloud data was left untouched.", true);
       }
@@ -800,6 +828,7 @@ async function enterGame(username, user, firstTime = false) {
 }
 
 async function loadUserSave(generation = playerSaveLoadGeneration) {
+  saveLoadedOk = false;
   hideFromLeaderboard = false;
   leaderboardPrivacyLoaded = false;
   try {
@@ -827,7 +856,7 @@ async function loadUserSave(generation = playerSaveLoadGeneration) {
     }
     hideFromLeaderboard = !!(data && data.hideFromLeaderboard === true);
     leaderboardPrivacyLoaded = true;
-    if (!data || typeof data !== "object") return;
+    if (!data || typeof data !== "object") { saveLoadedOk = true; progressHigh = null; return; }
     const savedState = data.state && typeof data.state === "object" ? data.state : {};
     state = { ...freshState(), ...savedState };
     const savedCrates = savedState.crateInventory && typeof savedState.crateInventory === "object"
@@ -951,6 +980,11 @@ async function loadUserSave(generation = playerSaveLoadGeneration) {
       previousGenerators.forEach((slot, index) => { state.slots[index] = slot; });
     }
     if (!getGenerator(state.selected) || available(state.selected) <= 0) state.selected = null;
+    saveLoadedOk = true;
+    progressHigh = progressKey(state);
+    const acLoadIssues = sanitizeState();
+    acBaseline = acSnapshot();
+    if (acLoadIssues.length) { acSuspicious = true; void recordFlag(acLoadIssues, true); }
   } catch (e) {
     if (generation !== playerSaveLoadGeneration) return;
     // Don't wipe existing state on error — only reset if nothing was loaded at all
@@ -996,12 +1030,114 @@ function stopNewAccountBoost() {
   newAccountBoostUntil = 0;
 }
 
-async function saveUserState(silent = true) {
+/* Anti-cheat: value sanitizing, flagging, and bans */
+const ANTICHEAT_ADMIN_UIDS = ["6e8jOuM0UkhfQ7HCtOyTXjQciVv2"];
+let acBaseline = null;
+let acSuspicious = false;
+let lastFlagAt = 0;
+function acSnapshot() {
+  return { earned: Number(state.generatorCashEarned) || 0, rebirths: Number(state.rebirths) || 0, level: Number(state.level) || 1, multiplier: Number(state.multiplier) || 1 };
+}
+function sanitizeState() {
+  const issues = [];
+  const num = (obj, key, min, max) => {
+    if (!obj || !(key in obj)) return;
+    const raw = obj[key];
+    if (typeof raw !== "number" && typeof raw !== "string") return;
+    let n = Number(raw);
+    if (!Number.isFinite(n)) n = min;
+    n = Math.min(max, Math.max(min, n));
+    if (raw !== n) { obj[key] = n; issues.push(key); }
+  };
+  ["money", "lifetime", "generatorCashEarned", "personalNotes", "rebirthPoints", "xp", "taskGenerationsPlaced", "taskBonusStarEvents", "taskRebirthPointsSpent"].forEach(key => num(state, key, 0, 1e300));
+  num(state, "taskStarsCollected", 0, 1e8);
+  num(state, "level", 1, 1e6);
+  num(state, "rebirths", 0, 1e6);
+  num(state, "multiplier", 1, 1e15);
+  num(state, "personalFeverMultiplier", 1, 1e6);
+  const horizon = Date.now() + 30 * 24 * 3600 * 1000;
+  ["personalFeverUntil", "starDoubleBoostUntil", "genSpeedBoostUntil"].forEach(key => num(state, key, 0, horizon));
+  num(state, "newAccountBoostRemainingMs", 0, 7 * 24 * 3600 * 1000);
+  ["inventory", "crateInventory"].forEach(group => {
+    const map = state[group];
+    if (map && typeof map === "object") Object.keys(map).forEach(key => num(map, key, 0, 1e9));
+  });
+  UPGRADE_DEFINITIONS.forEach(def => num(state.upgrades, def.id, 0, def.max));
+  return issues;
+}
+function acCheckJump() {
+  const base = acBaseline;
+  const reasons = [];
+  if (!base) return reasons;
+  const now = acSnapshot();
+  if (now.earned > base.earned * 50 + 1e7) reasons.push("cash jump");
+  if (now.rebirths - base.rebirths > 3) reasons.push("rebirth jump");
+  if (now.level - base.level > 200) reasons.push("level jump");
+  if (now.multiplier > base.multiplier * 5 + 1) reasons.push("multiplier jump");
+  return reasons;
+}
+async function recordFlag(reasons, blatant) {
+  if (!reasons.length || !currentUser || !dbRef) return;
+  const now = Date.now();
+  if (now - lastFlagAt < 600000) return;
+  lastFlagAt = now;
+  try {
+    await dbRef.collection("flags").doc(currentUser.uid).set({
+      uid: currentUser.uid,
+      username: currentUsername || "",
+      reason: reasons.slice(0, 6).join("; ").slice(0, 300),
+      blatant: !!blatant,
+      count: firebase.firestore.FieldValue.increment(1),
+      lastAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  } catch (e) {
+    console.warn("Could not record anti-cheat flag:", e);
+  }
+}
+async function isBannedAccount() {
+  if (!currentUser || !dbRef) return false;
+  try {
+    const snap = await dbRef.collection("bans").doc(currentUser.uid).get();
+    if (!snap.exists) return false;
+    const reason = (snap.data() && snap.data().reason) || "";
+    cloudSaveReady = false;
+    await logoutUser();
+    const message = "This account has been banned" + (reason ? ": " + reason : ".");
+    $("authStatus").textContent = message;
+    setTimeout(() => { $("authStatus").textContent = message; }, 400);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+let lastCloudSaveAt = 0;
+let cloudSaveTimer = null;
+let cloudSaveBusy = false;
+let saveLoadedOk = false;
+let progressHigh = null;
+let allowProgressDrop = false;
+let lastCloudErrorNoticeAt = 0;
+let lastProgressWarningAt = 0;
+let lastLeaderboardPublishAt = 0;
+const CLOUD_SAVE_MIN_MS = 3 * 60 * 1000;
+const LEADERBOARD_MIN_MS = 3 * 60 * 1000;
+function progressKey(source) { return [Number(source.rebirths) || 0, Number(source.level) || 1]; }
+function progressIsLower(a, b) { return a[0] < b[0] || (a[0] === b[0] && a[1] < b[1]); }
+async function saveUserState(silent = true, force = false) {
   try {
     if (!currentUser) return false;
     syncNewAccountBoostRemaining();
+    const acIssues = sanitizeState();
+    const acJumps = cloudSaveReady ? acCheckJump() : [];
+    if (acIssues.length || acJumps.length) {
+      acSuspicious = true;
+      void recordFlag(acIssues.concat(acJumps), acIssues.length > 0);
+    }
     try {
-      localStorage.setItem(getPlayerSaveKey(currentUsername), JSON.stringify({ state, hideFromLeaderboard }));
+      // A save that never loaded properly goes to a separate key so it cannot replace your real local copy.
+      const localKey = getPlayerSaveKey(currentUsername) + (cloudSaveReady ? "" : "_unsynced");
+      localStorage.setItem(localKey, JSON.stringify({ state, hideFromLeaderboard }));
     } catch (storageError) {
       console.warn("Could not save a local copy:", storageError);
     }
@@ -1009,20 +1145,52 @@ async function saveUserState(silent = true) {
       if (!silent) notify("Saved on this device only; cloud saving is unavailable until your save loads.", true);
       return false;
     }
-    await dbRef.collection("users").doc(currentUser.uid).set({
-      state,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
+    const now = Date.now();
+    if (!force && silent && now - lastCloudSaveAt < CLOUD_SAVE_MIN_MS) {
+      if (cloudSaveTimer === null) {
+        cloudSaveTimer = setTimeout(() => { cloudSaveTimer = null; void saveUserState(true, true); }, CLOUD_SAVE_MIN_MS - (now - lastCloudSaveAt));
+      }
+      return true;
+    }
+    if (cloudSaveBusy) return false;
+    const current = progressKey(state);
+    if (!allowProgressDrop && progressHigh && progressIsLower(current, progressHigh)) {
+      if (now - lastProgressWarningAt > 600000) {
+        lastProgressWarningAt = now;
+        notify("Cloud save paused: this game has less progress than the save on your account, so it was not overwritten. Refresh and sign in again.", true);
+      }
+      return false;
+    }
+    cloudSaveBusy = true;
+    try {
+      await dbRef.collection("users").doc(currentUser.uid).set({
+        state,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    } finally {
+      cloudSaveBusy = false;
+    }
+    lastCloudSaveAt = Date.now();
+    acBaseline = acSnapshot();
+    if (allowProgressDrop) { progressHigh = current; allowProgressDrop = false; }
+    else if (!progressHigh || progressIsLower(progressHigh, current)) progressHigh = current;
     if (!silent) notify("Saved to your account.");
     return true;
   } catch (e) {
-    if (!silent) notify("Cloud save failed. Check your Firestore rules and connection.", true);
+    lastCloudSaveAt = Date.now();
+    if (!silent) {
+      notify("Cloud save failed. Check your Firestore rules and connection.", true);
+    } else if (Date.now() - lastCloudErrorNoticeAt > 600000) {
+      lastCloudErrorNoticeAt = Date.now();
+      notify("Cloud saving is failing right now. Your progress is still kept on this device.", true);
+    }
     return false;
   }
 }
 
-async function publishLeaderboardEntry() {
-  if (!currentUser || !dbRef || !leaderboardPrivacyLoaded) return false;
+async function publishLeaderboardEntry(force = false) {
+  if (!currentUser || !dbRef || !leaderboardPrivacyLoaded || !cloudSaveReady || acSuspicious) return false;
+  if (!force && Date.now() - lastLeaderboardPublishAt < LEADERBOARD_MIN_MS) return true;
   try {
     const leaderboardEntry = dbRef.collection("leaderboard").doc(currentUser.uid);
     if (hideFromLeaderboard) {
@@ -1037,8 +1205,10 @@ async function publishLeaderboardEntry() {
       multiplier: Math.max(1, Number(effectiveMultiplier()) || 1),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
+    lastLeaderboardPublishAt = Date.now();
     return true;
   } catch (e) {
+    lastLeaderboardPublishAt = Date.now();
     $("leaderboardStatus").textContent = "Leaderboard could not update. Check Firestore rules.";
     return false;
   }
@@ -1048,19 +1218,19 @@ const LEADERBOARD_METRICS = {
   cashEarned: {
     label: "Cash",
     heading: "Generator cash leaderboard",
-    description: "Generator-produced cash · Top 100",
+    description: "Generator-produced cash · Top 25",
     format: value => cash(Math.max(0, Number(value) || 0))
   },
   multiplier: {
     label: "Multiplier",
     heading: "Multiplier leaderboard",
-    description: "Highest generator multiplier · Top 100",
+    description: "Highest generator multiplier · Top 25",
     format: value => "×" + number(Math.max(1, Number(value) || 1))
   },
   starsCollected: {
     label: "Stars",
     heading: "Stars collected leaderboard",
-    description: "Lifetime Stars collected · Top 100",
+    description: "Lifetime Stars collected · Top 25",
     format: value => number(Math.max(0, Number(value) || 0))
   }
 };
@@ -1116,7 +1286,7 @@ function selectLeaderboard(metricName) {
   (metric.fields || [metricName]).forEach(field => {
     leaderboardQuery = leaderboardQuery.orderBy(field, "desc");
   });
-  leaderboardUnsubscribe = leaderboardQuery.limit(100)
+  leaderboardUnsubscribe = leaderboardQuery.limit(25)
     .onSnapshot(
       snapshot => renderLeaderboard(snapshot, metricName),
       error => {
@@ -1277,6 +1447,7 @@ function renderChat(snapshot) {
 }
 
 function startCommunityListeners() {
+  communityPaused = false;
   communityUnsubscribers.forEach(unsubscribe => unsubscribe());
   communityUnsubscribers = [];
   stopLeaderboardListener();
@@ -1290,12 +1461,15 @@ function startCommunityListeners() {
   communityUnsubscribers.push(chatQuery.onSnapshot(renderChat, () => {
     $("chatStatus").textContent = "Chat unavailable. Check Firestore rules.";
   }));
-  const tagsQuery = dbRef.collection("leaderboard").limit(100);
-  communityUnsubscribers.push(tagsQuery.onSnapshot(snapshot => {
-    const data = snapshot.docs.map(doc => doc.data());
-    updateLeaderboardTags(data);
-    if (lastChatSnapshot) renderChat(lastChatSnapshot);
-  }, () => {}));
+  const refreshLeaderboardTags = () => {
+    dbRef.collection("leaderboard").limit(100).get().then(snapshot => {
+      updateLeaderboardTags(snapshot.docs.map(doc => doc.data()));
+      if (lastChatSnapshot) renderChat(lastChatSnapshot);
+    }).catch(() => {});
+  };
+  refreshLeaderboardTags();
+  const tagsTimer = setInterval(() => { if (!document.hidden) refreshLeaderboardTags(); }, 10 * 60 * 1000);
+  communityUnsubscribers.push(() => clearInterval(tagsTimer));
   $("chatStatus").textContent = "Connecting to global chat...";
 }
 
@@ -1351,7 +1525,9 @@ async function sendChatMessage(event) {
   } catch (e) {
     $("chatStatus").textContent = e.message === "chat-cooldown"
       ? "Please wait a few seconds before sending another message."
-      : "Message could not be sent. Check Firestore rules.";
+      : e && e.code === "permission-denied" ? "Chat is blocked by your Firestore rules."
+      : e && e.code === "resource-exhausted" ? "Chat is unavailable: the database hit its daily limit. It resets daily."
+      : "Message could not be sent. Check your connection and Firestore rules.";
   }
 }
 
@@ -1908,8 +2084,8 @@ async function loginWithUsername() {
 }
 
 async function logoutUser() {
-  await save();
-  await publishLeaderboardEntry();
+  await saveUserState(true, true);
+  await publishLeaderboardEntry(true);
   stopNewAccountBoost();
   stopStarSpawns();
   communityUnsubscribers.forEach(unsubscribe => unsubscribe());
@@ -1929,6 +2105,7 @@ async function logoutUser() {
   $("authScreen").hidden = false;
   $("usernameInput").value = "";
   $("passwordInput").value = "";
+  $("antiCheatPanel").hidden = true;
 }
 function makeShopRow(generator, mode, mystery = false) {
   const row = document.createElement("div");
@@ -2937,8 +3114,9 @@ $("resetBtn").addEventListener("click", () => {
   currentSlotPage = 0;
   configureGameTickTimer();
   render();
-  save();
-  publishLeaderboardEntry();
+  allowProgressDrop = true;
+  saveUserState(true, true);
+  publishLeaderboardEntry(true);
   notify("Game reset.");
 });
 window.addEventListener("beforeunload", () => save());
@@ -3055,14 +3233,107 @@ function initThemePanel() {
   applyTheme(THEMES.find(t => t.id === currentThemeId()) || THEMES[6], false);
 }
 initThemePanel();
+function isAntiCheatAdmin() { return !!currentUser && ANTICHEAT_ADMIN_UIDS.includes(currentUser.uid); }
+async function loadFlags() {
+  const list = $("flagList");
+  list.replaceChildren();
+  try {
+    const snap = await dbRef.collection("flags").orderBy("lastAt", "desc").limit(25).get();
+    if (snap.empty) { list.textContent = "No flagged accounts."; return; }
+    snap.forEach(doc => {
+      const d = doc.data();
+      const row = document.createElement("div");
+      row.className = "flag-row";
+      const info = document.createElement("span");
+      info.textContent = (d.username || "?") + ": " + (d.reason || "") + " (x" + (d.count || 1) + (d.blatant ? ", invalid values" : "") + ")";
+      const pick = document.createElement("button");
+      pick.type = "button";
+      pick.textContent = "Select";
+      pick.addEventListener("click", () => { $("banTarget").value = doc.id; $("banReason").value = (d.reason || "Cheating").slice(0, 120); });
+      row.append(info, pick);
+      list.appendChild(row);
+    });
+  } catch (e) {
+    list.textContent = "Could not load flags (" + (e && (e.code || e.message)) + ").";
+  }
+}
+function setupAntiCheatPanel() {
+  const panel = $("antiCheatPanel");
+  panel.hidden = !isAntiCheatAdmin();
+  if (!panel.hidden) void loadFlags();
+}
+async function resolveBanTarget(raw) {
+  const value = raw.trim();
+  if (!value) throw new Error("Enter a username or account ID.");
+  const found = await dbRef.collection("leaderboard").where("username", "==", value).limit(1).get();
+  if (!found.empty) return { uid: found.docs[0].id, username: found.docs[0].data().username || value };
+  if (/^[A-Za-z0-9]{20,40}$/.test(value)) return { uid: value, username: value };
+  throw new Error("No leaderboard entry for that username. Use the account ID instead.");
+}
+async function runBanAction(unban) {
+  const status = $("antiCheatStatus");
+  if (!isAntiCheatAdmin() || !dbRef) return;
+  try {
+    const target = await resolveBanTarget($("banTarget").value);
+    if (target.uid === currentUser.uid) throw new Error("You cannot ban your own account.");
+    if (unban) {
+      await dbRef.collection("bans").doc(target.uid).delete();
+      status.textContent = target.username + " was unbanned.";
+    } else {
+      if (!confirm("Ban " + target.username + "?")) return;
+      await dbRef.collection("bans").doc(target.uid).set({
+        uid: target.uid,
+        username: target.username,
+        reason: ($("banReason").value.trim() || "Cheating").slice(0, 120),
+        bannedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        bannedBy: currentUser.uid
+      });
+      try { await dbRef.collection("leaderboard").doc(target.uid).delete(); } catch (e) {}
+      status.textContent = target.username + " was banned and removed from the leaderboard.";
+    }
+    void loadFlags();
+  } catch (e) {
+    status.textContent = (e && e.message) || "That action failed.";
+  }
+}
+$("banBtn").addEventListener("click", () => runBanAction(false));
+$("unbanBtn").addEventListener("click", () => runBanAction(true));
+$("refreshFlagsBtn").addEventListener("click", () => loadFlags());
+setInterval(() => { if (currentUser && cloudSaveReady && !document.hidden) void isBannedAccount(); }, 10 * 60 * 1000);
+let communityPaused = false;
+let communityPauseTimer = null;
+let lastHiddenFlushAt = 0;
+function stopCommunityListeners() {
+  communityUnsubscribers.forEach(unsubscribe => unsubscribe());
+  communityUnsubscribers = [];
+  stopLeaderboardListener();
+  communityPaused = true;
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    if (currentUser && cloudSaveReady && Date.now() - lastHiddenFlushAt > 60000) {
+      lastHiddenFlushAt = Date.now();
+      void saveUserState(true, true);
+    }
+    clearTimeout(communityPauseTimer);
+    communityPauseTimer = setTimeout(() => { if (document.hidden && currentUser) stopCommunityListeners(); }, 120000);
+  } else {
+    clearTimeout(communityPauseTimer);
+    if (communityPaused && currentUser) {
+      try { startCommunityListeners(); } catch (error) { console.error("Could not resume community features:", error); }
+    }
+  }
+});
 configureGameTickTimer();
 setInterval(() => {
   if (currentUser) save(true);
 }, 60000);
 setInterval(() => {
   if (currentUser) publishLeaderboardEntry();
-}, 120000);
+}, 300000);
 
+
+})();
 </script>
 
 </body>
