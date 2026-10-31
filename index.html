@@ -1070,10 +1070,10 @@ function acCheckJump() {
   const reasons = [];
   if (!base) return reasons;
   const now = acSnapshot();
-  if (now.earned > base.earned * 50 + 1e7) reasons.push("cash jump");
-  if (now.rebirths - base.rebirths > 3) reasons.push("rebirth jump");
-  if (now.level - base.level > 200) reasons.push("level jump");
-  if (now.multiplier > base.multiplier * 5 + 1) reasons.push("multiplier jump");
+  if (now.earned > base.earned * 1000 + 1e9) reasons.push("cash jump");
+  if (now.rebirths - base.rebirths > 5) reasons.push("rebirth jump");
+  if (now.level - base.level > 500) reasons.push("level jump");
+  if (now.multiplier > base.multiplier * 20 + 1) reasons.push("multiplier jump");
   return reasons;
 }
 async function recordFlag(reasons, blatant) {
@@ -1121,7 +1121,7 @@ let lastCloudErrorNoticeAt = 0;
 let lastProgressWarningAt = 0;
 let lastLeaderboardPublishAt = 0;
 const CLOUD_SAVE_MIN_MS = 3 * 60 * 1000;
-const LEADERBOARD_MIN_MS = 10 * 60 * 1000;
+const LEADERBOARD_MIN_MS = 9 * 60 * 1000;
 function progressKey(source) { return [Number(source.rebirths) || 0, Number(source.level) || 1]; }
 function progressIsLower(a, b) { return a[0] < b[0] || (a[0] === b[0] && a[1] < b[1]); }
 async function saveUserState(silent = true, force = false) {
