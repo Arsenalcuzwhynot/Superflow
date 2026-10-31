@@ -57,11 +57,11 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;pa
 main{max-width:1250px;margin:auto;padding:20px}
 .layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.9fr);gap:16px;align-items:start}
 .side{display:grid;gap:16px}
-.shop-tabs{position:sticky;top:0;z-index:2;display:flex;gap:8px;margin:-15px -15px 12px;padding:8px 15px 0;background:var(--panel);border-bottom:1px solid var(--line)}
+.shop-tabs{position:sticky;top:0;z-index:3;display:flex;gap:8px;margin:-15px -15px 12px;padding:8px 15px 0;background:var(--panel);border-bottom:1px solid var(--line)}
 .shop-tab{position:relative;flex:1;min-width:0;background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;padding:8px 7px;color:var(--muted)}
 .shop-tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--green)}
 .rebirth-badge{position:absolute;top:0;right:5px;display:grid;place-items:center;min-width:16px;height:16px;padding:0 4px;border-radius:99px;background:#e34859;color:#fff;font-size:11px;font-weight:900;line-height:1;box-shadow:0 0 10px #e3485980}
-.shop-content{max-height:520px;overflow:auto;padding-right:4px}
+.shop-content{max-height:520px;overflow:auto;padding-right:4px;position:relative}
 .overview-layout{display:grid;gap:16px;align-items:start}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .panel-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -520,12 +520,24 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 1000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "0.9.5";
+const GAME_VERSION = "0.9.6";
 const CHAT_HISTORY_START_AT = Date.now();
 const UPDATE_HISTORY = [
   {
     version: GAME_VERSION,
     status: "Current",
+    changes: [
+      "Added Theme Customization panel — choose from 18 color schemes (always paired with black).",
+      "Seasonal Halloween logo for October 30–31. 🎃",
+      "Fixed a bug where load errors could silently reset player accounts to level 1.",
+      "Fixed shop tab scroll bleed where content was briefly visible above the tab bar.",
+      "Fixed an infinite Stars exploit where chained bonus stars could spawn further chains.",
+      "Fixed the Sign In button being unresponsive due to Firebase initializing after event listeners."
+    ]
+  },
+  {
+    version: "0.9.5",
+    status: "Previous",
     changes: [
       "Overhauled theme to a dark green aesthetic featuring the official Superflow brush logo.",
       "Added chat leaderboard badges for Cash (💵), Multiplier (✨), and Stars (⭐).",
@@ -849,8 +861,10 @@ async function loadUserSave() {
     }
     if (!getGenerator(state.selected) || available(state.selected) <= 0) state.selected = null;
   } catch (e) {
-    state = freshState();
-    $("leaderboardStatus").textContent = "Could not load leaderboard privacy settings. Your score will not be published until this is resolved.";
+    // Don't wipe existing state on error — only reset if nothing was loaded at all
+    if (!state || state.level === undefined) state = freshState();
+    $("leaderboardStatus").textContent = "Could not fully load save data. Your score will not be published until this is resolved.";
+    console.error("loadUserSave error:", e);
   }
 }
 
@@ -1641,7 +1655,7 @@ function expirePersonalFever() {
   state.personalNotes = 0;
   return true;
 }
-function spawnStar(position = null) {
+function spawnStar(position = null, isBonus = false) {
   const layer = $("starLayer");
   const star = makeButton("★", () => {
     star.remove();
@@ -1661,15 +1675,22 @@ function spawnStar(position = null) {
     } else if (roll < 0.45) {
       resultMessage = activatePersonalFever();
     } else if (roll < 0.65) {
-      const left = Number.parseFloat(star.style.left);
-      const top = Number.parseFloat(star.style.top);
-      spawnStar({ left: left - 50, top: top - 50 });
-      spawnStar({ left: left + 50, top: top + 50 });
-      state.taskBonusStarEvents++;
-      const bonusTaskReady = updateTaskObjectives(true);
-      if (!$("tasksTabPanel").hidden) renderTasks();
-      taskReady = taskReady || bonusTaskReady;
-      resultMessage = "Two more Stars appeared nearby!";
+      if (!isBonus) {
+        // Only non-bonus stars can chain-spawn to prevent infinite star loops
+        const left = Number.parseFloat(star.style.left);
+        const top = Number.parseFloat(star.style.top);
+        spawnStar({ left: left - 50, top: top - 50 }, true);
+        spawnStar({ left: left + 50, top: top + 50 }, true);
+        state.taskBonusStarEvents++;
+        const bonusTaskReady = updateTaskObjectives(true);
+        if (!$("tasksTabPanel").hidden) renderTasks();
+        taskReady = taskReady || bonusTaskReady;
+        resultMessage = "Two more Stars appeared nearby!";
+      } else {
+        // Bonus stars downgrade the chain outcome to a speed boost instead
+        state.starDoubleBoostUntil = Math.max(Date.now(), state.starDoubleBoostUntil) + 3 * 60 * 1000;
+        resultMessage = "Extra ×2 generator speed for 3 minutes!";
+      }
     } else if (roll < 0.9) {
       state.starDoubleBoostUntil = Math.max(Date.now(), state.starDoubleBoostUntil) + 3 * 60 * 1000;
       resultMessage = "Extra ×2 generator speed for 3 minutes!";
@@ -2694,6 +2715,11 @@ function showUpdateHistory() {
   host.appendChild(future);
 }
 function closeModal() { $("modalBg").classList.remove("open"); }
+// Initialize Firebase before binding any auth-dependent event listeners
+const firebaseEnabled = initFirebase();
+if (firebaseEnabled) authRef.setPersistence(firebase.auth.Auth.Persistence.NONE).catch(() => {});
+updateAuthUI();
+if (typeof initBrandLogos === "function") initBrandLogos();
 $("modalBg").addEventListener("click", e => { if (e.target === $("modalBg")) closeModal(); });
 $("loginBtn").addEventListener("click", loginWithUsername);
 $("signupBtn").addEventListener("click", createAccountWithUsername);
@@ -2810,10 +2836,6 @@ $("resetBtn").addEventListener("click", () => {
 });
 window.addEventListener("beforeunload", () => save());
 
-const firebaseEnabled = initFirebase();
-if (firebaseEnabled) authRef.setPersistence(firebase.auth.Auth.Persistence.NONE).catch(() => {});
-updateAuthUI();
-if (typeof initBrandLogos === "function") initBrandLogos();
 function gameTick() {
   if (!currentUser) return;
   const feverEnded = expirePersonalFever();
