@@ -287,6 +287,16 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .ac-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 .flag-list{display:grid;gap:6px;margin-top:8px}
 .flag-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 8px;border:1px solid #ffffff20;border-radius:8px;font-size:12px}
+.daily-streak{height:8px;border-radius:99px;background:hsl(var(--h) calc(30% * var(--sat)) 12%);overflow:hidden;margin:10px 0}
+.daily-bar{height:100%;width:0;background:var(--green);transition:width .3s}
+.daily-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:10px 0}
+.daily-stats>div{display:grid;gap:2px}
+.daily-stats b{font-size:14px;overflow-wrap:anywhere}
+.theme-slider-row{display:flex;align-items:center;gap:12px;margin:12px 0}
+.theme-slider-row .theme-chip{width:44px;flex:none}
+input#themeHue{-webkit-appearance:none;appearance:none;flex:1;min-width:0;height:12px;padding:0;border:1px solid #ffffff30;border-radius:99px;background:linear-gradient(90deg,hsl(0 75% 50%),hsl(60 75% 50%),hsl(120 75% 50%),hsl(180 75% 50%),hsl(240 75% 50%),hsl(300 75% 50%),hsl(359 75% 50%))}
+input#themeHue::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #000;cursor:pointer}
+input#themeHue::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid #000;cursor:pointer}
 </style>
 </head>
 <body>
@@ -367,12 +377,13 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
         </div>
       </div>
       <div class="body shop-content">
-        <div class="shop-tabs" role="tablist" aria-label="Shop, tasks, rebirth, upgrades, and achievements">
+        <div class="shop-tabs" role="tablist" aria-label="Shop, tasks, rebirth, upgrades, achievements, and daily reward">
           <button class="shop-tab" id="shopTabBtn" type="button" role="tab" aria-selected="true" aria-controls="shopTabPanel">Shop</button>
           <button class="shop-tab" id="tasksTabBtn" type="button" role="tab" aria-selected="false" aria-controls="tasksTabPanel">Tasks</button>
           <button class="shop-tab" id="rebirthTabBtn" type="button" role="tab" aria-label="Rebirth" aria-selected="false" aria-controls="rebirthTabPanel">Rebirth<span class="rebirth-badge" id="rebirthAvailableBadge" aria-hidden="true" hidden>!</span></button>
           <button class="shop-tab" id="upgradesTabBtn" type="button" role="tab" aria-selected="false" aria-controls="upgradesTabPanel">Upgrades</button>
           <button class="shop-tab" id="achievementsTabBtn" type="button" role="tab" aria-selected="false" aria-controls="achievementsTabPanel">Achievements</button>
+          <button class="shop-tab" id="dailyTabBtn" type="button" role="tab" aria-label="Daily reward" aria-selected="false" aria-controls="dailyTabPanel">Daily<span class="rebirth-badge" id="dailyAvailableBadge" aria-hidden="true" hidden>!</span></button>
         </div>
         <div id="shopTabPanel" role="tabpanel" aria-labelledby="shopTabBtn">
           <div class="multibuy-control">
@@ -407,6 +418,20 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
           <p class="muted small">Milestones are quiet until you visit here. Claim each completed achievement to collect its permanent bonus.</p>
           <div class="achievement-list" id="achievementList"></div>
         </div>
+        <div id="dailyTabPanel" role="tabpanel" aria-labelledby="dailyTabBtn" hidden>
+          <div class="rebirth-panel daily-panel">
+            <strong>Daily reward</strong>
+            <p class="muted small" id="dailyInfo">Sign in to see your daily reward.</p>
+            <div class="daily-streak" aria-hidden="true"><div class="daily-bar" id="dailyBar"></div></div>
+            <div class="daily-stats">
+              <div><span class="muted small">Streak</span><b id="dailyDay">Day 1 of 100</b></div>
+              <div><span class="muted small" id="dailyRewardLabel">Today’s reward</span><b id="dailyReward">…</b></div>
+              <div><span class="muted small">Day 100 reward</span><b id="dailyMax">…</b></div>
+            </div>
+            <button id="dailyClaimBtn" type="button" disabled>Claim</button>
+            <p class="muted small" id="dailyTimer"></p>
+          </div>
+        </div>
       </div>
       </section>
       <section class="panel">
@@ -431,8 +456,12 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
       <section class="panel" id="themePanel">
         <div class="panel-head"><h2>Theme Customization</h2><span class="muted small" id="themeCurrent">Forest</span></div>
         <div class="body">
-          <p class="muted small">Pick a color scheme. Every scheme is paired with black.</p>
-          <div class="theme-grid" id="themeGrid" role="radiogroup" aria-label="Color scheme"></div>
+          <p class="muted small">Drag the slider to pick any color. Every color is paired with black.</p>
+          <div class="theme-slider-row">
+            <input id="themeHue" type="range" min="0" max="359" step="1" value="150" aria-label="Theme color">
+            <span class="theme-chip" id="themePreview"></span>
+          </div>
+          <button id="themeReset" type="button">Reset to green</button>
         </div>
       </section>
       <section class="panel" id="antiCheatPanel" hidden>
@@ -495,7 +524,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
       </div>
     </section>
   </div>
-  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">0.9.6</span><button id="updateHistoryBtn" type="button">Update history</button></div>
+  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">0.9.7</span><button id="updateHistoryBtn" type="button">Update history</button></div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
@@ -561,17 +590,25 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 1000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "0.9.6";
+const GAME_VERSION = "0.9.7";
 const CHAT_HISTORY_START_AT = Date.now();
 const UPDATE_HISTORY = [
   {
     version: GAME_VERSION,
     status: "Current",
     changes: [
-      "Added Theme Customization panel — choose from 18 color schemes (always paired with black).",
-      "Cut database usage: cloud saves and leaderboard updates are less frequent, the leaderboard shows the Top 25, and live chat pauses in background tabs.",
+      "Added Daily Rewards: a new Daily tab with a 100-day streak. Each day pays a bigger share of your next rebirth cost, so rewards keep up as you rebirth. Rewards reset every day at 10:00 AM Alberta time, shown in your own local time, and missing a day sends your streak back to Day 1.",
+      "Replaced the color presets with a color slider: choose any color, always paired with black.",
+      "Cut database usage: cloud saves and leaderboard updates are less frequent, the leaderboard shows the Top 25, and live chat pauses when you are away.",
       "Cloud saves can no longer overwrite a larger save with a smaller one, and a save that failed to load can no longer replace your local copy.",
-      "Added anti-cheat: impossible values are corrected, suspicious accounts are flagged for review, and admins can ban accounts.",
+      "Added anti-cheat: impossible values are corrected, suspicious accounts are flagged for review, and admins can ban accounts."
+    ]
+  },
+  {
+    version: "0.9.6",
+    status: "Previous",
+    changes: [
+      "Added Theme Customization panel — choose from 18 color schemes (always paired with black).",
       "Seasonal Halloween logo for October 30–31. 🎃",
       "Fixed a bug where load errors could silently reset player accounts to level 1.",
       "Fixed shop tab scroll bleed where content was briefly visible above the tab bar.",
@@ -757,6 +794,8 @@ async function enterGame(username, user, firstTime = false) {
   acBaseline = null;
   acSuspicious = false;
   lastFlagAt = 0;
+  dailyInfo = null;
+  dailyOffset = 0;
   if (firstTime) {
     // A new Firebase account has no cloud save to load yet. Avoid a needless
     // Firestore read that can leave account creation waiting at the login screen.
@@ -818,6 +857,7 @@ async function enterGame(username, user, firstTime = false) {
   // should be able to keep an authenticated player on the sign-in screen.
   void save();
   void publishLeaderboardEntry();
+  void initDaily();
   try {
     startCommunityListeners();
   } catch (error) {
@@ -2106,6 +2146,8 @@ async function logoutUser() {
   $("usernameInput").value = "";
   $("passwordInput").value = "";
   $("antiCheatPanel").hidden = true;
+  dailyInfo = null;
+  $("dailyAvailableBadge").hidden = true;
 }
 function makeShopRow(generator, mode, mystery = false) {
   const row = document.createElement("div");
@@ -3013,7 +3055,7 @@ document.querySelectorAll("[data-leaderboard]").forEach(button => {
   button.addEventListener("click", () => selectLeaderboard(button.dataset.leaderboard));
 });
 function selectShopTab(tab) {
-  ["shop", "tasks", "rebirth", "upgrades", "achievements"].forEach(name => {
+  ["shop", "tasks", "rebirth", "upgrades", "achievements", "daily"].forEach(name => {
     const selected = name === tab;
     $(name + "TabBtn").setAttribute("aria-selected", String(selected));
     $(name + "TabPanel").hidden = !selected;
@@ -3021,12 +3063,14 @@ function selectShopTab(tab) {
   if (tab === "tasks") renderTasks();
   if (tab === "achievements") updateAchievementAvailability();
   if (tab === "shop") advanceTutorial("shop");
+  if (tab === "daily") renderDaily();
 }
 $("shopTabBtn").addEventListener("click", () => selectShopTab("shop"));
 $("tasksTabBtn").addEventListener("click", () => selectShopTab("tasks"));
 $("rebirthTabBtn").addEventListener("click", () => selectShopTab("rebirth"));
 $("upgradesTabBtn").addEventListener("click", () => selectShopTab("upgrades"));
 $("achievementsTabBtn").addEventListener("click", () => selectShopTab("achievements"));
+$("dailyTabBtn").addEventListener("click", () => selectShopTab("daily"));
 $("saveBtn").addEventListener("click", () => save(false));
 $("multiBuyAmount").addEventListener("input", updateShopBuyButtons);
 $("skipTutorialBtn").addEventListener("click", skipTutorial);
@@ -3185,52 +3229,161 @@ function configureGameTickTimer() {
   if (gameTickTimer !== null) clearInterval(gameTickTimer);
   gameTickTimer = setInterval(gameTick, tickIntervalMilliseconds());
 }
-/* Theme customization */
-const THEME_STORAGE_KEY = "superflowTheme_v1";
-const THEMES = [
-  {id:"crimson",name:"Crimson",h:0,s:1},{id:"pumpkin",name:"Pumpkin",h:22,s:1},{id:"amber",name:"Amber",h:40,s:1},
-  {id:"gold",name:"Gold",h:52,s:1},{id:"lime",name:"Lime",h:88,s:1},{id:"spring",name:"Spring",h:118,s:1},
-  {id:"forest",name:"Forest",h:150,s:1},{id:"teal",name:"Teal",h:175,s:1},{id:"cyan",name:"Cyan",h:192,s:1},
-  {id:"sky",name:"Sky",h:208,s:1},{id:"ocean",name:"Ocean",h:222,s:1},{id:"indigo",name:"Indigo",h:242,s:1},
-  {id:"violet",name:"Violet",h:264,s:1},{id:"purple",name:"Purple",h:284,s:1},{id:"magenta",name:"Magenta",h:312,s:1},
-  {id:"pink",name:"Pink",h:332,s:1},{id:"rose",name:"Rose",h:348,s:1},{id:"graphite",name:"Graphite",h:210,s:0}
-];
-function currentThemeId() {
-  try { const t = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY) || "null"); if (t && t.id) return t.id; } catch (e) {}
-  return "forest";
+/* Daily rewards: 100-day streak, resets at 10:00 AM Alberta time */
+const DAILY_MAX_DAY = 100;
+const DAILY_PERCENT_PER_DAY = 0.0001;
+const ALBERTA_FORMAT = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Edmonton", hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+let dailyInfo = null;
+let dailyOffset = 0;
+let dailyBusy = false;
+function albertaWallMs(ms) {
+  const parts = {};
+  ALBERTA_FORMAT.formatToParts(new Date(ms)).forEach(part => { if (part.type !== "literal") parts[part.type] = Number(part.value); });
+  return Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
 }
-function applyTheme(theme, persist = true) {
+function dailyPeriodId(ms) { return Math.floor((albertaWallMs(ms) - 10 * 3600000) / 86400000); }
+function dailyPeriodStartMs(period) {
+  const date = new Date(period * 86400000);
+  const target = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 10, 0, 0);
+  let guess = target + 7 * 3600000;
+  for (let i = 0; i < 3; i++) {
+    const diff = target - albertaWallMs(guess);
+    if (!diff) break;
+    guess += diff;
+  }
+  return guess;
+}
+function dailyReward(day) { return Math.max(1, Math.floor(rebirthCost() * DAILY_PERCENT_PER_DAY * day)); }
+function dailyStatus() {
+  if (!dailyInfo) return null;
+  const cur = dailyPeriodId(Date.now() + dailyOffset);
+  const last = dailyInfo.lastPeriod || 0;
+  const streak = dailyInfo.streak || 0;
+  if (last >= cur) return { cur, claimed: true, streak, day: Math.min(DAILY_MAX_DAY, streak + 1) };
+  if (last === cur - 1) return { cur, claimed: false, streak, day: Math.min(DAILY_MAX_DAY, streak + 1) };
+  return { cur, claimed: false, streak: 0, day: 1, broken: streak > 0 };
+}
+async function syncDaily() {
+  const ref = dbRef.collection("dailyClaims").doc(currentUser.uid);
+  const sentAt = Date.now();
+  await ref.set({ uid: currentUser.uid, ping: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+  const snap = await ref.get({ source: "server" });
+  const data = snap.data() || {};
+  if (!data.ping || !data.ping.toMillis) throw new Error("daily-time");
+  dailyOffset = data.ping.toMillis() - Math.round((sentAt + Date.now()) / 2);
+  dailyInfo = { lastPeriod: Number(data.lastPeriod) || 0, streak: Number(data.streak) || 0 };
+}
+function initDaily() {
+  dailyInfo = null;
+  dailyOffset = 0;
+  if (!currentUser || !dbRef || !cloudSaveReady) { renderDaily(); return; }
+  syncDaily().catch(e => console.warn("Could not load the daily reward:", e)).then(renderDaily);
+}
+function dailyCountdown(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const pad = n => String(n).padStart(2, "0");
+  return pad(Math.floor(total / 3600)) + ":" + pad(Math.floor(total % 3600 / 60)) + ":" + pad(total % 60);
+}
+function renderDaily() {
+  const badge = $("dailyAvailableBadge");
+  const ready = !!currentUser && cloudSaveReady && !!dailyInfo;
+  const st = ready ? dailyStatus() : null;
+  badge.hidden = !(st && !st.claimed);
+  const panel = $("dailyTabPanel");
+  if (panel.hidden) return;
+  const btn = $("dailyClaimBtn");
+  if (!st) {
+    $("dailyInfo").textContent = !currentUser ? "Sign in to see your daily reward."
+      : cloudSaveReady ? "Loading your daily reward..." : "Daily rewards need a connected cloud save.";
+    btn.disabled = true;
+    btn.textContent = "Claim";
+    return;
+  }
+  const resetMs = dailyPeriodStartMs(st.cur + 1);
+  const localReset = new Date(resetMs).toLocaleTimeString([], { hour: "numeric", minute: "2-digit", timeZoneName: "short" });
+  $("dailyInfo").textContent = "Resets every day at 10:00 AM Alberta time (" + localReset + " for you). Claim anytime before then, or your streak returns to Day 1."
+    + (st.broken ? " Your streak was reset because a day was missed." : "");
+  $("dailyBar").style.width = Math.min(100, st.streak / DAILY_MAX_DAY * 100) + "%";
+  const left = dailyCountdown(resetMs - (Date.now() + dailyOffset));
+  if (st.claimed) {
+    $("dailyDay").textContent = "Day " + st.streak + " claimed";
+    $("dailyRewardLabel").textContent = "Tomorrow’s reward";
+    $("dailyReward").textContent = "$" + number(dailyReward(st.day));
+    btn.textContent = "Claimed";
+    btn.disabled = true;
+    $("dailyTimer").textContent = "Next reward in " + left + ".";
+  } else {
+    $("dailyDay").textContent = "Day " + st.day + " of " + DAILY_MAX_DAY;
+    $("dailyRewardLabel").textContent = "Today’s reward";
+    $("dailyReward").textContent = "$" + number(dailyReward(st.day));
+    btn.textContent = dailyBusy ? "Claiming..." : "Claim $" + number(dailyReward(st.day));
+    btn.disabled = dailyBusy;
+    $("dailyTimer").textContent = "Claim within " + left + ".";
+  }
+  $("dailyMax").textContent = "$" + number(dailyReward(DAILY_MAX_DAY));
+}
+async function claimDaily() {
+  if (dailyBusy || !currentUser || !dbRef || !cloudSaveReady) return;
+  dailyBusy = true;
+  renderDaily();
+  try {
+    await syncDaily();
+    const st = dailyStatus();
+    if (!st || st.claimed) { notify("You already claimed today’s reward.", true); return; }
+    const ref = dbRef.collection("dailyClaims").doc(currentUser.uid);
+    const day = await dbRef.runTransaction(async transaction => {
+      const snap = await transaction.get(ref);
+      const data = snap.exists ? snap.data() : {};
+      const last = Number(data.lastPeriod) || 0;
+      if (last >= st.cur) throw new Error("daily-claimed");
+      const next = last === st.cur - 1 ? Math.min(DAILY_MAX_DAY, (Number(data.streak) || 0) + 1) : 1;
+      transaction.set(ref, { uid: currentUser.uid, lastPeriod: st.cur, streak: next, claimedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+      return next;
+    });
+    const reward = dailyReward(day);
+    state.money += reward;
+    state.lifetime += reward;
+    dailyInfo = { lastPeriod: st.cur, streak: day };
+    render();
+    void saveUserState(true, true);
+    notify("Daily reward claimed: Day " + day + " · +$" + number(reward));
+  } catch (e) {
+    notify(e && e.message === "daily-claimed" ? "You already claimed today’s reward."
+      : "The daily reward could not be claimed right now. Try again in a moment.", true);
+  } finally {
+    dailyBusy = false;
+    renderDaily();
+  }
+}
+$("dailyClaimBtn").addEventListener("click", claimDaily);
+setInterval(renderDaily, 1000);
+
+/* Theme customization: one color slider, always paired with black */
+const THEME_STORAGE_KEY = "superflowTheme_v1";
+const DEFAULT_THEME_HUE = 150;
+function savedThemeHue() {
+  try {
+    const t = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY) || "null");
+    if (t && typeof t.h === "number") return t.h;
+  } catch (e) {}
+  return DEFAULT_THEME_HUE;
+}
+function applyThemeHue(value, persist = true) {
+  const hue = Math.max(0, Math.min(359, Math.round(Number(value)) || 0));
   const root = document.documentElement;
-  root.style.setProperty("--h", theme.h);
-  root.style.setProperty("--sat", theme.s);
+  root.style.setProperty("--h", hue);
+  root.style.setProperty("--sat", 1);
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", "hsl(" + theme.h + " " + Math.round(44 * theme.s) + "% 5%)");
-  if (persist) { try { localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify({id:theme.id,h:theme.h,s:theme.s})); } catch (e) {} }
-  $("themeCurrent").textContent = theme.name;
-  document.querySelectorAll("#themeGrid .theme-swatch").forEach(btn => {
-    const on = btn.dataset.theme === theme.id;
-    btn.classList.toggle("selected", on);
-    btn.setAttribute("aria-checked", on ? "true" : "false");
-  });
+  if (meta) meta.setAttribute("content", "hsl(" + hue + " 44% 5%)");
+  if (persist) { try { localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify({ h: hue, s: 1 })); } catch (e) {} }
+  $("themeCurrent").textContent = hue === DEFAULT_THEME_HUE ? "Green (default)" : "Hue " + hue + "°";
+  $("themePreview").style.background = "linear-gradient(135deg, hsl(" + hue + " 70% 48%) 0 50%, #000 50% 100%)";
+  $("themeHue").value = hue;
 }
 function initThemePanel() {
-  const grid = $("themeGrid");
-  THEMES.forEach(theme => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "theme-swatch";
-    btn.dataset.theme = theme.id;
-    btn.setAttribute("role", "radio");
-    const chip = document.createElement("span");
-    chip.className = "theme-chip";
-    chip.style.background = "linear-gradient(135deg, hsl(" + theme.h + " " + Math.round(70 * theme.s) + "% 48%) 0 50%, #000 50% 100%)";
-    const label = document.createElement("span");
-    label.textContent = theme.name;
-    btn.append(chip, label);
-    btn.addEventListener("click", () => applyTheme(theme));
-    grid.appendChild(btn);
-  });
-  applyTheme(THEMES.find(t => t.id === currentThemeId()) || THEMES[6], false);
+  $("themeHue").addEventListener("input", event => applyThemeHue(event.target.value));
+  $("themeReset").addEventListener("click", () => applyThemeHue(DEFAULT_THEME_HUE));
+  applyThemeHue(savedThemeHue(), false);
 }
 initThemePanel();
 function isAntiCheatAdmin() { return !!currentUser && ANTICHEAT_ADMIN_UIDS.includes(currentUser.uid); }
