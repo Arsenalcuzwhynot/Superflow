@@ -266,7 +266,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .modal-fields label{display:grid;gap:5px;color:var(--muted);font-size:11px}
 .modal-fields input{width:100%;min-height:42px}
 .star-layer{position:fixed;inset:0;z-index:8;pointer-events:none;overflow:hidden}
+.star-container{position:absolute;width:82px;display:grid;justify-items:center;gap:2px;pointer-events:none}
 .bonus-star{position:absolute;pointer-events:auto;display:grid;place-items:center;width:78px;height:78px;padding:0;border:3px solid #fff0a0;border-radius:50%;background:radial-gradient(circle,#fffde0 0,#ffe35b 35%,#f6ae22 65%,#c96b12 100%);color:#fffbd1;font-size:54px;line-height:1;text-shadow:0 1px 7px #704a00,0 0 14px #fff4ad;box-shadow:0 0 24px 7px #f4c34dcc,0 0 50px 12px #ffdb4d66;animation:star-pulse 1.2s ease-in-out infinite alternate}
+.star-container .bonus-star{position:relative}
+.star-countdown{display:block;position:relative;z-index:1;padding:1px 6px;border:1px solid #ffffff50;border-radius:99px;background:#08120fe8;color:#fff;font-size:11px;font-weight:800;line-height:1.4;font-variant-numeric:tabular-nums;white-space:nowrap;text-shadow:0 1px 3px #000}
 @keyframes star-pulse{to{transform:scale(1.13);box-shadow:0 0 25px #ffe58bcc}}
 @media(prefers-reduced-motion:reduce){.slot.filled::before,.generator-particles span,.bonus-star,.generator-visual::before,.generator-visual::after{animation:none!important}}
 @media(max-width:700px){.community-grid{grid-template-columns:1fr}}
@@ -305,7 +308,13 @@ input#themeHue::-moz-range-thumb{width:18px;height:18px;border-radius:50%;backgr
 .stats-dialog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
 .stats-dialog-grid>div{display:grid;gap:6px;padding:12px;background:hsl(var(--h) calc(37% * var(--sat)) 7%);border:1px solid var(--line);border-radius:9px}
 .stats-dialog-grid small{color:var(--muted)}.stats-dialog-grid strong{overflow-wrap:anywhere;font-size:17px}
-.hyper-star{color:#fff!important;background:conic-gradient(red,orange,yellow,lime,cyan,blue,magenta,red)!important;text-shadow:0 0 8px #fff,0 0 18px #fff;animation:hyperStarPulse 1.2s linear infinite}
+.gift-form{display:grid;gap:10px;margin-bottom:16px}
+.gift-form label{color:var(--muted);font-size:12px}
+.gift-form select{font:inherit;background:hsl(var(--h) calc(46% * var(--sat)) 5%);border:1px solid hsl(calc(var(--h) - 4) calc(33% * var(--sat)) 19%);border-radius:8px;padding:10px 12px;color:var(--text)}
+.gift-list{display:grid;gap:8px;max-height:300px;overflow:auto}
+.gift-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:8px;background:hsl(var(--h) calc(37% * var(--sat)) 7%)}
+.gift-row span{overflow-wrap:anywhere}
+.hyper-star{color:transparent!important;background:linear-gradient(90deg,#ff3b30,#ff9f0a,#ffe600,#34c759,#00c7ff,#5856d6,#ff2d95)!important;background-clip:text!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent;text-shadow:none!important;animation:hyperStarPulse 1.2s ease-in-out infinite alternate}
 @keyframes hyperStarPulse{50%{filter:brightness(1.5);transform:scale(1.07)}}
 .generator-particles .magma-particle{background:#ff6b12;box-shadow:0 0 8px #ff3b00}
 
@@ -349,6 +358,7 @@ input#themeHue::-moz-range-thumb{width:18px;height:18px;border-radius:50%;backgr
     <span id="gamePlayerName" class="auth-status"></span>
     <div class="game-account-actions">
       <button id="statsOpenBtn" type="button">Stats</button>
+      <button id="giftsOpenBtn" type="button">Gifts</button>
       <button id="logoutBtn" type="button">Log out</button>
     </div>
   </div>
@@ -362,6 +372,21 @@ input#themeHue::-moz-range-thumb{width:18px;height:18px;border-radius:50%;backgr
     <div><small>Playtime</small><strong id="statPlaytime">0s</strong></div>
     <div><small>Total multiplier</small><strong id="statTotalMultiplier">×1</strong></div>
   </div>
+</dialog>
+<dialog id="giftDialog" class="stats-dialog">
+  <div class="panel-head"><h2>Generator Gifts</h2><button id="giftsCloseBtn" type="button">Close</button></div>
+  <form class="gift-form" id="giftForm">
+    <label for="giftRecipient">Recipient username</label>
+    <input id="giftRecipient" type="text" maxlength="40" autocomplete="off" placeholder="Username">
+    <label for="giftGenerator">Generator</label>
+    <select id="giftGenerator"></select>
+    <label for="giftAmount">Unplaced generators to give (max 100)</label>
+    <input id="giftAmount" type="number" min="1" max="100" step="1" value="1">
+    <button id="sendGiftBtn" type="submit">Send gift</button>
+  </form>
+  <div class="muted small" id="giftStatus" role="status" aria-live="polite"></div>
+  <h3 class="small">Received gifts</h3>
+  <div class="gift-list" id="giftList"></div>
 </dialog>
 <div class="notice-area">
   <div class="note" id="notice" role="status" aria-live="polite" aria-atomic="true"></div>
@@ -503,6 +528,11 @@ input#themeHue::-moz-range-thumb{width:18px;height:18px;border-radius:50%;backgr
         <div class="panel-head"><h2>Admin Panel</h2></div>
         <div class="body">
           <div class="multibuy-control">
+            <label>Summon a Star</label>
+            <button id="adminStarBtn" type="button">Summon Star</button>
+            <button id="adminHyperStarBtn" type="button">Summon Hyper Star</button>
+          </div>
+          <div class="multibuy-control">
             <label for="adminCashAmount">Add cash</label>
             <input id="adminCashAmount" type="number" min="0.01" step="any" placeholder="Amount">
             <button id="adminCashBtn" type="button">Grant cash</button>
@@ -517,6 +547,14 @@ input#themeHue::-moz-range-thumb{width:18px;height:18px;border-radius:50%;backgr
             <input id="adminLevelAmount" type="number" min="1" step="1" value="1">
             <button id="adminLevelBtn" type="button">Grant levels</button>
           </div>
+          <div class="multibuy-control">
+            <label for="adminGiftRecipient">Give generators to a player</label>
+            <input id="adminGiftRecipient" type="text" maxlength="20" autocomplete="off" placeholder="Recipient username">
+            <select id="adminGiftGenerator"></select>
+            <input id="adminGiftAmount" type="number" min="1" max="100" step="1" value="1">
+            <button id="adminGiftBtn" type="button">Grant generators</button>
+          </div>
+          <div class="muted small" id="adminGiftStatus" role="status" aria-live="polite"></div>
           <div class="note" id="adminStatus" role="status" aria-live="polite"></div>
         </div>
       </section>
@@ -548,7 +586,7 @@ input#themeHue::-moz-range-thumb{width:18px;height:18px;border-radius:50%;backgr
       </div>
     </section>
   </div>
-  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">0.9.7</span><button id="updateHistoryBtn" type="button">Update history</button></div>
+  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">0.9.8</span><button id="updateHistoryBtn" type="button">Update history</button></div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
@@ -624,14 +662,25 @@ const UPDATE_HISTORY = [
     version: GAME_VERSION,
     status: "Current",
     changes: [
-      "Combined the requested Superflow update into release 0.9.8.",
-      "Added Neon, Sky, and Magma generators, plus Buy All for purchasing the maximum affordable quantity.",
-      "Added a temporary automatic Alpha Generator starter grant for every account (client-side; not cheat-proof).",
-      "Added Hyper Stars with special Fever, generator-speed, lifetime-cash, Fever-extension, and bonus-Star effects.",
-      "Added the Stats menu: cash earned, Stars collected, inventory value, playtime, and total multiplier.",
+      "Added Neon, Sky, and Magma generators, plus Buy All to purchase the maximum affordable quantity.",
+      "Added Hyper Stars: a 1-in-10 chance for each Star to be Hyper, a guaranteed Hyper Fever, a 4× generator boost for 2 minutes, 5% of lifetime cash, a chance to extend an active Fever by 2 minutes, and a chance to drop four additional Stars. Hyper Stars count as regular Stars for stats, and each bonus Star gets its own Hyper chance.",
+      "Added a one-time Alpha Generator starter grant for every account, addressing missing grants from 0.9.7; it produces at 10× your best owned generator (client-side; not cheat-proof).",
+      "Restored the Stats menu with cash earned, Stars collected, inventory value, playtime, and total multiplier.",
       "Restored the Rebirth leaderboard and added rebirth validation to Firestore rules.",
-      "Stars spawn every 15 minutes and expire after 5 minutes; daily rewards show a timer-only display.",
-      "Restored the classic green logo and retained the existing save, chat, anti-cheat, and theme features."
+      "Added player-to-player generator gifting for unplaced generators.",
+      "Stars now spawn every 15 minutes and expire after 5 minutes.",
+      "Restored daily rewards with a timer-only display and a consistent daily reset time.",
+      "Restored the classic green logo."
+    ]
+  },
+  {
+    version: "0.9.7",
+    status: "Previous",
+    changes: [
+      "Removed the seasonal Halloween theme.",
+      "Replaced preset themes with a color slider.",
+      "Removed daily rewards.",
+      "Some players did not receive or retain their Alpha Generator; the one-time automatic grant was added in 0.9.8."
     ]
   },
   {
@@ -794,15 +843,7 @@ function updateAuthUI() {
 
 async function updateAdminUI() {
   const panel = $("adminPanel");
-  panel.hidden = true;
-  if (!currentUser || !functionsRef) return;
-  try {
-    const token = await currentUser.getIdTokenResult(true);
-    panel.hidden = token.claims.admin !== true;
-  } catch (error) {
-    $("adminStatus").textContent = "Could not verify admin access: " + (error.message || "try logging in again.");
-    $("adminStatus").style.color = "#ff8c8c";
-  }
+  panel.hidden = !currentUser || !isPrivilegedUser();
 }
 
 function showAuthError(message) {
@@ -1897,6 +1938,7 @@ let state = freshState();
 let noticeTimer = null;
 let gameTickTimer = null;
 let starSpawnTimer = null;
+const starCountdownTimers = new Set();
 let currentSlotPage = 0;
 const UPGRADE_DEFINITIONS = [
   { id: "dropSpeed", title: "Note Drop Speed", max: 5, description: "Generators pay more frequently. Each rank shortens the drop interval by 0.1 seconds, down to 0.5 seconds." },
@@ -2073,10 +2115,28 @@ function expirePersonalFever() {
   state.personalNotes = 0;
   return true;
 }
-function spawnStar(position = null, isBonus = false) {
+function spawnStar(position = null, isBonus = false, forceHyper = false) {
   const layer = $("starLayer");
+  const container = document.createElement("div");
+  container.className = "star-container";
+  const countdown = document.createElement("span");
+  countdown.className = "star-countdown";
+  countdown.setAttribute("aria-label", "Time until this Star disappears");
+  const expiresAt = Date.now() + 5 * 60 * 1000;
+  const updateCountdown = () => {
+    const remaining = Math.max(0, Math.ceil((expiresAt - Date.now()) / 1000));
+    countdown.textContent = Math.floor(remaining / 60) + ":" + String(remaining % 60).padStart(2, "0");
+    if (remaining === 0) {
+      clearInterval(countdownTimer);
+      starCountdownTimers.delete(countdownTimer);
+      container.remove();
+    }
+  };
+  let countdownTimer;
   const star = makeButton("★", () => {
-    star.remove();
+    clearInterval(countdownTimer);
+    starCountdownTimers.delete(countdownTimer);
+    container.remove();
     if (!currentUser) return;
     state.taskStarsCollected++;
     let taskReady = updateTaskObjectives(true);
@@ -2147,19 +2207,21 @@ function spawnStar(position = null, isBonus = false) {
       + (taskReady ? " Task complete! Check the Tasks tab." : ""), false, taskReady);
   }, false, "bonus-star");
   star.type = "button";
-  const hyper = Math.random() < 0.1;
-  if (hyper) { star.classList.add("hyper-star"); star.textContent = "★ HYPER"; }
+  const hyper = forceHyper || Math.random() < 0.1;
+  if (hyper) star.classList.add("hyper-star");
   star.setAttribute("aria-label", hyper ? "Collect a Hyper Star" : "Collect a Star");
   star.title = hyper ? "Hyper Star: next Fever guaranteed Hyper; ×4 speed for 2 minutes; +5% lifetime generator cash; 25% chance to extend active Fever by 2 minutes; 20% chance to spawn four Stars." : "Always grants ×1.5 speed for 2 minutes. Extra odds: 25% 1% cash, 20% Fever, 20% two Stars, 25% ×2 speed for 3 minutes, 10% +1 multiplier.";
-  const size = 78;
-  const maxLeft = Math.max(8, window.innerWidth - size - 8);
-  const maxTop = Math.max(8, window.innerHeight - size - 8);
+  const maxLeft = Math.max(8, window.innerWidth - 90);
+  const maxTop = Math.max(8, window.innerHeight - 108);
   const left = position ? position.left : 8 + Math.random() * (maxLeft - 8);
   const top = position ? position.top : 8 + Math.random() * (maxTop - 8);
-  star.style.left = Math.max(8, Math.min(maxLeft, left)) + "px";
-  star.style.top = Math.max(8, Math.min(maxTop, top)) + "px";
-  layer.appendChild(star);
-  window.setTimeout(() => { if (star.isConnected) star.remove(); }, 5 * 60 * 1000);
+  container.style.left = Math.max(8, Math.min(maxLeft, left)) + "px";
+  container.style.top = Math.max(8, Math.min(maxTop, top)) + "px";
+  container.append(star, countdown);
+  layer.appendChild(container);
+  updateCountdown();
+  countdownTimer = window.setInterval(updateCountdown, 250);
+  starCountdownTimers.add(countdownTimer);
 }
 function startStarSpawns() {
   stopStarSpawns();
@@ -2170,6 +2232,8 @@ function startStarSpawns() {
 function stopStarSpawns() {
   if (starSpawnTimer !== null) clearInterval(starSpawnTimer);
   starSpawnTimer = null;
+  starCountdownTimers.forEach(timer => clearInterval(timer));
+  starCountdownTimers.clear();
   $("starLayer").replaceChildren();
 }
 function save(silent = true) {
@@ -3291,6 +3355,227 @@ function readAdminAmount(inputId, { integer = false, max = Number.MAX_SAFE_INTEG
   }
   return amount;
 }
+async function findGiftRecipient(username) {
+  const matches = await dbRef.collection("leaderboard")
+    .where("username", "==", username).limit(2).get();
+  if (matches.empty) throw new Error("That player needs to appear on the leaderboard before they can receive a gift.");
+  if (matches.size !== 1) throw new Error("That username is not unique. Ask the player for their exact account name.");
+  return matches.docs[0];
+}
+function isGiftableGenerator(id) {
+  return id === "alpha" || GENERATORS.some(generator => generator.id === id);
+}
+async function sendGeneratorGift(event) {
+  event.preventDefault();
+  const status = $("giftStatus");
+  const sendButton = $("sendGiftBtn");
+  const recipientUsername = $("giftRecipient").value.trim();
+  const generatorId = $("giftGenerator").value;
+  const amount = Number($("giftAmount").value);
+  if (!currentUser || !dbRef || !cloudSaveReady) {
+    status.textContent = "Cloud saving must be available before you can send gifts.";
+    return;
+  }
+  if (!/^[A-Za-z0-9_]{2,20}$/.test(recipientUsername)) {
+    status.textContent = "Enter a valid username (2–20 letters, numbers, or underscores).";
+    return;
+  }
+  if (!isGiftableGenerator(generatorId)) {
+    status.textContent = "Choose a valid generator.";
+    return;
+  }
+  if (!Number.isSafeInteger(amount) || amount < 1 || amount > 100) {
+    status.textContent = "Choose a whole number from 1 to 100.";
+    return;
+  }
+  sendButton.disabled = true;
+  status.textContent = "Sending gift...";
+  try {
+    const recipient = await findGiftRecipient(recipientUsername);
+    if (recipient.id === currentUser.uid) throw new Error("You cannot send a gift to yourself.");
+    const saved = await saveUserState(true, true);
+    if (!saved) throw new Error("Your latest save could not be synchronized. Try again when cloud saving is active.");
+    const senderUid = currentUser.uid;
+    const senderUsername = currentUsername;
+    const giftRef = dbRef.collection("generatorGifts").doc();
+    const senderRef = dbRef.collection("users").doc(senderUid);
+    await dbRef.runTransaction(async transaction => {
+      const senderSnapshot = await transaction.get(senderRef);
+      if (!senderSnapshot.exists || !senderSnapshot.data().state) {
+        throw new Error("Your cloud save is not ready yet. Try again in a moment.");
+      }
+      const savedState = senderSnapshot.data().state;
+      const inventory = savedState.inventory && typeof savedState.inventory === "object"
+        ? { ...savedState.inventory }
+        : {};
+      const slots = Array.isArray(savedState.slots) ? savedState.slots : [];
+      const placedCount = slots.filter(slot => slot && slot.id === generatorId).length;
+      const ownedCount = Number(inventory[generatorId]) || 0;
+      if (!Number.isSafeInteger(ownedCount) || ownedCount - placedCount < amount) {
+        throw new Error("You do not have enough unplaced generators to send that gift.");
+      }
+      inventory[generatorId] = ownedCount - amount;
+      transaction.update(senderRef, {
+        state: { ...savedState, inventory },
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      transaction.set(giftRef, {
+        senderUid,
+        senderUsername,
+        recipientUid: recipient.id,
+        recipientUsername: recipient.data().username,
+        generatorId,
+        amount,
+        status: "pending",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    });
+    state.inventory[generatorId] = Math.max(0, owned(generatorId) - amount);
+    if (state.selected === generatorId && available(generatorId) === 0) state.selected = null;
+    render();
+    await saveUserState(true, true);
+    $("giftRecipient").value = "";
+    status.textContent = "Gift sent to " + (recipient.data().username || recipientUsername) + ".";
+  } catch (error) {
+    status.textContent = error.message || "Could not send the gift.";
+  } finally {
+    sendButton.disabled = false;
+  }
+}
+async function sendAdminGeneratorGift() {
+  const status = $("adminGiftStatus");
+  if ($("adminPanel").hidden || !currentUser || !dbRef) {
+    status.textContent = "Admin access is required to grant generators.";
+    return;
+  }
+  const recipientUsername = $("adminGiftRecipient").value.trim();
+  const generatorId = $("adminGiftGenerator").value;
+  const amount = Number($("adminGiftAmount").value);
+  if (!/^[A-Za-z0-9_]{2,20}$/.test(recipientUsername)) {
+    status.textContent = "Enter a valid username (2–20 letters, numbers, or underscores).";
+    return;
+  }
+  if (!isGiftableGenerator(generatorId)
+    || !Number.isSafeInteger(amount) || amount < 1 || amount > 100) {
+    status.textContent = "Choose a generator and a whole number from 1 to 100.";
+    return;
+  }
+  const button = $("adminGiftBtn");
+  button.disabled = true;
+  status.textContent = "Granting generators...";
+  try {
+    const recipient = await findGiftRecipient(recipientUsername);
+    if (recipient.id === currentUser.uid) throw new Error("Choose another player.");
+    await dbRef.collection("generatorGifts").add({
+      senderUid: currentUser.uid,
+      senderUsername: currentUsername || "Admin",
+      recipientUid: recipient.id,
+      recipientUsername: recipient.data().username,
+      generatorId,
+      amount,
+      status: "pending",
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    status.textContent = amount + " " + getGenerator(generatorId).name
+      + (amount === 1 ? " sent to " : "s sent to ") + recipient.data().username + ".";
+    $("adminGiftRecipient").value = "";
+  } catch (error) {
+    status.textContent = error.message || "Could not grant those generators.";
+  } finally {
+    button.disabled = false;
+  }
+}
+async function acceptGeneratorGift(giftId) {
+  if (!currentUser || !dbRef || !cloudSaveReady) throw new Error("Cloud saving must be available to accept gifts.");
+  const saved = await saveUserState(true, true);
+  if (!saved) throw new Error("Your latest save could not be synchronized. Try again when cloud saving is active.");
+  const recipientUid = currentUser.uid;
+  const giftRef = dbRef.collection("generatorGifts").doc(giftId);
+  const recipientRef = dbRef.collection("users").doc(recipientUid);
+  const delivery = await dbRef.runTransaction(async transaction => {
+    const giftSnapshot = await transaction.get(giftRef);
+    if (!giftSnapshot.exists) throw new Error("This gift is no longer available.");
+    const gift = giftSnapshot.data();
+    if (gift.recipientUid !== recipientUid || gift.status !== "pending") {
+      throw new Error("This gift has already been accepted or is not addressed to you.");
+    }
+    if (!isGiftableGenerator(gift.generatorId)
+      || !Number.isSafeInteger(gift.amount) || gift.amount < 1 || gift.amount > 100) {
+      throw new Error("This gift contains invalid generator data.");
+    }
+    const recipientSnapshot = await transaction.get(recipientRef);
+    const savedState = recipientSnapshot.exists && recipientSnapshot.data().state
+      ? recipientSnapshot.data().state
+      : state;
+    const inventory = savedState.inventory && typeof savedState.inventory === "object"
+      ? { ...savedState.inventory }
+      : {};
+    const nextCount = (Number(inventory[gift.generatorId]) || 0) + gift.amount;
+    if (!Number.isSafeInteger(nextCount) || nextCount > 1e9) {
+      throw new Error("Your inventory cannot hold this many generators.");
+    }
+    inventory[gift.generatorId] = nextCount;
+    transaction.set(recipientRef, {
+      state: { ...savedState, inventory },
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    transaction.update(giftRef, {
+      status: "accepted",
+      acceptedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    return { generatorId: gift.generatorId, amount: gift.amount };
+  });
+  state.inventory[delivery.generatorId] = owned(delivery.generatorId) + delivery.amount;
+  state.selected = delivery.generatorId;
+  render();
+  await saveUserState(true, true);
+}
+async function refreshGiftInbox() {
+  const host = $("giftList");
+  host.replaceChildren();
+  if (!currentUser || !dbRef) {
+    host.textContent = "Sign in to view gifts.";
+    return;
+  }
+  host.textContent = "Loading gifts...";
+  try {
+    const snapshot = await dbRef.collection("generatorGifts")
+      .where("recipientUid", "==", currentUser.uid).get();
+    const pending = snapshot.docs.filter(doc => doc.data().status === "pending");
+    host.replaceChildren();
+    if (!pending.length) {
+      host.textContent = "No pending gifts.";
+      return;
+    }
+    pending.forEach(doc => {
+      const gift = doc.data();
+      const row = document.createElement("div");
+      row.className = "gift-row";
+      const description = document.createElement("span");
+        const generator = getGenerator(gift.generatorId);
+      description.textContent = (gift.senderUsername || "A player") + " sent "
+        + gift.amount + " " + (generator ? generator.name : "generator") + (gift.amount === 1 ? "." : "s.");
+      const accept = document.createElement("button");
+      accept.type = "button";
+      accept.textContent = "Accept";
+      accept.addEventListener("click", async () => {
+        accept.disabled = true;
+        try {
+          await acceptGeneratorGift(doc.id);
+          $("giftStatus").textContent = "Gift accepted.";
+          await refreshGiftInbox();
+        } catch (error) {
+          accept.disabled = false;
+          $("giftStatus").textContent = error.message || "Could not accept this gift.";
+        }
+      });
+      row.append(description, accept);
+      host.appendChild(row);
+    });
+  } catch (error) {
+    host.textContent = "Could not load gifts: " + (error.message || "check your Firestore rules.");
+  }
+}
 $("adminCashBtn").addEventListener("click", () => {
   const amount = readAdminAmount("adminCashAmount", { max: 1e100 });
   if (amount !== null) runAdminAction("grantCash", amount);
@@ -3304,6 +3589,34 @@ $("adminLevelBtn").addEventListener("click", () => {
   const amount = readAdminAmount("adminLevelAmount", { integer: true, max: 10000 });
   if (amount !== null) runAdminAction("grantLevels", amount);
 });
+GENERATORS.forEach(generator => {
+  const option = document.createElement("option");
+  option.value = generator.id;
+  option.textContent = generator.name;
+  $("giftGenerator").appendChild(option);
+  const adminOption = option.cloneNode(true);
+  $("adminGiftGenerator").appendChild(adminOption);
+});
+["giftGenerator", "adminGiftGenerator"].forEach(selectId => {
+  const option = document.createElement("option");
+  option.value = "alpha";
+  option.textContent = "Alpha Generator";
+  $(selectId).appendChild(option);
+});
+$("adminStarBtn").addEventListener("click", () => {
+  if (!$("adminPanel").hidden) spawnStar();
+});
+$("adminHyperStarBtn").addEventListener("click", () => {
+  if (!$("adminPanel").hidden) spawnStar(null, false, true);
+});
+$("adminGiftBtn").addEventListener("click", sendAdminGeneratorGift);
+$("giftForm").addEventListener("submit", sendGeneratorGift);
+$("giftsOpenBtn").addEventListener("click", () => {
+  $("giftStatus").textContent = "";
+  refreshGiftInbox();
+  $("giftDialog").showModal();
+});
+$("giftsCloseBtn").addEventListener("click", () => $("giftDialog").close());
 $("rebirthBtn").addEventListener("click", rebirth);
 $("resetBtn").addEventListener("click", () => {
   if (!confirm("Reset your money, lifetime earnings, inventory, level, rebirths, rebirth points, upgrades, achievements, XP, multiplier, Note Fever progress, speed boosts, and placed generators? Crates and task progress are kept. This cannot be undone.")) return;
