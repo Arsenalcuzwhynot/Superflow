@@ -850,14 +850,30 @@ async function enterGame(username, user, firstTime = false) {
     state.tutorialStartLevel = state.level;
     state.newAccountBoostRemainingMs = NEW_ACCOUNT_BOOST_DURATION_MS;
   }
-  if (await isBannedAccount()) return;
   setupAntiCheatPanel();
   selectShopTab(firstTime ? "rebirth" : "shop");
   configureGameTickTimer();
   updateAuthUI();
+  // Show the game shell before checking bans. A slow Firestore read must not
+  // leave players appearing stuck on the sign-in screen.
   $("authScreen").hidden = true;
   $("gameShell").hidden = false;
+  if (!firstTime) {
+    $("gameShell").classList.add("save-loading");
+    $("gameShell").setAttribute("aria-busy", "true");
+  }
   startStarSpawns();
+  const banCheckPromise = isBannedAccount();
+  const banCheckResult = await Promise.race([
+    banCheckPromise.then(banned => ({ completed: true, banned })),
+    new Promise(resolve => setTimeout(() => resolve({ completed: false, banned: false }), 1500))
+  ]);
+  if (banCheckResult.banned) return;
+  const banCheckPending = !banCheckResult.completed;
+  if (banCheckPending) {
+    cloudSaveReady = false;
+    $("leaderboardStatus").textContent = "Verifying account status… cloud saving is temporarily paused.";
+  }
   if (!firstTime) {
     const gameShell = $("gameShell");
     gameShell.classList.add("save-loading");
@@ -882,7 +898,7 @@ async function enterGame(username, user, firstTime = false) {
         notify("You’re signed in, but your saved game took too long to load. You can play now; cloud saving is paused to protect your existing save.", true);
       }
     } else {
-      cloudSaveReady = leaderboardPrivacyLoaded && saveLoadedOk;
+      cloudSaveReady = leaderboardPrivacyLoaded && saveLoadedOk && !banCheckPending;
       if (!cloudSaveReady) {
         notify("You’re signed in, but your cloud save could not be loaded. Playing locally; existing cloud data was left untouched.", true);
       }
@@ -901,6 +917,19 @@ async function enterGame(username, user, firstTime = false) {
   // should be able to keep an authenticated player on the sign-in screen.
   void save();
   void publishLeaderboardEntry();
+  if (banCheckPending) {
+    // If the Firestore ban lookup finishes after the timeout, resume cloud
+    // saving only after it confirms this account is not banned.
+    void banCheckPromise.then(banned => {
+      if (banned || !currentUser || currentUser.uid !== user.uid) return;
+      cloudSaveReady = leaderboardPrivacyLoaded && (firstTime || saveLoadedOk);
+      if (cloudSaveReady) {
+        $("leaderboardStatus").textContent = "Account verified. Cloud saving is active.";
+        void save();
+        void publishLeaderboardEntry();
+      }
+    }).catch(error => console.warn("Delayed ban check failed:", error));
+  }
   void initDaily();
   try {
     startCommunityListeners();
