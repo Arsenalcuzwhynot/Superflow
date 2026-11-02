@@ -2115,14 +2115,14 @@ function achievementReached(achievement) {
 function isAchievementClaimed(achievement) {
   return state.claimedAchievements.includes(achievement.id);
 }
-const ALPHA_GENERATOR = { id:"alpha", name:"Alpha Generator", color:"#7cffdf", accent:"#ffffff", index:GENERATOR_TIERS.length + 1, cost:0, income:0, xpPerSecond:0, effect:"glow" };
+const ALPHA_GENERATOR = { id:"alpha", name:"Alpha Generator", color:"#ffffff", accent:"#ffffff", index:GENERATOR_TIERS.length + 1, cost:0, income:0, xpPerSecond:0, effect:"glow", colorCycling:false };
 function bestOwnedGeneratorIncome() {
   let best = 0;
   GENERATORS.forEach(g => { if (owned(g.id) > 0) best = Math.max(best, g.income); });
   return best || GENERATORS[0].income;
 }
 function getGenerator(id) {
-  if (id === "alpha") return { ...ALPHA_GENERATOR, income: bestOwnedGeneratorIncome() * 10, xpPerSecond: bestOwnedGeneratorIncome() * 5 };
+  if (id === "alpha") return { ...ALPHA_GENERATOR, income: bestOwnedGeneratorIncome() * 2, xpPerSecond: bestOwnedGeneratorIncome() };
   return GENERATORS.find(g => g.id === id);
 }
 function generatorPrice(generator) {
@@ -2526,7 +2526,7 @@ function inventoryValue() {
   return GENERATORS.reduce((sum, g) => sum + (Number(owned(g.id)) || 0) * g.cost, sumAlphaValue());
 }
 function sumAlphaValue() { const best = GENERATORS.reduce((picked, g) => owned(g.id) > 0 && g.index > picked.index ? g : picked, GENERATORS[0]);
-  return (Number(owned("alpha")) || 0) * best.cost * 10; }
+  return (Number(owned("alpha")) || 0) * best.cost * 2; }
 function renderPlayerStats() {
   const set = (id, value) => { const el = $(id); if (el) el.textContent = value; };
   set("statCashEarned", cash(Math.max(0, Number(state.lifetime) || 0)));
