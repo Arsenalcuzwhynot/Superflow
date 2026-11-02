@@ -555,6 +555,11 @@ input#themeHue::-moz-range-thumb{width:18px;height:18px;border-radius:50%;backgr
             <button id="adminGiftBtn" type="button">Grant generators</button>
           </div>
           <div class="muted small" id="adminGiftStatus" role="status" aria-live="polite"></div>
+          <div class="multibuy-control">
+            <label>Gift one selected generator to every current player</label>
+            <button id="adminGiftEveryoneBtn" type="button">Gift everyone</button>
+          </div>
+          <div class="muted small" id="adminGiftEveryoneStatus" role="status" aria-live="polite"></div>
           <div class="note" id="adminStatus" role="status" aria-live="polite"></div>
         </div>
       </section>
@@ -853,14 +858,21 @@ function showAuthError(message) {
 }
 
 function grantTemporaryAlphaStarter() {
-  // Temporary client-side grant: every account receives one Alpha Generator once.
-  // The marker is saved with the player state so consuming/placing it won't re-grant.
-  if (state.alphaStarterGranted === true) return false;
+  // Recover the one-time grant for existing saves that lost it during inventory normalization.
+  if (state.alphaStarterGranted === true) {
+    if (state.alphaStarterRepaired === true) return false;
+    state.alphaStarterRepaired = true;
+    const alreadyPlaced = Array.isArray(state.slots) && state.slots.some(slot => slot && slot.id === "alpha");
+    if ((Number(state.inventory && state.inventory.alpha) || 0) > 0 || alreadyPlaced) return false;
+    state.inventory.alpha = 1;
+    return true;
+  }
   state.inventory = state.inventory && typeof state.inventory === "object" ? state.inventory : {};
   const currentCount = Number(state.inventory.alpha) || 0;
   const alreadyPlaced = Array.isArray(state.slots) && state.slots.some(slot => slot && slot.id === "alpha");
   if (currentCount < 1 && !alreadyPlaced) state.inventory.alpha = 1;
   state.alphaStarterGranted = true;
+  state.alphaStarterRepaired = true;
   return currentCount < 1 && !alreadyPlaced;
 }
 
@@ -1105,6 +1117,9 @@ async function loadUserSave(generation = playerSaveLoadGeneration) {
     const savedInventory = state.inventory && typeof state.inventory === "object" ? state.inventory : {};
     state.inventory = {};
     for (const g of GENERATORS) state.inventory[g.id] = Math.max(0, Math.floor(Number(savedInventory[g.id]) || 0));
+    state.inventory.alpha = Math.max(0, Math.floor(Number(savedInventory.alpha) || 0));
+    state.alphaStarterGranted = savedState.alphaStarterGranted === true;
+    state.alphaStarterRepaired = savedState.alphaStarterRepaired === true;
     const savedBestGeneratorIndex = Number(savedState.bestGeneratorIndex);
     state.bestGeneratorIndex = Number.isSafeInteger(savedBestGeneratorIndex)
       ? Math.max(-1, Math.min(GENERATORS.length - 1, savedBestGeneratorIndex))
@@ -3485,6 +3500,63 @@ async function sendAdminGeneratorGift() {
     button.disabled = false;
   }
 }
+async function sendAdminGeneratorGiftToEveryone() {
+  const status = $("adminGiftEveryoneStatus");
+  if ($("adminPanel").hidden || !currentUser || !dbRef) {
+    status.textContent = "Admin access is required to gift all players.";
+    return;
+  }
+  const generatorId = $("adminGiftGenerator").value;
+  if (!isGiftableGenerator(generatorId)) {
+    status.textContent = "Choose a valid generator.";
+    return;
+  }
+  const button = $("adminGiftEveryoneBtn");
+  button.disabled = true;
+  let giftsCreated = 0;
+  status.textContent = "Preparing gifts...";
+  try {
+    const users = dbRef.collection("users");
+    const gifts = dbRef.collection("generatorGifts");
+    let lastUser = null;
+    while (true) {
+      let query = users.orderBy(firebase.firestore.FieldPath.documentId()).limit(400);
+      if (lastUser) query = query.startAfter(lastUser);
+      const page = await query.get();
+      if (page.empty) break;
+      lastUser = page.docs[page.docs.length - 1];
+      const recipients = page.docs.filter(user => user.id !== currentUser.uid);
+      for (let offset = 0; offset < recipients.length; offset += 400) {
+        const batch = dbRef.batch();
+        recipients.slice(offset, offset + 400).forEach(user => {
+          batch.set(gifts.doc(), {
+            senderUid: currentUser.uid,
+            senderUsername: currentUsername || "Admin",
+            recipientUid: user.id,
+            recipientUsername: "Player",
+            generatorId,
+            amount: 1,
+            status: "pending",
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        });
+        await batch.commit();
+        giftsCreated += Math.min(400, recipients.length - offset);
+        status.textContent = "Gifted " + giftsCreated + " player(s)...";
+      }
+      if (page.size < 400) break;
+    }
+    const generator = getGenerator(generatorId);
+    status.textContent = giftsCreated
+      ? "Sent one " + generator.name + " gift to " + giftsCreated + " current player(s). They'll find it in Gifts and can accept it there."
+      : "No other player accounts were found.";
+  } catch (error) {
+    status.textContent = "Could not finish the broadcast after " + giftsCreated
+      + " gift(s): " + (error.message || "check Firestore permissions.");
+  } finally {
+    button.disabled = false;
+  }
+}
 async function acceptGeneratorGift(giftId) {
   if (!currentUser || !dbRef || !cloudSaveReady) throw new Error("Cloud saving must be available to accept gifts.");
   const saved = await saveUserState(true, true);
@@ -3610,6 +3682,7 @@ $("adminHyperStarBtn").addEventListener("click", () => {
   if (!$("adminPanel").hidden) spawnStar(null, false, true);
 });
 $("adminGiftBtn").addEventListener("click", sendAdminGeneratorGift);
+$("adminGiftEveryoneBtn").addEventListener("click", sendAdminGeneratorGiftToEveryone);
 $("giftForm").addEventListener("submit", sendGeneratorGift);
 $("giftsOpenBtn").addEventListener("click", () => {
   $("giftStatus").textContent = "";
