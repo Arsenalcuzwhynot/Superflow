@@ -548,15 +548,23 @@ input#themeHue::-moz-range-thumb{width:18px;height:18px;border-radius:50%;backgr
             <button id="adminHyperStarBtn" type="button">Summon Hyper Star</button>
           </div>
           <div class="multibuy-control">
+            <label>Spawn one Star at every active player's base</label>
+            <button id="adminStarEveryoneBtn" type="button">Star for everyone</button>
+          </div>
+          <div class="muted small" id="adminStarEveryoneStatus" role="status" aria-live="polite"></div>
+          <div class="multibuy-control">
             <label for="adminCashAmount">Add cash</label>
             <input id="adminCashAmount" type="number" min="0.01" step="any" placeholder="Amount">
             <button id="adminCashBtn" type="button">Grant cash</button>
           </div>
           <div class="multibuy-control">
-            <label for="adminMultiplierAmount">Add multiplier</label>
+            <label for="adminMultiplierRecipient">Give multiplier to a player</label>
+            <input id="adminMultiplierRecipient" type="text" maxlength="40" autocomplete="off" placeholder="Recipient username">
+            <label for="adminMultiplierAmount">Multiplier amount</label>
             <input id="adminMultiplierAmount" type="number" min="0.01" step="0.01" placeholder="Amount">
-            <button id="adminMultiplierBtn" type="button">Grant multiplier</button>
+            <button id="adminMultiplierBtn" type="button">Send multiplier gift</button>
           </div>
+          <div class="muted small" id="adminMultiplierStatus" role="status" aria-live="polite"></div>
           <div class="multibuy-control">
             <label for="adminLevelAmount">Gain levels</label>
             <input id="adminLevelAmount" type="number" min="1" step="1" value="1">
@@ -694,6 +702,8 @@ let globalBoostUnsubscribe = null;
 let globalBoostLoaded = false;
 let globalBoostError = false;
 let globalBoostPurchaseBusy = false;
+let globalStarUnsubscribe = null;
+let lastGlobalStarBroadcastId = "";
 const CHAT_HISTORY_START_AT = Date.now();
 const UPDATE_HISTORY = [
   {
@@ -704,7 +714,8 @@ const UPDATE_HISTORY = [
       "Added a 10-rank Note Duplication upgrade, paid upgrade resets, and permanent shared global boosts.",
       "Raised Personal Note Fever to 10,000 notes and varied crate objectives, including rebirth-only tasks.",
       "Moved bonus Stars away from screen corners.",
-      "Ranked the Rebirth leaderboard by rebirths first, then level, and displayed both as a Roman rebirth-level label."
+      "Ranked the Rebirth leaderboard by rebirths first, then level, and displayed both as a Roman rebirth-level label.",
+      "Added admin multiplier gifts and a Star broadcast for active players."
     ]
   },
   {
@@ -924,6 +935,7 @@ async function enterGame(username, user, firstTime = false) {
   currentUser = user;
   currentUsername = username;
   startGlobalBoostListener();
+  startGlobalStarListener();
   state = freshState();
   const loadGeneration = ++playerSaveLoadGeneration;
   cloudSaveReady = false;
@@ -2395,6 +2407,7 @@ async function logoutUser() {
   await saveUserState(true, true);
   await publishLeaderboardEntry(true);
   stopGlobalBoostListener();
+  stopGlobalStarListener();
   stopNewAccountBoost();
   stopStarSpawns();
   communityUnsubscribers.forEach(unsubscribe => unsubscribe());
@@ -2645,6 +2658,58 @@ function renderGlobalBoost() {
 function stopGlobalBoostListener() {
   if (globalBoostUnsubscribe) globalBoostUnsubscribe();
   globalBoostUnsubscribe = null;
+}
+
+function stopGlobalStarListener() {
+  if (globalStarUnsubscribe) globalStarUnsubscribe();
+  globalStarUnsubscribe = null;
+  lastGlobalStarBroadcastId = "";
+}
+
+function startGlobalStarListener() {
+  stopGlobalStarListener();
+  if (!currentUser || !dbRef) return;
+  globalStarUnsubscribe = dbRef.collection("globalStarBroadcasts").doc("current")
+    .onSnapshot(snapshot => {
+      if (!snapshot.exists) return;
+      const broadcast = snapshot.data();
+      if (typeof broadcast.broadcastId !== "string"
+        || broadcast.broadcastId === lastGlobalStarBroadcastId
+        || !broadcast.createdAt || typeof broadcast.createdAt.toMillis !== "function") return;
+      const age = Date.now() - broadcast.createdAt.toMillis();
+      if (age < 0 || age > 5 * 60 * 1000) return;
+      lastGlobalStarBroadcastId = broadcast.broadcastId;
+      if (currentUser && !$("gameShell").hidden) spawnStar();
+    }, error => {
+      console.error("Global Star listener failed:", error);
+    });
+}
+
+async function broadcastStarToEveryone() {
+  const status = $("adminStarEveryoneStatus");
+  if ($("adminPanel").hidden || !currentUser || !dbRef) {
+    status.textContent = "Admin access is required to send a Star to everyone.";
+    return;
+  }
+  const button = $("adminStarEveryoneBtn");
+  button.disabled = true;
+  status.textContent = "Sending a Star to active players...";
+  try {
+    await dbRef.collection("globalStarBroadcasts").doc("current").set({
+      broadcastId: currentUser.uid + "-" + Date.now(),
+      senderUid: currentUser.uid,
+      senderUsername: currentUsername || "Admin",
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    status.textContent = "Star sent to active players. It will appear on each player's screen.";
+  } catch (error) {
+    console.error("Global Star broadcast failed:", error);
+    status.textContent = error && error.code === "permission-denied"
+      ? "Firestore rules blocked the broadcast. Publish the updated rules first."
+      : error.message || "Could not send the Star broadcast.";
+  } finally {
+    button.disabled = false;
+  }
 }
 
 function startGlobalBoostListener() {
@@ -3589,6 +3654,48 @@ function readAdminAmount(inputId, { integer = false, max = Number.MAX_SAFE_INTEG
   }
   return amount;
 }
+async function sendAdminMultiplierGift() {
+  const status = $("adminMultiplierStatus");
+  if ($("adminPanel").hidden || !currentUser || !dbRef) {
+    status.textContent = "Admin access is required to send multiplier gifts.";
+    return;
+  }
+  const recipientUsername = $("adminMultiplierRecipient").value.trim();
+  const amount = readAdminAmount("adminMultiplierAmount", { max: 1e6 });
+  if (amount === null) return;
+  if (Math.round(amount * 100) / 100 !== amount) {
+    status.textContent = "Multiplier amount must be in increments of 0.01.";
+    return;
+  }
+  if (!/^[A-Za-z0-9_]{2,40}$/.test(recipientUsername)) {
+    status.textContent = "Enter a valid player username.";
+    return;
+  }
+  const button = $("adminMultiplierBtn");
+  button.disabled = true;
+  status.textContent = "Sending multiplier gift...";
+  try {
+    const recipient = await findGiftRecipient(recipientUsername);
+    if (recipient.id === currentUser.uid) throw new Error("Choose another player.");
+    await dbRef.collection("multiplierGifts").add({
+      senderUid: currentUser.uid,
+      senderUsername: currentUsername || "Admin",
+      recipientUid: recipient.id,
+      recipientUsername: recipient.data().username,
+      amount,
+      status: "pending",
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    status.textContent = "Sent a ×" + number(amount) + " multiplier gift to "
+      + recipient.data().username + ". They can accept it from Gifts.";
+    $("adminMultiplierRecipient").value = "";
+    $("adminMultiplierAmount").value = "";
+  } catch (error) {
+    status.textContent = error.message || "Could not send multiplier gift.";
+  } finally {
+    button.disabled = false;
+  }
+}
 async function findGiftRecipient(username) {
   const matches = await dbRef.collection("leaderboard")
     .where("username", "==", username).limit(2).get();
@@ -3821,6 +3928,52 @@ async function acceptGeneratorGift(giftId) {
   render();
   await saveUserState(true, true);
 }
+async function acceptMultiplierGift(giftId) {
+  if (!currentUser || !dbRef || !cloudSaveReady) throw new Error("Cloud saving must be available to accept gifts.");
+  const saved = await saveUserState(true, true);
+  if (!saved) throw new Error("Your latest save could not be synchronized. Try again when cloud saving is active.");
+  const recipientUid = currentUser.uid;
+  const giftRef = dbRef.collection("multiplierGifts").doc(giftId);
+  const recipientRef = dbRef.collection("users").doc(recipientUid);
+  const amount = await dbRef.runTransaction(async transaction => {
+    const giftSnapshot = await transaction.get(giftRef);
+    if (!giftSnapshot.exists) throw new Error("This multiplier gift is no longer available.");
+    const gift = giftSnapshot.data();
+    if (gift.recipientUid !== recipientUid || gift.status !== "pending") {
+      throw new Error("This multiplier gift is already accepted or isn't addressed to you.");
+    }
+    if (!Number.isFinite(gift.amount) || gift.amount <= 0
+      || gift.amount > 1e6 || Math.round(gift.amount * 100) / 100 !== gift.amount) {
+      throw new Error("This multiplier gift contains invalid data.");
+    }
+    const recipientSnapshot = await transaction.get(recipientRef);
+    const savedState = recipientSnapshot.exists && recipientSnapshot.data().state
+      ? recipientSnapshot.data().state
+      : state;
+    const multiplier = Number(savedState.multiplier);
+    const nextMultiplier = Math.round(((Number.isFinite(multiplier) ? Math.max(1, multiplier) : 1)
+      + gift.amount) * 100) / 100;
+    if (!Number.isFinite(nextMultiplier) || nextMultiplier > 1e15) {
+      throw new Error("This gift would exceed the multiplier limit.");
+    }
+    transaction.set(recipientRef, {
+      state: { ...savedState, multiplier: nextMultiplier },
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    transaction.update(giftRef, {
+      status: "accepted",
+      acceptedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    return gift.amount;
+  });
+  state.multiplier = Math.round((state.multiplier + amount) * 100) / 100;
+  renderStats();
+  renderPlayerStats();
+  renderShop();
+  renderSlotEarnings();
+  await saveUserState(true, true);
+  await publishLeaderboardEntry(true);
+}
 async function refreshGiftInbox() {
   const host = $("giftList");
   host.replaceChildren();
@@ -3830,20 +3983,23 @@ async function refreshGiftInbox() {
   }
   host.textContent = "Loading gifts...";
   try {
-    const snapshot = await dbRef.collection("generatorGifts")
-      .where("recipientUid", "==", currentUser.uid).get();
-    const pending = snapshot.docs.filter(doc => doc.data().status === "pending");
+    const [generatorSnapshot, multiplierSnapshot] = await Promise.all([
+      dbRef.collection("generatorGifts").where("recipientUid", "==", currentUser.uid).get(),
+      dbRef.collection("multiplierGifts").where("recipientUid", "==", currentUser.uid).get()
+    ]);
+    const pendingGenerators = generatorSnapshot.docs.filter(doc => doc.data().status === "pending");
+    const pendingMultipliers = multiplierSnapshot.docs.filter(doc => doc.data().status === "pending");
     host.replaceChildren();
-    if (!pending.length) {
+    if (!pendingGenerators.length && !pendingMultipliers.length) {
       host.textContent = "No pending gifts.";
       return;
     }
-    pending.forEach(doc => {
+    pendingGenerators.forEach(doc => {
       const gift = doc.data();
       const row = document.createElement("div");
       row.className = "gift-row";
       const description = document.createElement("span");
-        const generator = getGenerator(gift.generatorId);
+      const generator = getGenerator(gift.generatorId);
       description.textContent = (gift.senderUsername || "A player") + " sent "
         + gift.amount + " " + (generator ? generator.name : "generator") + (gift.amount === 1 ? "." : "s.");
       const accept = document.createElement("button");
@@ -3863,6 +4019,30 @@ async function refreshGiftInbox() {
       row.append(description, accept);
       host.appendChild(row);
     });
+    pendingMultipliers.forEach(doc => {
+      const gift = doc.data();
+      const row = document.createElement("div");
+      row.className = "gift-row";
+      const description = document.createElement("span");
+      description.textContent = (gift.senderUsername || "An admin") + " sent a ×"
+        + number(Number(gift.amount) || 0) + " multiplier gift.";
+      const accept = document.createElement("button");
+      accept.type = "button";
+      accept.textContent = "Accept";
+      accept.addEventListener("click", async () => {
+        accept.disabled = true;
+        try {
+          await acceptMultiplierGift(doc.id);
+          $("giftStatus").textContent = "Multiplier gift accepted.";
+          await refreshGiftInbox();
+        } catch (error) {
+          accept.disabled = false;
+          $("giftStatus").textContent = error.message || "Could not accept this multiplier gift.";
+        }
+      });
+      row.append(description, accept);
+      host.appendChild(row);
+    });
   } catch (error) {
     host.textContent = "Could not load gifts: " + (error.message || "check your Firestore rules.");
   }
@@ -3872,9 +4052,7 @@ $("adminCashBtn").addEventListener("click", () => {
   if (amount !== null) runAdminAction("grantCash", amount);
 });
 $("adminMultiplierBtn").addEventListener("click", () => {
-  const amount = readAdminAmount("adminMultiplierAmount", { max: 1e6 });
-  if (amount !== null && Math.round(amount * 100) / 100 === amount) runAdminAction("grantMultiplier", amount);
-  else if (amount !== null) notify("Multiplier amount must be in increments of 0.01.", true);
+  sendAdminMultiplierGift();
 });
 $("adminLevelBtn").addEventListener("click", () => {
   const amount = readAdminAmount("adminLevelAmount", { integer: true, max: 10000 });
@@ -3900,6 +4078,7 @@ $("adminStarBtn").addEventListener("click", () => {
 $("adminHyperStarBtn").addEventListener("click", () => {
   if (!$("adminPanel").hidden) spawnStar(null, false, true);
 });
+$("adminStarEveryoneBtn").addEventListener("click", broadcastStarToEveryone);
 $("adminGiftBtn").addEventListener("click", sendAdminGeneratorGift);
 $("adminGiftEveryoneBtn").addEventListener("click", sendAdminGeneratorGiftToEveryone);
 $("giftForm").addEventListener("submit", sendGeneratorGift);
