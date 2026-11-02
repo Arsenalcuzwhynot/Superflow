@@ -1671,12 +1671,13 @@ const CRATE_TIER_WEIGHTS = {
 const STAR_TASK_TARGETS = [
   1, 2, 4, 7, 12, 20, 32, 50, 75, 110,
   155, 210, 275, 345, 405, 455, 485, 499, 500, 2000,
-  5000, 10000, 20000, 50000, 100000, 250000, 500000, 1000000
+  5000, 10000, 20000, 50000, 100000, 250000, 500000, 1000000,
+  2000000, 5000000, 10000000
 ];
 const REBIRTH_TASK_TARGETS = [
   0, 0, 0, 0, 0, 1, 3, 5, 7, 10,
   13, 16, 19, 22, 25, 30, 35, 38, 40, 43,
-  47, 51, 55, 59, 63, 67, 71, 75
+  47, 51, 55, 59, 63, 67, 71, 75, 80, 85, 90
 ];
 const TASK_CHALLENGES = [
   { type: "placements", target: 3 },
@@ -1706,7 +1707,10 @@ const TASK_CHALLENGES = [
   { type: "pointsSpent", target: 50 },
   { type: "lifetimeCash", target: 1e25 },
   { type: "bonusStars", target: 100 },
-  { type: "lifetimeCash", target: 1e30 }
+  { type: "lifetimeCash", target: 1e30 },
+  { type: "placements", target: 1000 },
+  { type: "bonusStars", target: 200 },
+  { type: "lifetimeCash", target: 1e35 }
 ];
 const TASKS = GENERATORS.map((generator, index) => {
   const taskId = "generator-crate-" + generator.id;
