@@ -10,8 +10,9 @@
 if(d.getMonth()===9&&(d.getDate()===30||d.getDate()===31))r.classList.add("halloween");
 try{var t=JSON.parse(localStorage.getItem("superflowTheme_v1")||"null");
 if(t&&typeof t.h==="number"&&typeof t.s==="number"){r.style.setProperty("--h",t.h);r.style.setProperty("--sat",t.s);}
-if(t&&typeof t.b==="number")r.style.setProperty("--black-level",t.b);
-if(t&&typeof t.br==="number")r.style.setProperty("--secondary-brightness",t.br);}catch(e){}})();
+if(t&&typeof t.b==="number")r.style.setProperty("--black-level",t.b>=50?1:0);
+if(t&&typeof t.br==="number")r.style.setProperty("--secondary-brightness",t.br/100);
+if(t&&typeof t.st==="number")r.style.setProperty("--theme-strength",t.st/100);}catch(e){}})();
 </script>
 <style>
 :root{--h:150;--sat:1;--black-level:0;--secondary-brightness:1;
@@ -344,31 +345,54 @@ input.theme-range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 :is(.chat-messages,.gift-form select){background-color:hsl(var(--h) calc(46% * var(--sat) * (1 - var(--black-level))) calc(5% + var(--black-level) * 95%))}
 .generator-particles .magma-particle{background:#ff6b12;box-shadow:0 0 8px #ff3b00}
 :root{
-  --secondary-color:hsl(calc(var(--h) - 9) calc(65% * var(--sat)) calc(55% * var(--secondary-brightness)));
+  --secondary-color:hsl(calc(var(--h) - 9) calc((40% + var(--secondary-brightness) * 30%) * var(--sat)) calc(27.5% + var(--secondary-brightness) * 25%));
+  --login-background:#000000;
+  --login-theme-tint:0%;
   --green:var(--secondary-color);
-  --panel:color-mix(in srgb,var(--secondary-color) calc(var(--black-level) * 22%),hsl(calc(var(--h) - 5) calc(38% * var(--sat) * (1 - var(--black-level))) calc(9% + var(--black-level) * 91%)));
-  --panel2:color-mix(in srgb,var(--secondary-color) calc(var(--black-level) * 25%),hsl(calc(var(--h) - 3) calc(37% * var(--sat) * (1 - var(--black-level))) calc(12% + var(--black-level) * 88%)));
-  --line:color-mix(in srgb,var(--secondary-color) calc(var(--black-level) * 35%),hsl(calc(var(--h) - 5) calc(37% * var(--sat) * (1 - var(--black-level))) calc(17% + var(--black-level) * 58%)));
+  --panel:color-mix(in srgb,var(--secondary-color) var(--light-theme-tint, 0%),hsl(calc(var(--h) - 5) calc(38% * var(--sat) * (1 - var(--black-level))) calc(9% + var(--black-level) * 91%)));
+  --panel2:color-mix(in srgb,var(--secondary-color) var(--light-theme-tint, 0%),hsl(calc(var(--h) - 3) calc(37% * var(--sat) * (1 - var(--black-level))) calc(12% + var(--black-level) * 88%)));
+  --line:color-mix(in srgb,var(--secondary-color) var(--light-theme-border-tint, 0%),hsl(calc(var(--h) - 5) calc(37% * var(--sat) * (1 - var(--black-level))) calc(17% + var(--black-level) * 58%)));
 }
 :is(.leaderboard-row,.upgrade-card,.achievement-card,.task-card,.crate-card,.shop-item,.summary-card,.update-history-entry,.stats-dialog-grid>div,.gift-row,.modal){
-  background-color:color-mix(in srgb,var(--secondary-color) calc(var(--black-level) * 22%),hsl(var(--h) calc(37% * var(--sat) * (1 - var(--black-level))) calc(7% + var(--black-level) * 93%)));
+  background-color:color-mix(in srgb,var(--secondary-color) var(--light-theme-tint, 0%),hsl(var(--h) calc(37% * var(--sat) * (1 - var(--black-level))) calc(7% + var(--black-level) * 93%)));
 }
 :is(.rebirth-panel,.upgrade-points,.fever-card){
-  background-color:color-mix(in srgb,var(--secondary-color) calc(var(--black-level) * 24%),hsl(var(--h) calc(38% * var(--sat) * (1 - var(--black-level))) calc(6% + var(--black-level) * 94%)));
+  background-color:color-mix(in srgb,var(--secondary-color) var(--light-theme-tint, 0%),hsl(var(--h) calc(38% * var(--sat) * (1 - var(--black-level))) calc(6% + var(--black-level) * 94%)));
 }
 :is(.chat-messages,.gift-form select,input){
-  background-color:color-mix(in srgb,var(--secondary-color) calc(var(--black-level) * 22%),hsl(var(--h) calc(46% * var(--sat) * (1 - var(--black-level))) calc(5% + var(--black-level) * 95%)));
+  background-color:color-mix(in srgb,var(--secondary-color) var(--light-theme-tint, 0%),hsl(var(--h) calc(46% * var(--sat) * (1 - var(--black-level))) calc(5% + var(--black-level) * 95%)));
 }
 button{
-  background-color:color-mix(in srgb,var(--secondary-color) calc(var(--black-level) * 24%),hsl(calc(var(--h) - 3) calc(37% * var(--sat) * (1 - var(--black-level))) calc(14% + var(--black-level) * 86%)));
-  border-color:color-mix(in srgb,var(--secondary-color) calc(var(--black-level) * 35%),hsl(calc(var(--h) - 5) calc(34% * var(--sat) * (1 - var(--black-level))) calc(25% + var(--black-level) * 60%)));
+  background-color:color-mix(in srgb,var(--secondary-color) var(--light-theme-tint, 0%),hsl(calc(var(--h) - 3) calc(37% * var(--sat) * (1 - var(--black-level))) calc(14% + var(--black-level) * 86%)));
+  border-color:color-mix(in srgb,var(--secondary-color) var(--light-theme-border-tint, 0%),hsl(calc(var(--h) - 5) calc(34% * var(--sat) * (1 - var(--black-level))) calc(25% + var(--black-level) * 60%)));
 }
 :is(input,.gift-form select){
-  border-color:color-mix(in srgb,var(--secondary-color) calc(var(--black-level) * 30%),hsl(calc(var(--h) - 4) calc(33% * var(--sat) * (1 - var(--black-level))) calc(19% + var(--black-level) * 61%)));
+  border-color:color-mix(in srgb,var(--secondary-color) var(--light-theme-border-tint, 0%),hsl(calc(var(--h) - 4) calc(33% * var(--sat) * (1 - var(--black-level))) calc(19% + var(--black-level) * 61%)));
 }
 :is(.buy-button,.place-button,.rebirth-panel button:not(:disabled),.upgrade-card button:not(:disabled)){
-  background-color:color-mix(in srgb,var(--secondary-color) calc(var(--black-level) * 24%),hsl(calc(var(--h) + 4) calc(50% * var(--sat) * (1 - var(--black-level))) calc(22% + var(--black-level) * 78%)));
+  background-color:color-mix(in srgb,var(--secondary-color) var(--light-theme-tint, 0%),hsl(calc(var(--h) + 4) calc(50% * var(--sat) * (1 - var(--black-level))) calc(22% + var(--black-level) * 78%)));
 }
+.auth-screen{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 18% 82%,color-mix(in srgb,var(--secondary-color) var(--login-theme-tint),var(--login-background)),transparent 56%),
+    radial-gradient(ellipse at 83% 18%,color-mix(in srgb,var(--secondary-color) calc(var(--login-theme-tint) * .75),var(--login-background)),transparent 52%),
+    linear-gradient(135deg,var(--login-background),color-mix(in srgb,var(--login-background) 88%,var(--secondary-color)));
+}
+.auth-screen::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background-image:radial-gradient(3px 3px at 22px 30px,#ffffffd8 99%,transparent),radial-gradient(4px 4px at 112px 86px,#d8eaffd0 99%,transparent),radial-gradient(2px 2px at 65px 132px,#ffffffc8 99%,transparent);
+  background-size:150px 180px,220px 240px,190px 210px;
+  animation:snowfall 30s linear infinite;
+  opacity:.45;
+}
+.auth-screen>*{position:relative;z-index:1}
 </style>
 </head>
 <body>
@@ -569,10 +593,10 @@ button{
       <section class="panel" id="themePanel">
         <div class="panel-head"><h2>Theme Customization</h2><span class="muted small" id="themeCurrent">Forest</span></div>
         <div class="body">
-          <p class="muted small">Adjust the background, secondary hue, and secondary color brightness.</p>
-          <label class="theme-slider-label" for="themeBlack">Black to white</label>
+          <p class="muted small">Adjust the background, secondary hue, brightness, and theme color strength.</p>
+          <label class="theme-slider-label" for="themeModeToggle">Background mode</label>
           <div class="theme-slider-row">
-            <input class="theme-range" id="themeBlack" type="range" min="0" max="100" step="1" value="0" aria-label="Background from black to white">
+            <button id="themeModeToggle" type="button" aria-pressed="false">Switch to light mode</button>
           </div>
           <label class="theme-slider-label" for="themeHue">Secondary color</label>
           <div class="theme-slider-row">
@@ -582,6 +606,10 @@ button{
           <label class="theme-slider-label" for="themeBrightness">Secondary color brightness</label>
           <div class="theme-slider-row">
             <input class="theme-range" id="themeBrightness" type="range" min="50" max="150" step="1" value="100" aria-label="Secondary color brightness">
+          </div>
+          <label class="theme-slider-label" for="themeStrength">Theme color strength</label>
+          <div class="theme-slider-row">
+            <input class="theme-range" id="themeStrength" type="range" min="0" max="100" step="1" value="50" aria-label="Theme color strength">
           </div>
           <button id="themeReset" type="button">Classic mode</button>
         </div>
@@ -768,7 +796,15 @@ const UPDATE_HISTORY = [
     version: GAME_VERSION,
     status: "Current",
     changes: [
-      "Changed Some generator textures."
+      "Renamed Plasma to Crispin and added red, green, and brown particle effects.",
+      "Reworked the top generator tiers: Sky takes Godly’s former design, Magma takes Sky’s former rank, and the retired top tier’s inventory and crates are preserved.",
+      "Improved generator effects and particles, including green Absolute effects and distinct Aether, Chroma, and Nebulous looks.",
+      "Added falling snow during gameplay.",
+      "Added background, secondary-color, and secondary-color-brightness theme controls, plus Classic mode.",
+      "Daily rewards now open their claim HUD as soon as they become available.",
+      "Added availability badges for Gifts, Crate challenges, and Achievements.",
+      "Added Claim all, Reject gift, and Reject all gifts controls; rejected generator gifts return to the sender.",
+      "Global multiplier contributions now announce the contributor and contribution amount in chat."
     ]
   },
   {
@@ -4627,49 +4663,68 @@ function savedThemeSettings() {
     const t = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY) || "null");
     return {
       hue: t && typeof t.h === "number" ? t.h : DEFAULT_THEME_HUE,
-      black: t && typeof t.b === "number" ? t.b : 0,
-      brightness: t && typeof t.br === "number" ? t.br : 100
+      black: t && typeof t.b === "number" && t.b >= 50 ? 1 : 0,
+      brightness: t && typeof t.br === "number" ? t.br : 100,
+      strength: t && typeof t.st === "number" ? t.st : 50
     };
   } catch (e) {}
-  return { hue: DEFAULT_THEME_HUE, black: 0, brightness: 100 };
+  return { hue: DEFAULT_THEME_HUE, black: 0, brightness: 100, strength: 50 };
 }
-function applyThemeSettings(hueValue, blackValue, brightnessValue, persist = true) {
+function applyThemeSettings(hueValue, blackValue, brightnessValue, persist = true, strengthValue = 50) {
   const hue = Math.max(0, Math.min(359, Math.round(Number(hueValue)) || 0));
-  const black = Math.max(0, Math.min(100, Math.round(Number(blackValue)) || 0));
+  const black = Number(blackValue) >= 0.5 ? 1 : 0;
   const brightness = Math.max(50, Math.min(150, Math.round(Number(brightnessValue)) || 100));
+  const strength = Math.max(0, Math.min(100, Math.round(Number(strengthValue)) || 0));
   const root = document.documentElement;
   root.style.setProperty("--h", hue);
   root.style.setProperty("--sat", 1);
-  root.style.setProperty("--black-level", black / 100);
+  root.style.setProperty("--black-level", black);
   root.style.setProperty("--secondary-brightness", brightness / 100);
-  root.style.colorScheme = black >= 55 ? "light" : "dark";
+  root.style.setProperty("--theme-strength", strength / 100);
+  const lightTint = black ? Math.round((45 + (brightness - 50) * 0.28) * strength / 100) : 0;
+  root.style.setProperty("--light-theme-tint", lightTint + "%");
+  root.style.setProperty("--light-theme-border-tint",
+    Math.min(93, Math.round((65 + (brightness - 50) * 0.28) * strength / 100)) + "%");
+  root.style.setProperty("--login-background", black ? "#ffffff" : "#000000");
+  root.style.setProperty("--login-theme-tint", strength ? Math.round(12 + strength * 0.28) + "%" : "0%");
+  root.style.colorScheme = black ? "light" : "dark";
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", "hsl(" + hue + " 44% " + (5 + black * 0.85) + "%)");
+  if (meta) meta.setAttribute("content", black ? "#ffffff" : "#000000");
   if (persist) {
-    try { localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify({ h: hue, s: 1, b: black, br: brightness })); } catch (e) {}
+    try { localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify({ h: hue, s: 1, b: black * 100, br: brightness, st: strength })); } catch (e) {}
   }
   $("themeCurrent").textContent = (hue === DEFAULT_THEME_HUE ? "Classic green" : "Hue " + hue + "°")
-    + " · " + black + "% white · " + brightness + "% brightness";
+    + " · " + (black ? "Light mode" : "Dark mode") + " · " + brightness + "% brightness";
   $("themePreview").style.background = "linear-gradient(135deg, hsl(" + hue + " 70% "
-    + (48 * brightness / 100) + "%) 0 50%, hsl(0 0% " + black + "%) 50% 100%)";
+    + (48 * brightness / 100) + "%) 0 50%, " + (black ? "#ffffff" : "#000000") + " 50% 100%)";
   $("themeHue").value = hue;
-  $("themeBlack").value = black;
+  const modeButton = $("themeModeToggle");
+  modeButton.textContent = black ? "Switch to dark mode" : "Switch to light mode";
+  modeButton.setAttribute("aria-pressed", String(Boolean(black)));
   $("themeBrightness").value = brightness;
+  $("themeStrength").value = strength;
 }
 function initThemePanel() {
   const update = () => applyThemeSettings(
     $("themeHue").value,
-    $("themeBlack").value,
-    $("themeBrightness").value
+    document.documentElement.style.getPropertyValue("--black-level"),
+    $("themeBrightness").value,
+    true,
+    $("themeStrength").value
   );
   $("themeHue").addEventListener("input", update);
-  $("themeBlack").addEventListener("input", update);
   $("themeBrightness").addEventListener("input", update);
+  $("themeStrength").addEventListener("input", update);
+  $("themeModeToggle").addEventListener("click", () => {
+    const black = Number(document.documentElement.style.getPropertyValue("--black-level")) >= 0.5 ? 1 : 0;
+    applyThemeSettings($("themeHue").value, black ? 0 : 1, $("themeBrightness").value,
+      true, $("themeStrength").value);
+  });
   $("themeReset").addEventListener("click", () =>
-    applyThemeSettings(DEFAULT_THEME_HUE, 0, 100)
+    applyThemeSettings(DEFAULT_THEME_HUE, 0, 100, true, 50)
   );
   const settings = savedThemeSettings();
-  applyThemeSettings(settings.hue, settings.black, settings.brightness, false);
+  applyThemeSettings(settings.hue, settings.black, settings.brightness, false, settings.strength);
 }
 initThemePanel();
 function isAntiCheatAdmin() { return !!currentUser && ANTICHEAT_ADMIN_UIDS.includes(currentUser.uid); }
