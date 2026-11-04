@@ -27,7 +27,7 @@ body::before{content:"";position:fixed;inset:-240px 0 0;z-index:-1;pointer-event
 button{font:inherit;color:inherit;cursor:pointer;background:hsl(calc(var(--h) - 3) calc(37% * var(--sat) * (1 - var(--black-level))) calc(14% + var(--black-level) * 86%));border:1px solid hsl(calc(var(--h) - 5) calc(34% * var(--sat) * (1 - var(--black-level))) calc(25% + var(--black-level) * 60%));border-radius:8px;padding:9px 12px}
 button:hover:not(:disabled){filter:brightness(1.15)}
 button:disabled{opacity:.4;cursor:not-allowed}
-.buy-button{background:hsl(calc(var(--h) + 4) calc(58% * var(--sat) * (1 - var(--black-level))) calc(22% + var(--black-level) * 78%));border-color:hsl(calc(var(--h) + 1) calc(57% * var(--sat) * (1 - var(--black-level))) calc(38% + var(--black-level) * 55%));color:var(--text)}
+.buy-button,.offline-claim-button{background:hsl(calc(var(--h) + 4) calc(58% * var(--sat) * (1 - var(--black-level))) calc(22% + var(--black-level) * 78%));border-color:hsl(calc(var(--h) + 1) calc(57% * var(--sat) * (1 - var(--black-level))) calc(38% + var(--black-level) * 55%));color:var(--text)}
 .sell-button{background:#612832;border-color:#a94350;color:#fff0f0}
 .place-button{background:hsl(calc(var(--h) + 4) calc(47% * var(--sat) * (1 - var(--black-level))) calc(20% + var(--black-level) * 80%));border-color:hsl(calc(var(--h) + 5) calc(46% * var(--sat) * (1 - var(--black-level))) calc(31% + var(--black-level) * 59%))}
 .crate-open-button{background:#45306d;border-color:#7d59b3}
@@ -40,6 +40,7 @@ button:disabled{opacity:.4;cursor:not-allowed}
 input{font:inherit;background:hsl(var(--h) calc(46% * var(--sat) * (1 - var(--black-level))) calc(5% + var(--black-level) * 95%));border:1px solid hsl(calc(var(--h) - 4) calc(33% * var(--sat) * (1 - var(--black-level))) calc(19% + var(--black-level) * 61%));border-radius:8px;padding:10px 12px;color:var(--text)}
 input::placeholder{color:hsl(calc(var(--h) - 6) calc(12% * var(--sat)) 48%)}
 [hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .auth-screen{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at 18% 82%,hsl(calc(var(--h) - 3) calc(49% * var(--sat) * (1 - var(--black-level))) calc(14% + var(--black-level) * 86%)) 0,transparent 42%),radial-gradient(ellipse at 83% 18%,hsl(calc(var(--h) - 15) calc(36% * var(--sat) * (1 - var(--black-level))) calc(19% + var(--black-level) * 81%)) 0,transparent 38%),transparent}
 .auth-card{width:min(440px,100%);background:hsl(var(--h) calc(37% * var(--sat) * (1 - var(--black-level))) calc(7% + var(--black-level) * 93%));border:1px solid var(--line);border-radius:12px;padding:28px;box-shadow:0 24px 80px #000b}
 .auth-card-top{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:20px}
@@ -69,7 +70,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:16px;pa
 .stat strong{font-size:16px}
 main{max-width:1250px;margin:auto;padding:20px}
 .layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.9fr);gap:16px;align-items:start}
-.side{display:grid;gap:16px}
+.main-left-column,.side{display:grid;align-content:start;gap:16px;min-width:0}
 .shop-tabs{position:sticky;top:0;z-index:3;display:flex;gap:8px;margin:-15px -15px 12px;padding:8px 15px 0;background:var(--panel);border-bottom:1px solid var(--line)}
 .shop-tab{position:relative;flex:1;min-width:0;background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;padding:8px 7px;color:var(--muted)}
 .shop-tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--green)}
@@ -80,7 +81,7 @@ main{max-width:1250px;margin:auto;padding:20px}
 .panel-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
 h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .body{padding:15px}
-.slot-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(5,1fr);gap:clamp(2px,calc(9px * var(--slot-scale,1)),9px);width:100%;max-width:786px;margin-inline:auto}
+.slot-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:auto;gap:clamp(2px,calc(9px * var(--slot-scale,1)),9px);width:100%;max-width:786px;margin-inline:auto}
 .slot{position:relative;isolation:isolate;min-width:0;aspect-ratio:1/1.08;padding:calc(7px * var(--slot-scale,1)) calc(3px * var(--slot-scale,1));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(5px * var(--slot-scale,1));background:hsl(calc(var(--h) - 5) calc(40% * var(--sat) * (1 - var(--black-level))) calc(6% + var(--black-level) * 94%));border:1px dashed hsl(calc(var(--h) - 3) calc(33% * var(--sat) * (1 - var(--black-level))) calc(19% + var(--black-level) * 61%));border-radius:calc(9px * var(--slot-scale,1));text-align:center;overflow:hidden}
 .slot.empty:hover{border-color:var(--green);background:hsl(calc(var(--h) - 4) calc(38% * var(--sat)) 11%)}
 .slot.locked{background:hsl(calc(var(--h) - 8) calc(40% * var(--sat)) 4%);border-style:dotted;color:hsl(var(--h) calc(15% * var(--sat)) 31%);cursor:not-allowed}
@@ -190,14 +191,15 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .slot[data-generator-id="ethereal"] .generator-mark{color:#d8fff6!important}
 .empty-mark{font-size:25px;color:hsl(calc(var(--h) - 5) calc(29% * var(--sat)) 26%)}
 .tip{margin:13px 2px 0;color:var(--muted);font-size:11px;text-align:center}
-.community-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;margin-top:16px}
-.leaderboard-list{display:grid;gap:6px;max-height:420px;overflow:auto;list-style:none;padding:0;margin:0}
+.admin-panel-bottom{margin-top:16px}
+.main-left-column>section:nth-child(2)>.body{display:flex;flex-direction:column;min-height:0}
+.leaderboard-list{display:grid;flex:1 1 0;gap:6px;min-height:280px;max-height:none;overflow:auto;list-style:none;padding:0;margin:0}
 .leaderboard-row{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;padding:8px 10px;background:hsl(var(--h) calc(37% * var(--sat)) 7%);border:1px solid var(--line);border-radius:8px}
 .leaderboard-rank{color:var(--gold);font-weight:800}
 .leaderboard-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .leaderboard-cash{font-variant-numeric:tabular-nums;color:var(--green)}
 .leaderboard-tabs{position:static;margin:0 0 10px;padding:0;background:transparent}
-.chat-messages{height:320px;overflow:auto;display:flex;flex-direction:column-reverse;gap:8px;padding:10px;background:hsl(var(--h) calc(46% * var(--sat) * (1 - var(--black-level))) calc(5% + var(--black-level) * 95%));border:1px solid var(--line);border-radius:8px}
+.chat-messages{height:280px;overflow:auto;display:flex;flex-direction:column-reverse;gap:8px;padding:10px;background:hsl(var(--h) calc(46% * var(--sat) * (1 - var(--black-level))) calc(5% + var(--black-level) * 95%));border:1px solid var(--line);border-radius:8px}
 .chat-message{overflow-wrap:anywhere;font-size:12px}
 .chat-tag{display:inline-block;padding:0 5px;border-radius:4px;font-size:10px;font-weight:800;background:hsl(calc(var(--h) - 3) calc(42% * var(--sat) * (1 - var(--black-level))) calc(14% + var(--black-level) * 86%));border:1px solid hsl(calc(var(--h) - 7) calc(37% * var(--sat) * (1 - var(--black-level))) calc(25% + var(--black-level) * 60%));color:var(--gold);margin-right:4px}
 .chat-message.chat-announcement{background:linear-gradient(90deg,hsl(calc(var(--h) - 3) calc(44% * var(--sat) * (1 - var(--black-level))) calc(17% + var(--black-level) * 83%)),hsl(calc(var(--h) - 5) calc(44% * var(--sat) * (1 - var(--black-level))) calc(10% + var(--black-level) * 90%)));border-left:3px solid var(--gold);padding:5px 8px;border-radius:4px;color:var(--text);font-weight:700}
@@ -241,13 +243,13 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .shop-item{display:grid;grid-template-columns:42px minmax(0,1fr) minmax(130px,38%);align-items:start;gap:10px;padding:9px;background:hsl(var(--h) calc(37% * var(--sat)) 7%);border:1px solid var(--line);border-radius:9px}
 .shop-item.mystery-generator .swatch{filter:grayscale(1) brightness(.22)}
 .shop-item.mystery-generator .item-title{color:#62676c!important}
-.shop-actions{display:flex;flex-wrap:nowrap;gap:6px;align-items:stretch;min-width:0}
+.shop-actions{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch;min-width:0}
 .swatch{width:40px;height:40px;border-radius:8px;border:1px solid #ffffff30;display:grid;place-items:center;font-size:22px;color:#fff}
 .item-title{font-size:12px;font-weight:800;overflow-wrap:anywhere}
 .item-desc{font-size:10px;color:var(--muted);margin-top:2px}
 .item-numbers{font-size:11px;margin-top:4px;display:flex;flex-wrap:wrap;gap:7px}
 .price{color:var(--gold);font-weight:800}
-.shop-item button{flex:1 1 0;min-width:0;font-size:11px;padding:8px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shop-item button{flex:1 1 40%;min-width:0;font-size:11px;padding:8px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .summary{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .summary-card{background:hsl(var(--h) calc(38% * var(--sat)) 6%);border:1px solid var(--line);border-radius:9px;padding:11px}
 .privacy-setting{display:flex;align-items:flex-start;gap:8px;margin-top:12px}
@@ -260,12 +262,30 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .fever-progress{height:8px;margin-top:8px;overflow:hidden;border-radius:99px;background:hsl(calc(var(--h) - 3) calc(36% * var(--sat) * (1 - var(--black-level))) calc(13% + var(--black-level) * 87%))}
 .fever-progress span{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,hsl(calc(var(--h) - 8) calc(69% * var(--sat)) 58%),#f0cb75);transition:width .2s ease}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.notice-area{min-height:82px;display:grid;place-items:center;padding:10px clamp(14px,3vw,32px) 0}
+.notice-area{display:grid;place-items:center;padding:5px clamp(14px,3vw,32px) 0}
 .note{position:relative;top:auto;left:auto;z-index:1;width:min(680px,100%);max-height:30vh;overflow:auto;margin:0;padding:13px 17px;border:1px solid hsl(calc(var(--h) + 4) calc(45% * var(--sat)) 38%);border-radius:12px;background:linear-gradient(110deg,hsl(calc(var(--h) + 10) calc(47% * var(--sat)) 16%),#14221f);color:hsl(calc(var(--h) + 2) calc(100% * var(--sat)) 94%)!important;font-size:15px;font-weight:800;line-height:1.45;text-align:center;box-shadow:0 10px 38px #000b,0 0 25px hsl(calc(var(--h) + 2) calc(63% * var(--sat)) 59% / 0.33);opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .18s ease,transform .18s ease,visibility .18s;pointer-events:none}
+.note:not(.notice-visible){display:none}
 .note.notice-visible{opacity:1;visibility:visible;transform:translateY(0)}
 .note.task-notice{border-color:#e4b747;background:linear-gradient(110deg,#654918,#382913);color:#fff3c4!important;box-shadow:0 10px 38px #000b,0 0 28px #f0cb7580}
 .note.bonus-notice{border-color:#e4b747;background:linear-gradient(110deg,#5a4818,#302716);color:#fff4bd!important;box-shadow:0 10px 38px #000b,0 0 28px #ffe16b70}
 .note.error-notice{border-color:#df5968;background:linear-gradient(110deg,#57202b,#30191e);color:#ffe7eb!important;box-shadow:0 10px 38px #000b,0 0 26px #ec586b70}
+.top-hud{display:flex;flex-direction:column;align-items:center;gap:8px;padding:6px clamp(14px,3vw,32px) 0}
+.boost-indicators{display:flex;flex-wrap:wrap;justify-content:center;gap:7px}
+.boost-indicator{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid var(--boost-border);border-radius:8px;background:var(--boost-bg);font-size:13px;font-weight:800}
+.boost-indicator[hidden]{display:none}
+.boost-indicator span{font-variant-numeric:tabular-nums}
+.boost-star{--boost-bg:#6e5518;--boost-border:#e4b747;color:#fff4bd}
+.boost-fever{--boost-bg:#174a27;--boost-border:#39b45b;color:#d9ffe1}
+.boost-hyper{--boost-bg:#482466;--boost-border:#a665dc;color:#f2dfff}
+.boost-quiz{--boost-bg:#351c55;--boost-border:#8756bb;color:#f0dcff}
+.boost-global{--boost-bg:#193d58;--boost-border:#4c9ac5;color:#d9f3ff}
+.boost-new-player{--boost-bg:#663514;--boost-border:#e58b39;color:#fff0d9}
+.math-question{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:9px;width:min(760px,100%);padding:10px 12px;border:1px solid #8756bb;border-radius:10px;background:linear-gradient(110deg,#351c55,#21163a);color:#f0dcff}
+.math-question[hidden]{display:none}
+.math-question strong{font-size:14px}
+.math-question input{width:120px;padding:7px 9px;background:#1b1230;border-color:#8756bb}
+.math-question-status{width:100%;text-align:center;font-size:11px}
+.math-question-status:empty{display:none}
 .tutorial-guide{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0;padding:12px 14px;border:1px solid #6c5735;border-radius:10px;background:linear-gradient(110deg,#352919,hsl(var(--h) calc(33% * var(--sat)) 11%) 72%);box-shadow:0 0 20px #f4bf3a12}
 .tutorial-guide strong{display:block;color:#ffdc81;font-size:13px}
 .tutorial-guide span{display:block;color:var(--muted);font-size:11px;margin-top:3px}
@@ -290,10 +310,9 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .star-countdown{display:block;position:relative;z-index:1;padding:1px 6px;border:1px solid #ffffff50;border-radius:99px;background:#08120fe8;color:#fff;font-size:11px;font-weight:800;line-height:1.4;font-variant-numeric:tabular-nums;white-space:nowrap;text-shadow:0 1px 3px #000}
 @keyframes star-pulse{to{transform:scale(1.13);box-shadow:0 0 25px #ffe58bcc}}
 @media(prefers-reduced-motion:reduce){body::before,.game-shell::before,.slot.filled::before,.generator-particles span,.bonus-star,.generator-visual::before,.generator-visual::after{animation:none!important}}
-@media(max-width:700px){.community-grid{grid-template-columns:1fr}}
 @media(max-width:850px){.layout{grid-template-columns:minmax(0,1fr) minmax(280px,.9fr)}}
 @media(max-width:700px){.layout{grid-template-columns:1fr}}
-@media(max-width:560px){.notice-area{min-height:72px;padding:8px 10px 0}.note{width:100%;padding:11px 13px;font-size:14px;max-height:34vh}header{align-items:flex-start;flex-direction:column;padding:12px}.stats{justify-content:flex-start;width:100%;gap:6px}.stat{flex:1 1 calc(50% - 6px);min-width:0;padding:6px 8px}.stat strong{font-size:14px}.game-account{width:100%;justify-content:space-between}.game-account-actions{gap:5px}.game-account-actions button{padding:7px 8px;font-size:11px}main{padding:10px}.panel-head{padding:11px 12px}.body{padding:11px}.shop-item{grid-template-columns:34px minmax(0,1fr);gap:8px}.swatch{width:32px;height:32px;font-size:18px}.shop-actions{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.shop-actions button{min-height:40px;padding:7px 6px}.shop-content{max-height:min(520px,70vh)}.slot-grid{gap:3px}.slot-pagination{gap:6px}}
+@media(max-width:560px){.notice-area{padding:6px 10px 0}.top-hud{padding:5px 10px 0}.note{width:100%;padding:11px 13px;font-size:14px;max-height:34vh}header{align-items:flex-start;flex-direction:column;padding:12px}.stats{justify-content:flex-start;width:100%;gap:6px}.stat{flex:1 1 calc(50% - 6px);min-width:0;padding:6px 8px}.stat strong{font-size:14px}.game-account{width:100%;justify-content:space-between}.game-account-actions{gap:5px}.game-account-actions button{padding:7px 8px;font-size:11px}main{padding:10px}.panel-head{padding:11px 12px}.body{padding:11px}.shop-item{grid-template-columns:34px minmax(0,1fr);gap:8px}.swatch{width:32px;height:32px;font-size:18px}.shop-actions{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.shop-actions button{min-height:40px;padding:7px 6px}.shop-content{max-height:min(520px,70vh)}.slot-grid{gap:3px}.slot-pagination{gap:6px}}
 @media(max-width:560px){.shop-tabs{gap:2px;padding-inline:8px}.shop-tab{font-size:10px;padding-inline:2px}}
 
 
@@ -331,6 +350,7 @@ input.theme-range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 .stats-dialog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
 .stats-dialog-grid>div{display:grid;gap:6px;padding:12px;background:hsl(var(--h) calc(37% * var(--sat)) 7%);border:1px solid var(--line);border-radius:9px}
 .stats-dialog-grid small{color:var(--muted)}.stats-dialog-grid strong{overflow-wrap:anywhere;font-size:17px}
+.offline-cash-amount{font-size:28px;font-weight:900;color:var(--green);overflow-wrap:anywhere}
 .gift-form{display:grid;gap:10px;margin-bottom:16px}
 .gift-form label{color:var(--muted);font-size:12px}
 .gift-form select{font:inherit;background:hsl(var(--h) calc(46% * var(--sat)) 5%);border:1px solid hsl(calc(var(--h) - 4) calc(33% * var(--sat)) 19%);border-radius:8px;padding:10px 12px;color:var(--text)}
@@ -372,6 +392,12 @@ button{
 :is(.buy-button,.place-button,.rebirth-panel button:not(:disabled),.upgrade-card button:not(:disabled)){
   background-color:color-mix(in srgb,var(--secondary-color) var(--light-theme-tint, 0%),hsl(calc(var(--h) + 4) calc(50% * var(--sat) * (1 - var(--black-level))) calc(22% + var(--black-level) * 78%)));
 }
+.shop-actions .buy-button:not(.buy-all-button){background:#176b3a;background-color:#176b3a;border-color:#42bd70;color:#f1fff5}
+.shop-actions .buy-all-button{background:#174f7a;background-color:#174f7a;border-color:#4da9e8;color:#eff8ff}
+.shop-actions .sell-button:not(.sell-all-button){background:#762d37;background-color:#762d37;border-color:#d45b68;color:#fff3f4}
+.shop-actions .sell-all-button{background:#521c2a;background-color:#521c2a;border-color:#bd4961;color:#fff0f3}
+.shop-actions .place-button{background:#54317a;background-color:#54317a;border-color:#a47bd4;color:#f8f0ff}
+.shop-actions .place-button.active{background:#70449d;background-color:#70449d;border-color:#d0adff}
 .auth-screen{
   position:relative;
   isolation:isolate;
@@ -427,7 +453,6 @@ button{
     <div class="stat"><small>Generators placed</small><strong id="placed">0 / 1</strong></div>
     <div class="stat"><small>Level · XP to next</small><strong><span id="level">1</span> · <span id="xpProgress">0 / 10 XP</span></strong></div>
     <div class="stat"><small>Money / XP multiplier</small><strong id="multiplier">×1</strong></div>
-    <div class="stat"><small>Generator speed</small><strong id="generatorSpeed">×1</strong></div>
   </div>
   <div class="game-account">
     <span id="gamePlayerName" class="auth-status"></span>
@@ -467,11 +492,28 @@ button{
   <h3 class="small">Received gifts</h3>
   <div class="gift-list" id="giftList"></div>
 </dialog>
+<dialog id="offlineCashDialog" class="stats-dialog">
+  <div class="panel-head"><h2>Welcome back!</h2></div>
+  <p>Your generators earned this while you were away:</p>
+  <p id="offlineCashAmount" class="offline-cash-amount" aria-live="polite">$0</p>
+  <button id="claimOfflineCashBtn" class="offline-claim-button" type="button">Claim offline cash</button>
+</dialog>
 <div class="notice-area">
   <div class="note" id="notice" role="status" aria-live="polite" aria-atomic="true"></div>
 </div>
+<div class="top-hud">
+  <div id="boostIndicators" class="boost-indicators" aria-label="Active boosts"></div>
+  <form id="mathQuestionHud" class="math-question" hidden>
+    <strong id="mathQuestionText">🔮 Solve the question</strong>
+    <label class="sr-only" for="mathAnswer">Answer</label>
+    <input id="mathAnswer" type="number" step="1" autocomplete="off" inputmode="numeric" placeholder="Answer">
+    <button type="submit">Submit</button>
+    <span id="mathQuestionStatus" class="math-question-status" role="status" aria-live="polite"></span>
+  </form>
+</div>
 <main>
   <div class="layout">
+    <div class="main-left-column">
     <section class="panel">
       <div class="panel-head">
         <div><h2>Generator Slots</h2><div class="muted small" id="slotSummary">Level 1 · 1 slot unlocked</div></div>
@@ -495,6 +537,20 @@ button{
         <p class="tip">Click an empty slot to place your selected generator. Click a generator to inspect or remove it.</p>
       </div>
     </section>
+    <section class="panel">
+      <div class="panel-head"><h2 id="leaderboardHeading">Cash leaderboard</h2><span class="muted small" id="leaderboardDescription">Generator-produced cash · Top 25</span></div>
+      <div class="body">
+        <div class="shop-tabs leaderboard-tabs" role="tablist" aria-label="Leaderboard type">
+          <button class="shop-tab" type="button" role="tab" aria-selected="true" data-leaderboard="cashEarned">Cash</button>
+          <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="multiplier">Multiplier</button>
+          <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="starsCollected">Stars</button>
+          <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="rebirth">Rebirths</button>
+        </div>
+        <ol class="leaderboard-list" id="leaderboardList"></ol>
+        <div class="muted small" id="leaderboardStatus">Sign in to see the leaderboard.</div>
+      </div>
+    </section>
+    </div>
     <div class="side">
       <section class="panel">
       <div class="panel-head">
@@ -504,9 +560,9 @@ button{
         </div>
       </div>
       <div class="body shop-content">
-        <div class="shop-tabs" role="tablist" aria-label="Shop, crate challenges, rebirth, upgrades, achievements, and daily reward">
+        <div class="shop-tabs" role="tablist" aria-label="Shop, quests, rebirth, upgrades, achievements, and daily reward">
           <button class="shop-tab" id="shopTabBtn" type="button" role="tab" aria-selected="true" aria-controls="shopTabPanel">Shop</button>
-          <button class="shop-tab" id="tasksTabBtn" type="button" role="tab" aria-label="Crate challenges" aria-selected="false" aria-controls="tasksTabPanel">Crate challenges<span class="activity-badge" id="tasksAvailableBadge" aria-label="Claimable crate challenge" hidden>!</span></button>
+          <button class="shop-tab" id="tasksTabBtn" type="button" role="tab" aria-label="Quests" aria-selected="false" aria-controls="tasksTabPanel">Quests<span class="activity-badge" id="tasksAvailableBadge" aria-label="Claimable quest" hidden>!</span></button>
           <button class="shop-tab" id="rebirthTabBtn" type="button" role="tab" aria-label="Rebirth" aria-selected="false" aria-controls="rebirthTabPanel">Rebirth<span class="rebirth-badge" id="rebirthAvailableBadge" aria-hidden="true" hidden>!</span></button>
           <button class="shop-tab" id="upgradesTabBtn" type="button" role="tab" aria-selected="false" aria-controls="upgradesTabPanel">Upgrades</button>
           <button class="shop-tab" id="achievementsTabBtn" type="button" role="tab" aria-selected="false" aria-controls="achievementsTabPanel">Achievements<span class="activity-badge" id="achievementsAvailableBadge" aria-label="Claimable achievement" hidden>!</span></button>
@@ -614,6 +670,17 @@ button{
           <button id="themeReset" type="button">Classic mode</button>
         </div>
       </section>
+      <section class="panel">
+        <div class="panel-head"><h2>Chat</h2><span class="muted small">Keep it friendly. 300 characters max.</span></div>
+        <div class="body">
+          <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+          <form class="chat-compose" id="chatForm">
+            <input id="chatInput" type="text" maxlength="300" placeholder="Write a message" autocomplete="off" aria-label="Chat message" />
+            <button id="sendChatBtn" type="submit">Send</button>
+          </form>
+          <div class="chat-status muted small" id="chatStatus">Sign in to join the chat.</div>
+        </div>
+      </section>
       <section class="panel" id="antiCheatPanel" hidden>
         <div class="panel-head"><h2>Anti-cheat</h2><span class="muted small">Flags and bans</span></div>
         <div class="body">
@@ -626,82 +693,56 @@ button{
           <div class="flag-list" id="flagList"></div>
         </div>
       </section>
-      <section class="panel" id="adminPanel" hidden>
-        <div class="panel-head"><h2>Admin Panel</h2></div>
-        <div class="body">
-          <div class="multibuy-control">
-            <label>Summon a Star</label>
-            <button id="adminStarBtn" type="button">Summon Star</button>
-            <button id="adminHyperStarBtn" type="button">Summon Hyper Star</button>
-          </div>
-          <div class="multibuy-control">
-            <label>Spawn one Star at every active player's base</label>
-            <button id="adminStarEveryoneBtn" type="button">Star for everyone</button>
-          </div>
-          <div class="muted small" id="adminStarEveryoneStatus" role="status" aria-live="polite"></div>
-          <div class="multibuy-control">
-            <label for="adminCashAmount">Add cash</label>
-            <input id="adminCashAmount" type="number" min="0.01" step="any" placeholder="Amount">
-            <button id="adminCashBtn" type="button">Grant cash</button>
-          </div>
-          <div class="multibuy-control">
-            <label for="adminMultiplierRecipient">Give multiplier to a player</label>
-            <input id="adminMultiplierRecipient" type="text" maxlength="40" autocomplete="off" placeholder="Recipient username">
-            <label for="adminMultiplierAmount">Multiplier amount</label>
-            <input id="adminMultiplierAmount" type="number" min="0.01" step="0.01" placeholder="Amount">
-            <button id="adminMultiplierBtn" type="button">Send multiplier gift</button>
-          </div>
-          <div class="muted small" id="adminMultiplierStatus" role="status" aria-live="polite"></div>
-          <div class="multibuy-control">
-            <label for="adminLevelAmount">Gain levels</label>
-            <input id="adminLevelAmount" type="number" min="1" step="1" value="1">
-            <button id="adminLevelBtn" type="button">Grant levels</button>
-          </div>
-          <div class="multibuy-control">
-            <label for="adminGiftRecipient">Give generators to a player</label>
-            <input id="adminGiftRecipient" type="text" maxlength="20" autocomplete="off" placeholder="Recipient username">
-            <select id="adminGiftGenerator"></select>
-            <input id="adminGiftAmount" type="number" min="1" max="100" step="1" value="1">
-            <button id="adminGiftBtn" type="button">Grant generators</button>
-          </div>
-          <div class="muted small" id="adminGiftStatus" role="status" aria-live="polite"></div>
-          <div class="multibuy-control">
-            <label>Gift one selected generator to every current player</label>
-            <button id="adminGiftEveryoneBtn" type="button">Gift everyone</button>
-          </div>
-          <div class="muted small" id="adminGiftEveryoneStatus" role="status" aria-live="polite"></div>
-          <div class="note" id="adminStatus" role="status" aria-live="polite"></div>
-        </div>
-      </section>
     </div>
   </div>
-  <div class="community-grid">
-    <section class="panel">
-      <div class="panel-head"><h2 id="leaderboardHeading">Cash leaderboard</h2><span class="muted small" id="leaderboardDescription">Generator-produced cash · Top 25</span></div>
-      <div class="body">
-        <div class="shop-tabs leaderboard-tabs" role="tablist" aria-label="Leaderboard type">
-          <button class="shop-tab" type="button" role="tab" aria-selected="true" data-leaderboard="cashEarned">Cash</button>
-          <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="multiplier">Multiplier</button>
-          <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="starsCollected">Stars</button>
-          <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="rebirth">Rebirths</button>
-        </div>
-        <ol class="leaderboard-list" id="leaderboardList"></ol>
-        <div class="muted small" id="leaderboardStatus">Sign in to see the leaderboard.</div>
+  <section class="panel admin-panel-bottom" id="adminPanel" hidden>
+    <div class="panel-head"><h2>Admin Panel</h2></div>
+    <div class="body">
+      <div class="multibuy-control">
+        <label>Summon a Star</label>
+        <button id="adminStarBtn" type="button">Summon Star</button>
+        <button id="adminHyperStarBtn" type="button">Summon Hyper Star</button>
       </div>
-    </section>
-    <section class="panel">
-      <div class="panel-head"><h2>Chat</h2><span class="muted small">Keep it friendly. 300 characters max.</span></div>
-      <div class="body">
-        <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
-        <form class="chat-compose" id="chatForm">
-          <input id="chatInput" type="text" maxlength="300" placeholder="Write a message" autocomplete="off" aria-label="Chat message" />
-          <button id="sendChatBtn" type="submit">Send</button>
-        </form>
-        <div class="chat-status muted small" id="chatStatus">Sign in to join the chat.</div>
+      <div class="multibuy-control">
+        <label>Spawn one Star at every active player's base</label>
+        <button id="adminStarEveryoneBtn" type="button">Star for everyone</button>
       </div>
-    </section>
-  </div>
-  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">0.9.85</span><button id="updateHistoryBtn" type="button">Update history</button></div>
+      <div class="muted small" id="adminStarEveryoneStatus" role="status" aria-live="polite"></div>
+      <div class="multibuy-control">
+        <label for="adminCashAmount">Add cash</label>
+        <input id="adminCashAmount" type="number" min="0.01" step="any" placeholder="Amount">
+        <button id="adminCashBtn" type="button">Grant cash</button>
+      </div>
+      <div class="multibuy-control">
+        <label for="adminMultiplierRecipient">Give multiplier to a player</label>
+        <input id="adminMultiplierRecipient" type="text" maxlength="40" autocomplete="off" placeholder="Recipient username">
+        <label for="adminMultiplierAmount">Multiplier amount</label>
+        <input id="adminMultiplierAmount" type="number" min="0.01" step="0.01" placeholder="Amount">
+        <button id="adminMultiplierBtn" type="button">Send multiplier gift</button>
+      </div>
+      <div class="muted small" id="adminMultiplierStatus" role="status" aria-live="polite"></div>
+      <div class="multibuy-control">
+        <label for="adminLevelAmount">Gain levels</label>
+        <input id="adminLevelAmount" type="number" min="1" step="1" value="1">
+        <button id="adminLevelBtn" type="button">Grant levels</button>
+      </div>
+      <div class="multibuy-control">
+        <label for="adminGiftRecipient">Give generators to a player</label>
+        <input id="adminGiftRecipient" type="text" maxlength="20" autocomplete="off" placeholder="Recipient username">
+        <select id="adminGiftGenerator"></select>
+        <input id="adminGiftAmount" type="number" min="1" max="100" step="1" value="1">
+        <button id="adminGiftBtn" type="button">Grant generators</button>
+      </div>
+      <div class="muted small" id="adminGiftStatus" role="status" aria-live="polite"></div>
+      <div class="multibuy-control">
+        <label>Gift one selected generator to every current player</label>
+        <button id="adminGiftEveryoneBtn" type="button">Gift everyone</button>
+      </div>
+      <div class="muted small" id="adminGiftEveryoneStatus" role="status" aria-live="polite"></div>
+      <div class="note" id="adminStatus" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">0.9.9</span><button id="updateHistoryBtn" type="button">Update history</button></div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
@@ -725,19 +766,19 @@ function initBrandLogos() { const logo = document.documentElement.classList.cont
 const GENERATOR_TIERS = [
   { id:"basic",      name:"Basic",      color:"#74777b", accent:"#a3a6a8" },
   { id:"common",     name:"Common",     color:"#a3aca6", accent:"#caced0" },
-  { id:"uncommon",   name:"Uncommon",   color:"#94833a", accent:"#c9b64f" },
+  { id:"uncommon",   name:"Uncommon",   color:"#4e684f", accent:"#8bab85" },
   { id:"rare",       name:"Rare",       color:"#397f91", accent:"#72bdca" },
   { id:"epic",       name:"Epic",       color:"#805282", accent:"#b879bc" },
   { id:"legendary",  name:"Legendary",  color:"#a47a39", accent:"#d0ad66" },
   { id:"mythical",   name:"Mythical",   color:"#a94e65", accent:"#d9778e" },
   { id:"ethereal",   name:"Ethereal",   color:"#242a30", accent:"#687681" },
-  { id:"ultimate",   name:"Ultimate",   color:"#e27a36", accent:"#ffc979" },
+  { id:"magma",      name:"Magma",      color:"#e27a36", accent:"#ffc979", cycleFrom:"#a51e08", cycleTo:"#ff8a12", cycleDuration:1.2 },
   { id:"hyper",      name:"Hyper",      color:"#cf4058", accent:"#ff9a79" },
-  { id:"supreme",    name:"Supreme",    color:"#243c70", accent:"#8db1ed" },
-  { id:"divine",     name:"Divine",     color:"#dc72ad", accent:"#ffc1df", effect:"dots" },
+  { id:"neon",       name:"Neon",       color:"#243c70", accent:"#8db1ed", cycleFrom:"#07194f", cycleTo:"#397aff", cycleDuration:1.5 },
+  { id:"divine",     name:"Divine",     color:"#e984ba", accent:"#ffd0e8", effect:"dots" },
   { id:"godly",      name:"Sky",        color:"#69cfff", accent:"#e5f8ff", effect:"sky", cycleFrom:"#163b8a", cycleTo:"#87ddff", cycleDuration:12 },
   { id:"quantum",    name:"Quantum",    color:"#7254c7", accent:"#d1a2ff", effect:"stars" },
-  { id:"plasma",     name:"Crispin",    color:"#ee3f43", accent:"#63e77a", effect:"crispin" },
+  { id:"plasma",     name:"Crispin",    color:"#ee3f43", accent:"#ff6b73", effect:"crispin" },
   { id:"radiant",    name:"Almighty",  color:"#ffe04a", accent:"#fff9bf", effect:"crosses" },
   { id:"surge",      name:"Surge",      color:"#249fc9", accent:"#a9efff", effect:"lightning" },
   { id:"chroma",     name:"Chroma",     color:"#b83b9d", accent:"#ff83dc", effect:"chroma", cycleDuration:2.2 },
@@ -751,8 +792,6 @@ const GENERATOR_TIERS = [
   { id:"singularity",name:"Singularity",color:"#ffd13e", accent:"#fff0a0", effect:"singularity", cycleFrom:"#e9bd28", cycleTo:"#ff6500", cycleDuration:1.7 },
   { id:"arsenal",    name:"Arsenal",    color:"#d51c36", accent:"#ff6870", effect:"arsenal", cycleFrom:"#b4122b", cycleTo:"#f13243", cycleDuration:1.9 },
   { id:"extravagent",name:"Extravagent",color:"#39e548", accent:"#d5ff91", effect:"extravagent", cycleFrom:"#08441d", cycleTo:"#8aff63", cycleDuration:2.2 },
-  { id:"neon", name:"Neon", color:"#102b83", accent:"#4c8cff", effect:"neon", cycleFrom:"#07194f", cycleTo:"#244bd0", cycleDuration:1.5 },
-  { id:"sky", name:"Magma", color:"#ff650d", accent:"#ffd05b", effect:"magma", cycleFrom:"#a51e08", cycleTo:"#ff8a12", cycleDuration:1.2 },
 ];
 const FREE_GENERATOR_USERNAME = "Arsenalmod";
 function isPrivilegedUser(username = currentUsername) {
@@ -769,7 +808,7 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 10000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "0.9.85";
+const GAME_VERSION = "0.9.9";
 const GLOBAL_BOOST_MILESTONES = [
   { cost: 1e6, multiplier: 1.2 }, { cost: 1e7, multiplier: 1.4 },
   { cost: 1e8, multiplier: 1.6 }, { cost: 1e9, multiplier: 1.8 },
@@ -795,6 +834,18 @@ const UPDATE_HISTORY = [
   {
     version: GAME_VERSION,
     status: "Current",
+    changes: [
+      "Added multi-sell and Sell all controls for unplaced generators.",
+      "Added timed math questions that award 2× generator speed, plus hoverable boost indicators.",
+      "Each rebirth now permanently adds one generator slot, and global boost contributions grant a temporary 2× generator speed boost.",
+      "Added the Stonks rebirth upgrade for online passive cash and revised offline earnings to use lifetime cash.",
+      "Renamed Crate challenges to Quests and tightened the top HUD spacing.",
+      "Replaced Ultimate and Supreme with Magma and Neon, removed the previous Magma and Neon tiers, and adjusted Uncommon, Divine, and Crispin colors."
+    ]
+  },
+  {
+    version: "0.9.8",
+    status: "Previous",
     changes: [
       "Renamed Plasma to Crispin and added red, green, and brown particle effects.",
       "Reworked the top generator tiers: Sky takes Godly’s former design, Magma takes Sky’s former rank, and the retired top tier’s inventory and crates are preserved.",
@@ -927,7 +978,10 @@ let communityUnsubscribers = [];
 let leaderboardUnsubscribe = null;
 let activeLeaderboard = "cashEarned";
 let lastChatSentAt = 0;
-
+let offlineCashSavePromise = Promise.resolve();
+let mathQuestionTimer = null;
+let currentMathAnswer = null;
+const MATH_QUESTION_INTERVAL_MS = 15 * 60 * 1000;
 function getAccountStore() {
   try {
     const raw = localStorage.getItem(ACCOUNTS_KEY);
@@ -1106,7 +1160,9 @@ async function enterGame(username, user, firstTime = false) {
     gameShell.setAttribute("aria-busy", "false");
   }
   const alphaStarterGrantedNow = grantTemporaryAlphaStarter();
+  applyPassiveCashElapsed();
   startNewAccountBoost();
+  startMathQuestionTimer();
   if (state.tutorialStarted && state.tutorialComplete) grantTutorialBasicCrate();
   if (alphaStarterGrantedNow) notify("You received a starter Alpha Generator!");
   updateAuthUI();
@@ -1114,7 +1170,11 @@ async function enterGame(username, user, firstTime = false) {
   renderTutorial();
   // Cloud writes, live listeners, and admin checks are background work. None
   // should be able to keep an authenticated player on the sign-in screen.
-  void save();
+  offlineCashSavePromise = save();
+  if (state.offlineCashPending > 0) {
+    $("offlineCashAmount").textContent = cash(state.offlineCashPending);
+    $("offlineCashDialog").showModal();
+  }
   void publishLeaderboardEntry();
   if (banCheckPending) {
     // If the Firestore ban lookup finishes after the timeout, resume cloud
@@ -1176,21 +1236,27 @@ async function loadUserSave(generation = playerSaveLoadGeneration) {
       : {};
     state.crateInventory = {};
     CRATE_TIERS.forEach(tier => {
-      const count = Number(savedCrates[tier.id]);
-      state.crateInventory[tier.id] = Number.isSafeInteger(count) ? Math.max(0, count) : 0;
+      const sourceIds = tier.id === "magma" ? ["ultimate"]
+        : tier.id === "neon" ? ["neon", "supreme"] : [tier.id];
+      const count = sourceIds.reduce((total, id) => {
+        const count = Number(savedCrates[id]);
+        return total + (Number.isSafeInteger(count) ? Math.max(0, count) : 0);
+      }, 0);
+      state.crateInventory[tier.id] = Math.floor(count
+        + (tier.id === "magma"
+          ? Math.max(Number(savedCrates.sky) || 0, Number(savedCrates.magma) || 0)
+          : 0));
     });
-    const retiredMagmaCrates = Number(savedCrates.magma);
-    if (Number.isSafeInteger(retiredMagmaCrates) && retiredMagmaCrates > 0) {
-      state.crateInventory.sky += retiredMagmaCrates;
-    }
     state.completedTaskObjectives = Array.isArray(savedState.completedTaskObjectives)
-      ? [...new Set(savedState.completedTaskObjectives.filter(id => Object.prototype.hasOwnProperty.call(TASK_OBJECTIVES, id)))]
+      ? [...new Set(savedState.completedTaskObjectives
+        .map(migrateTaskObjectiveId)
+        .filter(id => Object.prototype.hasOwnProperty.call(TASK_OBJECTIVES, id)))]
       : [];
     state.announcedTaskCompletions = Array.isArray(savedState.announcedTaskCompletions)
-      ? [...new Set(savedState.announcedTaskCompletions.filter(id => TASKS.some(task => task.id === id)))]
+      ? [...new Set(savedState.announcedTaskCompletions.map(migrateTaskId).filter(id => TASKS.some(task => task.id === id)))]
       : [];
     const savedTaskClaims = Array.isArray(savedState.claimedTaskRewards) ? savedState.claimedTaskRewards : [];
-    state.claimedTaskRewards = [...new Set(savedTaskClaims.filter(id => TASKS.some(task => task.id === id)))];
+    state.claimedTaskRewards = [...new Set(savedTaskClaims.map(migrateTaskId).filter(id => TASKS.some(task => task.id === id)))];
     const highestLegacyClaimedTier = savedTaskClaims.reduce((highest, id) => {
       const crateId = LEGACY_TASK_CRATE_REWARDS[id];
       const tierIndex = CRATE_TIERS.findIndex(tier => tier.id === crateId);
@@ -1212,6 +1278,8 @@ async function loadUserSave(generation = playerSaveLoadGeneration) {
     state.tutorialCrateAwarded = savedState.tutorialCrateAwarded === true;
     const savedGeneratorCash = Number(savedState.generatorCashEarned);
     state.generatorCashEarned = Number.isFinite(savedGeneratorCash) ? Math.max(0, savedGeneratorCash) : 0;
+    const savedOfflineCashPending = Number(savedState.offlineCashPending);
+    state.offlineCashPending = Number.isFinite(savedOfflineCashPending) ? Math.max(0, savedOfflineCashPending) : 0;
     const savedPersonalNotes = Number(savedState.personalNotes);
     state.personalNotes = Number.isSafeInteger(savedPersonalNotes)
       ? Math.max(0, Math.min(PERSONAL_FEVER_NOTE_TARGET, savedPersonalNotes))
@@ -1264,19 +1332,32 @@ async function loadUserSave(generation = playerSaveLoadGeneration) {
     state.genSpeedBoostUntil = Number.isSafeInteger(savedBoostUntil) && savedBoostUntil > Date.now()
       ? savedBoostUntil
       : 0;
+      ["questionSpeedBoostUntil", "globalContributionBoostUntil"].forEach(key => {
+        const savedUntil = Number(savedState[key]);
+        state[key] = Number.isSafeInteger(savedUntil) && savedUntil > Date.now() ? savedUntil : 0;
+      });
     const savedInventory = state.inventory && typeof state.inventory === "object" ? state.inventory : {};
     state.inventory = {};
     for (const g of GENERATORS) {
-      const currentCount = Number(savedInventory[g.id]) || 0;
-      const retiredMagmaCount = g.id === "sky" ? Number(savedInventory.magma) || 0 : 0;
-      state.inventory[g.id] = Math.max(0, Math.floor(currentCount + retiredMagmaCount));
+      const sourceIds = g.id === "magma" ? ["ultimate"]
+        : g.id === "neon" ? ["neon", "supreme"] : [g.id];
+      const count = sourceIds.reduce((total, id) =>
+        total + Math.max(0, Number(savedInventory[id]) || 0), 0);
+      state.inventory[g.id] = Math.floor(count + (g.id === "magma"
+        ? Math.max(Number(savedInventory.sky) || 0, Number(savedInventory.magma) || 0)
+        : 0));
     }
     state.inventory.alpha = Math.max(0, Math.floor(Number(savedInventory.alpha) || 0));
     state.alphaStarterGranted = savedState.alphaStarterGranted === true;
     state.alphaStarterRepaired = savedState.alphaStarterRepaired === true;
     const savedBestGeneratorIndex = Number(savedState.bestGeneratorIndex);
+    const migratedBestGeneratorIndex = Number.isSafeInteger(savedBestGeneratorIndex)
+      ? (savedBestGeneratorIndex >= GENERATORS.length
+        ? GENERATORS.find(generator => generator.id === "neon").index
+        : savedBestGeneratorIndex)
+      : -1;
     state.bestGeneratorIndex = Number.isSafeInteger(savedBestGeneratorIndex)
-      ? Math.max(-1, Math.min(GENERATORS.length - 1, savedBestGeneratorIndex))
+      ? Math.max(-1, Math.min(GENERATORS.length - 1, migratedBestGeneratorIndex))
       : -1;
     GENERATORS.forEach(generator => {
       if (owned(generator.id) > 0) state.bestGeneratorIndex = Math.max(state.bestGeneratorIndex, generator.index);
@@ -1284,7 +1365,8 @@ async function loadUserSave(generation = playerSaveLoadGeneration) {
     const savedSlots = Array.isArray(savedState.slots) ? savedState.slots : [];
     const normalizedSlots = savedSlots.map(slot => {
       const id = slot ? currentGeneratorId(slot.id) : null;
-      return id && getGenerator(id) ? { id } : null;
+      if (!id || !getGenerator(id)) return null;
+      return { id };
     });
     if (Number.isSafeInteger(savedState.level) && savedState.level >= 1) {
       state.level = savedState.level;
@@ -1307,6 +1389,10 @@ async function loadUserSave(generation = playerSaveLoadGeneration) {
     }
     state.selected = currentGeneratorId(state.selected);
     if (!getGenerator(state.selected) || available(state.selected) <= 0) state.selected = null;
+    const savedOfflineCashLastAt = Number(state.offlineCashLastAt);
+    state.offlineCashLastAt = Number.isSafeInteger(savedOfflineCashLastAt) && savedOfflineCashLastAt > 0
+      ? savedOfflineCashLastAt
+      : Date.now();
     saveLoadedOk = true;
     progressHigh = progressKey(state);
     const acLoadIssues = sanitizeState();
@@ -1376,7 +1462,7 @@ function sanitizeState() {
     n = Math.min(max, Math.max(min, n));
     if (raw !== n) { obj[key] = n; issues.push(key); }
   };
-  ["money", "lifetime", "generatorCashEarned", "personalNotes", "rebirthPoints", "xp", "taskGenerationsPlaced", "taskBonusStarEvents", "taskRebirthPointsSpent"].forEach(key => num(state, key, 0, 1e300));
+  ["money", "lifetime", "generatorCashEarned", "offlineCashPending", "personalNotes", "rebirthPoints", "xp", "taskGenerationsPlaced", "taskBonusStarEvents", "taskRebirthPointsSpent"].forEach(key => num(state, key, 0, 1e300));
   num(state, "taskStarsCollected", 0, 1e8);
   num(state, "level", 1, 1e6);
   num(state, "rebirths", 0, 1e6);
@@ -1490,6 +1576,7 @@ function applyGeneratorGiftRefunds(refunds) {
 async function saveUserState(silent = true, force = false) {
   try {
     if (!currentUser) return false;
+    state.offlineCashLastAt = Date.now();
     syncNewAccountBoostRemaining();
     const acIssues = sanitizeState();
     const acJumps = cloudSaveReady ? acCheckJump() : [];
@@ -2037,6 +2124,14 @@ const TASKS = GENERATORS.map((generator, index) => {
     ]
   };
 });
+function migrateTaskId(id) {
+  if (typeof id !== "string") return id;
+  return id.replace(/^generator-crate-(?:ultimate|sky|magma)(?=-|$)/, "generator-crate-magma")
+    .replace(/^generator-crate-(?:supreme|neon)(?=-|$)/, "generator-crate-neon");
+}
+function migrateTaskObjectiveId(id) {
+  return typeof id === "string" ? migrateTaskId(id) : id;
+}
 const TASK_OBJECTIVES = {};
 TASKS.forEach(task => {
   TASK_OBJECTIVES[task.id + "-rebirths"] = task.requiredRebirths === 0
@@ -2166,10 +2261,16 @@ function xpRequiredForLevel(level) {
   return level <= 1 ? previous : required;
 }
 
+const PASSIVE_CASH_MAX_ELAPSED_MS = 8 * 60 * 60 * 1000;
+
 const freshState = () => ({
   money: 10,
   lifetime: 0,
   generatorCashEarned: 0,
+  offlineCashPending: 0,
+  offlineCashLastAt: Date.now(),
+  questionSpeedBoostUntil: 0,
+  globalContributionBoostUntil: 0,
   personalNotes: 0,
   personalFeverUntil: 0,
   personalFeverMultiplier: 1,
@@ -2200,7 +2301,7 @@ const freshState = () => ({
   level: 1,
   rebirths: 0,
   rebirthPoints: 0,
-  upgrades: { dropSpeed: 0, multiChance: 0, genSlots: 0, genCost: 0, noteDuplication: 0 },
+  upgrades: { dropSpeed: 0, multiChance: 0, genSlots: 0, genCost: 0, noteDuplication: 0, stonks: 0 },
   levelReachedAt: Date.now(),
   xp: 0,
   multiplier: 1,
@@ -2220,7 +2321,8 @@ const UPGRADE_DEFINITIONS = [
   { id: "multiChance", title: "Multi Chance", max: 10, description: "Raises multiplier drop odds by 25% per rank. Costs 1 rebirth point per rank." },
   { id: "genSlots", title: "Generator Slots", max: 20, description: "Permanently adds 2 generator slots per rank, including after future rebirths." },
   { id: "genCost", title: "Gen Cost", max: 5, description: "Makes every generator 2% cheaper per rank, up to 10% off." },
-  { id: "noteDuplication", title: "Note Duplication Chance", max: 10, description: "Each generator has an extra 5% chance per rank to double its note payout for one second." }
+  { id: "noteDuplication", title: "Note Duplication Chance", max: 10, description: "Each generator has an extra 5% chance per rank to double its note payout for one second." },
+  { id: "stonks", title: "Stonks", max: 1, description: "Earn passive cash while online based on rebirth and multiplier: ×57T per second at rebirth 50 and ×1. Offline cash is tripled while this upgrade is owned. Costs 10 rebirth points." },
 ];
 
 function number(n) {
@@ -2269,10 +2371,12 @@ function normalizeUpgrades(upgrades) {
     multiChance: Number.isSafeInteger(saved.multiChance) ? Math.max(0, Math.min(10, saved.multiChance)) : 0,
     genSlots: Number.isSafeInteger(saved.genSlots) ? Math.max(0, Math.min(20, saved.genSlots)) : 0,
     genCost: Number.isSafeInteger(saved.genCost) ? Math.max(0, Math.min(5, saved.genCost)) : 0,
-    noteDuplication: Number.isSafeInteger(saved.noteDuplication) ? Math.max(0, Math.min(10, saved.noteDuplication)) : 0
+    noteDuplication: Number.isSafeInteger(saved.noteDuplication) ? Math.max(0, Math.min(10, saved.noteDuplication)) : 0,
+    stonks: saved.stonks === 1 || saved.stonks === true ? 1 : 0,
   };
 }
-function permanentBonusSlots() { return state.upgrades.genSlots * 2; }
+function upgradeRebirthPointCost(id) { return id === "stonks" ? 10 : 1; }
+function permanentBonusSlots() { return state.rebirths + state.upgrades.genSlots * 2; }
 function tickIntervalSeconds() { return 1 - state.upgrades.dropSpeed * 0.1; }
 function tickIntervalMilliseconds() { return tickIntervalSeconds() * 1000; }
 function claimedAchievementCount(category) {
@@ -2280,6 +2384,8 @@ function claimedAchievementCount(category) {
 }
 function permanentNoteSpeedMultiplier() { return 1 + claimedAchievementCount("rebirth") * 0.01; }
 function temporaryGeneratorSpeedMultiplier() { return state.genSpeedBoostUntil > Date.now() ? 1.5 : 1; }
+function questionGeneratorSpeedMultiplier() { return state.questionSpeedBoostUntil > Date.now() ? 2 : 1; }
+function globalContributionSpeedMultiplier() { return state.globalContributionBoostUntil > Date.now() ? 2 : 1; }
 function starDoubleSpeedMultiplier() { return state.starDoubleBoostUntil > Date.now() ? 2 : 1; }
 function hyperStarSpeedMultiplier() { return state.hyperStarBoostUntil > Date.now() ? 4 : 1; }
 function personalFeverSpeedMultiplier() {
@@ -2291,7 +2397,14 @@ function newAccountGeneratorSpeedMultiplier() {
 function generatorSpeedMultiplier() {
   return PERMANENT_GENERATOR_SPEED_MULTIPLIER * permanentNoteSpeedMultiplier()
     * temporaryGeneratorSpeedMultiplier() * starDoubleSpeedMultiplier() * hyperStarSpeedMultiplier()
+    * questionGeneratorSpeedMultiplier() * globalContributionSpeedMultiplier()
     * personalFeverSpeedMultiplier() * newAccountGeneratorSpeedMultiplier();
+}
+function stonksCashPerSecond() {
+  if (state.upgrades.stonks !== 1) return 0;
+  const exponent = state.rebirths - 50;
+  const baseRate = 57e12 * Math.pow(2, exponent);
+  return Math.min(1e300, baseRate * effectiveMultiplier());
 }
 function achievementReached(achievement) {
   if (achievement.category === "cash") return state.lifetime >= achievement.target;
@@ -2308,7 +2421,11 @@ function bestOwnedGeneratorIncome() {
   GENERATORS.forEach(g => { if (owned(g.id) > 0) best = Math.max(best, g.income); });
   return best || GENERATORS[0].income;
 }
-function currentGeneratorId(id) { return id === "magma" ? "sky" : id; }
+function currentGeneratorId(id) {
+  if (id === "ultimate" || id === "sky") return "magma";
+  if (id === "supreme") return "neon";
+  return id;
+}
 function getGenerator(id) {
   id = currentGeneratorId(id);
   if (id === "alpha") return { ...ALPHA_GENERATOR, income: bestOwnedGeneratorIncome() * 2, xpPerSecond: bestOwnedGeneratorIncome() };
@@ -2347,7 +2464,8 @@ function baseIncome() { return state.slots.reduce((sum, slot) => sum + (slot ? g
 function noteDuplicationExpectedMultiplier() { return 1 + state.upgrades.noteDuplication * 0.05; }
 function totalIncome() {
   return baseIncome() * effectiveMultiplier() * generatorSpeedMultiplier()
-    * PERMANENT_CASH_MULTIPLIER * noteDuplicationExpectedMultiplier() / tickIntervalSeconds();
+    * PERMANENT_CASH_MULTIPLIER * noteDuplicationExpectedMultiplier() / tickIntervalSeconds()
+    + stonksCashPerSecond();
 }
 function multiplierDropChance(generator) {
   const baseChance = Math.min(1, 0.0005 * (generator.index + 1) * Math.pow(0.95, effectiveMultiplier() - 1));
@@ -2442,7 +2560,7 @@ function spawnStar(position = null, isBonus = false, forceHyper = false) {
         resultMessage += " Four extra Stars appeared!";
       }
       renderStats(); renderShop(); renderSlotEarnings(); save(); publishLeaderboardEntry();
-      notify("Hyper Star collected! " + resultMessage + (taskReady ? " Task complete! Check Crate challenges." : ""), false, taskReady);
+      notify("Hyper Star collected! " + resultMessage + (taskReady ? " Task complete! Check Quests." : ""), false, taskReady);
       return;
     }
     const roll = Math.random();
@@ -2484,7 +2602,7 @@ function spawnStar(position = null, isBonus = false, forceHyper = false) {
     save();
     publishLeaderboardEntry();
     notify("Star collected! ×1.5 generator speed for 2 minutes. " + resultMessage
-      + (taskReady ? " Task complete! Check Crate challenges." : ""), false, taskReady);
+      + (taskReady ? " Task complete! Check Quests." : ""), false, taskReady);
   }, false, "bonus-star");
   star.type = "button";
   const hyper = forceHyper || Math.random() < 0.1;
@@ -2597,6 +2715,8 @@ async function loginWithUsername() {
 async function logoutUser() {
   await saveUserState(true, true);
   await publishLeaderboardEntry(true);
+  if ($("offlineCashDialog").open) $("offlineCashDialog").close();
+  stopMathQuestionTimer();
   stopGlobalBoostListener();
   stopGlobalStarListener();
   stopNewAccountBoost();
@@ -2634,7 +2754,7 @@ function makeShopRow(generator, mode, mystery = false) {
   const title = document.createElement("div");
   title.className = "item-title";
   title.textContent = mystery ? "???" : generator.name;
-  title.style.color = mystery ? "#62676c" : generator.accent || generator.color;
+  title.style.color = mystery ? "#62676c" : generator.id === "plasma" ? "#ee3f43" : generator.accent || generator.color;
 
   const numbers = document.createElement("div");
   numbers.className = "item-numbers";
@@ -2691,18 +2811,22 @@ function makeShopRow(generator, mode, mystery = false) {
   const sellButton = makeButton(
     isAlpha ? "Locked" : (quantity === null || quantity === 1 ? "Sell" : "Sell ×" + quantity),
     () => { if (!isAlpha) sell(generator.id, null, getMultiBuyAmount()); },
-    isAlpha || quantity === null || available(generator.id) < quantity,
+    isAlpha || quantity === null || available(generator.id) < 1,
     "sell-button"
   );
   sellButton.dataset.generatorId = generator.id;
   sellButton.title = "Sell " + (quantity || 1) + " unplaced " + generator.name
     + (quantity === 1 ? " generator" : " generators");
+  const sellAllButton = makeButton("Sell all", () => { if (!isAlpha) sellAll(generator.id); },
+    isAlpha || available(generator.id) < 1, "sell-button sell-all-button");
+  sellAllButton.dataset.generatorId = generator.id;
+  sellAllButton.title = "Sell all unplaced " + generator.name + " generators";
   const placeLabel = state.selected === generator.id ? "Equipped" : "Place";
   const placeButton = makeButton(placeLabel, () => selectGenerator(generator.id),
     available(generator.id) <= 0 && state.selected !== generator.id,
     "place-button" + (state.selected === generator.id ? " active" : "")
   );
-  actionGroup.append(sellButton, placeButton);
+  actionGroup.append(sellButton, sellAllButton, placeButton);
   row.append(actionGroup);
   return row;
 }
@@ -2736,20 +2860,17 @@ function renderStats() {
   const bonusPct = starBonus * 100;
   $("multiplier").textContent = "×" + number(effectiveMultiplier())
     + (bonusPct > 0 ? " (+" + (bonusPct >= 0.1 ? bonusPct.toFixed(2) : bonusPct.toFixed(3)) + "%)" : "");
-  const boostRemaining = Math.max(0, state.genSpeedBoostUntil - Date.now());
-  const boostSeconds = Math.ceil(boostRemaining / 1000);
-  const boostClock = String(Math.floor(boostSeconds / 60)).padStart(2, "0") + ":" + String(boostSeconds % 60).padStart(2, "0");
-  const starBoostRemaining = Math.max(0, state.starDoubleBoostUntil - Date.now());
-  const starBoostSeconds = Math.ceil(starBoostRemaining / 1000);
-  const starBoostClock = String(Math.floor(starBoostSeconds / 60)).padStart(2, "0") + ":" + String(starBoostSeconds % 60).padStart(2, "0");
-  $("generatorSpeed").textContent = "×" + number(
-    generatorSpeedMultiplier() / PERMANENT_GENERATOR_SPEED_MULTIPLIER
-  )
-    + (boostRemaining > 0 ? " · " + boostClock : "")
-    + (starBoostRemaining > 0 ? " · ×2 " + starBoostClock : "");
   const feverRemaining = Math.max(0, state.personalFeverUntil - Date.now());
-  const feverSeconds = Math.ceil(feverRemaining / 1000);
-  const feverClock = String(Math.floor(feverSeconds / 60)).padStart(2, "0") + ":" + String(feverSeconds % 60).padStart(2, "0");
+  renderBoostIndicators([
+    { until: state.genSpeedBoostUntil, emoji: "⭐", label: "Star · ×1.5 speed", className: "boost-star" },
+    { until: state.starDoubleBoostUntil, emoji: "✨", label: "Shiny Star · ×2 speed", className: "boost-star" },
+    { until: state.hyperStarBoostUntil, emoji: "🎉", label: "Hyper Star · ×4 speed", className: "boost-hyper" },
+    { until: state.personalFeverMultiplier === 3 ? state.personalFeverUntil : 0, emoji: "🎉", label: "Hyper Fever · ×3 speed", className: "boost-hyper" },
+    { until: state.personalFeverMultiplier === 2 ? state.personalFeverUntil : 0, emoji: "🎉", label: "Fever · ×2 speed", className: "boost-fever" },
+    { until: state.questionSpeedBoostUntil, emoji: "🔮", label: "Math answer · ×2 speed", className: "boost-quiz" },
+    { until: state.globalContributionBoostUntil, emoji: "🌍", label: "Global contribution · ×2 speed", className: "boost-global" },
+    { until: newAccountBoostUntil, label: "New player · ×2 speed", className: "boost-new-player", emoji: "🔥" }
+  ]);
   const feverActive = feverRemaining > 0;
   const feverProgress = feverActive ? PERSONAL_FEVER_NOTE_TARGET : state.personalNotes;
   $("noteFeverStatus").textContent = feverActive
@@ -2758,7 +2879,8 @@ function renderStats() {
   $("noteFeverProgress").setAttribute("aria-valuenow", String(feverProgress));
   $("noteFeverProgressBar").style.width = (feverProgress / PERSONAL_FEVER_NOTE_TARGET * 100) + "%";
   $("slotSummary").textContent = "Level " + rebirthLevelLabel() + " · " + state.slots.length
-    + " slot" + (state.slots.length === 1 ? "" : "s") + " (" + permanentBonusSlots() + " permanent bonus)";
+    + " slot" + (state.slots.length === 1 ? "" : "s") + " (" + state.rebirths + " rebirth + "
+    + state.upgrades.genSlots * 2 + " upgrade slots)";
   const requiredLevel = rebirthLevelRequirement();
   const cost = rebirthCost();
   $("rebirthInfo").textContent = "Reach level " + requiredLevel + " and have " + cash(cost)
@@ -2793,6 +2915,8 @@ function renderUpgrades() {
       current.textContent = "Permanent slot bonus: +" + permanentBonusSlots();
     } else if (upgrade.id === "genCost") {
       current.textContent = "Current generator discount: " + (level * 2) + "%";
+    } else if (upgrade.id === "stonks") {
+      current.textContent = level ? cash(stonksCashPerSecond()) + "/sec while online" : "No offline stonks unless this upgrade is owned.";
     } else {
       current.textContent = "Current duplication chance: " + (level * 5) + "% per generator payout";
     }
@@ -2800,9 +2924,10 @@ function renderUpgrades() {
     footer.className = "upgrade-footer";
     const cost = document.createElement("span");
     cost.className = "muted small";
-    cost.textContent = "Cost: 1 rebirth point";
+    const pointCost = upgradeRebirthPointCost(upgrade.id, level);
+    cost.textContent = level >= upgrade.max ? "Maximum rank" : "Cost: " + pointCost + " rebirth point" + (pointCost === 1 ? "" : "s");
     const button = makeButton(level >= upgrade.max ? "Maxed" : "Upgrade", () => purchaseUpgrade(upgrade.id),
-      level >= upgrade.max || state.rebirthPoints < 1);
+      level >= upgrade.max || state.rebirthPoints < pointCost);
     footer.append(cost, button);
     card.append(title, description, current, footer);
     host.appendChild(card);
@@ -2950,6 +3075,7 @@ async function contributeToGlobalBoost() {
     let contributed = false;
     let contributedCost = 0;
     let contributedTier = 0;
+    let contributedBoostUntil = 0;
     await dbRef.runTransaction(async transaction => {
       const boostSnapshot = await transaction.get(boostRef);
       const userSnapshot = await transaction.get(userRef);
@@ -2960,7 +3086,16 @@ async function contributeToGlobalBoost() {
       const savedState = userSnapshot.data().state;
       const savedCash = Number(savedState && savedState.money);
       if (!Number.isFinite(savedCash) || savedCash < milestone.cost) throw new Error("You do not have enough saved cash for this milestone.");
-      const nextState = { ...savedState, money: savedCash - milestone.cost };
+      const savedBoostUntil = Number(savedState && savedState.globalContributionBoostUntil);
+      contributedBoostUntil = Math.max(
+        Date.now(),
+        Number.isSafeInteger(savedBoostUntil) ? savedBoostUntil : 0
+      ) + 10 * 60 * 1000;
+      const nextState = {
+        ...savedState,
+        money: savedCash - milestone.cost,
+        globalContributionBoostUntil: contributedBoostUntil
+      };
       transaction.set(userRef, {
         state: nextState,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -2981,9 +3116,13 @@ async function contributeToGlobalBoost() {
     if (contributed) {
       state.money -= contributedCost;
       globalBoostTier = contributedTier;
+      state.globalContributionBoostUntil = contributedBoostUntil;
       void sendGlobalBoostAnnouncement(contributedCost);
       await saveUserState(true, true);
-      notify("Global boost unlocked for everyone!");
+      renderStats();
+      renderShop();
+      renderSlotEarnings();
+      notify("Global boost unlocked for everyone! You also received 2× generator speed for 10 minutes.");
     }
   } catch (error) {
     console.error("Global boost contribution failed:", error);
@@ -3125,8 +3264,8 @@ function updateTaskObjectives(announce = false) {
     readyTasks.forEach(task => state.announcedTaskCompletions.push(task.id));
     const titles = readyTasks.map(task => task.title);
     notify(titles.length === 1
-      ? "TASK COMPLETE: " + titles[0] + " — claim your crate in Crate challenges!"
-      : titles.length + " TASKS COMPLETE — claim your crates in Crate challenges!", false, true);
+      ? "QUEST COMPLETE: " + titles[0] + " — claim your crate in Quests!"
+      : titles.length + " QUESTS COMPLETE — claim your crates in Quests!", false, true);
     changed = true;
   }
   $("tasksAvailableBadge").hidden = !TASKS.some(task =>
@@ -3338,14 +3477,15 @@ function makeSlotButton(index, slot) {
     button.style.setProperty("--cycle-duration", (g.cycleDuration || 2.4) + "s");
     button.classList.add("cycle-" + g.id);
   }
-  if (g.index >= 11) button.classList.add("effect-" + (g.effect || "dots"));
+  const hasParticleEffects = g.index >= 11 && g.id !== "magma" && g.id !== "neon";
+  if (hasParticleEffects) button.classList.add("effect-" + (g.effect || "dots"));
   const tier = document.createElement("span");
   tier.className = "tier";
   tier.textContent = g.name.toUpperCase();
   tier.style.color = accent;
   const visual = document.createElement("span");
   visual.className = "generator-visual";
-  if (g.index >= 11) {
+  if (hasParticleEffects) {
     const particles = document.createElement("span");
     particles.className = "generator-particles";
     particles.setAttribute("aria-hidden", "true");
@@ -3384,7 +3524,9 @@ function renderSlots() {
   $("nextSlotPage").disabled = currentSlotPage >= pageCount - 1;
   $("clearAllBtn").disabled = placedTotal() === 0;
   $("placeBestBtn").disabled = totalOwned() === 0;
-  for (let visibleIndex = 0; visibleIndex < 25; visibleIndex++) {
+  const visibleSlotCount = Math.min(25, state.slots.length - firstSlot);
+  while (host.children.length > visibleSlotCount) host.lastElementChild.remove();
+  for (let visibleIndex = 0; visibleIndex < visibleSlotCount; visibleIndex++) {
     const index = firstSlot + visibleIndex;
     const slot = state.slots[index];
     const existing = host.children[visibleIndex];
@@ -3437,7 +3579,7 @@ function renderShop() {
 }
 function updateShopBuyButtons() {
   const quantity = getMultiBuyAmount();
-  document.querySelectorAll(".buy-button").forEach(button => {
+  document.querySelectorAll(".shop-item .buy-button").forEach(button => {
     const generator = getGenerator(button.dataset.generatorId);
     button.textContent = quantity === null || quantity === 1 ? "Buy" : "Buy ×" + quantity;
     button.disabled = !generator || !canBuy(generator, quantity);
@@ -3447,18 +3589,24 @@ function updateShopBuyButtons() {
         : "Buy " + (quantity || 1) + " " + generator.name + (quantity === 1 ? "" : " generators");
     }
   });
-  document.querySelectorAll(".sell-button").forEach(button => {
+  document.querySelectorAll(".shop-item .sell-button:not(.sell-all-button)").forEach(button => {
     const generator = getGenerator(button.dataset.generatorId);
     button.textContent = quantity === null || quantity === 1 ? "Sell" : "Sell ×" + quantity;
-    button.disabled = !generator || quantity === null || available(generator.id) < quantity;
+    button.disabled = !generator || quantity === null || available(generator.id) < 1;
     if (generator) button.title = "Sell " + (quantity || 1) + " unplaced " + generator.name
       + (quantity === 1 ? " generator" : " generators");
+  });
+  document.querySelectorAll(".sell-all-button").forEach(button => {
+    const generator = getGenerator(button.dataset.generatorId);
+    button.disabled = !generator || available(generator.id) < 1;
+    if (generator) button.title = "Sell all unplaced " + generator.name + " generators";
   });
 }
 function renderInventory() {
   const host = $("inventory");
   if (host) host.innerHTML = "";
 }
+
 function render() { renderStats(); renderPlayerStats(); renderSlots(); renderShop(); renderInventory(); renderUpgrades(); renderAchievements(); renderTasks(); }
 function renderTutorial() {
   const guide = $("tutorialGuide");
@@ -3553,13 +3701,20 @@ function buy(id, quantity = 1) {
   render();
   save();
 }
+function sellAll(id) {
+  const quantity = available(id);
+  if (quantity > 0) sell(id, null, quantity);
+}
 function sell(id, slotIndex = null, quantity = 1) {
   const g = getGenerator(id);
-  if (!g || !Number.isSafeInteger(quantity) || quantity < 1
-    || (slotIndex === null ? available(id) < quantity
-      : quantity !== 1 || !state.slots[slotIndex] || state.slots[slotIndex].id !== id)) return;
+  if (!g || !Number.isSafeInteger(quantity) || quantity < 1) return;
+  if (slotIndex === null) quantity = Math.min(quantity, available(id));
+  if (quantity < 1 || (slotIndex !== null
+    && (quantity !== 1 || !state.slots[slotIndex] || state.slots[slotIndex].id !== id))) return;
   const refund = Math.floor(generatorPrice(g) * 0.7) * quantity;
-  if (slotIndex !== null) state.slots[slotIndex] = null;
+  if (slotIndex !== null) {
+    state.slots[slotIndex] = null;
+  }
   state.inventory[id] = owned(id) - quantity;
   state.money += refund;
   if (state.selected === id && available(id) <= 0) state.selected = null;
@@ -3614,22 +3769,23 @@ function placeBestGenerators() {
   }
   const newlyPlaced = bestSlots.reduce((count, slot, index) => count
     + (slot && (!state.slots[index] || state.slots[index].id !== slot.id) ? 1 : 0), 0);
-  state.slots = bestSlots;
+  state.slots = bestSlots.map(slot => slot ? { id: slot.id } : null);
   state.selected = null;
   state.taskGenerationsPlaced += newlyPlaced;
   const taskReady = updateTaskObjectives(true);
   render();
   save();
   notify("Placed your best available generators."
-    + (taskReady ? " Task complete! Check Crate challenges." : ""), false, taskReady);
+    + (taskReady ? " Task complete! Check Quests." : ""), false, taskReady);
 }
 function purchaseUpgrade(id) {
   const upgrade = UPGRADE_DEFINITIONS.find(item => item.id === id);
-  if (!upgrade || state.upgrades[id] >= upgrade.max || state.rebirthPoints < 1) return;
+  const pointCost = upgrade ? upgradeRebirthPointCost(id, state.upgrades[id]) : 0;
+  if (!upgrade || state.upgrades[id] >= upgrade.max || state.rebirthPoints < pointCost) return;
   const completedUpgradeTutorial = state.upgradeTutorialPending;
-  state.rebirthPoints--;
+  state.rebirthPoints -= pointCost;
   state.upgradeTutorialPending = false;
-  state.taskRebirthPointsSpent++;
+  state.taskRebirthPointsSpent += pointCost;
   if (state.rebirthPoints === 0) state.taskSpentAllRebirthPoints = true;
   state.upgrades[id]++;
   if (id === "genSlots") {
@@ -3641,22 +3797,28 @@ function purchaseUpgrade(id) {
   save();
   notify(upgrade.title + " upgraded to " + state.upgrades[id] + "/" + upgrade.max
     + (completedUpgradeTutorial ? ". You bought your first upgrade!" : "")
-    + (taskReady ? ". Task complete! Check Crate challenges." : "."), false, taskReady);
+    + (taskReady ? ". Task complete! Check Quests." : "."), false, taskReady);
 }
 function resetUpgrades() {
   const upgradesPurchased = UPGRADE_DEFINITIONS.reduce((sum, upgrade) => sum + state.upgrades[upgrade.id], 0);
+  const rebirthPointsToRefund = UPGRADE_DEFINITIONS.reduce((sum, upgrade) => {
+    for (let rank = 0; rank < state.upgrades[upgrade.id]; rank++) {
+      sum += upgradeRebirthPointCost(upgrade.id, rank);
+    }
+    return sum;
+  }, 0);
   const cost = Math.max(0, state.money * 0.2);
   if (upgradesPurchased === 0 || !Number.isFinite(cost) || state.money < cost) return;
-  if (!confirm("Reset all " + upgradesPurchased + " upgrade ranks, return " + upgradesPurchased
+  if (!confirm("Reset all " + upgradesPurchased + " upgrade ranks, return " + rebirthPointsToRefund
     + " rebirth points, and pay " + cash(cost) + " (20% of your current cash)?")) return;
   state.money -= cost;
-  state.rebirthPoints += upgradesPurchased;
-  state.upgrades = { dropSpeed: 0, multiChance: 0, genSlots: 0, genCost: 0, noteDuplication: 0 };
-  state.slots = state.slots.slice(0, Math.max(1, state.level));
+  state.rebirthPoints += rebirthPointsToRefund;
+  state.upgrades = { dropSpeed: 0, multiChance: 0, genSlots: 0, genCost: 0, noteDuplication: 0, stonks: 0 };
+  state.slots = state.slots.slice(0, Math.max(1, state.level + state.rebirths));
   configureGameTickTimer();
   render();
   save();
-  notify("Upgrades reset. " + upgradesPurchased + " rebirth points returned.");
+  notify("Upgrades reset. " + rebirthPointsToRefund + " rebirth points returned.");
 }
 function rebirth() {
   const requiredLevel = rebirthLevelRequirement();
@@ -3679,7 +3841,7 @@ function rebirth() {
   save();
   publishLeaderboardEntry();
   notify("Rebirth complete! You are now " + rebirthLevelLabel()
-    + (taskReady ? ". Task complete! Check Crate challenges." : "."), false, taskReady);
+    + (taskReady ? ". Task complete! Check Quests." : "."), false, taskReady);
   if (state.rebirths >= 10) {
     sendGlobalRebirthAnnouncement(state.rebirths);
   }
@@ -3721,7 +3883,7 @@ function clickSlot(index) {
   const taskReady = updateTaskObjectives(true);
   if (g.id === "basic") advanceTutorial("place-basic");
   notify(g.name + " equipped in slot " + (index + 1) + "."
-    + (taskReady ? " Task complete! Check Crate challenges." : ""), false, taskReady);
+    + (taskReady ? " Task complete! Check Quests." : ""), false, taskReady);
   if (available(g.id) <= 0) state.selected = null;
   render();
   save();
@@ -3781,6 +3943,10 @@ if (!firebaseEnabled) {
 if (typeof initBrandLogos === "function") initBrandLogos();
 $("modalBg").addEventListener("click", e => { if (e.target === $("modalBg")) closeModal(); });
 $("logoutBtn").addEventListener("click", logoutUser);
+$("mathQuestionHud").addEventListener("submit", event => {
+  event.preventDefault();
+  answerMathQuestion();
+});
 $("chatForm").addEventListener("submit", sendChatMessage);
 document.querySelectorAll("[data-leaderboard]").forEach(button => {
   button.addEventListener("click", () => selectLeaderboard(button.dataset.leaderboard));
@@ -4412,6 +4578,8 @@ $("giftsOpenBtn").addEventListener("click", () => {
   $("giftDialog").showModal();
 });
 $("giftsCloseBtn").addEventListener("click", () => $("giftDialog").close());
+$("offlineCashDialog").addEventListener("cancel", event => event.preventDefault());
+$("claimOfflineCashBtn").addEventListener("click", () => { void claimOfflineCash(); });
 $("rebirthBtn").addEventListener("click", rebirth);
 $("globalBoostBtn").addEventListener("click", contributeToGlobalBoost);
 $("resetUpgradesBtn").addEventListener("click", resetUpgrades);
@@ -4441,7 +4609,7 @@ $("resetBtn").addEventListener("click", () => {
   publishLeaderboardEntry(true);
   notify("Game reset.");
 });
-window.addEventListener("beforeunload", () => save());
+window.addEventListener("beforeunload", () => { void saveUserState(true, true); });
 
 function gameTick() {
   if (!currentUser) return;
@@ -4461,6 +4629,9 @@ function gameTick() {
   state.money += generatedCash;
   state.lifetime += generatedCash;
   state.generatorCashEarned += generatedCash;
+  const stonksCash = stonksCashPerSecond() * intervalSeconds;
+  state.money = Math.min(1e300, state.money + stonksCash);
+  state.lifetime = Math.min(1e300, state.lifetime + stonksCash);
   let feverStartedMessage = "";
   if (state.personalFeverUntil <= Date.now()) {
     state.personalNotes += generatedNotes;
@@ -4496,14 +4667,14 @@ function gameTick() {
       + (multiplierDrops > 0 ? " Multiplier increased to ×" + number(state.multiplier) + "!" : "")
       + (feverStartedMessage ? " " + feverStartedMessage : "")
       + (feverEnded ? " Personal Note Fever ended. Collect 10,000 notes for another." : "")
-      + (taskReady ? " Task complete! Check Crate challenges." : ""), false, taskReady);
+      + (taskReady ? " Task complete! Check Quests." : ""), false, taskReady);
     save();
     publishLeaderboardEntry();
   } else if (multiplierDrops > 0 || taskReady || feverStartedMessage || feverEnded) {
     notify((multiplierDrops > 0 ? "Multiplier increased to ×" + number(state.multiplier) + "!" : "")
       + (feverStartedMessage ? " " + feverStartedMessage : "")
       + (feverEnded ? " Personal Note Fever ended. Collect 10,000 notes for another." : "")
-      + (taskReady ? " Task complete! Check Crate challenges." : ""), false, taskReady);
+      + (taskReady ? " Task complete! Check Quests." : ""), false, taskReady);
     save();
   }
   renderStats();
@@ -4511,6 +4682,141 @@ function gameTick() {
   renderSlotEarnings();
   updateAchievementAvailability();
 }
+
+function passiveCashForElapsedMs(elapsedMs) {
+  const elapsedFraction = Math.min(PASSIVE_CASH_MAX_ELAPSED_MS, Math.max(0, elapsedMs))
+    / PASSIVE_CASH_MAX_ELAPSED_MS;
+  const lifetimeCash = Math.max(0, Number(state.lifetime) || 0);
+  const stonksOfflineMultiplier = state.upgrades.stonks === 1 ? 3 : 1;
+  return Math.min(1e300, lifetimeCash * 0.01 * elapsedFraction * stonksOfflineMultiplier);
+}
+
+function applyPassiveCashElapsed(now = Date.now()) {
+  const previousAt = Number(state.offlineCashLastAt);
+  const elapsedMs = Number.isSafeInteger(previousAt) ? Math.max(0, now - previousAt) : 0;
+  state.offlineCashLastAt = now;
+  const reward = passiveCashForElapsedMs(elapsedMs);
+  state.offlineCashPending = Math.min(1e300, (Number(state.offlineCashPending) || 0) + reward);
+  return reward;
+}
+
+function renderBoostIndicators(boosts) {
+  const host = $("boostIndicators");
+  host.replaceChildren();
+  boosts.forEach(boost => {
+    const remaining = boost.remainingMs === undefined
+      ? Math.max(0, Number(boost.until) - Date.now())
+      : Math.max(0, Number(boost.remainingMs) || 0);
+    if (remaining <= 0) return;
+    const seconds = Math.ceil(remaining / 1000);
+    const time = String(Math.floor(seconds / 60)).padStart(2, "0") + ":" + String(seconds % 60).padStart(2, "0");
+    const indicator = document.createElement("span");
+    indicator.className = "boost-indicator " + boost.className;
+    indicator.title = boost.label + " · " + time + " remaining";
+    indicator.setAttribute("aria-label", indicator.title);
+    const emoji = document.createElement("span");
+    emoji.textContent = boost.emoji;
+    emoji.setAttribute("aria-hidden", "true");
+    const clock = document.createElement("span");
+    clock.textContent = time;
+    indicator.append(emoji, clock);
+    host.appendChild(indicator);
+  });
+}
+
+function makeMathQuestion() {
+  const pick = () => Math.floor(Math.random() * 24) + 1;
+  const operation = Math.floor(Math.random() * 5);
+  if (operation === 0) {
+    const left = pick(), right = pick();
+    return { text: left + " + " + right + " = ?", answer: left + right };
+  }
+  if (operation === 1) {
+    let left = pick(), right = pick();
+    if (right > left) [left, right] = [right, left];
+    return { text: left + " − " + right + " = ?", answer: left - right };
+  }
+  if (operation === 2) {
+    const left = pick(), right = pick();
+    return { text: left + " × " + right + " = ?", answer: left * right };
+  }
+  if (operation === 3) {
+    const value = pick();
+    return { text: value + "² = ?", answer: value * value };
+  }
+  const root = pick();
+  return { text: "√" + (root * root) + " = ?", answer: root };
+}
+
+function showMathQuestion() {
+  if (!currentUser || $("gameShell").hidden) return;
+  const question = makeMathQuestion();
+  currentMathAnswer = question.answer;
+  $("mathQuestionText").textContent = "🔮 " + question.text;
+  $("mathAnswer").value = "";
+  $("mathQuestionStatus").textContent = "";
+  $("mathQuestionHud").hidden = false;
+  $("mathAnswer").focus();
+}
+
+function startMathQuestionTimer() {
+  stopMathQuestionTimer();
+  mathQuestionTimer = setInterval(showMathQuestion, MATH_QUESTION_INTERVAL_MS);
+}
+
+function stopMathQuestionTimer() {
+  if (mathQuestionTimer !== null) clearInterval(mathQuestionTimer);
+  mathQuestionTimer = null;
+  currentMathAnswer = null;
+  $("mathQuestionHud").hidden = true;
+}
+
+function answerMathQuestion() {
+  if (!currentUser || currentMathAnswer === null) return;
+  const rawAnswer = $("mathAnswer").value.trim();
+  const answer = rawAnswer === "" ? NaN : Number(rawAnswer);
+  if (!Number.isInteger(answer) || answer !== currentMathAnswer) {
+    $("mathQuestionStatus").textContent = "Not quite. Try again!";
+    return;
+  }
+  state.questionSpeedBoostUntil = Math.max(Date.now(), state.questionSpeedBoostUntil)
+    + 2 * 60 * 1000;
+  currentMathAnswer = null;
+  $("mathQuestionHud").hidden = true;
+  renderStats();
+  save();
+  notify("Correct! 🔮 2× generator speed for 2 minutes.");
+}
+
+async function claimOfflineCash() {
+  const button = $("claimOfflineCashBtn");
+  if (!currentUser || button.disabled) return;
+  const claimingUser = currentUser;
+  button.disabled = true;
+  try {
+    await offlineCashSavePromise;
+    if (currentUser !== claimingUser) return;
+    const reward = Math.max(0, Number(state.offlineCashPending) || 0);
+    if (reward === 0) {
+      $("offlineCashDialog").close();
+      return;
+    }
+    state.money = Math.min(1e300, (Number(state.money) || 0) + reward);
+    state.lifetime = Math.min(1e300, (Number(state.lifetime) || 0) + reward);
+    state.offlineCashPending = 0;
+    render();
+    await saveUserState(true, true);
+    if (currentUser !== claimingUser) return;
+    $("offlineCashDialog").close();
+    notify("Claimed offline cash: " + cash(reward) + ".");
+  } catch (error) {
+    console.error("Could not claim offline cash:", error);
+    notify("Could not claim offline cash. Please try again.", true);
+  } finally {
+    button.disabled = false;
+  }
+}
+
 function configureGameTickTimer() {
   if (gameTickTimer !== null) clearInterval(gameTickTimer);
   gameTickTimer = setInterval(gameTick, tickIntervalMilliseconds());
