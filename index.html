@@ -3825,6 +3825,7 @@ function rebirth() {
   const cost = rebirthCost();
   if (state.level < requiredLevel || state.money < cost) return;
   const firstRebirth = state.rebirths === 0;
+  const returnedGenerators = placedTotal();
   state.money -= cost;
   state.rebirths++;
   state.rebirthPoints++;
@@ -3833,14 +3834,15 @@ function rebirth() {
   currentSlotPage = 0;
   state.levelReachedAt = Date.now();
   state.xp = 0;
-  state.slots = Array(1 + permanentBonusSlots()).fill(null);
+  state.slots = Array(Math.max(1, 1 + permanentBonusSlots())).fill(null);
   state.selected = null;
   const taskReady = updateTaskObjectives(true);
   render();
   if (firstRebirth) selectShopTab("upgrades");
   save();
   publishLeaderboardEntry();
-  notify("Rebirth complete! You are now " + rebirthLevelLabel()
+  notify("Rebirth complete! " + returnedGenerators + " placed generator"
+    + (returnedGenerators === 1 ? " was" : "s were") + " returned to your inventory. You are now " + rebirthLevelLabel()
     + (taskReady ? ". Task complete! Check Quests." : "."), false, taskReady);
   if (state.rebirths >= 10) {
     sendGlobalRebirthAnnouncement(state.rebirths);
