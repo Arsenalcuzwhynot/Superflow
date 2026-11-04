@@ -23,6 +23,7 @@ if(t&&typeof t.st==="number")r.style.setProperty("--theme-strength",t.st/100);}c
 *{box-sizing:border-box}
 body{margin:0;background:transparent;color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;isolation:isolate}
 body::before{content:"";position:fixed;inset:-240px 0 0;z-index:-1;pointer-events:none;background-image:radial-gradient(4px 4px at 23px 34px,#ffffffeb 99%,transparent),radial-gradient(6px 6px at 118px 162px,#d8eaffeb 99%,transparent),radial-gradient(5px 5px at 74px 214px,#ffffffeb 99%,transparent),radial-gradient(4px 4px at 158px 92px,#ffffffdf 99%,transparent),radial-gradient(3px 3px at 46px 128px,#ffffffcf 99%,transparent),radial-gradient(5px 5px at 93px 56px,#d8eaffdf 99%,transparent),linear-gradient(180deg,color-mix(in srgb,#050914 calc(100% - var(--black-level) * 100%),#fff calc(var(--black-level) * 100%)) 0%,color-mix(in srgb,#09101e calc(100% - var(--black-level) * 100%),#fff calc(var(--black-level) * 100%)) 56%,var(--bg) 100%);background-size:110px 145px,145px 190px,190px 250px,230px 290px,165px 210px,275px 330px,100% 100%;background-position:0 0,40px 30px,110px 120px,80px 60px,20px 70px,140px 150px,0 0;background-repeat:repeat,repeat,repeat,repeat,repeat,repeat,no-repeat;animation:snowfall 110s linear infinite}
+.snow-disabled body::before{background-image:linear-gradient(180deg,color-mix(in srgb,#050914 calc(100% - var(--black-level) * 100%),#fff calc(var(--black-level) * 100%)) 0%,color-mix(in srgb,#09101e calc(100% - var(--black-level) * 100%),#fff calc(var(--black-level) * 100%)) 56%,var(--bg) 100%);background-size:100% 100%;background-position:0 0;background-repeat:no-repeat;animation:none}
 @keyframes snowfall{to{background-position:0 145px,40px 220px,110px 250px,80px 290px,20px 210px,140px 330px,0 0}}
 button{font:inherit;color:inherit;cursor:pointer;background:hsl(calc(var(--h) - 3) calc(37% * var(--sat) * (1 - var(--black-level))) calc(14% + var(--black-level) * 86%));border:1px solid hsl(calc(var(--h) - 5) calc(34% * var(--sat) * (1 - var(--black-level))) calc(25% + var(--black-level) * 60%));border-radius:8px;padding:9px 12px}
 button:hover:not(:disabled){filter:brightness(1.15)}
@@ -95,6 +96,18 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .slot.filled.cycle-blossom::before,.slot.filled.cycle-absolute::before,.slot.filled.cycle-astral::before,.slot.filled.cycle-celestial::before,.slot.filled.cycle-aether::before,.slot.filled.cycle-nebulous::before,.slot.filled.cycle-paradox::before,.slot.filled.cycle-singularity::before,.slot.filled.cycle-arsenal::before,.slot.filled.cycle-extravagent::before{animation-direction:alternate}
 .game-shell{position:relative;isolation:isolate}
 .game-shell::before{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;background-image:radial-gradient(3px 3px at 18px 22px,#ffffffd8 99%,transparent),radial-gradient(5px 5px at 112px 86px,#d8eaffd8 99%,transparent),radial-gradient(2px 2px at 65px 132px,#ffffffcf 99%,transparent),radial-gradient(4px 4px at 158px 44px,#ffffffc8 99%,transparent);background-size:160px 180px,230px 245px,195px 210px,285px 310px;background-position:0 0,40px 30px,110px 120px,80px 60px;animation:snowfall 26s linear infinite;opacity:calc(1 - var(--black-level) * .2)}
+.snow-disabled .game-shell::before,.snow-disabled .auth-screen::before{display:none}
+.game-shell.low-performance .slot.filled.color-cycling::before{animation-duration:30s!important}
+.game-shell.low-performance .generator-visual::before,.game-shell.low-performance .generator-visual::after{animation-play-state:paused!important}
+.reduced-motion *,.reduced-motion *::before,.reduced-motion *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+.settings-options{display:grid;gap:10px}
+.setting-row{display:flex;align-items:flex-start;gap:10px;padding:10px;border:1px solid var(--line);border-radius:9px}
+.setting-row input{width:18px;height:18px;flex:none;margin:2px 0 0;padding:0;border:0;border-radius:4px;background:transparent;accent-color:var(--green)}
+.setting-row span{display:grid;gap:2px}
+.setting-row small{color:var(--muted)}
+.settings-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.settings-actions #giftsOpenBtn{position:relative}
+.settings-danger{margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
 .generator-visual{position:relative;z-index:1;display:grid;place-items:center;width:clamp(34px,calc(46px * var(--slot-scale,1)),46px);height:clamp(34px,calc(42px * var(--slot-scale,1)),42px);flex:none}
 .generator-particles{position:absolute;inset:0;pointer-events:none}
 .generator-particles span{position:absolute;left:calc(50% + var(--start-x));top:calc(50% + var(--start-y));width:4px;height:4px;border-radius:50%;background:var(--particle-color);box-shadow:0 0 5px var(--particle-color);opacity:0;transform:translate(-50%,-50%);animation:float-particle var(--particle-duration,2.8s) ease-out infinite}
@@ -457,8 +470,6 @@ button{
   <div class="game-account">
     <span id="gamePlayerName" class="auth-status"></span>
     <div class="game-account-actions">
-      <button id="statsOpenBtn" type="button">Stats</button>
-      <button id="giftsOpenBtn" type="button">Gifts<span class="activity-badge" id="giftsAvailableBadge" aria-label="Pending gifts" hidden>!</span></button>
       <button id="logoutBtn" type="button">Log out</button>
     </div>
   </div>
@@ -641,7 +652,6 @@ button{
           </div>
           <div class="actions">
             <button id="saveBtn">Save now</button>
-            <button id="resetBtn">Reset game</button>
           </div>
           <p class="muted small">Progress saves to your account every few minutes and when you leave this tab. Avoid playing on two devices at the same time.</p>
         </div>
@@ -668,6 +678,33 @@ button{
             <input class="theme-range" id="themeStrength" type="range" min="0" max="100" step="1" value="50" aria-label="Theme color strength">
           </div>
           <button id="themeReset" type="button">Classic mode</button>
+        </div>
+      </section>
+      <section class="panel" id="settingsPanel">
+        <div class="panel-head"><h2>Settings</h2></div>
+        <div class="body">
+          <div class="settings-options">
+            <label class="setting-row" for="lowPerformanceToggle">
+              <input id="lowPerformanceToggle" type="checkbox">
+              <span><strong>Low Performance Mode</strong><small>Slows generator color cycling and turns off generator particles.</small></span>
+            </label>
+            <label class="setting-row" for="snowToggle">
+              <input id="snowToggle" type="checkbox" checked>
+              <span><strong>Snow</strong><small>Show or hide the falling snow effect.</small></span>
+            </label>
+            <label class="setting-row" for="reducedMotionToggle">
+              <input id="reducedMotionToggle" type="checkbox">
+              <span><strong>Reduced Motion</strong><small>Turn off animated visual effects across the game.</small></span>
+            </label>
+          </div>
+          <div class="settings-actions">
+            <button id="statsOpenBtn" type="button">Stats</button>
+            <button id="giftsOpenBtn" type="button">Gifts<span class="activity-badge" id="giftsAvailableBadge" aria-label="Pending gifts" hidden>!</span></button>
+          </div>
+          <div class="settings-danger">
+            <button id="resetBtn" class="danger-button" type="button">Reset game</button>
+            <p class="muted small">Reset your game progress. This cannot be undone.</p>
+          </div>
         </div>
       </section>
       <section class="panel">
@@ -742,7 +779,7 @@ button{
       <div class="note" id="adminStatus" role="status" aria-live="polite"></div>
     </div>
   </section>
-  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">0.9.9</span><button id="updateHistoryBtn" type="button">Update history</button></div>
+  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">0.9.91</span><button id="updateHistoryBtn" type="button">Update history</button></div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
@@ -808,7 +845,7 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 10000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "0.9.9";
+const GAME_VERSION = "0.9.91";
 const GLOBAL_BOOST_MILESTONES = [
   { cost: 1e6, multiplier: 1.2 }, { cost: 1e7, multiplier: 1.4 },
   { cost: 1e8, multiplier: 1.6 }, { cost: 1e9, multiplier: 1.8 },
@@ -835,6 +872,8 @@ const UPDATE_HISTORY = [
     version: GAME_VERSION,
     status: "Current",
     changes: [
+      "Added a Settings panel for Stats, Gifts, and game reset.",
+      "Added Low Performance, Snow, and Reduced Motion options to customize visual effects and reduce lag.",
       "Added multi-sell and Sell all controls for unplaced generators.",
       "Added timed math questions that award 2× generator speed, plus hoverable boost indicators.",
       "Each rebirth now permanently adds one generator slot, and global boost contributions grant a temporary 2× generator speed boost.",
@@ -1044,6 +1083,18 @@ function updateAuthUI() {
   }
 }
 
+function applyDisplaySettings() {
+  const lowPerformance = state.lowPerformanceMode === true;
+  const snowEnabled = state.snowEnabled !== false;
+  const reducedMotion = state.reducedMotion === true;
+  $("gameShell").classList.toggle("low-performance", lowPerformance);
+  document.documentElement.classList.toggle("snow-disabled", !snowEnabled);
+  document.documentElement.classList.toggle("reduced-motion", reducedMotion);
+  $("lowPerformanceToggle").checked = lowPerformance;
+  $("snowToggle").checked = snowEnabled;
+  $("reducedMotionToggle").checked = reducedMotion;
+}
+
 async function updateAdminUI() {
   const panel = $("adminPanel");
   panel.hidden = !currentUser || !isPrivilegedUser();
@@ -1159,6 +1210,7 @@ async function enterGame(username, user, firstTime = false) {
     gameShell.classList.remove("save-loading");
     gameShell.setAttribute("aria-busy", "false");
   }
+  applyDisplaySettings();
   const alphaStarterGrantedNow = grantTemporaryAlphaStarter();
   applyPassiveCashElapsed();
   startNewAccountBoost();
@@ -1231,6 +1283,9 @@ async function loadUserSave(generation = playerSaveLoadGeneration) {
     if (!data || typeof data !== "object") { saveLoadedOk = true; progressHigh = null; return; }
     const savedState = data.state && typeof data.state === "object" ? data.state : {};
     state = { ...freshState(), ...savedState };
+    state.lowPerformanceMode = savedState.lowPerformanceMode === true;
+    state.snowEnabled = savedState.snowEnabled !== false;
+    state.reducedMotion = savedState.reducedMotion === true;
     const savedCrates = savedState.crateInventory && typeof savedState.crateInventory === "object"
       ? savedState.crateInventory
       : {};
@@ -2307,6 +2362,9 @@ const freshState = () => ({
   multiplier: 1,
   genSpeedBoostUntil: 0,
   newAccountBoostRemainingMs: 0,
+  lowPerformanceMode: false,
+  snowEnabled: true,
+  reducedMotion: false,
   slots: [null],
   selected: null
 });
@@ -3478,14 +3536,14 @@ function makeSlotButton(index, slot) {
     button.classList.add("cycle-" + g.id);
   }
   const hasParticleEffects = g.index >= 11 && g.id !== "magma" && g.id !== "neon";
-  if (hasParticleEffects) button.classList.add("effect-" + (g.effect || "dots"));
+  if (hasParticleEffects && !state.lowPerformanceMode) button.classList.add("effect-" + (g.effect || "dots"));
   const tier = document.createElement("span");
   tier.className = "tier";
   tier.textContent = g.name.toUpperCase();
   tier.style.color = accent;
   const visual = document.createElement("span");
   visual.className = "generator-visual";
-  if (hasParticleEffects) {
+  if (hasParticleEffects && !state.lowPerformanceMode) {
     const particles = document.createElement("span");
     particles.className = "generator-particles";
     particles.setAttribute("aria-hidden", "true");
@@ -4580,6 +4638,18 @@ $("giftsOpenBtn").addEventListener("click", () => {
   $("giftDialog").showModal();
 });
 $("giftsCloseBtn").addEventListener("click", () => $("giftDialog").close());
+[
+  ["lowPerformanceToggle", "lowPerformanceMode"],
+  ["snowToggle", "snowEnabled"],
+  ["reducedMotionToggle", "reducedMotion"]
+].forEach(([controlId, settingKey]) => {
+  $(controlId).addEventListener("change", event => {
+    state[settingKey] = event.currentTarget.checked;
+    applyDisplaySettings();
+    if (settingKey === "lowPerformanceMode") renderSlots();
+    save();
+  });
+});
 $("offlineCashDialog").addEventListener("cancel", event => event.preventDefault());
 $("claimOfflineCashBtn").addEventListener("click", () => { void claimOfflineCash(); });
 $("rebirthBtn").addEventListener("click", rebirth);
@@ -4589,6 +4659,9 @@ $("resetBtn").addEventListener("click", () => {
   if (!confirm("Reset your money, lifetime earnings, inventory, level, rebirths, rebirth points, upgrades, achievements, XP, multiplier, Note Fever progress, speed boosts, and placed generators? Crates and task progress are kept. This cannot be undone.")) return;
   syncNewAccountBoostRemaining();
   const taskProgress = {
+    lowPerformanceMode: state.lowPerformanceMode,
+    snowEnabled: state.snowEnabled,
+    reducedMotion: state.reducedMotion,
     crateInventory: state.crateInventory,
     completedTaskObjectives: state.completedTaskObjectives,
     announcedTaskCompletions: state.announcedTaskCompletions,
