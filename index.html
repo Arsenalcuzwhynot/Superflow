@@ -2822,11 +2822,14 @@ function makeShopRow(generator, mode, mystery = false) {
   numbers.append(price);
   if (!mystery) {
     const earn = document.createElement("span");
+    earn.className = "generator-earn";
     earn.textContent = cash(generator.income * effectiveMultiplier() * generatorSpeedMultiplier()
       * PERMANENT_CASH_MULTIPLIER * noteDuplicationExpectedMultiplier() / tickIntervalSeconds()) + "/sec";
     const xpEarn = document.createElement("span");
+    xpEarn.className = "generator-xp";
     xpEarn.textContent = number(generator.xpPerSecond) + " XP/sec";
     const unplacedText = document.createElement("span");
+    unplacedText.className = "generator-available";
     unplacedText.textContent = "Unplaced: " + available(generator.id);
     numbers.append(earn, xpEarn, unplacedText);
   }
@@ -3637,27 +3640,60 @@ function renderShop() {
 }
 function updateShopBuyButtons() {
   const quantity = getMultiBuyAmount();
-  document.querySelectorAll(".shop-item .buy-button").forEach(button => {
+  const placedCounts = new Map();
+  state.slots.forEach(slot => {
+    if (slot) placedCounts.set(slot.id, (placedCounts.get(slot.id) || 0) + 1);
+  });
+  const availableCount = id => Math.max(0, owned(id) - (placedCounts.get(id) || 0));
+  document.querySelectorAll(".shop-item .buy-button:not(.buy-all-button)").forEach(button => {
     const generator = getGenerator(button.dataset.generatorId);
-    button.textContent = quantity === null || quantity === 1 ? "Buy" : "Buy ×" + quantity;
-    button.disabled = !generator || !canBuy(generator, quantity);
+    const isAlpha = button.dataset.generatorId === "alpha";
+    button.textContent = isAlpha ? "Granted" : quantity === null || quantity === 1 ? "Buy" : "Buy ×" + quantity;
+    button.disabled = isAlpha || !generator || !canBuy(generator, quantity);
     if (generator) {
       button.title = button.dataset.mystery === "true"
         ? "Buy mystery generator"
         : "Buy " + (quantity || 1) + " " + generator.name + (quantity === 1 ? "" : " generators");
     }
   });
+  document.querySelectorAll(".shop-item .buy-all-button").forEach(button => {
+    const generator = getGenerator(button.dataset.generatorId);
+    button.textContent = "Buy all";
+    button.disabled = button.dataset.generatorId === "alpha" || !generator || maxAffordable(generator) < 1;
+    button.title = "Buy the maximum affordable quantity";
+  });
   document.querySelectorAll(".shop-item .sell-button:not(.sell-all-button)").forEach(button => {
     const generator = getGenerator(button.dataset.generatorId);
     button.textContent = quantity === null || quantity === 1 ? "Sell" : "Sell ×" + quantity;
-    button.disabled = !generator || quantity === null || available(generator.id) < 1;
+    button.disabled = !generator || quantity === null || availableCount(generator.id) < 1;
     if (generator) button.title = "Sell " + (quantity || 1) + " unplaced " + generator.name
       + (quantity === 1 ? " generator" : " generators");
   });
   document.querySelectorAll(".sell-all-button").forEach(button => {
     const generator = getGenerator(button.dataset.generatorId);
-    button.disabled = !generator || available(generator.id) < 1;
+    button.disabled = !generator || availableCount(generator.id) < 1;
     if (generator) button.title = "Sell all unplaced " + generator.name + " generators";
+  });
+  document.querySelectorAll(".shop-item").forEach(row => {
+    const id = row.querySelector(".buy-button")?.dataset.generatorId;
+    if (!id || row.querySelector(".buy-button")?.dataset.mystery === "true") return;
+    const generator = getGenerator(id);
+    if (!generator) return;
+    const earnings = row.querySelector(".generator-earn");
+    if (earnings) {
+      earnings.textContent = cash(generator.income * effectiveMultiplier() * generatorSpeedMultiplier()
+        * PERMANENT_CASH_MULTIPLIER * noteDuplicationExpectedMultiplier() / tickIntervalSeconds()) + "/sec";
+    }
+    const xp = row.querySelector(".generator-xp");
+    if (xp) xp.textContent = number(generator.xpPerSecond) + " XP/sec";
+    const availableText = row.querySelector(".generator-available");
+    if (availableText) availableText.textContent = "Unplaced: " + availableCount(generator.id);
+    const placeButton = row.querySelector(".place-button");
+    if (placeButton) {
+      placeButton.disabled = availableCount(generator.id) <= 0 && state.selected !== generator.id;
+      placeButton.textContent = state.selected === generator.id ? "Equipped" : "Place";
+      placeButton.classList.toggle("active", state.selected === generator.id);
+    }
   });
 }
 function renderInventory() {
@@ -3730,7 +3766,7 @@ function skipTutorial() {
   save();
 }
 function maxAffordable(generator) {
-  if (!generator) return 0;
+  if (!generator || generator.id === "alpha") return 0;
   if (isPrivilegedUser()) return 1000000;
   const price = generatorPrice(generator);
   if (!(price > 0)) return 1000000;
@@ -3745,7 +3781,7 @@ function buyMax(id) {
 }
 function buy(id, quantity = 1) {
   const g = getGenerator(id);
-  if (!g || !Number.isSafeInteger(quantity) || quantity < 1 || !canBuy(g, quantity)) return;
+  if (!g || id === "alpha" || !Number.isSafeInteger(quantity) || quantity < 1 || !canBuy(g, quantity)) return;
   const tutorialWasIncomplete = state.tutorialStarted && !state.tutorialComplete;
   state.money -= generatorPrice(g) * quantity;
   state.inventory[id] = owned(id) + quantity;
@@ -3787,7 +3823,7 @@ function claimAchievement(category) {
   state.claimedAchievements.push(achievement.id);
   updateAchievementAvailability();
   renderStats();
-  renderShop();
+  updateShopBuyButtons();
   renderSlotEarnings();
   save();
   notify(achievement.title + " claimed: " + achievement.description);
@@ -4753,7 +4789,7 @@ function gameTick() {
     save();
   }
   renderStats();
-  renderShop();
+  updateShopBuyButtons();
   renderSlotEarnings();
   updateAchievementAvailability();
 }
