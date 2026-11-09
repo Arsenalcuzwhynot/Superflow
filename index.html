@@ -934,7 +934,7 @@ body.dm-aurora::before{filter:hue-rotate(110deg) saturate(3) brightness(1.2)}
           <input id="banTarget" type="text" autocomplete="off" />
           <label class="muted small" for="banReason">Reason</label>
           <input id="banReason" type="text" maxlength="120" autocomplete="off" />
-          <div class="ac-actions"><button id="banBtn" type="button">Ban</button><button id="unbanBtn" type="button">Unban</button><button id="refreshFlagsBtn" type="button">Refresh flags</button></div>
+          <div class="ac-actions"><button id="banBtn" type="button">Ban</button><button id="unbanBtn" type="button">Unban</button><button id="refreshFlagsBtn" type="button">Refresh flags</button><button id="dismissAllFlagsBtn" type="button">Dismiss all</button></div>
           <div class="muted small" id="antiCheatStatus"></div>
           <div class="flag-list" id="flagList"></div>
         </div>
@@ -978,6 +978,10 @@ body.dm-aurora::before{filter:hue-rotate(110deg) saturate(3) brightness(1.2)}
     <div class="adm-row"><button id="adminPublishUpdateBtn" type="button">Refresh all games</button></div>
     <div class="muted small">Upload the new file to your host first, then click. Every open game saves and reloads after 30 seconds.</div>
     <div class="muted small" id="adminPublishStatus" role="status" aria-live="polite"></div>
+  </div>
+  <div class="adm-card"><h3>Global multiplier</h3>
+    <div class="adm-row"><button id="adminResetGlobalBoostBtn" type="button">Reset global multiplier</button></div>
+    <div class="muted small" id="adminGlobalBoostStatus" role="status" aria-live="polite"></div>
   </div>
   <div class="adm-card adm-danger"><h3>Danger zone</h3>
     <div class="adm-row"><input id="adminDeleteTarget" type="text" maxlength="40" autocomplete="off" placeholder="Username or account ID" aria-label="Account to delete"><button id="adminDeleteAccountBtn" class="danger-button" type="button">Delete account</button></div>
@@ -2003,7 +2007,7 @@ async function publishLeaderboardEntry(force = false) {
       starsCollected: Math.max(0, Number(state.taskStarsCollected) || 0),
       rebirth: Math.max(0, Number(state.rebirths) || 0),
       level: Math.max(1, Number(state.level) || 1),
-      multiplier: Math.max(1, Number(effectiveMultiplier()) || 1),
+      multiplier: Math.max(1, Number(playerMultiplier()) || 1),
       playtimeSeconds: Math.max(0, Number(state.playtimeSeconds) || 0),
       questionsAnswered: Math.max(0, Number(state.questionsAnswered) || 0),
       hideIndicator: hideLeaderboardIndicator,
@@ -2619,6 +2623,9 @@ function starAchievementMultiplierBonus() {
 }
 function effectiveMultiplier() {
   return state.multiplier * (1 + starAchievementMultiplierBonus()) * globalBoostMultiplier();
+}
+function playerMultiplier() {
+  return state.multiplier * (1 + starAchievementMultiplierBonus()); // excludes the shared global boost
 }
 function globalBoostMultiplier() {
   return globalBoostTier > 0 ? GLOBAL_BOOST_MILESTONES[globalBoostTier - 1].multiplier : 1;
@@ -3325,7 +3332,7 @@ function renderPlayerStats() {
   set("statStarsCollected", number(Math.max(0, Number(state.taskStarsCollected) || 0)));
   set("statInventoryValue", cash(inventoryValue()));
   set("statPlaytime", formatPlaytime(state.playtimeSeconds));
-  set("statTotalMultiplier", "×" + number(effectiveMultiplier()));
+  set("statTotalMultiplier", "×" + number(playerMultiplier()));
 }
 function renderStats() {
   $("money").textContent = cash(state.money);
@@ -5447,6 +5454,15 @@ startGlobalStarListener = function () { _origStartStar(); startGlobalWipeListene
   });
 })();
 
+$("adminResetGlobalBoostBtn").addEventListener("click", async () => {
+  const s = $("adminGlobalBoostStatus");
+  if ($("adminPanel").hidden || !currentUser || !dbRef) return;
+  if (!confirm("Reset the shared global multiplier back to ×1 for everyone?")) return;
+  try {
+    await dbRef.collection("globalBoosts").doc("main").delete();
+    s.textContent = "Global multiplier reset to ×1 for all players.";
+  } catch (e) { s.textContent = "Failed [" + (e.code || "error") + "] " + (e.message || ""); }
+});
 // ---- Diamonds ----
 (function(){
   const D=()=>Math.max(0,Math.floor(Number(state.diamonds)||0));
@@ -5637,11 +5653,12 @@ function gameTick() {
     generatedNotes += duplicate ? 2 : 1;
   });
   state.money += generatedCash;
-  state.lifetime += generatedCash;
-  state.generatorCashEarned += generatedCash;
+  const statCash = generatedCash / globalBoostMultiplier(); // global boost does not count toward stats or rankings
+  state.lifetime += statCash;
+  state.generatorCashEarned += statCash;
   const stonksCash = stonksCashPerSecond() * intervalSeconds;
   state.money = Math.min(1e300, state.money + stonksCash);
-  state.lifetime = Math.min(1e300, state.lifetime + stonksCash);
+  state.lifetime = Math.min(1e300, state.lifetime + stonksCash / globalBoostMultiplier());
   let feverStartedMessage = "";
   if (state.personalFeverUntil <= Date.now()) {
     state.personalNotes += generatedNotes;
@@ -6155,7 +6172,14 @@ async function loadFlags() {
       pick.type = "button";
       pick.textContent = "Select";
       pick.addEventListener("click", () => { $("banTarget").value = doc.id; $("banReason").value = (d.reason || "Cheating").slice(0, 120); });
-      row.append(info, pick);
+      const dismiss = document.createElement("button");
+      dismiss.type = "button";
+      dismiss.textContent = "Dismiss";
+      dismiss.addEventListener("click", async () => {
+        try { await dbRef.collection("flags").doc(doc.id).delete(); row.remove(); if (!list.children.length) list.textContent = "No flagged accounts."; }
+        catch (e) { $("antiCheatStatus").textContent = "Could not dismiss (" + (e && (e.code || e.message)) + ")."; }
+      });
+      row.append(info, pick, dismiss);
       list.appendChild(row);
     });
   } catch (e) {
@@ -6204,6 +6228,14 @@ async function runBanAction(unban) {
 $("banBtn").addEventListener("click", () => runBanAction(false));
 $("unbanBtn").addEventListener("click", () => runBanAction(true));
 $("refreshFlagsBtn").addEventListener("click", () => loadFlags());
+$("dismissAllFlagsBtn").addEventListener("click", async () => {
+  if (!confirm("Dismiss ALL flagged accounts? Bans are not affected.")) return;
+  try {
+    const snap = await dbRef.collection("flags").limit(200).get();
+    await Promise.all(snap.docs.map(d => d.ref.delete()));
+  } catch (e) { $("antiCheatStatus").textContent = "Could not dismiss (" + (e && (e.code || e.message)) + ")."; }
+  void loadFlags();
+});
 setInterval(() => { if (currentUser && cloudSaveReady && !document.hidden) void isBannedAccount(); }, 10 * 60 * 1000);
 let communityPaused = false;
 let communityPauseTimer = null;
