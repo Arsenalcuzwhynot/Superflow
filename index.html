@@ -584,6 +584,98 @@ body.dm-gold .slot{outline-color:#ffd447!important}
 body.dm-crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:2147482000;background:repeating-linear-gradient(0deg,#0000 0 2px,#0000002e 2px 3px)}
 body.dm-aurora::before{filter:hue-rotate(110deg) saturate(3) brightness(1.2)}
 #settingsTabs{display:none!important}
+</style><style id="part2">
+/* ===== Superflow 1.0.0 Part 2 ===== */
+/* Global broadcast: readable font, not the pixel font */
+#adminBroadcastBanner{font:700 18px/1.35 "Trebuchet MS",Verdana,Arial,sans-serif!important;text-shadow:none!important;background:#a3190f;letter-spacing:.01em!important;padding-bottom:12px}
+.chat-message.chat-broadcast{font-family:Verdana,"Trebuchet MS",Arial,sans-serif!important;font-size:14px;font-weight:700;color:#fff;background:#8f1d16!important;border-left:5px solid #ffd43b;padding:8px 10px}
+.chat-message.chat-broadcast *{font-family:Verdana,"Trebuchet MS",Arial,sans-serif!important;text-shadow:none!important}
+/* Diamond currency and shop readability */
+.diamond-pill{font:700 17px/1.2 "Trebuchet MS",Verdana,Arial,sans-serif!important;color:#fff!important;background:#0b3a66!important;border:2px solid #000;padding:4px 10px;text-shadow:none!important;box-shadow:inset 0 0 0 1px #7fd4ff}
+#diamondShopBalance{font:700 18px/1.2 "Trebuchet MS",Verdana,Arial,sans-serif!important;color:#fff!important;background:#0b3a66;padding:3px 10px;border:2px solid #000;text-shadow:none!important}
+#diamondShopPanel .body>p{font:600 14px/1.5 "Trebuchet MS",Verdana,Arial,sans-serif!important;color:#e6eef7!important}
+#diamondShopList{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+#diamondShopList *{text-shadow:none!important;letter-spacing:0!important}
+.dm-h{grid-column:1/-1;margin:10px 0 0;padding:6px 10px;font:700 18px/1.2 "Trebuchet MS",Verdana,Arial,sans-serif!important;color:#fff!important;background:#0b3a66;border:2px solid #000}
+.dm-item{background:#0c1624!important;border:2px solid #5f7a99!important;padding:10px!important;gap:8px!important}
+.dm-name{display:flex;align-items:center;gap:8px;font:700 16px/1.25 "Trebuchet MS",Verdana,Arial,sans-serif!important;color:#fff!important}
+.dm-sw{display:inline-block;flex:0 0 16px;width:16px;height:16px;border:2px solid #000}
+.dm-desc{margin:0!important;font:500 14px/1.4 "Trebuchet MS",Verdana,Arial,sans-serif!important;color:#dbe6f2!important}
+.dm-btn{font:700 15px/1.2 "Trebuchet MS",Verdana,Arial,sans-serif!important;padding:8px 10px!important;color:#fff!important;background:#3a4656!important;border-color:#000!important}
+.dm-btn.dm-buy:not(:disabled){background:#0e72c9!important}
+.dm-btn.dm-equip{background:#2f7d32!important}
+.dm-btn.dm-equip.dm-on{background:#8a5a00!important}
+.dm-btn:disabled{filter:none!important;background:#2b3340!important;color:#c3ccd8!important;opacity:1!important}
+#dmToast{font:700 17px/1.3 "Trebuchet MS",Verdana,Arial,sans-serif!important;color:#fff!important;background:#0b3a66!important;text-shadow:none!important}
+/* Chat cosmetics */
+.dm-title{color:#ffd43b;font-weight:800}
+.dm-shimmer{background:linear-gradient(90deg,#fff,#ffd43b,#ff8ad8,#66d9e8,#fff);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent;animation:dm-shim 2.5s linear infinite}
+@keyframes dm-shim{to{background-position:-200% 0}}
+/* Click sparkles */
+.dm-spark{position:fixed;width:6px;height:6px;margin:-3px 0 0 -3px;pointer-events:none;z-index:2147483200;border-radius:0!important;animation:dm-spark .6s ease-out forwards}
+@keyframes dm-spark{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+/* Cursor */
+body.dm-cursor-sword,body.dm-cursor-sword *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' shape-rendering='crispEdges'><rect x='4' y='4' width='6' height='6' fill='%23e9f2ff' stroke='%23000' stroke-width='1'/><rect x='8' y='8' width='6' height='6' fill='%23e9f2ff' stroke='%23000' stroke-width='1'/><rect x='12' y='12' width='6' height='6' fill='%23e9f2ff' stroke='%23000' stroke-width='1'/><rect x='16' y='16' width='6' height='6' fill='%23e9f2ff' stroke='%23000' stroke-width='1'/><rect x='20' y='20' width='6' height='6' fill='%23e9f2ff' stroke='%23000' stroke-width='1'/><rect x='24' y='24' width='6' height='6' fill='%23e9f2ff' stroke='%23000' stroke-width='1'/><rect x='20' y='26' width='12' height='4' fill='%23c9962b' stroke='%23000'/><rect x='26' y='20' width='4' height='12' fill='%23c9962b' stroke='%23000' transform='rotate(0)'/><rect x='24' y='24' width='6' height='6' fill='%238a5a1c' stroke='%23000'/></svg>") 2 2,auto!important}
+/* Tile frames */
+body.dm-f-ice .slot{outline-color:#cfeeff!important;border-color:#e9f8ff!important;box-shadow:0 0 10px #9fd8ff,inset 0 0 8px #bfe9ff66!important}
+body.dm-f-obsidian .slot{outline-color:#2a0f4d!important;border-color:#7a3bd1!important;box-shadow:0 0 8px #5b21a8!important}
+body.dm-f-rainbow .slot{animation:dm-rb 3s linear infinite}
+@keyframes dm-rb{0%,100%{outline-color:#ff3b30;border-color:#ff3b30}17%{outline-color:#ff9f0a;border-color:#ff9f0a}33%{outline-color:#ffe600;border-color:#ffe600}50%{outline-color:#34c759;border-color:#34c759}67%{outline-color:#00c7ff;border-color:#00c7ff}83%{outline-color:#b455ff;border-color:#b455ff}}
+/* Snow styles (the sky is body::before, the falling layer is .game-shell::before) */
+body.dm-snow-ember::before,body.dm-snow-petals::before,body.dm-snow-leaves::before{background-image:linear-gradient(180deg,color-mix(in srgb,#050914 calc(100% - var(--black-level) * 100%),#fff calc(var(--black-level) * 100%)) 0%,color-mix(in srgb,#09101e calc(100% - var(--black-level) * 100%),#fff calc(var(--black-level) * 100%)) 56%,var(--bg) 100%);background-size:100% 100%;background-position:0 0;background-repeat:no-repeat;animation:none;animation:none}
+body.dm-snow-ember::before{filter:sepia(1) hue-rotate(-30deg) saturate(2.2) brightness(.85)}
+body.dm-snow-ember .game-shell::before{background-image:radial-gradient(3px 3px at 18px 22px,#ffb347 99%,transparent),radial-gradient(5px 5px at 112px 86px,#ff6a1a 99%,transparent),radial-gradient(2px 2px at 65px 132px,#ffe08a 99%,transparent),radial-gradient(4px 4px at 158px 44px,#ff8a2a 99%,transparent);animation:dm-rise 9s linear infinite}
+@keyframes dm-rise{to{background-position:0 -180px,40px -215px,110px -90px,80px -250px}}
+body.dm-snow-blizzard::before{animation-duration:6s}
+body.dm-snow-blizzard .game-shell::before{background-size:90px 100px,120px 130px,105px 115px,150px 165px;opacity:1;animation:dm-blizz 3.5s linear infinite}
+@keyframes dm-blizz{to{background-position:-90px 100px,-80px 160px,5px 235px,-70px 225px}}
+body.dm-snow-stars::before{animation:none;filter:hue-rotate(200deg) brightness(1.15)}
+body.dm-snow-stars .game-shell::before{background-image:radial-gradient(1.5px 1.5px at 18px 22px,#fff 99%,transparent),radial-gradient(2px 2px at 112px 86px,#cfe3ff 99%,transparent),radial-gradient(1.5px 1.5px at 65px 132px,#fff 99%,transparent),radial-gradient(2px 2px at 158px 44px,#ffe9a8 99%,transparent);animation:dm-twinkle 2.4s steps(2,end) infinite}
+@keyframes dm-twinkle{0%,100%{opacity:.95}50%{opacity:.3}}
+body.dm-snow-petals .game-shell::before{background-image:radial-gradient(5px 4px at 18px 22px,#ffc2dc 99%,transparent),radial-gradient(7px 5px at 112px 86px,#ff9cc7 99%,transparent),radial-gradient(4px 3px at 65px 132px,#ffd9ea 99%,transparent),radial-gradient(6px 4px at 158px 44px,#ffb0d2 99%,transparent);animation:dm-fall 18s linear infinite}
+body.dm-snow-leaves .game-shell::before{background-image:radial-gradient(6px 4px at 18px 22px,#e8872b 99%,transparent),radial-gradient(7px 5px at 112px 86px,#c5521c 99%,transparent),radial-gradient(5px 4px at 65px 132px,#d9b130 99%,transparent),radial-gradient(6px 4px at 158px 44px,#8a9a2a 99%,transparent);animation:dm-fall 16s linear infinite}
+@keyframes dm-fall{to{background-position:0 180px,40px 275px,110px 330px,80px 370px}}
+/* Star skins */
+body.dm-star-pixel .bonus-star{border-radius:0!important;border-color:#000!important;background:#ffd23f!important;box-shadow:0 0 0 4px #fff3a0,0 0 22px 6px #ffd23f99!important;clip-path:polygon(40% 0,60% 0,60% 30%,100% 30%,100% 55%,80% 55%,80% 100%,60% 100%,60% 75%,40% 75%,40% 100%,20% 100%,20% 55%,0 55%,0 30%,40% 30%)}
+body.dm-star-comet .bonus-star{background:radial-gradient(circle at 70% 70%,#fff 0,#9fe8ff 30%,#2d7fe0 70%,#14307a 100%)!important;border-color:#cfeeff!important;box-shadow:0 0 24px 8px #5fb8ffaa,-18px -18px 28px 6px #5fb8ff55!important;border-radius:50% 50% 50% 8%!important}
+body.dm-star-snow .bonus-star{font-size:0!important;background:radial-gradient(circle,#fff 0,#d6f1ff 45%,#7fc4f5 100%)!important;border-color:#fff!important;box-shadow:0 0 24px 7px #9fdcffcc!important}
+body.dm-star-snow .bonus-star::after{content:"❄";font-size:54px;color:#2b6fb3;line-height:1}
+/* Billy coin skins */
+body.dm-coin-gold .mystery-coin{background:radial-gradient(circle at 35% 30%,#fff7c2,#ffcf33 45%,#b97f00 100%)!important;border:4px double #7a5200!important;box-shadow:0 0 14px 3px #ffb70099!important}
+body.dm-coin-diamond .mystery-coin{font-size:0!important;background:radial-gradient(circle,#fff,#aef0ff 50%,#35b7e6)!important;border-color:#e6fbff!important;box-shadow:0 0 18px 5px #62d8ffcc!important}
+body.dm-coin-diamond .mystery-coin::after{content:"💎";font-size:26px;line-height:1}
+/* Generator particle shapes */
+body.dm-pp-hearts .generator-particles span,body.dm-pp-stars .generator-particles span{width:auto!important;height:auto!important;background:none!important;box-shadow:none!important;font-size:11px!important;line-height:1;filter:none!important}
+body.dm-pp-hearts .generator-particles span::before{content:"♥"!important;color:#ff5d8f!important;text-shadow:0 0 4px #ff5d8f!important}
+body.dm-pp-stars .generator-particles span::before{content:"★"!important;color:#ffe14d!important;text-shadow:0 0 4px #ffb300!important}
+body.dm-pp-pixels .generator-particles span{width:4px!important;height:4px!important;border-radius:0!important;box-shadow:none!important;background:var(--particle-color,#fff)!important;filter:none!important}
+body.dm-pp-pixels .generator-particles span::before{content:none!important}
+/* UI themes */
+body.dm-ui-gb{--bg:#0f380f;--panel:#306230;--panel2:#2b5a2b;--line:#9bbc0f;--text:#e8ffd0;--muted:#b9d86a;--green:#8bac0f;--secondary-color:#306230;--h:100;--sat:1;--black-level:0}
+body.dm-ui-gb button:not(.bonus-star):not(.mystery-coin):not(.slot):not(.dm-btn){background:#8bac0f!important;color:#0f380f!important;border-color:#0f380f!important;text-shadow:none!important}
+body.dm-ui-gb .panel-head{background:#0f380f!important;color:#e8ffd0}
+body.dm-ui-neon{--bg:#05020f;--panel:#0a0420;--panel2:#120a30;--line:#ff2bd6;--text:#e8fbff;--muted:#9ec4ff;--green:#19f6d2;--secondary-color:#120a30;--h:285;--sat:1;--black-level:0}
+body.dm-ui-neon .panel,body.dm-ui-neon dialog,body.dm-ui-neon .shop-item,body.dm-ui-neon .upgrade-card{border-color:#ff2bd6!important;box-shadow:0 0 12px #ff2bd699,inset 0 0 10px #ff2bd633!important;outline-color:#05020f!important}
+body.dm-ui-neon button:not(.bonus-star):not(.mystery-coin):not(.slot):not(.dm-btn){background:#14002b!important;color:#19f6d2!important;border-color:#19f6d2!important;text-shadow:0 0 6px #19f6d2!important}
+body.dm-ui-parch{--bg:#cdb88a;--panel:#ead9ab;--panel2:#f1e4c3;--line:#8a6a3b;--text:#3b2a10;--muted:#6b5430;--green:#8a6a3b;--secondary-color:#c9a867}
+body.dm-ui-parch :is(.panel,.note,dialog,.leaderboard-row,.upgrade-card,.achievement-card,.task-card,.crate-card,.shop-item,.summary-card,.stats-dialog-grid>div,.gift-row,.modal,.chat-messages,.dm-item,input,select,textarea,.adm-card){background-color:#ead9ab!important;color:#3b2a10!important;border-color:#8a6a3b!important}
+body.dm-ui-parch .panel-head{background:#c9a867!important;color:#3b2a10!important}
+body.dm-ui-parch :is(.dm-name,.dm-desc,.dm-h){color:#3b2a10!important}
+body.dm-ui-parch .dm-h{background:#c9a867!important}
+body.dm-ui-parch button:not(.bonus-star):not(.mystery-coin):not(.slot):not(.dm-btn){background:#a47b3c!important;color:#fff8e6!important;border-color:#4a3512!important}
+body.dm-ui-parch *{text-shadow:none!important}
+body.dm-ui-parch .muted,body.dm-ui-parch .small{color:#6b5430!important}
+body.dm-ui-wood{--bg:#2a1a0c;--panel:#5b3a1c;--panel2:#4a2f16;--line:#2b1a0a;--text:#f6e8cf;--muted:#d9c3a0;--green:#7a7a7a;--secondary-color:#6b6b6b}
+body.dm-ui-wood .panel,body.dm-ui-wood dialog{background:repeating-linear-gradient(90deg,#6b4423 0 22px,#5e3b1d 22px 24px)!important}
+body.dm-ui-wood .panel-head{background:repeating-linear-gradient(45deg,#7d7d7d 0 6px,#6c6c6c 6px 12px)!important;color:#fff!important}
+body.dm-ui-wood :is(.leaderboard-row,.upgrade-card,.achievement-card,.task-card,.crate-card,.shop-item,.summary-card,.stats-dialog-grid>div,.gift-row,.modal,.chat-messages,.note,.adm-card){background-color:#4a2f16!important;color:#f6e8cf!important}
+body.dm-ui-wood button:not(.bonus-star):not(.mystery-coin):not(.slot):not(.dm-btn){background:#7a7a7a!important;color:#fff!important;border-color:#222!important}
+
+
+/* Diamond Star and Diamond Billy */
+body .bonus-star.diamond-star{background:radial-gradient(circle,#ffffff 0,#b8f3ff 30%,#2fb8f2 65%,#0a5fa8 100%)!important;border-color:#e0fbff!important;color:#fff!important;box-shadow:0 0 26px 8px #4fd0ffcc,0 0 56px 14px #4fd0ff66!important}
+body .mystery-coin.diamond-coin{font-size:23px!important;color:#06314d!important;background:radial-gradient(circle,#ffffff,#a8efff 45%,#27b4f0 100%)!important;border:3px solid #e0fbff!important;box-shadow:0 0 18px 5px #4fd0ffcc!important}
+body .mystery-coin.diamond-coin::after{content:none!important}
 </style></head>
 <body>
 <section class="auth-screen" id="authScreen">
@@ -950,6 +1042,7 @@ body.dm-aurora::before{filter:hue-rotate(110deg) saturate(3) brightness(1.2)}
     <div class="body adm-grid">
   <div class="adm-card"><h3>Spawn</h3>
     <div class="adm-row"><button id="adminStarBtn" type="button">Star</button><button id="adminHyperStarBtn" type="button">Hyper Star</button><button id="adminDiamondRainBtn" type="button">Diamond rain</button><button id="adminQuestionBtn" type="button">Question (me)</button></div>
+    <div class="adm-row"><button id="adminDiamondStarBtn" type="button">Diamond Star (me)</button><button id="adminDiamondBillyBtn" type="button">Diamond Billy (me)</button></div>
     <div class="adm-row"><button id="adminStarEveryoneBtn" type="button">Star: everyone</button><button id="adminBillyEveryoneBtn" type="button">Billy: everyone</button></div>
     <div class="muted small" id="adminStarEveryoneStatus" role="status" aria-live="polite"></div>
   </div>
@@ -994,7 +1087,7 @@ body.dm-aurora::before{filter:hue-rotate(110deg) saturate(3) brightness(1.2)}
   <div class="note" id="adminStatus" role="status" aria-live="polite" style="grid-column:1/-1"></div>
     </div>
   </section>
-  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">1.0.0 (Part 1)</span><button id="updateHistoryBtn" type="button">Update history</button></div>
+  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">1.0.0 (Part 2)</span><button id="updateHistoryBtn" type="button">Update history</button></div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
@@ -1065,7 +1158,7 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 100000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "1.0.0 (Part 1)";
+const GAME_VERSION = "1.0.0 (Part 2)";
 const GLOBAL_BOOST_MILESTONES = [
   { cost: 1e6, multiplier: 1.2 }, { cost: 1e7, multiplier: 1.4 },
   { cost: 1e8, multiplier: 1.6 }, { cost: 1e9, multiplier: 1.8 },
@@ -1224,7 +1317,13 @@ const UPDATE_HISTORY = [
       "The top multiplier now shows the same value as the multiplier notification (the shared boost still applies behind the scenes).",
       "New accounts no longer receive a starter Alpha Generator.",
       "Billy now only appears alongside a Star, is a yellow square smiley face, and his multiplier coins are yellow.",
-      "Updated the game version to 1.0.0 (Part 1)."
+      "Global broadcasts now use a readable font, disappear after a few seconds, and are also saved in global chat.",
+      "Alpha Generators can no longer be gambled and are hidden everywhere unless you own one.",
+      "Rebuilt the Diamond Shop and diamond counter so they are easy to read.",
+      "Added many new Diamond Shop cosmetics: snow styles, tile frames, UI themes, star and Billy coin skins, a sword cursor, click sparkles, particle shapes and two bundles.",
+      "Added chat name colors, titles, a shimmering name, badge icons, leaderboard flair and announcement styles that other players can see.",
+      "Added the rare Diamond Star (1% of Stars) and the Diamond Billy it can summon.",
+      "Updated the game version to 1.0.0 (Part 2)."
     ]
   }
 ];
@@ -2012,6 +2111,7 @@ async function publishLeaderboardEntry(force = false) {
       questionsAnswered: Math.max(0, Number(state.questionsAnswered) || 0),
       hideIndicator: hideLeaderboardIndicator,
       chatBadgeMetric,
+      ...(window.dmLbFields ? window.dmLbFields() : {}),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
     lastLeaderboardPublishAt = Date.now();
@@ -2078,6 +2178,7 @@ function renderLeaderboard(snapshot, metricName) {
     const username = document.createElement("span");
     username.className = "leaderboard-name";
     username.textContent = data.username || "Player";
+    if (window.dmFlair) window.dmFlair(username, row, data);
     const value = document.createElement("span");
     value.className = "leaderboard-cash";
     value.textContent = metric.format(data[metricName], data);
@@ -2234,7 +2335,7 @@ function updateLeaderboardTags(entries) {
       : userTags[selectedMetric];
     if (!selectedTag) return;
     [user.uid, user.username].filter(Boolean).forEach(key => {
-      cachedLeaderboardTags[key] = selectedTag;
+      cachedLeaderboardTags[key] = window.dmBadge ? window.dmBadge(selectedTag, user) : selectedTag;
     });
   });
 }
@@ -2246,7 +2347,7 @@ function renderChat(snapshot) {
   snapshot.docs.forEach(messageDoc => {
     const message = messageDoc.data();
     const row = document.createElement("div");
-    row.className = "chat-message" + (message.isAnnouncement ? " chat-announcement" : "");
+    row.className = "chat-message" + (message.isAnnouncement ? " chat-announcement" : "") + (message.isBroadcast ? " chat-broadcast" : "");
     const meta = document.createElement("span");
     meta.className = "chat-meta";
     const time = message.createdAt && message.createdAt.toDate ? message.createdAt.toDate().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "";
@@ -2256,7 +2357,7 @@ function renderChat(snapshot) {
       timeSpan.style.opacity = "0.75";
       meta.append(timeSpan);
     }
-    if (!message.isAnnouncement) {
+    if (!message.isAnnouncement && !message.isBroadcast) {
       const suppressed = (message.uid && cachedLeaderboardSuppressed[message.uid])
         || (message.username && cachedLeaderboardSuppressed[message.username]);
       const tag = suppressed ? ""
@@ -2270,10 +2371,16 @@ function renderChat(snapshot) {
       }
     }
     const nameSpan = document.createElement("strong");
-    nameSpan.textContent = (message.username || "Player") + ": ";
+    nameSpan.textContent = (message.isBroadcast ? "📢 Broadcast from " : "") + (message.username || "Player") + ": ";
+    if (!message.isBroadcast) {
+      const titleSpan = window.dmChatTitle && window.dmChatTitle(message);
+      if (titleSpan) meta.append(titleSpan);
+      if (window.dmChatName) window.dmChatName(nameSpan, message);
+    }
     meta.append(nameSpan);
     const text = document.createElement("span");
     renderModeratedChatText(text, moderateChatText(message.text || ""));
+    if (message.isAnnouncement && window.dmAnn) window.dmAnn(row, text, message);
     row.append(meta, text);
     host.appendChild(row);
   });
@@ -2340,6 +2447,7 @@ async function sendGlobalRebirthAnnouncement(rebirthCount) {
       username: currentUsername || "Player",
       text: (currentUsername || "Player") + " has reached rebirth " + rebirthCount + "!",
       isAnnouncement: true,
+      ...(window.dmAnnFields ? window.dmAnnFields() : {}),
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
   } catch (e) {
@@ -2355,6 +2463,7 @@ async function sendGlobalBoostAnnouncement(cost) {
       username: currentUsername || "Player",
       text: (currentUsername || "Player") + " increased the multiplier to " + number(cost) + "!",
       isAnnouncement: true,
+      ...(window.dmAnnFields ? window.dmAnnFields() : {}),
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
   } catch (error) {
@@ -2389,6 +2498,7 @@ async function sendChatMessage(event) {
         uid: currentUser.uid,
         username: currentUsername,
         tag: myTag ? myTag.text : "",
+        ...(window.dmChatFields ? window.dmChatFields() : {}),
         text: text.slice(0, 300),
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
@@ -2919,7 +3029,8 @@ function expirePersonalFever() {
   state.personalNotes = 0;
   return true;
 }
-function spawnStar(position = null, isBonus = false, forceHyper = false) {
+const DIAMOND_STAR_NATURAL_CHANCE = 0.01; // 1% chance that any spawned Star is a Diamond Star
+function spawnStar(position = null, isBonus = false, forceHyper = false, forceDiamond = false) {
   const layer = $("starLayer");
   const container = document.createElement("div");
   container.className = "star-container";
@@ -2948,6 +3059,27 @@ function spawnStar(position = null, isBonus = false, forceHyper = false) {
     state.genSpeedBoostUntil = Math.max(state.genSpeedBoostUntil, Date.now() + PERSONAL_FEVER_DURATION_MS);
     const isHyperStar = star.classList.contains("hyper-star");
     let resultMessage;
+    if (star.classList.contains("diamond-star")) {
+      const gems = 3 + Math.floor(Math.random() * 3);
+      const income = Math.max(0, totalIncome()) * 30;
+      state.money += income;
+      state.lifetime += income;
+      updateAchievementAvailability();
+      if (window.dmAward) window.dmAward(gems, "Diamond Star");
+      resultMessage = (currentUsername || "Player") + " collected a Diamond Star: +" + gems + " 💎 and "
+        + cash(income) + " (30 seconds of income)!";
+      if (Math.random() < 0.15) {
+        for (let i = 0; i < 6; i++) spawnStar(null, true);
+        resultMessage += " Six extra Stars appeared!";
+      }
+      if (Math.random() < 0.2) {
+        spawnMysteryVisitor(true);
+        resultMessage += " A Diamond Billy appeared!";
+      }
+      renderStats(); renderShop(); renderSlotEarnings(); save(); publishLeaderboardEntry();
+      notify(resultMessage + (taskReady ? " Task complete! Check Quests." : ""), false, taskReady);
+      return;
+    }
     if (isHyperStar) {
       state.hyperFeverNext = true;
       const reward = Math.max(0, Number(state.lifetime) || 0) * 0.05;
@@ -3008,10 +3140,16 @@ function spawnStar(position = null, isBonus = false, forceHyper = false) {
       + (taskReady ? " Task complete! Check Quests." : ""), false, taskReady);
   }, false, "bonus-star");
   star.type = "button";
-  const hyper = forceHyper || Math.random() < 0.1;
+  const diamondStar = forceDiamond || (!forceHyper && Math.random() < DIAMOND_STAR_NATURAL_CHANCE);
+  const hyper = !diamondStar && (forceHyper || Math.random() < 0.1);
   if (hyper) star.classList.add("hyper-star");
+  if (diamondStar) star.classList.add("diamond-star");
   star.setAttribute("aria-label", hyper ? "Collect a Hyper Star" : "Collect a Star");
   star.title = hyper ? "Hyper Star: normal Star boost, guaranteed next Hyper Fever, 5% lifetime cash, 25% chance to reset active Fever to 2 minutes, and 20% chance to spawn four Stars." : "Star boost plus a chance for cash, Fever, extra Stars, ×2 speed, or +1 multiplier.";
+  if (diamondStar) {
+    star.setAttribute("aria-label", "Collect a Diamond Star");
+    star.title = "Diamond Star: 3-5 diamonds, 30 seconds of your income, a 15% chance of six Stars and a 20% chance of a Diamond Billy.";
+  }
   const margin = 18;
   const maxLeft = Math.max(margin, window.innerWidth - 100 - margin);
   const maxTop = Math.max(margin, window.innerHeight - 118 - margin);
@@ -3025,7 +3163,7 @@ function spawnStar(position = null, isBonus = false, forceHyper = false) {
   countdownTimer = window.setInterval(updateCountdown, 250);
   starCountdownTimers.add(countdownTimer);
 }
-function spawnMysteryVisitor() {
+function spawnMysteryVisitor(diamond = false) {
   const layer = $("starLayer");
   const figure = document.createElement("div");
   figure.className = "mystery-container";
@@ -3033,7 +3171,7 @@ function spawnMysteryVisitor() {
   face.className = "mystery-figure";
   face.setAttribute("aria-hidden", "true");
   face.innerHTML = '<svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">'
-    + '<rect width="100" height="100" rx="8" fill="#ffd83a" stroke="#b88a00" stroke-width="4"/>'
+    + '<rect width="100" height="100" rx="8" fill="' + (diamond ? '#3ec9ff' : '#ffd83a') + '" stroke="' + (diamond ? '#0a6fa0' : '#b88a00') + '" stroke-width="4"/>'
     + '<circle cx="35" cy="38" r="7" fill="#3a2a00"/><circle cx="65" cy="38" r="7" fill="#3a2a00"/>'
     + '<path d="M25 60 Q50 85 75 60" fill="none" stroke="#3a2a00" stroke-width="6" stroke-linecap="round"/></svg>';
   figure.appendChild(face);
@@ -3064,10 +3202,11 @@ function spawnMysteryVisitor() {
       render();
       save();
       publishLeaderboardEntry();
-      notify("You collected a multiplier coin! +0.01× multiplier.");
+      notify(diamond ? "You collected a diamond coin! +0.01× multiplier and +1 💎." : "You collected a multiplier coin! +0.01× multiplier.");
     }, false, "mystery-coin");
-    coin.setAttribute("aria-label", "Collect a multiplier coin for +0.01×");
-    coin.title = "Multiplier coin · +0.01×";
+    if (diamond) coin.classList.add("diamond-coin");
+    coin.setAttribute("aria-label", diamond ? "Collect a diamond coin for +0.01× and 1 diamond" : "Collect a multiplier coin for +0.01×");
+    coin.title = diamond ? "Diamond coin · +0.01× and +1 💎" : "Multiplier coin · +0.01×";
     const coinLeft = Math.max(8, Math.min(window.innerWidth - 62, left + (Math.random() - 0.5) * 190));
     const coinTop = Math.max(8, Math.min(window.innerHeight - 62, top + (Math.random() - 0.5) * 150));
     coinContainer.style.left = coinLeft + "px";
@@ -4087,7 +4226,6 @@ function renderGambling() {
   select.replaceChildren();
   const options = GENERATORS.filter(generator => available(generator.id) > 0)
     .map(generator => ({ id: generator.id, name: generator.name }));
-  if (available("alpha") > 0) options.push({ id: "alpha", name: getGenerator("alpha").name });
   options.forEach(generator => {
     const option = document.createElement("option");
     option.value = generator.id;
@@ -4105,6 +4243,10 @@ function placeGeneratorBet() {
   const id = $("gambleGenerator").value;
   const amount = Number($("gambleAmount").value);
   const generator = getGenerator(id);
+  if (id === "alpha") {
+    $("gambleStatus").textContent = "Alpha Generators cannot be gambled.";
+    return;
+  }
   if (!currentUser || !generator || !Number.isSafeInteger(amount) || amount < 1
     || available(id) < amount) {
     $("gambleStatus").textContent = "Choose an unplaced generator and a valid quantity.";
@@ -5291,14 +5433,33 @@ GENERATORS.forEach(generator => {
   const adminOption = option.cloneNode(true);
   $("adminGiftGenerator").appendChild(adminOption);
 });
-["giftGenerator", "adminGiftGenerator"].forEach(selectId => {
+{
   const option = document.createElement("option");
   option.value = "alpha";
   option.textContent = "Alpha Generator";
-  $(selectId).appendChild(option);
-});
+  $("adminGiftGenerator").appendChild(option);
+}
+function refreshGiftAlphaOption() {
+  const select = $("giftGenerator");
+  const existing = Array.from(select.options).find(option => option.value === "alpha");
+  const hasAlpha = (Number(owned("alpha")) || 0) > 0;
+  if (hasAlpha && !existing) {
+    const option = document.createElement("option");
+    option.value = "alpha";
+    option.textContent = "Alpha Generator";
+    select.appendChild(option);
+  } else if (!hasAlpha && existing) {
+    existing.remove();
+  }
+}
 $("adminStarBtn").addEventListener("click", () => {
   if (!$("adminPanel").hidden) spawnStar();
+});
+$("adminDiamondStarBtn").addEventListener("click", () => {
+  if (!$("adminPanel").hidden) spawnStar(null, false, false, true);
+});
+$("adminDiamondBillyBtn").addEventListener("click", () => {
+  if (!$("adminPanel").hidden) spawnMysteryVisitor(true);
 });
 $("adminHyperStarBtn").addEventListener("click", () => {
   if (!$("adminPanel").hidden) spawnStar(null, false, true);
@@ -5389,7 +5550,7 @@ startGlobalStarListener = function () { _origStartStar(); startGlobalWipeListene
       if(!s.exists)return hide();
       const d=s.data();
       if(!d.active||typeof d.text!=="string"||!d.createdAt||!d.createdAt.toMillis)return hide();
-      const left=10*60*1000-(Date.now()-d.createdAt.toMillis());
+      const left=8000-(Date.now()-d.createdAt.toMillis());
       if(left<=0)return hide();
       show(d.text,left);
     },e=>console.error("Broadcast listener failed:",e));
@@ -5409,8 +5570,12 @@ startGlobalStarListener = function () { _origStartStar(); startGlobalWipeListene
         broadcastId:currentUser.uid+"-"+Date.now(),text:active?text:"cleared",active:active,
         senderUid:currentUser.uid,senderUsername:currentUsername||"Admin",
         createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-      st.textContent=active?"Broadcast sent (stays up to 10 minutes or until cleared).":"Broadcast cleared.";
-      if(active)input.value="";
+      st.textContent=active?"Broadcast sent: it shows for 8 seconds and stays in global chat.":"Broadcast cleared.";
+      if(active){
+        input.value="";
+        try{await dbRef.collection("chatMessages").add({uid:currentUser.uid,username:currentUsername||"Admin",text:text.slice(0,200),isBroadcast:true,createdAt:firebase.firestore.FieldValue.serverTimestamp()});}
+        catch(e2){st.textContent="Banner sent, but the chat copy was blocked. Publish the updated rules.";}
+      }
     }catch(e){st.textContent=e.code==="permission-denied"?"Rules blocked it. Publish the updated rules.":(e.message||"Failed.");}
   }
   document.getElementById("adminBroadcastBtn").addEventListener("click",()=>send(true));
@@ -5476,47 +5641,161 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   window.dmAward=award;
   let lastShown=-1;
   function refresh(){ const d=D(); document.getElementById("diamondPill").textContent="💎 "+d; document.getElementById("diamondShopBalance").textContent="💎 "+d; if(d!==lastShown){lastShown=d;renderShop2();} }
-  const ITEMS=[
+  const prof=()=>(state.dmProfile=state.dmProfile&&typeof state.dmProfile==="object"?state.dmProfile:{});
+  // Catalogs. Other players only ever see these ids, never free text.
+  const NC={red:["Red","#ff6b6b"],orange:["Orange","#ffa94d"],gold:["Gold","#ffd43b"],green:["Green","#69db7c"],cyan:["Cyan","#66d9e8"],blue:["Blue","#74a7ff"],purple:["Purple","#b197fc"],pink:["Pink","#ff8ad8"]};
+  const TT={hunter:["Star Hunter",50],rebirthed:["Rebirthed",60],baron:["Diamond Baron",100],billy:["Billy's Pal",50],owl:["Night Owl",50],season1:["Season 1",150]};
+  const BI={fire:"🔥",gem:"💎",dragon:"🐉",clover:"🍀",moon:"🌙",bolt:"⚡"};
+  const FL={flame:["🔥","#ff7a3d"],frost:["❄️","#8fd3ff"],bolt:["⚡","#ffe14d"],clover:["🍀","#5ad66f"],royal:["👑","#c79bff"]};
+  const AN={gold:["🎉","#ffd43b"],frost:["❄️","#8fd3ff"],pink:["💖","#ff8ad8"],clover:["🍀","#69db7c"]};
+  const SEASON1_ENDS=new Date(2027,0,1).getTime();
+  const PERKS=[
     {id:"finder",type:"perk",name:"Diamond Finder",max:5,cost:l=>6*Math.pow(2,l),desc:"+3% diamond chance per level on Stars and Billy coins."},
     {id:"headstart",type:"perk",name:"Head Start",max:3,cost:l=>25*Math.pow(2,l),desc:"After each rebirth, start with +5% of the next rebirth cost per level."},
     {id:"qbonus",type:"perk",name:"Question Bonus",max:3,cost:l=>8*Math.pow(2,l),desc:"Correct math answers extend the ×2 speed by 30s per level."},
-    {id:"fever",type:"perk",name:"Fever Extender",max:3,cost:l=>12*Math.pow(2,l),desc:"Each Star adds 10s of Fever per level."},
-    {id:"gold",type:"cos",name:"Gold Frames",cost:25,desc:"Gold outlines on generator tiles.",cls:"dm-gold"},
-    {id:"crt",type:"cos",name:"CRT Scanlines",cost:60,desc:"Retro scanline overlay.",cls:"dm-crt"},
-    {id:"aurora",type:"cos",name:"Aurora Snow",cost:40,desc:"Colour-shifted snow background.",cls:"dm-aurora"},
+    {id:"fever",type:"perk",name:"Fever Extender",max:3,cost:l=>12*Math.pow(2,l),desc:"Each Star adds 10s of Fever per level."}
+  ];
+  const USES=[
     {id:"fevernow",type:"use",name:"Instant Fever",cost:5,desc:"Start a personal Fever now.",run:()=>{state.genSpeedBoostUntil=Date.now()+PERSONAL_FEVER_DURATION_MS;}},
     {id:"starcall",type:"use",name:"Call a Star",cost:8,desc:"Spawn a Star for you.",run:()=>spawnStar()},
     {id:"hypercall",type:"use",name:"Call a Hyper Star",cost:20,desc:"Spawn a Hyper Star for you.",run:()=>spawnStar(null,false,true)}
   ];
+  const C=(id,group,name,cost,desc,cls)=>({id,type:"cos",group,name,cost,desc,cls});
+  const GROUPS=[
+    ["snow","Background & snow"],["frame","Tile frames"],["ui","UI themes"],["star","Star skins"],["coin","Billy coin skins"],
+    ["cursor","Cursor"],["click","Click effects"],["particles","Generator particles"],["overlay","Overlays"]
+  ];
+  const COS=[
+    C("aurora","snow","Aurora Snow",40,"Colour-shifted snow background.","dm-aurora"),
+    C("ember","snow","Ember Snow",35,"Orange sparks rise instead of snow.","dm-snow-ember"),
+    C("blizzard","snow","Blizzard",40,"Heavy, fast snow.","dm-snow-blizzard"),
+    C("starfield","snow","Starfield",50,"Twinkling pixel stars instead of snow.","dm-snow-stars"),
+    C("petals","snow","Falling Petals",40,"Pink petals drift down.","dm-snow-petals"),
+    C("leaves","snow","Falling Leaves",40,"Autumn leaves drift down.","dm-snow-leaves"),
+    C("gold","frame","Gold Frames",25,"Gold outlines on generator tiles.","dm-gold"),
+    C("ice","frame","Ice Frames",30,"Pale blue frosted outlines.","dm-f-ice"),
+    C("obsidian","frame","Obsidian Frames",40,"Dark purple outlines.","dm-f-obsidian"),
+    C("rainbow","frame","Rainbow Frames",80,"Outlines that cycle through every colour.","dm-f-rainbow"),
+    C("gameboy","ui","Gameboy Green",50,"A green monochrome palette.","dm-ui-gb"),
+    C("neon","ui","Neon Night",50,"Dark panels with neon outlines.","dm-ui-neon"),
+    C("parchment","ui","Parchment",40,"Warm tan, like old game menus.","dm-ui-parch"),
+    C("wood","ui","Wood & Stone",60,"Wooden panels with stone headers.","dm-ui-wood"),
+    C("star-pixel","star","Pixel Star",30,"A blocky pixel Star.","dm-star-pixel"),
+    C("star-comet","star","Comet Star",30,"Stars look like comets.","dm-star-comet"),
+    C("star-snow","star","Snowflake Star",30,"Stars look like snowflakes.","dm-star-snow"),
+    C("coin-gold","coin","Gold Coin Billy",30,"Billy's coins look like shiny gold coins.","dm-coin-gold"),
+    C("coin-diamond","coin","Diamond Coin Billy",30,"Billy's coins look like diamonds.","dm-coin-diamond"),
+    C("sword","cursor","Pixel Sword Cursor",35,"Your mouse pointer becomes a pixel sword.","dm-cursor-sword"),
+    C("sparkle","click","Click Sparkles",45,"Sparkles burst where you click.","dm-click-sparkle"),
+    C("pp-hearts","particles","Heart Particles",60,"Every generator tile emits hearts.","dm-pp-hearts"),
+    C("pp-stars","particles","Star Particles",60,"Every generator tile emits stars.","dm-pp-stars"),
+    C("pp-pixels","particles","Pixel Particles",60,"Every generator tile emits square pixels.","dm-pp-pixels"),
+    C("crt","overlay","CRT Scanlines",60,"Retro scanline overlay.","dm-crt")
+  ];
+  const BUNDLES=[
+    {id:"b-frost",name:"Frostbyte Bundle",cost:200,desc:"Blizzard, Ice Frames, Neon Night, Snowflake Star, Diamond Coin Billy and Click Sparkles. Saves 25 💎.",items:["blizzard","ice","neon","star-snow","coin-diamond","sparkle"]},
+    {id:"b-retro",name:"Retro Handheld Bundle",cost:220,desc:"Starfield, Obsidian Frames, Gameboy Green, Pixel Star, Pixel Particles and the Pixel Sword cursor. Saves 45 💎.",items:["starfield","obsidian","gameboy","star-pixel","pp-pixels","sword"]}
+  ];
+  const PROF=[];
+  Object.keys(NC).forEach(k=>PROF.push({id:"nc-"+k,sec:"Chat name colors",kind:"nameColor",val:k,name:NC[k][0]+" name",cost:40,desc:"Your name in global chat is "+NC[k][0].toLowerCase()+". Other players see it.",sw:NC[k][1]}));
+  Object.keys(TT).forEach(k=>PROF.push({id:"tt-"+k,sec:"Chat titles",kind:"title",val:k,name:"["+TT[k][0]+"]",cost:TT[k][1],desc:k==="season1"?"Limited: only buyable until the end of 2026.":"Shown before your name in global chat.",limited:k==="season1"}));
+  PROF.push({id:"anim",sec:"Prestige",kind:"nameAnim",val:true,name:"Shimmering name",cost:150,desc:"Your chat name shimmers with moving colours."});
+  Object.keys(BI).forEach(k=>PROF.push({id:"bi-"+k,sec:"Badge icons",kind:"badgeIcon",val:k,name:BI[k]+" badge icon",cost:30,desc:"Replaces the emoji on your chat leaderboard badge."}));
+  Object.keys(FL).forEach(k=>PROF.push({id:"fl-"+k,sec:"Leaderboard flair",kind:"flair",val:k,name:FL[k][0]+" flair",cost:60,desc:"A small icon and coloured border next to your name on the leaderboard.",sw:FL[k][1]}));
+  Object.keys(AN).forEach(k=>PROF.push({id:"an-"+k,sec:"Announcement styles",kind:"annStyle",val:k,name:AN[k][0]+" announcements",cost:75,desc:"Your rebirth and multiplier announcements in chat get this colour and icon.",sw:AN[k][1]}));
+  const ITEMS=[...PERKS,...COS,...USES];
+  const byId=id=>COS.find(o=>o.id===id);
+  const isEq=p=>p.kind==="nameAnim"?prof().nameAnim===true:prof()[p.kind]===p.val;
+  function after(pub){ applyCos(); lastShown=-1; refresh(); try{save();}catch(e){} if(pub){try{publishLeaderboardEntry(true);}catch(e){}} }
+  function equipCos(it,on){ if(on&&it.group)COS.forEach(o=>{if(o.group===it.group&&o.id!==it.id)equipped()[o.id]=false;}); equipped()[it.id]=!!on; }
   function buy(it){
     const l=it.type==="perk"?lvl(it.id):0, c=typeof it.cost==="function"?it.cost(l):it.cost;
     if(D()<c||(it.type==="perk"&&l>=it.max)||(it.type==="cos"&&owned()[it.id]))return;
     state.diamonds=D()-c;
-    if(it.type==="perk")perks()[it.id]=l+1; else if(it.type==="cos"){owned()[it.id]=true;equipped()[it.id]=true;} else it.run();
-    applyCos(); lastShown=-1; refresh(); try{save();}catch(e){}
+    if(it.type==="perk")perks()[it.id]=l+1; else if(it.type==="cos"){owned()[it.id]=true;equipCos(it,true);} else it.run();
+    after(false);
   }
-  function applyCos(){ ITEMS.filter(i=>i.type==="cos").forEach(i=>document.body.classList.toggle(i.cls,!!(owned()[i.id]&&equipped()[i.id]))); }
+  function buyBundle(b){
+    if(D()<b.cost||owned()[b.id]||b.items.every(id=>owned()[id]))return;
+    state.diamonds=D()-b.cost; owned()[b.id]=true;
+    b.items.forEach(id=>{owned()[id]=true;equipCos(byId(id),true);});
+    after(false);
+  }
+  function profAvailable(p){ return !p.limited||owned()[p.id]||Date.now()<SEASON1_ENDS; }
+  function buyProf(p){
+    if(D()<p.cost||owned()[p.id]||!profAvailable(p))return;
+    state.diamonds=D()-p.cost; owned()[p.id]=true; equipProf(p,true);
+  }
+  function equipProf(p,on){ if(p.kind==="nameAnim")prof().nameAnim=!!on; else prof()[p.kind]=on?p.val:""; after(true); }
+  function applyCos(){ COS.forEach(i=>document.body.classList.toggle(i.cls,!!(owned()[i.id]&&equipped()[i.id]))); }
   function renderShop2(){
     const host=document.getElementById("diamondShopList"); if(!host||typeof state==="undefined")return; host.replaceChildren();
-    ITEMS.forEach(it=>{
-      const l=it.type==="perk"?lvl(it.id):0, has=it.type==="cos"&&owned()[it.id];
-      const row=document.createElement("div"); row.className="dm-item";
-      const t=document.createElement("strong"); t.textContent=it.name+(it.type==="perk"?" ("+l+"/"+it.max+")":"");
-      const d=document.createElement("p"); d.className="muted"; d.textContent=it.desc;
-      let b;
-      if(has){ b=makeButton(equipped()[it.id]?"Unequip":"Equip",()=>{equipped()[it.id]=!equipped()[it.id];applyCos();renderShop2();try{save();}catch(e){}},false,""); }
-      else if(it.type==="perk"&&l>=it.max){ b=makeButton("Maxed",()=>{},true,""); }
-      else { const c=typeof it.cost==="function"?it.cost(l):it.cost; b=makeButton("Buy · 💎 "+c,()=>buy(it),D()<c,""); }
-      row.append(t,d,b); host.append(row);
+    const head=t=>{const h=document.createElement("h3");h.className="dm-h";h.textContent=t;host.append(h);};
+    const card=(name,desc,btn,sw)=>{
+      const row=document.createElement("div");row.className="dm-item";
+      const t=document.createElement("strong");t.className="dm-name";t.textContent=name;
+      if(sw){const dot=document.createElement("span");dot.className="dm-sw";dot.style.background=sw;t.prepend(dot);}
+      const d=document.createElement("p");d.className="dm-desc";d.textContent=desc;
+      row.append(t,d,btn);host.append(row);
+    };
+    const buyBtn=(c,fn,off)=>makeButton("Buy · 💎 "+c,fn,off||D()<c,"dm-btn dm-buy");
+    head("Perks");
+    PERKS.forEach(it=>{const l=lvl(it.id);
+      card(it.name+" ("+l+"/"+it.max+")",it.desc,l>=it.max?makeButton("Maxed",()=>{},true,"dm-btn"):buyBtn(it.cost(l),()=>buy(it)));});
+    head("Instant use");
+    USES.forEach(it=>card(it.name,it.desc,buyBtn(it.cost,()=>buy(it))));
+    GROUPS.forEach(([g,title])=>{
+      head(title);
+      COS.filter(it=>it.group===g).forEach(it=>{
+        const has=owned()[it.id];
+        const btn=has?makeButton(equipped()[it.id]?"Unequip":"Equip",()=>{equipCos(it,!equipped()[it.id]);after(false);},false,"dm-btn dm-equip"+(equipped()[it.id]?" dm-on":""))
+                     :buyBtn(it.cost,()=>buy(it));
+        card(it.name,it.desc,btn);
+      });
+    });
+    head("Bundles");
+    BUNDLES.forEach(b=>{
+      const done=owned()[b.id]||b.items.every(id=>owned()[id]);
+      card(b.name,b.desc,done?makeButton("Owned",()=>{},true,"dm-btn"):buyBtn(b.cost,()=>buyBundle(b)));
+    });
+    let sec=null;
+    PROF.forEach(p=>{
+      if(p.sec!==sec){sec=p.sec;head(sec+" (visible to other players)");}
+      const has=owned()[p.id];
+      let btn;
+      if(has)btn=makeButton(isEq(p)?"Unequip":"Equip",()=>equipProf(p,!isEq(p)),false,"dm-btn dm-equip"+(isEq(p)?" dm-on":""));
+      else if(!profAvailable(p))btn=makeButton("No longer available",()=>{},true,"dm-btn");
+      else btn=buyBtn(p.cost,()=>buyProf(p));
+      card(p.name,p.desc,btn,p.sw);
     });
   }
+  // Hooks used by chat and the leaderboard
+  window.dmChatFields=function(){const p=prof(),o={};if(NC[p.nameColor])o.nameColor=p.nameColor;if(TT[p.title])o.title=p.title;if(p.nameAnim===true)o.nameAnim=true;return o;};
+  window.dmAnnFields=function(){const p=prof();return AN[p.annStyle]?{annStyle:p.annStyle}:{};};
+  window.dmLbFields=function(){const p=prof();return {badgeIcon:BI[p.badgeIcon]?p.badgeIcon:"",flair:FL[p.flair]?p.flair:""};};
+  window.dmChatName=function(el,m){const c=NC[m.nameColor];if(c)el.style.color=c[1];if(m.nameAnim===true)el.classList.add("dm-shimmer");};
+  window.dmChatTitle=function(m){const t=TT[m.title];if(!t)return null;const s=document.createElement("span");s.className="dm-title";s.textContent="["+t[0]+"] ";return s;};
+  window.dmAnn=function(row,textEl,m){const a=AN[m.annStyle];if(!a)return;row.style.borderLeft="4px solid "+a[1];textEl.style.color=a[1];textEl.prepend(a[0]+" ");};
+  window.dmBadge=function(tag,user){const e=BI[user&&user.badgeIcon];return e&&tag&&tag.rank?Object.assign({},tag,{text:"("+e+"#"+tag.rank+")"}):tag;};
+  window.dmFlair=function(nameEl,row,data){const f=FL[data&&data.flair];if(!f)return;nameEl.textContent+=" "+f[0];row.style.outline="2px solid "+f[1];row.style.outlineOffset="-2px";};
+  // Click sparkles
+  document.addEventListener("pointerdown",e=>{
+    if(!document.body.classList.contains("dm-click-sparkle")||(typeof state!=="undefined"&&state.reducedMotion))return;
+    const cols=["#ffe14d","#ffffff","#ff9bf0","#7de3ff"];
+    for(let i=0;i<9;i++){
+      const sp=document.createElement("span"),a=Math.PI*2*i/9+Math.random()*.5,d=26+Math.random()*28;
+      sp.className="dm-spark";
+      sp.style.cssText="left:"+e.clientX+"px;top:"+e.clientY+"px;--dx:"+(Math.cos(a)*d).toFixed(1)+"px;--dy:"+(Math.sin(a)*d).toFixed(1)+"px;background:"+cols[i%4];
+      document.body.appendChild(sp);setTimeout(()=>sp.remove(),650);
+    }
+  },true);
   // Sources: Stars and Billy coins
   document.addEventListener("click",e=>{
     const el=e.target&&e.target.closest?e.target.closest(".mystery-coin, .bonus-star"):null;
     if(!el||!currentUser||typeof state==="undefined")return;
     const coin=el.classList.contains("mystery-coin"), hyper=el.classList.contains("hyper-star");
     const rain=Date.now()<(window.dmRainUntil||0), bonus=0.03*lvl("finder");
-    if(hyper)award(2,"Hyper Star"); else if(rain)award(1,"Diamond rain"); else if(Math.random()<(coin?0.3:0.08)+bonus)award(1,coin?"Billy":"Star");
+    if(el.classList.contains("diamond-star")){} else if(el.classList.contains("diamond-coin"))award(1,"Diamond Billy"); else if(hyper)award(2,"Hyper Star"); else if(rain)award(1,"Diamond rain"); else if(Math.random()<(coin?0.3:0.08)+bonus)award(1,coin?"Billy":"Star");
     if(!coin&&lvl("fever"))setTimeout(()=>{if(state.genSpeedBoostUntil>Date.now())state.genSpeedBoostUntil+=lvl("fever")*10000;},0);
   },true);
   // Math questions
@@ -5581,6 +5860,7 @@ $("claimAllGiftsBtn").addEventListener("click", () => handleAllGifts("claim"));
 $("rejectAllGiftsBtn").addEventListener("click", () => handleAllGifts("reject"));
 $("giftsOpenBtn").addEventListener("click", () => {
   $("giftStatus").textContent = "";
+  refreshGiftAlphaOption();
   refreshGiftInbox();
   $("giftDialog").showModal();
 });
