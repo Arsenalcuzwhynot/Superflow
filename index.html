@@ -521,7 +521,7 @@ button:active:not(:disabled){transform:translateY(1px);box-shadow:none}
 .multibuy-choice[aria-pressed="true"]{border-color:var(--gold);background:color-mix(in srgb,var(--green) 28%,var(--panel2));box-shadow:inset 0 -2px 0 var(--gold)}
 </style>
 <style id="snowFix">
-body::before{background-image:radial-gradient(2px 2px at 23px 34px,#fff 98%,transparent),radial-gradient(3px 3px at 118px 62px,#e4f1ff 98%,transparent),radial-gradient(2.5px 2.5px at 74px 114px,#fff 98%,transparent),radial-gradient(2px 2px at 158px 92px,#fff 98%,transparent),radial-gradient(1.5px 1.5px at 46px 128px,#fffd 98%,transparent),radial-gradient(3.5px 3.5px at 93px 56px,#e4f1ff 98%,transparent),linear-gradient(180deg,#050914 0%,#09101e 56%,var(--bg) 100%)!important;background-size:110px 145px,145px 190px,190px 250px,230px 290px,165px 210px,275px 330px,100% 100%!important;background-position:0 0,40px 30px,110px 120px,80px 60px,20px 70px,140px 150px,0 0!important;animation:snowDrift 18s linear infinite!important}
+body::before{background-image:radial-gradient(2px 2px at 23px 34px,#fff 98%,transparent),radial-gradient(3px 3px at 118px 62px,#e4f1ff 98%,transparent),radial-gradient(2.5px 2.5px at 74px 114px,#fff 98%,transparent),radial-gradient(2px 2px at 158px 92px,#fff 98%,transparent),radial-gradient(1.5px 1.5px at 46px 128px,#fffd 98%,transparent),radial-gradient(3.5px 3.5px at 93px 56px,#e4f1ff 98%,transparent),linear-gradient(180deg,#050914 0%,#09101e 56%,var(--bg) 100%)!important;background-size:110px 145px,145px 190px,190px 250px,230px 290px,165px 210px,275px 330px,100% 100%!important;animation:snowDrift 18s linear infinite!important}
 @keyframes snowDrift{to{background-position:110px 580px,-145px 760px,190px 1000px,-230px 1160px,165px 840px,-275px 1320px,0 0}}
 .game-shell::before{animation-duration:12s!important}
 </style><style id="retroTheme">
@@ -580,9 +580,7 @@ button{text-shadow:1px 1px 0 #000;letter-spacing:.02em!important}
 .dm-item strong{font-size:14px}.dm-item .muted{font-size:12px;margin:0}
 #dmToast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:2147483000;padding:6px 12px;background:#0b2a44;border:3px solid #000;color:#8fe3ff;font:700 15px var(--retro-font,monospace);pointer-events:none;opacity:0}
 #dmToast.show{opacity:1}
-body.dm-gold .slot{outline-color:#ffd447!important}
 body.dm-crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:2147482000;background:repeating-linear-gradient(0deg,#0000 0 2px,#0000002e 2px 3px)}
-body.dm-aurora::before{filter:hue-rotate(110deg) saturate(3) brightness(1.2)}
 #settingsTabs{display:none!important}
 </style><style id="part2">
 /* ===== Superflow 1.0.0 Part 2 ===== */
@@ -617,27 +615,8 @@ body.dm-aurora::before{filter:hue-rotate(110deg) saturate(3) brightness(1.2)}
 /* Cursor */
 body.dm-cursor-sword,body.dm-cursor-sword *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' shape-rendering='crispEdges'><rect x='4' y='4' width='6' height='6' fill='%23e9f2ff' stroke='%23000' stroke-width='1'/><rect x='8' y='8' width='6' height='6' fill='%23e9f2ff' stroke='%23000' stroke-width='1'/><rect x='12' y='12' width='6' height='6' fill='%23e9f2ff' stroke='%23000' stroke-width='1'/><rect x='16' y='16' width='6' height='6' fill='%23e9f2ff' stroke='%23000' stroke-width='1'/><rect x='20' y='20' width='6' height='6' fill='%23e9f2ff' stroke='%23000' stroke-width='1'/><rect x='24' y='24' width='6' height='6' fill='%23e9f2ff' stroke='%23000' stroke-width='1'/><rect x='20' y='26' width='12' height='4' fill='%23c9962b' stroke='%23000'/><rect x='26' y='20' width='4' height='12' fill='%23c9962b' stroke='%23000' transform='rotate(0)'/><rect x='24' y='24' width='6' height='6' fill='%238a5a1c' stroke='%23000'/></svg>") 2 2,auto!important}
 /* Tile frames */
-body.dm-f-ice .slot{outline-color:#cfeeff!important;border-color:#e9f8ff!important;box-shadow:0 0 10px #9fd8ff,inset 0 0 8px #bfe9ff66!important}
-body.dm-f-obsidian .slot{outline-color:#2a0f4d!important;border-color:#7a3bd1!important;box-shadow:0 0 8px #5b21a8!important}
-body.dm-f-rainbow .slot{animation:dm-rb 3s linear infinite}
-@keyframes dm-rb{0%,100%{outline-color:#ff3b30;border-color:#ff3b30}17%{outline-color:#ff9f0a;border-color:#ff9f0a}33%{outline-color:#ffe600;border-color:#ffe600}50%{outline-color:#34c759;border-color:#34c759}67%{outline-color:#00c7ff;border-color:#00c7ff}83%{outline-color:#b455ff;border-color:#b455ff}}
 /* Snow styles (the sky is body::before, the falling layer is .game-shell::before) */
-body.dm-snow-ember::before,body.dm-snow-petals::before,body.dm-snow-leaves::before{background-image:linear-gradient(180deg,color-mix(in srgb,#050914 calc(100% - var(--black-level) * 100%),#fff calc(var(--black-level) * 100%)) 0%,color-mix(in srgb,#09101e calc(100% - var(--black-level) * 100%),#fff calc(var(--black-level) * 100%)) 56%,var(--bg) 100%);background-size:100% 100%;background-position:0 0;background-repeat:no-repeat;animation:none;animation:none}
-body.dm-snow-ember::before{filter:sepia(1) hue-rotate(-30deg) saturate(2.2) brightness(.85)}
-body.dm-snow-ember .game-shell::before{background-image:radial-gradient(3px 3px at 18px 22px,#ffb347 99%,transparent),radial-gradient(5px 5px at 112px 86px,#ff6a1a 99%,transparent),radial-gradient(2px 2px at 65px 132px,#ffe08a 99%,transparent),radial-gradient(4px 4px at 158px 44px,#ff8a2a 99%,transparent);animation:dm-rise 9s linear infinite}
-@keyframes dm-rise{to{background-position:0 -180px,40px -215px,110px -90px,80px -250px}}
-body.dm-snow-blizzard::before{animation-duration:6s}
-body.dm-snow-blizzard .game-shell::before{background-size:90px 100px,120px 130px,105px 115px,150px 165px;opacity:1;animation:dm-blizz 3.5s linear infinite}
-@keyframes dm-blizz{to{background-position:-90px 100px,-80px 160px,5px 235px,-70px 225px}}
-body.dm-snow-stars::before{animation:none;filter:hue-rotate(200deg) brightness(1.15)}
-body.dm-snow-stars .game-shell::before{background-image:radial-gradient(1.5px 1.5px at 18px 22px,#fff 99%,transparent),radial-gradient(2px 2px at 112px 86px,#cfe3ff 99%,transparent),radial-gradient(1.5px 1.5px at 65px 132px,#fff 99%,transparent),radial-gradient(2px 2px at 158px 44px,#ffe9a8 99%,transparent);animation:dm-twinkle 2.4s steps(2,end) infinite}
-@keyframes dm-twinkle{0%,100%{opacity:.95}50%{opacity:.3}}
-body.dm-snow-petals .game-shell::before{background-image:radial-gradient(5px 4px at 18px 22px,#ffc2dc 99%,transparent),radial-gradient(7px 5px at 112px 86px,#ff9cc7 99%,transparent),radial-gradient(4px 3px at 65px 132px,#ffd9ea 99%,transparent),radial-gradient(6px 4px at 158px 44px,#ffb0d2 99%,transparent);animation:dm-fall 18s linear infinite}
-body.dm-snow-leaves .game-shell::before{background-image:radial-gradient(6px 4px at 18px 22px,#e8872b 99%,transparent),radial-gradient(7px 5px at 112px 86px,#c5521c 99%,transparent),radial-gradient(5px 4px at 65px 132px,#d9b130 99%,transparent),radial-gradient(6px 4px at 158px 44px,#8a9a2a 99%,transparent);animation:dm-fall 16s linear infinite}
-@keyframes dm-fall{to{background-position:0 180px,40px 275px,110px 330px,80px 370px}}
 /* Star skins */
-body.dm-star-pixel .bonus-star{border-radius:0!important;border-color:#000!important;background:#ffd23f!important;box-shadow:0 0 0 4px #fff3a0,0 0 22px 6px #ffd23f99!important;clip-path:polygon(40% 0,60% 0,60% 30%,100% 30%,100% 55%,80% 55%,80% 100%,60% 100%,60% 75%,40% 75%,40% 100%,20% 100%,20% 55%,0 55%,0 30%,40% 30%)}
-body.dm-star-comet .bonus-star{background:radial-gradient(circle at 70% 70%,#fff 0,#9fe8ff 30%,#2d7fe0 70%,#14307a 100%)!important;border-color:#cfeeff!important;box-shadow:0 0 24px 8px #5fb8ffaa,-18px -18px 28px 6px #5fb8ff55!important;border-radius:50% 50% 50% 8%!important}
 body.dm-star-snow .bonus-star{font-size:0!important;background:radial-gradient(circle,#fff 0,#d6f1ff 45%,#7fc4f5 100%)!important;border-color:#fff!important;box-shadow:0 0 24px 7px #9fdcffcc!important}
 body.dm-star-snow .bonus-star::after{content:"❄";font-size:54px;color:#2b6fb3;line-height:1}
 /* Billy coin skins */
@@ -645,11 +624,6 @@ body.dm-coin-gold .mystery-coin{background:radial-gradient(circle at 35% 30%,#ff
 body.dm-coin-diamond .mystery-coin{font-size:0!important;background:radial-gradient(circle,#fff,#aef0ff 50%,#35b7e6)!important;border-color:#e6fbff!important;box-shadow:0 0 18px 5px #62d8ffcc!important}
 body.dm-coin-diamond .mystery-coin::after{content:"💎";font-size:26px;line-height:1}
 /* Generator particle shapes */
-body.dm-pp-hearts .generator-particles span,body.dm-pp-stars .generator-particles span{width:auto!important;height:auto!important;background:none!important;box-shadow:none!important;font-size:11px!important;line-height:1;filter:none!important}
-body.dm-pp-hearts .generator-particles span::before{content:"♥"!important;color:#ff5d8f!important;text-shadow:0 0 4px #ff5d8f!important}
-body.dm-pp-stars .generator-particles span::before{content:"★"!important;color:#ffe14d!important;text-shadow:0 0 4px #ffb300!important}
-body.dm-pp-pixels .generator-particles span{width:4px!important;height:4px!important;border-radius:0!important;box-shadow:none!important;background:var(--particle-color,#fff)!important;filter:none!important}
-body.dm-pp-pixels .generator-particles span::before{content:none!important}
 /* UI themes */
 body.dm-ui-gb{--bg:#0f380f;--panel:#306230;--panel2:#2b5a2b;--line:#9bbc0f;--text:#e8ffd0;--muted:#b9d86a;--green:#8bac0f;--secondary-color:#306230;--h:100;--sat:1;--black-level:0}
 body.dm-ui-gb button:not(.bonus-star):not(.mystery-coin):not(.slot):not(.dm-btn){background:#8bac0f!important;color:#0f380f!important;border-color:#0f380f!important;text-shadow:none!important}
@@ -687,6 +661,96 @@ dialog.dm-dialog[open]{display:flex;flex-direction:column}
 .dm-dialog .panel-head h2{margin-right:auto}
 .dm-dialog-body{flex:1 1 auto;min-height:0;overflow:auto;padding-right:6px}
 .dm-dialog-body .dm-intro{margin:0 0 10px}
+
+
+/* ===== Superflow 1.0.1 ===== */
+body.dm-snow-ember::before{background-image:linear-gradient(180deg,#1a0600 0%,#2b0a02 56%,#3d1204 100%)!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;animation:none!important;filter:none}
+body.dm-snow-ember .game-shell::before{background-image:radial-gradient(3px 3px at 50px 56px,#ffb347 98%,transparent),radial-gradient(5px 5px at 63px 70px,#ff6a1a 98%,transparent),radial-gradient(2px 2px at 43px 50px,#ffe08a 98%,transparent),radial-gradient(4px 4px at 76px 86px,#ff8a2a 98%,transparent)!important;background-size:150px 170px,190px 210px,130px 150px,230px 260px!important;background-repeat:repeat!important;background-position:0 0,0 0,0 0,0 0;opacity:1!important;animation:dm-ember 8s linear infinite!important}
+@keyframes dm-ember{from{background-position:0 0,0 0,0 0,0 0}to{background-position:150px -340px,190px -210px,130px -450px,230px -260px}}
+body.dm-snow-blizzard::before{background-image:linear-gradient(180deg,#0d1822 0%,#16283a 56%,#243b52 100%)!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;animation:none!important;filter:none}
+body.dm-snow-blizzard .game-shell::before{background-image:radial-gradient(3px 3px at 30px 33px,#fff 98%,transparent),radial-gradient(5px 5px at 40px 43px,#e4f1ff 98%,transparent),radial-gradient(4px 4px at 35px 38px,#fff 98%,transparent),radial-gradient(6px 6px at 50px 55px,#dcecff 98%,transparent),radial-gradient(2px 2px at 23px 26px,#fff 98%,transparent)!important;background-size:90px 100px,120px 130px,105px 115px,150px 165px,70px 80px!important;background-repeat:repeat!important;background-position:0 0,0 0,0 0,0 0,0 0;opacity:1!important;animation:dm-blizzard 2.4s linear infinite!important}
+@keyframes dm-blizzard{from{background-position:0 0,0 0,0 0,0 0,0 0}to{background-position:-90px 300px,-120px 260px,-105px 345px,-150px 330px,-70px 320px}}
+body.dm-snow-stars::before{background-image:linear-gradient(180deg,#02030a 0%,#080a1f 56%,#150b2e 100%)!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;animation:none!important;filter:none}
+body.dm-snow-stars .game-shell::before{background-image:radial-gradient(1.5px 1.5px at 36px 40px,#fff 98%,transparent),radial-gradient(2px 2px at 56px 60px,#cfe3ff 98%,transparent),radial-gradient(1.5px 1.5px at 46px 50px,#ffe9a8 98%,transparent),radial-gradient(2.5px 2.5px at 76px 80px,#fff 98%,transparent)!important;background-size:110px 120px,170px 180px,140px 150px,230px 240px!important;background-repeat:repeat!important;background-position:0 0,0 0,0 0,0 0;opacity:1!important;animation:dm-stars 70s linear infinite,dm-twk 2.6s ease-in-out infinite alternate!important}
+@keyframes dm-stars{from{background-position:0 0,0 0,0 0,0 0}to{background-position:0px 120px,0px 180px,0px 150px,0px 240px}}
+body.dm-snow-petals::before{background-image:linear-gradient(180deg,#2a1226 0%,#3d1a38 56%,#52254a 100%)!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;animation:none!important;filter:none}
+body.dm-snow-petals .game-shell::before{background-image:radial-gradient(5px 5px at 50px 56px,#ffc2dc 98%,transparent),radial-gradient(7px 7px at 70px 76px,#ff9cc7 98%,transparent),radial-gradient(4px 4px at 40px 46px,#ffd9ea 98%,transparent),radial-gradient(6px 6px at 86px 96px,#ffb0d2 98%,transparent)!important;background-size:150px 170px,210px 230px,120px 140px,260px 290px!important;background-repeat:repeat!important;background-position:0 0,0 0,0 0,0 0;opacity:1!important;animation:dm-petals 18s linear infinite!important}
+@keyframes dm-petals{from{background-position:0 0,0 0,0 0,0 0}to{background-position:150px 170px,210px 230px,120px 280px,260px 290px}}
+body.dm-snow-leaves::before{background-image:linear-gradient(180deg,#201208 0%,#33200c 56%,#4a2d10 100%)!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;animation:none!important;filter:none}
+body.dm-snow-leaves .game-shell::before{background-image:radial-gradient(6px 6px at 53px 60px,#e8872b 98%,transparent),radial-gradient(7px 7px at 73px 80px,#c5521c 98%,transparent),radial-gradient(5px 5px at 43px 50px,#d9b130 98%,transparent),radial-gradient(6px 6px at 90px 100px,#8a9a2a 98%,transparent)!important;background-size:160px 180px,220px 240px,130px 150px,270px 300px!important;background-repeat:repeat!important;background-position:0 0,0 0,0 0,0 0;opacity:1!important;animation:dm-leaves 15s linear infinite!important}
+@keyframes dm-leaves{from{background-position:0 0,0 0,0 0,0 0}to{background-position:-160px 180px,-220px 240px,-130px 300px,-270px 300px}}
+
+@keyframes dm-twk{from{opacity:1}to{opacity:.35}}
+body.dm-aurora::before{background-image:linear-gradient(115deg,#03111d,#0a7a62,#2c5be0,#8a2be2,#0a7a62,#03111d)!important;background-size:400% 400%!important;background-position:0% 50%!important;background-repeat:no-repeat!important;animation:dm-aur 14s ease-in-out infinite alternate!important}
+@keyframes dm-aur{to{background-position:100% 50%}}
+body.dm-aurora .game-shell::before{background-image:repeating-linear-gradient(100deg,transparent 0 70px,#5affc833 120px,transparent 190px),repeating-linear-gradient(80deg,transparent 0 110px,#b78bff2e 170px,transparent 260px)!important;background-size:380px 100%,520px 100%!important;background-repeat:repeat!important;opacity:1!important;animation:dm-aurc 12s linear infinite!important}
+@keyframes dm-aurc{from{background-position:0 0,0 0}to{background-position:380px 0,-520px 0}}
+/* synced frames: one clock on :root drives every tile */
+@property --dm-hue{syntax:"<number>";inherits:true;initial-value:0}
+@property --dm-pulse{syntax:"<number>";inherits:true;initial-value:0}
+@keyframes dm-hue{to{--dm-hue:360}}
+@keyframes dm-pulse{to{--dm-pulse:1}}
+:root{animation:dm-hue 6s linear infinite,dm-pulse 1.4s ease-in-out infinite alternate}
+body.dm-gold .slot{border-color:#ffd447!important;outline-color:#7a4a00!important;box-shadow:0 0 calc(4px + var(--dm-pulse)*12px) #ffd447,inset 0 0 10px #ffd44744!important}
+body.dm-f-ice .slot{border-color:#e9f8ff!important;outline-color:#4f9fd0!important;box-shadow:0 0 calc(6px + var(--dm-pulse)*8px) #9fd8ff,inset 0 0 10px #bfe9ff66!important}
+body.dm-f-obsidian .slot{border-color:hsl(268 70% calc(45% + var(--dm-pulse)*20%))!important;outline-color:#12041f!important;box-shadow:0 0 calc(6px + var(--dm-pulse)*10px) #7a3bd1,inset 0 0 12px #2a0f4d!important}
+body.dm-f-rainbow .slot{border-color:hsl(var(--dm-hue) 100% 60%)!important;outline-color:hsl(calc(var(--dm-hue) + 180) 100% 30%)!important;box-shadow:0 0 12px hsl(var(--dm-hue) 100% 60%),inset 0 0 10px hsl(var(--dm-hue) 100% 60% / .4)!important}
+body.dm-f-inferno .slot{border-color:hsl(calc(8 + var(--dm-pulse)*34) 100% 55%)!important;outline-color:#3a0800!important;box-shadow:0 0 calc(6px + var(--dm-pulse)*12px) hsl(calc(8 + var(--dm-pulse)*34) 100% 50%),inset 0 0 10px #ff5a0044!important}
+body.dm-f-emerald .slot{border-color:#3ddc84!important;outline-color:#04301a!important;box-shadow:0 0 calc(5px + var(--dm-pulse)*10px) #3ddc84,inset 0 0 10px #3ddc8444!important}
+body.dm-f-neon .slot{border-color:color-mix(in srgb,#ff2bd6 calc(var(--dm-pulse)*100%),#19f6d2)!important;outline-color:#05020f!important;box-shadow:0 0 calc(6px + var(--dm-pulse)*10px) color-mix(in srgb,#ff2bd6 calc(var(--dm-pulse)*100%),#19f6d2)!important}
+body.dm-star-pixel .bonus-star:not(.diamond-star){font-size:0!important;border:0!important;border-radius:0!important;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 12' shape-rendering='crispEdges'><rect x='0' y='3' width='1' height='1' fill='%23000'/><rect x='0' y='4' width='1' height='1' fill='%23000'/><rect x='0' y='5' width='1' height='1' fill='%23000'/><rect x='0' y='9' width='1' height='1' fill='%23000'/><rect x='0' y='10' width='1' height='1' fill='%23000'/><rect x='0' y='11' width='1' height='1' fill='%23000'/><rect x='1' y='3' width='1' height='1' fill='%23000'/><rect x='1' y='5' width='1' height='1' fill='%23000'/><rect x='1' y='6' width='1' height='1' fill='%23000'/><rect x='1' y='7' width='1' height='1' fill='%23000'/><rect x='1' y='8' width='1' height='1' fill='%23000'/><rect x='1' y='9' width='1' height='1' fill='%23000'/><rect x='1' y='11' width='1' height='1' fill='%23000'/><rect x='2' y='3' width='1' height='1' fill='%23000'/><rect x='2' y='6' width='1' height='1' fill='%23000'/><rect x='2' y='7' width='1' height='1' fill='%23000'/><rect x='2' y='11' width='1' height='1' fill='%23000'/><rect x='3' y='3' width='1' height='1' fill='%23000'/><rect x='3' y='10' width='1' height='1' fill='%23000'/><rect x='3' y='11' width='1' height='1' fill='%23000'/><rect x='4' y='2' width='1' height='1' fill='%23000'/><rect x='4' y='3' width='1' height='1' fill='%23000'/><rect x='4' y='10' width='1' height='1' fill='%23000'/><rect x='5' y='0' width='1' height='1' fill='%23000'/><rect x='5' y='1' width='1' height='1' fill='%23000'/><rect x='5' y='2' width='1' height='1' fill='%23000'/><rect x='5' y='9' width='1' height='1' fill='%23000'/><rect x='5' y='10' width='1' height='1' fill='%23000'/><rect x='6' y='0' width='1' height='1' fill='%23000'/><rect x='6' y='8' width='1' height='1' fill='%23000'/><rect x='6' y='9' width='1' height='1' fill='%23000'/><rect x='7' y='0' width='1' height='1' fill='%23000'/><rect x='7' y='1' width='1' height='1' fill='%23000'/><rect x='7' y='2' width='1' height='1' fill='%23000'/><rect x='7' y='9' width='1' height='1' fill='%23000'/><rect x='7' y='10' width='1' height='1' fill='%23000'/><rect x='8' y='2' width='1' height='1' fill='%23000'/><rect x='8' y='3' width='1' height='1' fill='%23000'/><rect x='8' y='10' width='1' height='1' fill='%23000'/><rect x='9' y='3' width='1' height='1' fill='%23000'/><rect x='9' y='10' width='1' height='1' fill='%23000'/><rect x='9' y='11' width='1' height='1' fill='%23000'/><rect x='10' y='3' width='1' height='1' fill='%23000'/><rect x='10' y='6' width='1' height='1' fill='%23000'/><rect x='10' y='7' width='1' height='1' fill='%23000'/><rect x='10' y='11' width='1' height='1' fill='%23000'/><rect x='11' y='3' width='1' height='1' fill='%23000'/><rect x='11' y='5' width='1' height='1' fill='%23000'/><rect x='11' y='6' width='1' height='1' fill='%23000'/><rect x='11' y='7' width='1' height='1' fill='%23000'/><rect x='11' y='8' width='1' height='1' fill='%23000'/><rect x='11' y='9' width='1' height='1' fill='%23000'/><rect x='11' y='11' width='1' height='1' fill='%23000'/><rect x='12' y='3' width='1' height='1' fill='%23000'/><rect x='12' y='4' width='1' height='1' fill='%23000'/><rect x='12' y='5' width='1' height='1' fill='%23000'/><rect x='12' y='9' width='1' height='1' fill='%23000'/><rect x='12' y='10' width='1' height='1' fill='%23000'/><rect x='12' y='11' width='1' height='1' fill='%23000'/><rect x='1' y='4' width='1' height='1' fill='%23fff6a8'/><rect x='1' y='10' width='1' height='1' fill='%23ffd23f'/><rect x='2' y='4' width='1' height='1' fill='%23fff6a8'/><rect x='2' y='5' width='1' height='1' fill='%23fff6a8'/><rect x='2' y='8' width='1' height='1' fill='%23ffd23f'/><rect x='2' y='9' width='1' height='1' fill='%23ffd23f'/><rect x='2' y='10' width='1' height='1' fill='%23ffd23f'/><rect x='3' y='4' width='1' height='1' fill='%23fff6a8'/><rect x='3' y='5' width='1' height='1' fill='%23fff6a8'/><rect x='3' y='6' width='1' height='1' fill='%23fff6a8'/><rect x='3' y='7' width='1' height='1' fill='%23fff6a8'/><rect x='3' y='8' width='1' height='1' fill='%23ffd23f'/><rect x='3' y='9' width='1' height='1' fill='%23ffd23f'/><rect x='4' y='4' width='1' height='1' fill='%23fff6a8'/><rect x='4' y='5' width='1' height='1' fill='%23fff6a8'/><rect x='4' y='6' width='1' height='1' fill='%23fff6a8'/><rect x='4' y='7' width='1' height='1' fill='%23fff6a8'/><rect x='4' y='8' width='1' height='1' fill='%23ffd23f'/><rect x='4' y='9' width='1' height='1' fill='%23ffd23f'/><rect x='5' y='3' width='1' height='1' fill='%23fff6a8'/><rect x='5' y='4' width='1' height='1' fill='%23fff6a8'/><rect x='5' y='5' width='1' height='1' fill='%23fff6a8'/><rect x='5' y='6' width='1' height='1' fill='%23fff6a8'/><rect x='5' y='7' width='1' height='1' fill='%23fff6a8'/><rect x='5' y='8' width='1' height='1' fill='%23ffd23f'/><rect x='6' y='1' width='1' height='1' fill='%23fff6a8'/><rect x='6' y='2' width='1' height='1' fill='%23fff6a8'/><rect x='6' y='3' width='1' height='1' fill='%23fff6a8'/><rect x='6' y='4' width='1' height='1' fill='%23fff6a8'/><rect x='6' y='5' width='1' height='1' fill='%23ffd23f'/><rect x='6' y='6' width='1' height='1' fill='%23ffd23f'/><rect x='6' y='7' width='1' height='1' fill='%23ffd23f'/><rect x='7' y='3' width='1' height='1' fill='%23fff6a8'/><rect x='7' y='4' width='1' height='1' fill='%23fff6a8'/><rect x='7' y='5' width='1' height='1' fill='%23e08a00'/><rect x='7' y='6' width='1' height='1' fill='%23e08a00'/><rect x='7' y='7' width='1' height='1' fill='%23e08a00'/><rect x='7' y='8' width='1' height='1' fill='%23e08a00'/><rect x='8' y='4' width='1' height='1' fill='%23fff6a8'/><rect x='8' y='5' width='1' height='1' fill='%23e08a00'/><rect x='8' y='6' width='1' height='1' fill='%23e08a00'/><rect x='8' y='7' width='1' height='1' fill='%23e08a00'/><rect x='8' y='8' width='1' height='1' fill='%23e08a00'/><rect x='8' y='9' width='1' height='1' fill='%23e08a00'/><rect x='9' y='4' width='1' height='1' fill='%23fff6a8'/><rect x='9' y='5' width='1' height='1' fill='%23e08a00'/><rect x='9' y='6' width='1' height='1' fill='%23e08a00'/><rect x='9' y='7' width='1' height='1' fill='%23e08a00'/><rect x='9' y='8' width='1' height='1' fill='%23e08a00'/><rect x='9' y='9' width='1' height='1' fill='%23e08a00'/><rect x='10' y='4' width='1' height='1' fill='%23fff6a8'/><rect x='10' y='5' width='1' height='1' fill='%23e08a00'/><rect x='10' y='8' width='1' height='1' fill='%23e08a00'/><rect x='10' y='9' width='1' height='1' fill='%23e08a00'/><rect x='10' y='10' width='1' height='1' fill='%23e08a00'/><rect x='11' y='4' width='1' height='1' fill='%23fff6a8'/><rect x='11' y='10' width='1' height='1' fill='%23e08a00'/></svg>") center/contain no-repeat!important;box-shadow:none!important;image-rendering:pixelated;filter:drop-shadow(0 0 6px #ffd23f) drop-shadow(0 0 14px #ffb30088);animation:dm-pxbob .7s steps(2) infinite!important}
+body.dm-star-pixel .bonus-star.hyper-star{filter:hue-rotate(160deg) drop-shadow(0 0 8px #4fd0ff)}
+@keyframes dm-pxbob{from{transform:translateY(0)}to{transform:translateY(-5px)}}
+
+body.dm-star-comet .bonus-star:not(.diamond-star){font-size:0!important;overflow:visible!important;border:0!important;box-shadow:none!important;background:radial-gradient(circle,#9fe8ff40 0,transparent 68%)!important;animation:dm-cwob 2.2s ease-in-out infinite alternate!important}
+body.dm-star-comet .bonus-star:not(.diamond-star)::before{content:"";position:absolute;right:46%;top:50%;width:150px;height:30px;margin-top:-15px;transform-origin:100% 50%;transform:rotate(-32deg);background:linear-gradient(90deg,transparent,#2d7fe055 35%,#9fe8ffcc 75%,#fff);clip-path:polygon(0 50%,100% 8%,100% 92%);filter:blur(1px);animation:dm-ctail .5s ease-in-out infinite alternate}
+body.dm-star-comet .bonus-star:not(.diamond-star)::after{content:"";position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%!important;background:radial-gradient(circle at 38% 36%,#fff 0,#e2f8ff 28%,#6fc8ff 62%,#2d7fe0 100%);box-shadow:0 0 14px 5px #8fdcff,0 0 34px 12px #2d7fe0aa,-30px -20px 0 -9px #bfefff,-52px -34px 0 -11px #7fc8ff,-70px -46px 0 -12px #4f9fe8}
+@keyframes dm-ctail{from{transform:rotate(-32deg) scaleX(.82);opacity:.8}to{transform:rotate(-30deg) scaleX(1.08);opacity:1}}
+@keyframes dm-cwob{from{transform:translate(-3px,3px)}to{transform:translate(3px,-3px)}}
+body.dm-star-comet .bonus-star.hyper-star::before{background:linear-gradient(90deg,transparent,#c04fff55 35%,#ff9bf0cc 75%,#fff)}
+/* cursors */
+body.dm-cursor-heart,body.dm-cursor-heart *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke='%23000' stroke-width='1.2' stroke-linejoin='round'><path d='M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z' fill='%23ff4d6d'/></svg>") 16 16,auto}
+body.dm-cursor-star,body.dm-cursor-star *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke='%23000' stroke-width='1.2' stroke-linejoin='round'><polygon points='12,2 15,9 22,9.5 16.5,14 18.5,21 12,17 5.5,21 7.5,14 2,9.5 9,9' fill='%23ffd23f'/></svg>") 16 16,auto}
+body.dm-cursor-cross,body.dm-cursor-cross *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke='%23000' stroke-width='1.2' stroke-linejoin='round'><circle cx='12' cy='12' r='7' fill='none' stroke='%23ff2b2b' stroke-width='2'/><path d='M12 1v7M12 16v7M1 12h7M16 12h7' stroke='%23ff2b2b' stroke-width='2'/><circle cx='12' cy='12' r='1.5' fill='%23ff2b2b'/></svg>") 16 16,auto}
+body.dm-cursor-gem,body.dm-cursor-gem *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke='%23000' stroke-width='1.2' stroke-linejoin='round'><polygon points='12,2 20,9 12,22 4,9' fill='%2362d8ff'/><path d='M4 9h16M9 9l3-7 3 7M9 9l3 13 3-13' fill='none' stroke='%23fff' stroke-width='.8'/></svg>") 16 16,auto}
+body.dm-cursor-wand,body.dm-cursor-wand *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke='%23000' stroke-width='1.2' stroke-linejoin='round'><path d='M3 21 14 10' stroke='%23c68642' stroke-width='3.5' fill='none'/><polygon points='17,2 18.6,5.4 22,6 19.4,8.4 20,12 17,10.2 14,12 14.6,8.4 12,6 15.4,5.4' fill='%23ffe14d'/></svg>") 17 6,auto}
+body.dm-cursor-arrow,body.dm-cursor-arrow *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke='%23000' stroke-width='1.2' stroke-linejoin='round'><polygon points='3,2 3,19 8,14.5 11.5,22 14.5,20.5 11,13 17.5,13' fill='%23fff'/></svg>") 3 2,auto}
+
+/* click effects */
+@keyframes dm-spark{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rot,0deg)) scale(.2);opacity:0}}
+.dm-fxch{width:auto!important;height:auto!important;margin:-8px 0 0 -8px!important;line-height:1;background:none!important;text-shadow:none!important}
+.dm-ring{position:fixed;width:12px;height:12px;margin:-6px 0 0 -6px;border:3px solid #7de3ff;border-radius:50%!important;pointer-events:none;z-index:2147483200;animation:dm-ring .7s ease-out both}
+@keyframes dm-ring{from{transform:scale(.3);opacity:1}to{transform:scale(7);opacity:0}}
+/* overlays */
+body[class*="dm-ov-"]::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:2147482000}
+body.dm-ov-vignette::after{background:radial-gradient(ellipse at center,transparent 45%,#000c 100%)}
+body.dm-ov-grain::after{opacity:.16;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");animation:dm-grain .5s steps(4) infinite}
+@keyframes dm-grain{to{background-position:80px 60px}}
+body.dm-ov-vhs::after{background:repeating-linear-gradient(0deg,#0000 0 3px,#00000030 3px 4px),linear-gradient(180deg,transparent,#ffffff16 50%,transparent);background-size:100% 4px,100% 160px;background-repeat:repeat,no-repeat;box-shadow:inset 8px 0 22px #ff004426,inset -8px 0 22px #00e5ff26;animation:dm-vhs 5s linear infinite}
+@keyframes dm-vhs{from{background-position:0 0,0 -160px}to{background-position:0 0,0 110vh}}
+body.dm-ov-rain::after{background-image:repeating-linear-gradient(105deg,transparent 0 13px,#9fd0ff44 13px 14px),repeating-linear-gradient(105deg,transparent 0 21px,#cfe6ff30 21px 22px);background-size:60px 120px,90px 170px;animation:dm-rain .6s linear infinite}
+@keyframes dm-rain{to{background-position:-20px 120px,-30px 170px}}
+body.dm-ov-sepia::after{background:#ffb35a30;mix-blend-mode:multiply}
+body.dm-ov-night::after{background:#0a1c5a66;mix-blend-mode:multiply}
+body.dm-ov-grid::after{background-image:linear-gradient(#0000002e 1px,transparent 1px),linear-gradient(90deg,#0000002e 1px,transparent 1px);background-size:4px 4px}
+body.dm-ov-dusk::after{background:linear-gradient(180deg,#ff7a3d33,#8a2be233 60%,#0a1c5a55)}
+/* shop: obvious entry, preview */
+.dm-hero{background:linear-gradient(120deg,#062a4d,#0e72c9,#062a4d);background-size:200% 100%;animation:dm-sheen 5s linear infinite;border:3px solid #7fd4ff!important;box-shadow:0 0 calc(8px + var(--dm-pulse)*14px) #4fd0ff!important;text-align:center;padding:14px!important}
+@keyframes dm-sheen{to{background-position:-200% 0}}
+.dm-hero h2{font:800 24px/1.2 "Trebuchet MS",Verdana,sans-serif!important;color:#fff!important;text-shadow:none!important;margin:0 0 4px;cursor:pointer}
+.dm-hero p{margin:0 0 10px;font:600 14px/1.4 "Trebuchet MS",Verdana,sans-serif!important;color:#e6f6ff}
+.dm-hero button{font:800 18px/1.2 "Trebuchet MS",Verdana,sans-serif!important;padding:10px 26px!important;background:#ffd43b!important;color:#2a1a00!important;border-color:#000!important;text-shadow:none!important}
+#diamondHeaderBtn{background:#0e72c9!important;color:#fff!important;border-color:#7fd4ff!important;font-weight:800;box-shadow:0 0 calc(4px + var(--dm-pulse)*10px) #4fd0ff,0 3px 0 #000!important}
+.dm-btnrow{display:flex;gap:6px;flex-wrap:wrap}.dm-btnrow .dm-btn{flex:1 1 90px}
+.dm-btn.dm-pv{background:#6a3fc2!important}
+.dm-sample{padding:8px;background:#000a;border:2px dashed #7fd4ff;display:grid;gap:4px;font-size:14px}
+.dm-sample .chat-message{margin:0}
+#dmPvBar{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:2147483600;display:none;gap:10px;align-items:center;padding:8px 14px;background:#2a1466;color:#fff;border:3px solid #fff;font:700 15px "Trebuchet MS",Verdana,sans-serif;max-width:94vw}
+#dmPvBar.show{display:flex}#dmPvBar button{font:700 14px "Trebuchet MS",Verdana,sans-serif!important;padding:5px 10px}
+#dmPvStage{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);display:flex;gap:46px;align-items:center;z-index:2147483000;pointer-events:none}
+#dmPvStage .bonus-star,#dmPvStage .mystery-coin{position:relative!important}
+#annStyleRow[hidden]{display:none!important}
+.chat-alpha{color:#ffb347!important}
 </style></head>
 <body>
 <section class="auth-screen" id="authScreen">
@@ -726,6 +790,7 @@ dialog.dm-dialog[open]{display:flex;flex-direction:column}
     <span id="gamePlayerName" class="auth-status"></span>
     <span id="diamondPill" class="diamond-pill" title="Diamonds">💎 0</span>
     <div class="game-account-actions">
+      <button id="diamondHeaderBtn" type="button">💎 Diamond Shop</button>
       <button id="statsOpenBtn" type="button">Stats</button>
               <button id="giftsOpenBtn" type="button">Gifts<span class="activity-badge" id="giftsAvailableBadge" aria-label="Pending gifts" hidden>!</span></button>
       <button id="logoutBtn" type="button">Log out</button>
@@ -980,8 +1045,8 @@ dialog.dm-dialog[open]{display:flex;flex-direction:column}
           <div class="theme-slider-row">
             <input class="theme-range" id="themeBrightness" type="range" min="50" max="150" step="1" value="100" aria-label="Secondary color brightness">
           </div>
-          <label class="theme-slider-label" for="themeStrength">Theme color strength</label>
-          <div class="theme-slider-row">
+          <label class="theme-slider-label" for="themeStrength" hidden>Theme color strength</label>
+          <div class="theme-slider-row" hidden>
             <input class="theme-range" id="themeStrength" type="range" min="0" max="100" step="1" value="50" aria-label="Theme color strength">
           </div>
           <button id="themeReset" type="button">Classic mode</button>
@@ -995,13 +1060,14 @@ dialog.dm-dialog[open]{display:flex;flex-direction:column}
         <div class="body">
           <div id="mainSettingsPanel" class="settings-tab-panel" role="tabpanel" aria-labelledby="mainSettingsTab">
             <div class="settings-options">
+            <label class="setting-row" id="annStyleRow" hidden><span><strong>Announcement style (owner)</strong><small>Free style for your rebirth and multiplier announcements in chat.</small><select id="annStyleSelect"></select></span></label>
             <label class="setting-row" for="lowPerformanceToggle">
               <input id="lowPerformanceToggle" type="checkbox">
               <span><strong>Low Performance Mode</strong><small>Slows generator color cycling and turns off generator particles.</small></span>
             </label>
             <label class="setting-row" for="snowToggle">
               <input id="snowToggle" type="checkbox" checked>
-              <span><strong>Snow</strong><small>Show or hide the falling snow effect.</small></span>
+              <span><strong>Background effects</strong><small>Show or hide the falling snow, petals, embers, leaves and aurora curtains.</small></span>
             </label>
             <label class="setting-row" for="reducedMotionToggle">
               <input id="reducedMotionToggle" type="checkbox">
@@ -1051,8 +1117,8 @@ dialog.dm-dialog[open]{display:flex;flex-direction:column}
       </section>
     </div>
   </div>
-  <section class="panel" id="diamondShopPanel">
-    <div class="panel-head"><h2 id="diamondShopTitle" style="cursor:pointer">💎 Diamond Shop</h2><button id="diamondShopOpenBtn" type="button">Open</button></div>
+  <section class="panel dm-hero" id="diamondShopPanel">
+    <h2 id="diamondShopTitle">💎 DIAMOND SHOP</h2><p>Backgrounds, tile frames, themes, star skins, cursors, click effects, overlays, chat styles, perks and bundles. Every item has a Preview button!</p><button id="diamondShopOpenBtn" type="button">Open the Diamond Shop</button>
   </section>
   <section class="panel admin-panel-bottom" id="adminPanel" hidden>
     <div class="panel-head"><h2>Admin Panel</h2></div>
@@ -1104,7 +1170,7 @@ dialog.dm-dialog[open]{display:flex;flex-direction:column}
   <div class="note" id="adminStatus" role="status" aria-live="polite" style="grid-column:1/-1"></div>
     </div>
   </section>
-  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">1.0.0 (Part 2)</span><button id="updateHistoryBtn" type="button">Update history</button></div>
+  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">1.0.1</span><button id="updateHistoryBtn" type="button">Update history</button></div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
@@ -1175,7 +1241,7 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 100000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "1.0.0 (Part 2)";
+const GAME_VERSION = "1.0.1";
 const GLOBAL_BOOST_MILESTONES = [
   { cost: 1e6, multiplier: 1.2 }, { cost: 1e7, multiplier: 1.4 },
   { cost: 1e8, multiplier: 1.6 }, { cost: 1e9, multiplier: 1.8 },
@@ -1338,8 +1404,8 @@ const UPDATE_HISTORY = [
     ]
   },
   {
-    version: GAME_VERSION,
-    status: "Current",
+    version: "1.0.0 (Part 2)",
+    status: "Previous",
     changes: [
       "Added Diamonds, earned from math questions, Stars, Billy coins, quests, daily rewards, achievements, levels and rebirth milestones, plus a Diamond Shop with perks and instant-use items.",
       "The Diamond Shop now opens in its own full-screen window instead of taking up space on the page, and the diamond counter opens it too.",
@@ -1352,6 +1418,24 @@ const UPDATE_HISTORY = [
       "Alpha Generators can no longer be gambled and are hidden everywhere unless you own one.",
       "Added admin tools: global broadcast banner, refresh every open game, wipe all player progress, spawn Billy for everyone, diamond rain, and spawning a question, multiplier or Diamond Star/Billy for yourself.",
       "Updated the game version to 1.0.0 (Part 2)."
+    ]
+  },
+  {
+    version: GAME_VERSION,
+    status: "Current",
+    changes: [
+      "Added a Preview button to every Diamond Shop item, and made the Diamond Shop much easier to spot.",
+      "Fixed Diamond Shop backgrounds, chat name colours, chat titles and announcement styles; leaderboard flair is now much more visible.",
+      "Tile frames are now perfectly in sync and look better, with three new frames.",
+      "Redesigned the Pixel Star and Comet Star.",
+      "Added 6 new cursors, 8 new click effects and 8 new overlays.",
+      "Bundles reworked: six bundles with bigger savings, and you only pay for items you do not already own.",
+      "Removed the Season 1 title and generator particle cosmetics (diamonds refunded if owned).",
+      "Billy and Stars no longer appear just because you logged in.",
+      "A wipe now also resets your saved theme.",
+      "Added the alpha tag (a) in chat.",
+      "Owner announcement styles are now a free setting instead of a shop item.",
+      "Settings cleanup: Snow is now Background effects (it also covers the new Diamond Shop backgrounds), and the leftover light-mode theme strength slider is hidden."
     ]
   }
 ];
@@ -2398,6 +2482,13 @@ function renderChat(snapshot) {
         meta.append(tagSpan);
       }
     }
+    if (!message.isAnnouncement && !message.isBroadcast) {
+      const alphaTag = document.createElement("span");
+      alphaTag.className = "chat-tag chat-alpha";
+      alphaTag.title = "Alpha";
+      alphaTag.textContent = "(a) ";
+      meta.append(alphaTag);
+    }
     const nameSpan = document.createElement("strong");
     nameSpan.textContent = (message.isBroadcast ? "📢 Broadcast from " : "") + (message.username || "Player") + ": ";
     if (!message.isBroadcast) {
@@ -2526,7 +2617,7 @@ async function sendChatMessage(event) {
         uid: currentUser.uid,
         username: currentUsername,
         tag: myTag ? myTag.text : "",
-        ...(window.dmChatFields ? window.dmChatFields() : {}),
+        ...(window.dmChatFields && window.dmChatFieldsOK !== false ? window.dmChatFields() : {}),
         text: text.slice(0, 300),
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
@@ -2535,6 +2626,11 @@ async function sendChatMessage(event) {
     $("chatInput").value = "";
     if (text !== originalText) $("chatStatus").textContent = "Profanity is blurred before messages are sent.";
   } catch (e) {
+    if (e && e.code === "permission-denied" && window.dmChatFieldsOK !== false && window.dmChatFields && Object.keys(window.dmChatFields()).length) {
+      window.dmChatFieldsOK = false;
+      $("chatStatus").textContent = "Your chat colour/title was blocked by the Firestore rules (publish the 1.0.1 rules). Sending without it.";
+      return sendChatMessage(event);
+    }
     $("chatStatus").textContent = e.message === "chat-cooldown"
       ? "Please wait a few seconds before sending another message."
       : e && e.code === "permission-denied" ? "Chat is blocked by your Firestore rules."
@@ -3649,13 +3745,16 @@ function stopGlobalStarListener() {
 function startGlobalStarListener() {
   stopGlobalStarListener();
   if (!currentUser || !dbRef) return;
+  let initialStarSnap = true;
   globalStarUnsubscribe = dbRef.collection("globalStarBroadcasts").doc("current")
     .onSnapshot(snapshot => {
+      const wasInitialSnap = initialStarSnap; initialStarSnap = false;
       if (!snapshot.exists) return;
       const broadcast = snapshot.data();
       if (typeof broadcast.broadcastId !== "string"
         || broadcast.broadcastId === lastGlobalStarBroadcastId
         || !broadcast.createdAt || typeof broadcast.createdAt.toMillis !== "function") return;
+      if (wasInitialSnap) { lastGlobalStarBroadcastId = broadcast.broadcastId; return; } // never spawn for a broadcast that already existed at login
       const age = Date.now() - broadcast.createdAt.toMillis();
       if (age < 0 || age > 5 * 60 * 1000) return;
       lastGlobalStarBroadcastId = broadcast.broadcastId;
@@ -5557,6 +5656,7 @@ function startGlobalWipeListener() {
       else await userRef.set({ state: {}, wipedAt: wipeMs });
       Object.keys(localStorage).filter(k => k.indexOf(getPlayerSaveKey(currentUsername)) === 0).forEach(k => localStorage.removeItem(k));
       localStorage.setItem(mirror, String(wipeMs));
+      try { localStorage.removeItem("superflowTheme_v1"); } catch (e2) {}
       try { await dbRef.collection("dailyClaims").doc(uid).delete(); } catch (e) {}
       location.reload();
     } catch (e) { console.error("Wipe check failed:", e); }
@@ -5672,7 +5772,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   const prof=()=>(state.dmProfile=state.dmProfile&&typeof state.dmProfile==="object"?state.dmProfile:{});
   // Catalogs. Other players only ever see these ids, never free text.
   const NC={red:["Red","#ff6b6b"],orange:["Orange","#ffa94d"],gold:["Gold","#ffd43b"],green:["Green","#69db7c"],cyan:["Cyan","#66d9e8"],blue:["Blue","#74a7ff"],purple:["Purple","#b197fc"],pink:["Pink","#ff8ad8"]};
-  const TT={hunter:["Star Hunter",50],rebirthed:["Rebirthed",60],baron:["Diamond Baron",100],billy:["Billy's Pal",50],owl:["Night Owl",50],season1:["Season 1",150]};
+  const TT={hunter:["Star Hunter",50],rebirthed:["Rebirthed",60],baron:["Diamond Baron",100],billy:["Billy's Pal",50],owl:["Night Owl",50]};
   const BI={fire:"🔥",gem:"💎",dragon:"🐉",clover:"🍀",moon:"🌙",bolt:"⚡"};
   const FL={flame:["🔥","#ff7a3d"],frost:["❄️","#8fd3ff"],bolt:["⚡","#ffe14d"],clover:["🍀","#5ad66f"],royal:["👑","#c79bff"]};
   const AN={gold:["🎉","#ffd43b"],frost:["❄️","#8fd3ff"],pink:["💖","#ff8ad8"],clover:["🍀","#69db7c"]};
@@ -5689,40 +5789,63 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     {id:"hypercall",type:"use",name:"Call a Hyper Star",cost:20,desc:"Spawn a Hyper Star for you.",run:()=>spawnStar(null,false,true)}
   ];
   const C=(id,group,name,cost,desc,cls)=>({id,type:"cos",group,name,cost,desc,cls});
-  const GROUPS=[
-    ["snow","Background & snow"],["frame","Tile frames"],["ui","UI themes"],["star","Star skins"],["coin","Billy coin skins"],
-    ["cursor","Cursor"],["click","Click effects"],["particles","Generator particles"],["overlay","Overlays"]
-  ];
+  const GROUPS=[["snow","Background & snow"],["frame","Tile frames"],["ui","UI themes"],["star","Star skins"],["coin","Billy coin skins"],["cursor","Cursors"],["click","Click effects"],["overlay","Overlays"]];
   const COS=[
-    C("aurora","snow","Aurora Snow",40,"Colour-shifted snow background.","dm-aurora"),
-    C("ember","snow","Ember Snow",35,"Orange sparks rise instead of snow.","dm-snow-ember"),
-    C("blizzard","snow","Blizzard",40,"Heavy, fast snow.","dm-snow-blizzard"),
-    C("starfield","snow","Starfield",50,"Twinkling pixel stars instead of snow.","dm-snow-stars"),
-    C("petals","snow","Falling Petals",40,"Pink petals drift down.","dm-snow-petals"),
-    C("leaves","snow","Falling Leaves",40,"Autumn leaves drift down.","dm-snow-leaves"),
-    C("gold","frame","Gold Frames",25,"Gold outlines on generator tiles.","dm-gold"),
-    C("ice","frame","Ice Frames",30,"Pale blue frosted outlines.","dm-f-ice"),
-    C("obsidian","frame","Obsidian Frames",40,"Dark purple outlines.","dm-f-obsidian"),
-    C("rainbow","frame","Rainbow Frames",80,"Outlines that cycle through every colour.","dm-f-rainbow"),
+    C("aurora","snow","Aurora Sky",45,"A glowing northern-lights sky with drifting light curtains.","dm-aurora"),
+    C("ember","snow","Ember Rise",35,"Orange sparks rise up the screen.","dm-snow-ember"),
+    C("blizzard","snow","Blizzard",40,"Heavy, fast, slanted snow on a stormy sky.","dm-snow-blizzard"),
+    C("starfield","snow","Starfield",50,"Twinkling pixel stars on a deep space sky.","dm-snow-stars"),
+    C("petals","snow","Falling Petals",40,"Pink petals sway down a plum sky.","dm-snow-petals"),
+    C("leaves","snow","Falling Leaves",40,"Autumn leaves sway down a warm brown sky.","dm-snow-leaves"),
+    C("gold","frame","Gold Frames",25,"Pulsing gold outlines on generator tiles.","dm-gold"),
+    C("ice","frame","Ice Frames",30,"Frosted blue outlines with a cold glow.","dm-f-ice"),
+    C("obsidian","frame","Obsidian Frames",40,"Purple outlines that throb in sync.","dm-f-obsidian"),
+    C("rainbow","frame","Rainbow Frames",80,"Every tile cycles through the same colours at the same time.","dm-f-rainbow"),
+    C("f-inferno","frame","Inferno Frames",45,"Flickering fire-coloured outlines.","dm-f-inferno"),
+    C("f-emerald","frame","Emerald Frames",35,"Pulsing green gem outlines.","dm-f-emerald"),
+    C("f-neon","frame","Neon Pulse Frames",55,"Outlines that fade between pink and cyan.","dm-f-neon"),
     C("gameboy","ui","Gameboy Green",50,"A green monochrome palette.","dm-ui-gb"),
     C("neon","ui","Neon Night",50,"Dark panels with neon outlines.","dm-ui-neon"),
     C("parchment","ui","Parchment",40,"Warm tan, like old game menus.","dm-ui-parch"),
     C("wood","ui","Wood & Stone",60,"Wooden panels with stone headers.","dm-ui-wood"),
-    C("star-pixel","star","Pixel Star",30,"A blocky pixel Star.","dm-star-pixel"),
-    C("star-comet","star","Comet Star",30,"Stars look like comets.","dm-star-comet"),
+    C("star-pixel","star","Pixel Star",30,"A proper pixel-art Star with a bobbing animation.","dm-star-pixel"),
+    C("star-comet","star","Comet Star",35,"A blazing comet with a flickering tail and sparks.","dm-star-comet"),
     C("star-snow","star","Snowflake Star",30,"Stars look like snowflakes.","dm-star-snow"),
     C("coin-gold","coin","Gold Coin Billy",30,"Billy's coins look like shiny gold coins.","dm-coin-gold"),
     C("coin-diamond","coin","Diamond Coin Billy",30,"Billy's coins look like diamonds.","dm-coin-diamond"),
     C("sword","cursor","Pixel Sword Cursor",35,"Your mouse pointer becomes a pixel sword.","dm-cursor-sword"),
+    C("cur-heart","cursor","Heart Cursor",30,"A red heart pointer.","dm-cursor-heart"),
+    C("cur-star","cursor","Star Cursor",30,"A golden star pointer.","dm-cursor-star"),
+    C("cur-cross","cursor","Crosshair Cursor",30,"A red crosshair pointer.","dm-cursor-cross"),
+    C("cur-gem","cursor","Gem Cursor",35,"A sparkling blue gem pointer.","dm-cursor-gem"),
+    C("cur-wand","cursor","Magic Wand Cursor",35,"A wand with a star on the tip.","dm-cursor-wand"),
+    C("cur-arrow","cursor","Retro Arrow Cursor",25,"A big classic white arrow.","dm-cursor-arrow"),
     C("sparkle","click","Click Sparkles",45,"Sparkles burst where you click.","dm-click-sparkle"),
-    C("pp-hearts","particles","Heart Particles",60,"Every generator tile emits hearts.","dm-pp-hearts"),
-    C("pp-stars","particles","Star Particles",60,"Every generator tile emits stars.","dm-pp-stars"),
-    C("pp-pixels","particles","Pixel Particles",60,"Every generator tile emits square pixels.","dm-pp-pixels"),
-    C("crt","overlay","CRT Scanlines",60,"Retro scanline overlay.","dm-crt")
+    C("fx-hearts","click","Click Hearts",45,"Hearts float up from every click.","dm-fx-hearts"),
+    C("fx-confetti","click","Click Confetti",50,"Confetti pops where you click.","dm-fx-confetti"),
+    C("fx-ripple","click","Click Ripples",40,"Water rings spread from every click.","dm-fx-ripple"),
+    C("fx-pixels","click","Pixel Burst",40,"Chunky pixels burst out of clicks.","dm-fx-pixels"),
+    C("fx-bolt","click","Lightning Zaps",50,"Little lightning bolts zap out.","dm-fx-bolt"),
+    C("fx-coins","click","Coin Pop",50,"Coins pop up from your clicks.","dm-fx-coins"),
+    C("fx-snow","click","Snowflake Puff",40,"Snowflakes puff out and drift.","dm-fx-snow"),
+    C("fx-stars","click","Star Burst",45,"Little stars burst from clicks.","dm-fx-stars"),
+    C("crt","overlay","CRT Scanlines",60,"Retro scanline overlay.","dm-crt"),
+    C("ov-vignette","overlay","Vignette",35,"Darkened screen corners.","dm-ov-vignette"),
+    C("ov-grain","overlay","Film Grain",45,"Animated film grain.","dm-ov-grain"),
+    C("ov-vhs","overlay","VHS Tape",60,"Scanlines, colour fringes and a rolling bar.","dm-ov-vhs"),
+    C("ov-rain","overlay","Rain on Glass",50,"Rain streaks across the screen.","dm-ov-rain"),
+    C("ov-sepia","overlay","Sepia Tint",35,"A warm old-photo tint.","dm-ov-sepia"),
+    C("ov-night","overlay","Night Shade",35,"A cool midnight-blue tint.","dm-ov-night"),
+    C("ov-grid","overlay","Pixel Grid",40,"A fine pixel grid over everything.","dm-ov-grid"),
+    C("ov-dusk","overlay","Dusk Glow",40,"An orange-to-purple sunset wash.","dm-ov-dusk")
   ];
   const BUNDLES=[
-    {id:"b-frost",name:"Frostbyte Bundle",cost:200,desc:"Blizzard, Ice Frames, Neon Night, Snowflake Star, Diamond Coin Billy and Click Sparkles. Saves 25 💎.",items:["blizzard","ice","neon","star-snow","coin-diamond","sparkle"]},
-    {id:"b-retro",name:"Retro Handheld Bundle",cost:220,desc:"Starfield, Obsidian Frames, Gameboy Green, Pixel Star, Pixel Particles and the Pixel Sword cursor. Saves 45 💎.",items:["starfield","obsidian","gameboy","star-pixel","pp-pixels","sword"]}
+    {id:"b-frost",name:"Frostbyte Bundle",off:.3,items:["blizzard","ice","neon","star-snow","coin-diamond","fx-snow","cur-gem","ov-night"]},
+    {id:"b-retro",name:"Retro Handheld Bundle",off:.3,items:["starfield","obsidian","gameboy","star-pixel","sword","fx-pixels","ov-grid","crt"]},
+    {id:"b-inferno",name:"Inferno Bundle",off:.3,items:["ember","f-inferno","star-comet","coin-gold","fx-bolt","cur-cross","ov-dusk"]},
+    {id:"b-garden",name:"Garden Party Bundle",off:.3,items:["petals","f-emerald","parchment","fx-hearts","cur-heart","ov-sepia"]},
+    {id:"b-arcade",name:"Neon Arcade Bundle",off:.3,items:["aurora","f-neon","rainbow","star-comet","fx-confetti","cur-star","ov-vhs"]},
+    {id:"b-all",name:"Collector's Vault",off:.4,all:true,items:COS.map(o=>o.id)}
   ];
   const PROF=[];
   Object.keys(NC).forEach(k=>PROF.push({id:"nc-"+k,sec:"Chat name colors",kind:"nameColor",val:k,name:NC[k][0]+" name",cost:40,desc:"Your name in global chat is "+NC[k][0].toLowerCase()+". Other players see it.",sw:NC[k][1]}));
@@ -5743,10 +5866,14 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     if(it.type==="perk")perks()[it.id]=l+1; else if(it.type==="cos"){owned()[it.id]=true;equipCos(it,true);} else it.run();
     after(false);
   }
+  const cost0=id=>{const o=COS.find(x=>x.id===id);return o?o.cost:0};
+  const bFull=b=>b.items.reduce((s,id)=>s+cost0(id),0);
+  const bPrice=b=>Math.max(1,Math.round(b.items.filter(id=>!owned()[id]).reduce((s,id)=>s+cost0(id),0)*(1-b.off)));
   function buyBundle(b){
-    if(D()<b.cost||owned()[b.id]||b.items.every(id=>owned()[id]))return;
-    state.diamonds=D()-b.cost; owned()[b.id]=true;
-    b.items.forEach(id=>{owned()[id]=true;equipCos(byId(id),true);});
+    const p=bPrice(b); if(D()<p||b.items.every(id=>owned()[id]))return;
+    state.diamonds=D()-p; owned()[b.id]=true;
+    b.items.forEach(id=>{owned()[id]=true;});
+    if(!b.all)b.items.forEach(id=>equipCos(byId(id),true));
     after(false);
   }
   function profAvailable(p){ return !p.limited||owned()[p.id]||Date.now()<SEASON1_ENDS; }
@@ -5755,20 +5882,73 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     state.diamonds=D()-p.cost; owned()[p.id]=true; equipProf(p,true);
   }
   function equipProf(p,on){ if(p.kind==="nameAnim")prof().nameAnim=!!on; else prof()[p.kind]=on?p.val:""; after(true); }
-  function applyCos(){ COS.forEach(i=>document.body.classList.toggle(i.cls,!!(owned()[i.id]&&equipped()[i.id]))); }
+  let pv=null,pvTick=null;
+  const dlg=()=>document.getElementById("diamondShopDialog");
+  function applyCos(){
+    const on=new Set(),grp=new Set();
+    if(pv)pv.ids.forEach(id=>{const o=byId(id);if(o){on.add(o.cls);grp.add(o.group);}});
+    COS.forEach(i=>{let v=!!(owned()[i.id]&&equipped()[i.id]); if(pv&&grp.has(i.group))v=on.has(i.cls); document.body.classList.toggle(i.cls,v);});
+  }
+  function pvStage(ids){
+    let s=document.getElementById("dmPvStage"); if(s)s.remove(); s=null;
+    const has=g=>ids.some(id=>{const o=byId(id);return o&&o.group===g;});
+    if(!has("star")&&!has("coin"))return;
+    s=document.createElement("div"); s.id="dmPvStage";
+    const mk=(cls,txt)=>{const b=document.createElement("button");b.type="button";b.tabIndex=-1;b.className=cls;b.textContent=txt;s.append(b);};
+    if(has("star")){mk("bonus-star","★");mk("bonus-star hyper-star","★");}
+    if(has("coin"))mk("mystery-coin","$");
+    document.body.append(s);
+  }
+  function stopPv(back){
+    clearInterval(pvTick); pv=null; pvStage([]); applyCos();
+    const b=document.getElementById("dmPvBar"); if(b)b.classList.remove("show");
+    if(back&&!dlg().open)dlg().showModal();
+  }
+  function startPv(ids,label){
+    let b=document.getElementById("dmPvBar");
+    if(!b){b=document.createElement("div");b.id="dmPvBar";b.innerHTML='<span id="dmPvTxt"></span><button type="button">Back to shop</button>';document.body.append(b);b.querySelector("button").addEventListener("click",()=>stopPv(true));}
+    clearInterval(pvTick); pv={ids}; applyCos(); pvStage(ids);
+    const g=ids.map(id=>{const o=byId(id);return o?o.group:"";});
+    const hint=g.includes("click")?" Click anywhere!":g.includes("cursor")?" Move your mouse.":"";
+    let left=20; const upd=()=>{document.getElementById("dmPvTxt").textContent="👁 Previewing "+label+" · "+left+"s."+hint;};
+    upd(); b.classList.add("show"); if(dlg().open)dlg().close();
+    pvTick=setInterval(()=>{left--; if(left<=0)stopPv(true); else upd();},1000);
+  }
+  const openS=new Set();
+  function sampleFor(p){
+    const w=document.createElement("div"); w.className="dm-sample";
+    if(p.kind==="flair"){
+      const r=document.createElement("div"),a=document.createElement("span"),n=document.createElement("span"),v=document.createElement("span");
+      r.className="leaderboard-row"; a.className="leaderboard-rank"; a.textContent="#3"; n.className="leaderboard-name"; n.textContent="You"; v.className="leaderboard-cash"; v.textContent="1.2M";
+      window.dmFlair(n,r,{flair:p.val}); r.append(a,n,v); w.append(r); return w;
+    }
+    const row=document.createElement("div"),meta=document.createElement("span"),txt=document.createElement("span");
+    row.className="chat-message"+(p.kind==="annStyle"?" chat-announcement":""); meta.className="chat-meta";
+    const nm=document.createElement("strong"); nm.textContent=p.kind==="annStyle"?"":"You: ";
+    if(p.kind==="badgeIcon"){const t=document.createElement("span");t.className="chat-tag";t.textContent="("+BI[p.val]+"#1) ";meta.append(t);}
+    if(p.kind==="title"){const t=window.dmChatTitle({title:p.val});if(t)meta.append(t);}
+    if(p.kind==="nameColor")window.dmChatName(nm,{nameColor:p.val});
+    if(p.kind==="nameAnim")window.dmChatName(nm,{nameAnim:true});
+    meta.append(nm);
+    txt.textContent=p.kind==="annStyle"?"You has reached rebirth 25!":"Hello everyone!";
+    if(p.kind==="annStyle")window.dmAnn(row,txt,{annStyle:p.val});
+    row.append(meta,txt); w.append(row); return w;
+  }
   function renderShop2(){
     const host=document.getElementById("diamondShopList"); if(!host||typeof state==="undefined")return;
     const scroller=document.getElementById("diamondShopScroll"), keepTop=scroller?scroller.scrollTop:0;
     host.replaceChildren();
     const head=t=>{const h=document.createElement("h3");h.className="dm-h";h.textContent=t;host.append(h);};
-    const card=(name,desc,btn,sw)=>{
+    const card=(name,desc,btns,sw,extra)=>{
       const row=document.createElement("div");row.className="dm-item";
       const t=document.createElement("strong");t.className="dm-name";t.textContent=name;
       if(sw){const dot=document.createElement("span");dot.className="dm-sw";dot.style.background=sw;t.prepend(dot);}
       const d=document.createElement("p");d.className="dm-desc";d.textContent=desc;
-      row.append(t,d,btn);host.append(row);
+      const bar=document.createElement("div");bar.className="dm-btnrow";[].concat(btns).forEach(b=>bar.append(b));
+      row.append(t,d); if(extra)row.append(extra); row.append(bar); host.append(row);
     };
     const buyBtn=(c,fn,off)=>makeButton("Buy · 💎 "+c,fn,off||D()<c,"dm-btn dm-buy");
+    const pvBtn=fn=>makeButton("👁 Preview",fn,false,"dm-btn dm-pv");
     head("Perks");
     PERKS.forEach(it=>{const l=lvl(it.id);
       card(it.name+" ("+l+"/"+it.max+")",it.desc,l>=it.max?makeButton("Maxed",()=>{},true,"dm-btn"):buyBtn(it.cost(l),()=>buy(it)));});
@@ -5780,23 +5960,26 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
         const has=owned()[it.id];
         const btn=has?makeButton(equipped()[it.id]?"Unequip":"Equip",()=>{equipCos(it,!equipped()[it.id]);after(false);},false,"dm-btn dm-equip"+(equipped()[it.id]?" dm-on":""))
                      :buyBtn(it.cost,()=>buy(it));
-        card(it.name,it.desc,btn);
+        card(it.name,it.desc,[pvBtn(()=>startPv([it.id],it.name)),btn]);
       });
     });
-    head("Bundles");
+    head("Bundles (you only pay for items you don't own yet)");
     BUNDLES.forEach(b=>{
-      const done=owned()[b.id]||b.items.every(id=>owned()[id]);
-      card(b.name,b.desc,done?makeButton("Owned",()=>{},true,"dm-btn"):buyBtn(b.cost,()=>buyBundle(b)));
+      const done=b.items.every(id=>owned()[id]),price=bPrice(b),full=bFull(b),pct=Math.round(b.off*100);
+      const names=b.all?"Every cosmetic in the shop ("+b.items.length+" items)":b.items.map(id=>{const o=byId(id);return o?o.name:id;}).join(", ");
+      card(b.name,names+". Full price 💎 "+full+" · "+pct+"% off.",[pvBtn(()=>startPv(b.items.filter(id=>{const o=byId(id);return o&&o.group!=="ui"||!b.all;}),b.name)),done?makeButton("Owned",()=>{},true,"dm-btn"):buyBtn(price,()=>buyBundle(b))]);
     });
     let sec=null;
     PROF.forEach(p=>{
+      if(p.kind==="annStyle"&&isPrivilegedUser())return;
       if(p.sec!==sec){sec=p.sec;head(sec+" (visible to other players)");}
       const has=owned()[p.id];
       let btn;
       if(has)btn=makeButton(isEq(p)?"Unequip":"Equip",()=>equipProf(p,!isEq(p)),false,"dm-btn dm-equip"+(isEq(p)?" dm-on":""));
       else if(!profAvailable(p))btn=makeButton("No longer available",()=>{},true,"dm-btn");
       else btn=buyBtn(p.cost,()=>buyProf(p));
-      card(p.name,p.desc,btn,p.sw);
+      const pb=pvBtn(()=>{if(openS.has(p.id))openS.delete(p.id);else openS.add(p.id);renderShop2();});
+      card(p.name,p.desc,[pb,btn],p.sw,openS.has(p.id)?sampleFor(p):null);
     });
     if(scroller)scroller.scrollTop=keepTop;
   }
@@ -5808,22 +5991,39 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   window.dmChatTitle=function(m){const t=TT[m.title];if(!t)return null;const s=document.createElement("span");s.className="dm-title";s.textContent="["+t[0]+"] ";return s;};
   window.dmAnn=function(row,textEl,m){const a=AN[m.annStyle];if(!a)return;row.style.borderLeft="4px solid "+a[1];textEl.style.color=a[1];textEl.prepend(a[0]+" ");};
   window.dmBadge=function(tag,user){const e=BI[user&&user.badgeIcon];return e&&tag&&tag.rank?Object.assign({},tag,{text:"("+e+"#"+tag.rank+")"}):tag;};
-  window.dmFlair=function(nameEl,row,data){const f=FL[data&&data.flair];if(!f)return;nameEl.textContent+=" "+f[0];row.style.outline="2px solid "+f[1];row.style.outlineOffset="-2px";};
-  // Click sparkles
+  window.dmFlair=function(nameEl,row,data){const f=FL[data&&data.flair];if(!f)return;const ic=document.createElement("span");ic.textContent=f[0]+" ";nameEl.prepend(ic);nameEl.style.color=f[1];nameEl.style.fontWeight="800";row.style.outline="2px solid "+f[1];row.style.outlineOffset="-2px";row.style.borderLeft="8px solid "+f[1];row.style.backgroundImage="linear-gradient(90deg,"+f[1]+"44,transparent 75%)";};
+  const FX={
+    "dm-click-sparkle":{n:9,cols:["#ffe14d","#ffffff","#ff9bf0","#7de3ff"],box:6,d:[26,54]},
+    "dm-fx-hearts":{n:7,ch:"♥",cols:["#ff4d6d","#ff8fa3","#ff5d8f"],fs:16,d:[20,50],up:1},
+    "dm-fx-confetti":{n:16,cols:["#ff595e","#ffca3a","#8ac926","#1982c4","#6a4c93"],box:7,d:[30,80],grav:1,spin:1},
+    "dm-fx-pixels":{n:12,cols:["#ffffff","#ffd23f","#7de3ff","#ff6a6a"],box:5,d:[24,60],steps:1},
+    "dm-fx-bolt":{n:5,ch:"⚡",cols:["#ffe14d"],fs:18,d:[22,46]},
+    "dm-fx-coins":{n:6,ch:"🪙",cols:["#ffffff"],fs:16,d:[24,56],up:1},
+    "dm-fx-snow":{n:9,ch:"❄",cols:["#d6f1ff","#9fdcff","#ffffff"],fs:15,d:[20,50],grav:.5},
+    "dm-fx-stars":{n:8,ch:"★",cols:["#ffe14d","#fff3a0","#ffb300"],fs:15,d:[24,56]}
+  };
   document.addEventListener("pointerdown",e=>{
-    if(!document.body.classList.contains("dm-click-sparkle")||(typeof state!=="undefined"&&state.reducedMotion))return;
-    const cols=["#ffe14d","#ffffff","#ff9bf0","#7de3ff"];
-    for(let i=0;i<9;i++){
-      const sp=document.createElement("span"),a=Math.PI*2*i/9+Math.random()*.5,d=26+Math.random()*28;
-      sp.className="dm-spark";
-      sp.style.cssText="left:"+e.clientX+"px;top:"+e.clientY+"px;--dx:"+(Math.cos(a)*d).toFixed(1)+"px;--dy:"+(Math.sin(a)*d).toFixed(1)+"px;background:"+cols[i%4];
-      document.body.appendChild(sp);setTimeout(()=>sp.remove(),650);
+    if(typeof state!=="undefined"&&state.reducedMotion)return;
+    const cl=document.body.classList,x=e.clientX,y=e.clientY;
+    if(cl.contains("dm-fx-ripple")){[0,.15].forEach(dl=>{const r=document.createElement("span");r.className="dm-ring";r.style.left=x+"px";r.style.top=y+"px";r.style.animationDelay=dl+"s";document.body.appendChild(r);setTimeout(()=>r.remove(),1000);});return;}
+    const k=Object.keys(FX).find(c=>cl.contains(c)); if(!k)return; const f=FX[k];
+    for(let i=0;i<f.n;i++){
+      const a=Math.PI*2*i/f.n+Math.random()*.6,d=f.d[0]+Math.random()*(f.d[1]-f.d[0]);
+      let dx=Math.cos(a)*d,dy=Math.sin(a)*d; if(f.up)dy=-Math.abs(dy)-10; if(f.grav)dy+=40*f.grav;
+      const s=document.createElement("span"); s.className="dm-spark"+(f.ch?" dm-fxch":"");
+      const col=f.cols[i%f.cols.length];
+      if(f.ch){s.textContent=f.ch;s.style.fontSize=f.fs+"px";s.style.color=col;}
+      else{s.style.width=s.style.height=f.box+"px";s.style.margin=(-f.box/2)+"px 0 0 "+(-f.box/2)+"px";s.style.background=col;}
+      s.style.left=x+"px";s.style.top=y+"px";s.style.setProperty("--dx",dx.toFixed(1)+"px");s.style.setProperty("--dy",dy.toFixed(1)+"px");
+      if(f.spin)s.style.setProperty("--rot",((Math.random()*720-360)|0)+"deg");
+      if(f.steps)s.style.animationTimingFunction="steps(5)";
+      document.body.appendChild(s); setTimeout(()=>s.remove(),700);
     }
   },true);
   // Sources: Stars and Billy coins
   document.addEventListener("click",e=>{
     const el=e.target&&e.target.closest?e.target.closest(".mystery-coin, .bonus-star"):null;
-    if(!el||!currentUser||typeof state==="undefined")return;
+    if(!el||el.closest("#dmPvStage")||!currentUser||typeof state==="undefined")return;
     const coin=el.classList.contains("mystery-coin"), hyper=el.classList.contains("hyper-star");
     const rain=Date.now()<(window.dmRainUntil||0), bonus=0.03*lvl("finder");
     if(el.classList.contains("diamond-star")){} else if(el.classList.contains("diamond-coin"))award(1,"Diamond Billy"); else if(hyper)award(2,"Hyper Star"); else if(rain)award(1,"Diamond rain"); else if(Math.random()<(coin?0.3:0.08)+bonus)award(1,coin?"Billy":"Star");
@@ -5858,8 +6058,20 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
       state.dmFix=1; state.diamonds=0; refresh(); try{save();}catch(e){}
       toast("Diamonds were reset after a bug fix");
     }
+    if(cloudSaveReady&&leaderboardPrivacyLoaded&&state.dmMig101!==1){
+      state.dmMig101=1; let ref=0; const rm={"tt-season1":150,"pp-hearts":60,"pp-stars":60,"pp-pixels":60};
+      Object.keys(rm).forEach(k=>{if(owned()[k]){ref+=rm[k];delete owned()[k];delete equipped()[k];}});
+      if(prof().title==="season1")prof().title="";
+      if(ref>0){state.diamonds=D()+ref;toast("Refunded "+ref+" 💎 for removed items");}
+      try{save();}catch(e){}
+    }
+    const annRow=document.getElementById("annStyleRow"),annSel=document.getElementById("annStyleSelect");
+    if(annRow&&annSel){const adm=isPrivilegedUser();annRow.hidden=!adm;if(adm&&document.activeElement!==annSel){const v=AN[prof().annStyle]?prof().annStyle:"";if(annSel.value!==v)annSel.value=v;}}
     applyCos(); refresh();
   },1000);
+  (function(){const s=document.getElementById("annStyleSelect");if(!s)return;
+    s.innerHTML='<option value="">Default</option>'+Object.keys(AN).map(k=>'<option value="'+k+'">'+AN[k][0]+" "+k+'</option>').join("");
+    s.addEventListener("change",()=>{prof().annStyle=s.value;try{save();}catch(e){}});})();
   // Admin
   document.getElementById("adminDiamondBtn").addEventListener("click",()=>{
     const s=document.getElementById("adminExtraStatus"),n=Math.floor(Number(document.getElementById("adminDiamondAmount").value));
@@ -6397,6 +6609,7 @@ $("statsCloseBtn").addEventListener("click", () => $("statsDialog").close());
   $("diamondShopOpenBtn").addEventListener("click", openDiamondShop);
   $("diamondShopTitle").addEventListener("click", openDiamondShop);
   $("diamondPill").addEventListener("click", openDiamondShop);
+  $("diamondHeaderBtn").addEventListener("click", openDiamondShop);
   $("diamondShopCloseBtn").addEventListener("click", () => dmDialog.close());
   dmDialog.addEventListener("click", event => { if (event.target === dmDialog) dmDialog.close(); });
 }
@@ -6442,7 +6655,7 @@ function applyThemeSettings(hueValue, blackValue, brightnessValue, persist = tru
     try { localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify({ h: hue, s: 1, b: black * 100, br: brightness, st: strength })); } catch (e) {}
   }
   $("themeCurrent").textContent = (hue === DEFAULT_THEME_HUE ? "Classic green" : "Hue " + hue + "°")
-    + " · " + (black ? "Light mode" : "Dark mode") + " · " + brightness + "% brightness";
+    + " · " + brightness + "% brightness";
   $("themePreview").style.background = "linear-gradient(135deg, hsl(" + hue + " 70% "
     + (48 * brightness / 100) + "%) 0 50%, " + (black ? "#ffffff" : "#000000") + " 50% 100%)";
   $("themeHue").value = hue;
