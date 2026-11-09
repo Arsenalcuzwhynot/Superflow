@@ -5318,14 +5318,21 @@ $("adminWipeBtn").addEventListener("click", async () => {
   if (!confirm("Wipe ALL player progress? Accounts are kept. This cannot be undone.")) return;
   s.textContent = "Wiping...";
   try {
+    window.__wipeStep = "wipe marker (globalWipes)";
     await dbRef.collection("globalWipes").doc("current").set({
       wipeId: currentUser.uid + "-" + Date.now(), senderUid: currentUser.uid,
       createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-    const board = await dbRef.collection("leaderboard").get();
-    await Promise.all(board.docs.map(d => d.ref.delete()));
+    // The marker is what resets players. Leaderboard cleanup is best-effort and no longer fails the wipe.
+    window.__wipeStep = "leaderboard cleanup";
+    let cleanupFailed = 0;
+    try {
+      const board = await dbRef.collection("leaderboard").get();
+      await Promise.all(board.docs.map(d => d.ref.delete().catch(() => { cleanupFailed++; })));
+    } catch (e) { cleanupFailed = -1; }
     $("adminWipeConfirm").value = "";
-    s.textContent = "Wipe started. Each player resets on their next login or immediately if online.";
-  } catch (e) { s.textContent = e.code === "permission-denied" ? "Rules blocked it. Publish the updated rules." : (e.message || "Failed."); }
+    s.textContent = "Wipe started. Each player resets on their next login or immediately if online."
+      + (cleanupFailed ? " Leaderboard cleanup was blocked, so old entries stay until players reset." : "");
+  } catch (e) { s.textContent = "Blocked at: " + (window.__wipeStep || "unknown step") + " [" + (e.code || "error") + "] " + (e.message || ""); }
 });
 let globalWipeUnsub = null;
 function startGlobalWipeListener() {
