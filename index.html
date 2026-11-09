@@ -685,6 +685,8 @@ body.dm-aurora::before{background-image:linear-gradient(115deg,#03111d,#0a7a62,#
 @keyframes dm-aur{to{background-position:100% 50%}}
 body.dm-aurora .game-shell::before{background-image:repeating-linear-gradient(100deg,transparent 0 70px,#5affc833 120px,transparent 190px),repeating-linear-gradient(80deg,transparent 0 110px,#b78bff2e 170px,transparent 260px)!important;background-size:380px 100%,520px 100%!important;background-repeat:repeat!important;opacity:1!important;animation:dm-aurc 12s linear infinite!important}
 @keyframes dm-aurc{from{background-position:0 0,0 0}to{background-position:380px 0,-520px 0}}
+/* the original falling layer was switched off (.game-shell::before{display:none}); turn it back on for shop backgrounds */
+html:not(.snow-disabled) body[class*="dm-snow-"] .game-shell::before,html:not(.snow-disabled) body.dm-aurora .game-shell::before{display:block!important}
 /* synced frames: one clock on :root drives every tile */
 @property --dm-hue{syntax:"<number>";inherits:true;initial-value:0}
 @property --dm-pulse{syntax:"<number>";inherits:true;initial-value:0}
@@ -751,6 +753,18 @@ body.dm-ov-dusk::after{background:linear-gradient(180deg,#ff7a3d33,#8a2be233 60%
 #dmPvStage .bonus-star,#dmPvStage .mystery-coin{position:relative!important}
 #annStyleRow[hidden]{display:none!important}
 .chat-alpha{color:#ffb347!important}
+
+/* ===== Superflow 1.0.1 : backgrounds stay behind every tab + performance ===== */
+/* The falling-particle / aurora layer used to sit ABOVE the page (z-index:2). It now sits behind all panels. */
+.game-shell::before,html:not(.snow-disabled) body[class*="dm-snow-"] .game-shell::before,html:not(.snow-disabled) body.dm-aurora .game-shell::before{z-index:-1!important;pointer-events:none!important;transform:translateZ(0);backface-visibility:hidden;contain:strict}
+body::before{transform:translateZ(0);backface-visibility:hidden;contain:strict}
+/* the colour clock only runs while a tile frame that needs it is equipped (it forced a whole-page style recalc every frame) */
+:root{animation:none!important}
+body.dm-gold,body.dm-f-ice,body.dm-f-obsidian,body.dm-f-rainbow,body.dm-f-inferno,body.dm-f-emerald,body.dm-f-neon{animation:dm-hue 6s linear infinite,dm-pulse 1.4s ease-in-out infinite alternate}
+/* fewer glowing generator particles (8 instead of 16) */
+.generator-particles span:nth-child(n+9){display:none!important}
+/* don't animate what the player cannot see */
+.game-shell.low-performance .generator-particles span,.game-shell.low-performance .generator-visual::before,.game-shell.low-performance .generator-visual::after{animation:none!important}
 </style></head>
 <body>
 <section class="auth-screen" id="authScreen">
@@ -1424,6 +1438,9 @@ const UPDATE_HISTORY = [
     version: GAME_VERSION,
     status: "Current",
     changes: [
+      "Backgrounds, snow, petals, embers, leaves, stars and the aurora now stay behind every tab and panel instead of covering generators.",
+      "Billy now only appears from Stars: he comes out of a Star when you collect it, never on his own.",
+      "Performance: fewer generator particles, cheaper background animation, no page-wide colour clock unless a tile frame needs it, and no redrawing while the tab is hidden.",
       "Added a Preview button to every Diamond Shop item, and made the Diamond Shop much easier to spot.",
       "Fixed Diamond Shop backgrounds, chat name colours, chat titles and announcement styles; leaderboard flair is now much more visible.",
       "Tile frames are now perfectly in sync and look better, with three new frames.",
@@ -3154,7 +3171,7 @@ function expirePersonalFever() {
   return true;
 }
 const DIAMOND_STAR_NATURAL_CHANCE = 0.01; // 1% chance that any spawned Star is a Diamond Star
-function spawnStar(position = null, isBonus = false, forceHyper = false, forceDiamond = false) {
+function spawnStar(position = null, isBonus = false, forceHyper = false, forceDiamond = false, billyOnCollect = false) {
   const layer = $("starLayer");
   const container = document.createElement("div");
   container.className = "star-container";
@@ -3177,6 +3194,7 @@ function spawnStar(position = null, isBonus = false, forceHyper = false, forceDi
     starCountdownTimers.delete(countdownTimer);
     container.remove();
     if (!currentUser) return;
+    if (billyOnCollect) spawnMysteryVisitor(); // Billy only ever comes out of a Star
     state.taskStarsCollected++;
     let taskReady = updateTaskObjectives(true);
     if (!$("tasksTabPanel").hidden) renderTasks();
@@ -3359,8 +3377,7 @@ function startStarSpawns() {
   stopStarSpawns();
   starSpawnTimer = setInterval(() => {
     if (currentUser && !$("gameShell").hidden) {
-      spawnStar();
-      if (Math.random() < 0.05) spawnMysteryVisitor();
+      spawnStar(null, false, false, false, Math.random() < 0.05); // Billy only appears when this Star is collected
     }
   }, 5 * 60 * 1000);
 }
@@ -3758,7 +3775,7 @@ function startGlobalStarListener() {
       const age = Date.now() - broadcast.createdAt.toMillis();
       if (age < 0 || age > 5 * 60 * 1000) return;
       lastGlobalStarBroadcastId = broadcast.broadcastId;
-      if (currentUser && !$("gameShell").hidden) { spawnStar(); if (broadcast.kind === "billy") spawnMysteryVisitor(); if (broadcast.kind === "diamondrain") window.dmRainUntil = Date.now() + 10 * 60 * 1000; }
+      if (currentUser && !$("gameShell").hidden) { spawnStar(null, false, false, false, broadcast.kind === "billy"); if (broadcast.kind === "diamondrain") window.dmRainUntil = Date.now() + 10 * 60 * 1000; }
     }, error => {
       console.error("Global Star listener failed:", error);
     });
@@ -4258,7 +4275,7 @@ function makeSlotButton(index, slot) {
     const particles = document.createElement("span");
     particles.className = "generator-particles";
     particles.setAttribute("aria-hidden", "true");
-    for (let particleIndex = 0; particleIndex < 16; particleIndex++) {
+    for (let particleIndex = 0; particleIndex < 8; particleIndex++) {
       const particle = document.createElement("span");
       particle.style.animationDuration = (1.2 + Math.random() * 2.4).toFixed(2) + "s";
       particle.style.animationDelay = (-Math.random() * 3.5).toFixed(2) + "s";
@@ -4316,8 +4333,11 @@ function renderSlots() {
       const g = getGenerator(slot.id);
       const earnings = cash(g.income * effectiveMultiplier() * generatorSpeedMultiplier()
         * PERMANENT_CASH_MULTIPLIER * noteDuplicationExpectedMultiplier() / tickIntervalSeconds());
-      button.querySelector(".gen-income").textContent = earnings + "/s";
-      button.title = g.name + ": " + earnings + " per second. Click to inspect.";
+      const incomeEl = button.querySelector(".gen-income");
+      if (incomeEl.textContent !== earnings + "/s") {
+        incomeEl.textContent = earnings + "/s";
+        button.title = g.name + ": " + earnings + " per second. Click to inspect.";
+      }
     }
   }
 }
@@ -4327,8 +4347,12 @@ function renderSlotEarnings() {
     if (!generator) return;
     const earnings = cash(generator.income * effectiveMultiplier() * generatorSpeedMultiplier()
       * PERMANENT_CASH_MULTIPLIER * noteDuplicationExpectedMultiplier() / tickIntervalSeconds());
-    button.querySelector(".gen-income").textContent = earnings + "/s";
-    button.title = generator.name + ": " + earnings + " per second. Click to inspect.";
+    const incomeEl = button.querySelector(".gen-income");
+    const text = earnings + "/s";
+    if (incomeEl.textContent !== text) {
+      incomeEl.textContent = text;
+      button.title = generator.name + ": " + earnings + " per second. Click to inspect.";
+    }
   });
 }
 function renderShop() {
@@ -6227,9 +6251,11 @@ function gameTick() {
       + (taskReady ? " Task complete! Check Quests." : ""), false, taskReady);
     save();
   }
-  renderStats();
-  updateShopBuyButtons();
-  renderSlotEarnings();
+  if (!document.hidden) {
+    renderStats();
+    updateShopBuyButtons();
+    renderSlotEarnings();
+  }
   updateAchievementAvailability();
 }
 
@@ -6613,7 +6639,7 @@ $("statsCloseBtn").addEventListener("click", () => $("statsDialog").close());
   $("diamondShopCloseBtn").addEventListener("click", () => dmDialog.close());
   dmDialog.addEventListener("click", event => { if (event.target === dmDialog) dmDialog.close(); });
 }
-setInterval(() => { renderDaily(); renderPlayerStats(); }, 1000);
+setInterval(() => { if (!document.hidden) { renderDaily(); renderPlayerStats(); } }, 1000);
 
 /* Theme customization: background tone and secondary color controls */
 const THEME_STORAGE_KEY = "superflowTheme_v1";
