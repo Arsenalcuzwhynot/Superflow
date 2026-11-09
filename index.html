@@ -986,6 +986,7 @@ body.dm-aurora::before{filter:hue-rotate(110deg) saturate(3) brightness(1.2)}
     <div class="adm-row"><input id="adminWipeConfirm" type="text" autocomplete="off" placeholder="Type WIPE to confirm" aria-label="Type WIPE"><button id="adminWipeBtn" class="danger-button" type="button">Wipe all player data</button></div>
     <div class="muted small">Wipe resets every player's progress but keeps accounts.</div>
   </div>
+  <div class="muted small" id="adminUidInfo" style="grid-column:1/-1;user-select:all;word-break:break-all"></div>
   <div class="note" id="adminStatus" role="status" aria-live="polite" style="grid-column:1/-1"></div>
     </div>
   </section>
@@ -1339,6 +1340,11 @@ function applyDisplaySettings() {
 async function updateAdminUI() {
   const panel = $("adminPanel");
   panel.hidden = !currentUser || !isPrivilegedUser();
+  const uidInfo = $("adminUidInfo");
+  if (uidInfo && currentUser) {
+    uidInfo.textContent = "Your account ID: " + currentUser.uid + (ANTICHEAT_ADMIN_UIDS.includes(currentUser.uid)
+      ? "" : "  ⚠ This ID is not in the rules' isAdmin() list, so admin actions will be blocked by Firestore. Add this ID to the rules.");
+  }
 }
 
 function showAuthError(message) {
