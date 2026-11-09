@@ -593,7 +593,7 @@ body.dm-aurora::before{filter:hue-rotate(110deg) saturate(3) brightness(1.2)}
 /* Diamond currency and shop readability */
 .diamond-pill{font:700 17px/1.2 "Trebuchet MS",Verdana,Arial,sans-serif!important;color:#fff!important;background:#0b3a66!important;border:2px solid #000;padding:4px 10px;text-shadow:none!important;box-shadow:inset 0 0 0 1px #7fd4ff}
 #diamondShopBalance{font:700 18px/1.2 "Trebuchet MS",Verdana,Arial,sans-serif!important;color:#fff!important;background:#0b3a66;padding:3px 10px;border:2px solid #000;text-shadow:none!important}
-#diamondShopPanel .body>p{font:600 14px/1.5 "Trebuchet MS",Verdana,Arial,sans-serif!important;color:#e6eef7!important}
+.dm-intro{font:600 14px/1.5 "Trebuchet MS",Verdana,Arial,sans-serif!important;color:#e6eef7!important}
 #diamondShopList{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
 #diamondShopList *{text-shadow:none!important;letter-spacing:0!important}
 .dm-h{grid-column:1/-1;margin:10px 0 0;padding:6px 10px;font:700 18px/1.2 "Trebuchet MS",Verdana,Arial,sans-serif!important;color:#fff!important;background:#0b3a66;border:2px solid #000}
@@ -676,6 +676,17 @@ body.dm-ui-wood button:not(.bonus-star):not(.mystery-coin):not(.slot):not(.dm-bt
 body .bonus-star.diamond-star{background:radial-gradient(circle,#ffffff 0,#b8f3ff 30%,#2fb8f2 65%,#0a5fa8 100%)!important;border-color:#e0fbff!important;color:#fff!important;box-shadow:0 0 26px 8px #4fd0ffcc,0 0 56px 14px #4fd0ff66!important}
 body .mystery-coin.diamond-coin{font-size:23px!important;color:#06314d!important;background:radial-gradient(circle,#ffffff,#a8efff 45%,#27b4f0 100%)!important;border:3px solid #e0fbff!important;box-shadow:0 0 18px 5px #4fd0ffcc!important}
 body .mystery-coin.diamond-coin::after{content:none!important}
+
+/* Diamond Shop window */
+#diamondShopPanel .panel-head{margin:0}
+#diamondShopPanel .panel-head button{font:700 15px/1.2 "Trebuchet MS",Verdana,Arial,sans-serif!important;padding:6px 14px}
+.diamond-pill{cursor:pointer}
+dialog.dm-dialog{width:calc(100vw - 24px);height:calc(100vh - 24px);max-width:none;max-height:none;padding:12px;overflow:hidden}
+dialog.dm-dialog[open]{display:flex;flex-direction:column}
+.dm-dialog .panel-head{flex:0 0 auto;gap:12px;margin-bottom:10px}
+.dm-dialog .panel-head h2{margin-right:auto}
+.dm-dialog-body{flex:1 1 auto;min-height:0;overflow:auto;padding-right:6px}
+.dm-dialog-body .dm-intro{margin:0 0 10px}
 </style></head>
 <body>
 <section class="auth-screen" id="authScreen">
@@ -721,6 +732,13 @@ body .mystery-coin.diamond-coin::after{content:none!important}
     </div>
   </div>
 </header>
+<dialog id="diamondShopDialog" class="stats-dialog dm-dialog">
+  <div class="panel-head"><h2>Diamond Shop</h2><span id="diamondShopBalance">💎 0</span><button id="diamondShopCloseBtn" type="button">Close</button></div>
+  <div class="dm-dialog-body" id="diamondShopScroll">
+    <p class="dm-intro">Earn diamonds: math question 1 · Star 8% (Hyper Star 2) · Billy coin 30% · crate challenge 1+ · daily 2 (+5 every 7th day) · achievement 1 · every 10 levels 2 · rebirth milestones · admin events. Diamonds can't be gifted or traded.</p>
+    <div id="diamondShopList" class="dm-grid"></div>
+  </div>
+</dialog>
 <dialog id="statsDialog" class="stats-dialog">
   <div class="panel-head"><h2>Player Stats</h2><button id="statsCloseBtn" type="button">Close</button></div>
   <div class="stats-dialog-grid">
@@ -1034,8 +1052,7 @@ body .mystery-coin.diamond-coin::after{content:none!important}
     </div>
   </div>
   <section class="panel" id="diamondShopPanel">
-    <div class="panel-head"><h2>Diamond Shop</h2><span class="muted small" id="diamondShopBalance">💎 0</span></div>
-    <div class="body"><p class="muted small">Earn diamonds: math question 1 · Star 8% (Hyper Star 2) · Billy coin 30% · crate challenge 1+ · daily 2 (+5 every 7th day) · achievement 1 · every 10 levels 2 · rebirth milestones · admin events. Diamonds can't be gifted or traded.</p><div id="diamondShopList" class="dm-grid"></div></div>
+    <div class="panel-head"><h2 id="diamondShopTitle" style="cursor:pointer">💎 Diamond Shop</h2><button id="diamondShopOpenBtn" type="button">Open</button></div>
   </section>
   <section class="panel admin-panel-bottom" id="adminPanel" hidden>
     <div class="panel-head"><h2>Admin Panel</h2></div>
@@ -1301,8 +1318,8 @@ const UPDATE_HISTORY = [
     ]
   },
   {
-    version: GAME_VERSION,
-    status: "Current",
+    version: "1.0.0 (Part 1)",
+    status: "Previous",
     changes: [
       "Moved global chat to the left column on desktop and improved chat leaderboard badges with an emoji for every rank category.",
       "Bonus Stars now scatter around the whole screen when multiple Stars drop.",
@@ -1317,12 +1334,23 @@ const UPDATE_HISTORY = [
       "The top multiplier now shows the same value as the multiplier notification (the shared boost still applies behind the scenes).",
       "New accounts no longer receive a starter Alpha Generator.",
       "Billy now only appears alongside a Star, is a yellow square smiley face, and his multiplier coins are yellow.",
-      "Global broadcasts now use a readable font, disappear after a few seconds, and are also saved in global chat.",
-      "Alpha Generators can no longer be gambled and are hidden everywhere unless you own one.",
+      "Updated the game version to 1.0.0 (Part 1)."
+    ]
+  },
+  {
+    version: GAME_VERSION,
+    status: "Current",
+    changes: [
+      "Added Diamonds, earned from math questions, Stars, Billy coins, quests, daily rewards, achievements, levels and rebirth milestones, plus a Diamond Shop with perks and instant-use items.",
+      "The Diamond Shop now opens in its own full-screen window instead of taking up space on the page, and the diamond counter opens it too.",
       "Rebuilt the Diamond Shop and diamond counter so they are easy to read.",
       "Added many new Diamond Shop cosmetics: snow styles, tile frames, UI themes, star and Billy coin skins, a sword cursor, click sparkles, particle shapes and two bundles.",
       "Added chat name colors, titles, a shimmering name, badge icons, leaderboard flair and announcement styles that other players can see.",
-      "Added the rare Diamond Star (1% of Stars) and the Diamond Billy it can summon.",
+      "Added the rare Diamond Star (1% of Stars): 3-5 diamonds, 30 seconds of income, and chances of six extra Stars or a Diamond Billy.",
+      "Diamond Billy is a blue Billy whose 5-10 diamond coins each give +0.01× multiplier and 1 diamond.",
+      "Global broadcasts now use a readable font, disappear after a few seconds, and are also saved in global chat.",
+      "Alpha Generators can no longer be gambled and are hidden everywhere unless you own one.",
+      "Added admin tools: global broadcast banner, refresh every open game, wipe all player progress, spawn Billy for everyone, diamond rain, and spawning a question, multiplier or Diamond Star/Billy for yourself.",
       "Updated the game version to 1.0.0 (Part 2)."
     ]
   }
@@ -5729,7 +5757,9 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   function equipProf(p,on){ if(p.kind==="nameAnim")prof().nameAnim=!!on; else prof()[p.kind]=on?p.val:""; after(true); }
   function applyCos(){ COS.forEach(i=>document.body.classList.toggle(i.cls,!!(owned()[i.id]&&equipped()[i.id]))); }
   function renderShop2(){
-    const host=document.getElementById("diamondShopList"); if(!host||typeof state==="undefined")return; host.replaceChildren();
+    const host=document.getElementById("diamondShopList"); if(!host||typeof state==="undefined")return;
+    const scroller=document.getElementById("diamondShopScroll"), keepTop=scroller?scroller.scrollTop:0;
+    host.replaceChildren();
     const head=t=>{const h=document.createElement("h3");h.className="dm-h";h.textContent=t;host.append(h);};
     const card=(name,desc,btn,sw)=>{
       const row=document.createElement("div");row.className="dm-item";
@@ -5768,6 +5798,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
       else btn=buyBtn(p.cost,()=>buyProf(p));
       card(p.name,p.desc,btn,p.sw);
     });
+    if(scroller)scroller.scrollTop=keepTop;
   }
   // Hooks used by chat and the leaderboard
   window.dmChatFields=function(){const p=prof(),o={};if(NC[p.nameColor])o.nameColor=p.nameColor;if(TT[p.title])o.title=p.title;if(p.nameAnim===true)o.nameAnim=true;return o;};
@@ -6360,6 +6391,15 @@ async function claimDaily() {
 $("dailyClaimBtn").addEventListener("click", claimDaily);
 $("statsOpenBtn").addEventListener("click", () => { renderPlayerStats(); $("statsDialog").showModal(); });
 $("statsCloseBtn").addEventListener("click", () => $("statsDialog").close());
+{
+  const dmDialog = $("diamondShopDialog");
+  const openDiamondShop = () => { if (!dmDialog.open) dmDialog.showModal(); };
+  $("diamondShopOpenBtn").addEventListener("click", openDiamondShop);
+  $("diamondShopTitle").addEventListener("click", openDiamondShop);
+  $("diamondPill").addEventListener("click", openDiamondShop);
+  $("diamondShopCloseBtn").addEventListener("click", () => dmDialog.close());
+  dmDialog.addEventListener("click", event => { if (event.target === dmDialog) dmDialog.close(); });
+}
 setInterval(() => { renderDaily(); renderPlayerStats(); }, 1000);
 
 /* Theme customization: background tone and secondary color controls */
