@@ -5342,10 +5342,13 @@ function startGlobalWipeListener() {
       const seen = Math.max(Number(doc.exists && doc.data().wipedAt) || 0, Number(localStorage.getItem(mirror)) || 0);
       if (seen >= wipeMs) return;
       cloudSaveReady = false;
+      saveUserState = async () => false; // stop the unload handler re-saving the old progress
+      save = () => {};
       if (doc.exists) await userRef.update({ state: {}, wipedAt: wipeMs });
       else await userRef.set({ state: {}, wipedAt: wipeMs });
       Object.keys(localStorage).filter(k => k.indexOf(getPlayerSaveKey(currentUsername)) === 0).forEach(k => localStorage.removeItem(k));
       localStorage.setItem(mirror, String(wipeMs));
+      try { await dbRef.collection("dailyClaims").doc(uid).delete(); } catch (e) {}
       location.reload();
     } catch (e) { console.error("Wipe check failed:", e); }
   });
