@@ -8,11 +8,7 @@
 <script>
 (function(){var r=document.documentElement,d=new Date();
 if(d.getMonth()===9&&(d.getDate()===30||d.getDate()===31))r.classList.add("halloween");
-try{var t=JSON.parse(localStorage.getItem("superflowTheme_v1")||"null");
-if(t&&typeof t.h==="number"&&typeof t.s==="number"){r.style.setProperty("--h",t.h);r.style.setProperty("--sat",t.s);}
-if(t&&typeof t.b==="number")r.style.setProperty("--black-level",t.b>=50?1:0);
-if(t&&typeof t.br==="number")r.style.setProperty("--secondary-brightness",t.br/100);
-if(t&&typeof t.st==="number")r.style.setProperty("--theme-strength",t.st/100);}catch(e){}})();
+try{localStorage.removeItem("superflowTheme_v1");}catch(e){}})();
 </script>
 <style>
 :root{--h:150;--sat:1;--black-level:0;--secondary-brightness:1;
@@ -1156,29 +1152,6 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
           <p class="muted small">Progress saves to your account every few minutes and when you leave this tab. Avoid playing on two devices at the same time.</p>
         </div>
       </section>
-      <section class="panel" id="themePanel">
-        <div class="panel-head"><h2>Theme Customization</h2><span class="muted small" id="themeCurrent">Forest</span></div>
-        <div class="body">
-          <p class="muted small">Adjust the background, secondary hue, brightness, and theme color strength.</p>
-          <label class="theme-slider-label" for="themeModeToggle" hidden>Background mode</label>
-          <div class="theme-slider-row">
-            <button id="themeModeToggle" type="button" aria-pressed="false" hidden>Switch to light mode</button>
-          </div>
-          <label class="theme-slider-label" for="themeHue">Secondary color</label>
-          <div class="theme-slider-row">
-            <input class="theme-range" id="themeHue" type="range" min="0" max="359" step="1" value="150" aria-label="Secondary color hue">
-            <span class="theme-chip" id="themePreview"></span>
-          </div>
-          <label class="theme-slider-label" for="themeBrightness">Secondary color brightness</label>
-          <div class="theme-slider-row">
-            <input class="theme-range" id="themeBrightness" type="range" min="50" max="150" step="1" value="100" aria-label="Secondary color brightness">
-          </div>
-          <label class="theme-slider-label" for="themeStrength" hidden>Theme color strength</label>
-          <div class="theme-slider-row" hidden>
-            <input class="theme-range" id="themeStrength" type="range" min="0" max="100" step="1" value="50" aria-label="Theme color strength">
-          </div>
-          <button id="themeReset" type="button">Classic mode</button>
-        </div>
       </section>
       <section class="panel" id="settingsPanel">
         <div class="panel-head"><h2>Settings</h2></div>
@@ -5941,10 +5914,18 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   window.dmAward=award;
   let lastShown=-1;
   function refund(){ if(typeof state==="undefined"||!currentUser||state.dmFlairRefunded)return; const o=owned(); const ids=Object.keys(o).filter(k=>k.indexOf("fl-")===0&&o[k]); state.dmFlairRefunded=true; if(!ids.length)return; ids.forEach(k=>{delete o[k];}); delete prof().flair; state.diamonds=D()+ids.length*60; toast("Leaderboard flairs were removed: refunded "+(ids.length*60)+" 💎"); try{save();}catch(e){} }
-  function refresh(){ refund(); adminGrant(); window.dmRbCheck&&window.dmRbCheck(); const d=D(); document.getElementById("diamondPill").textContent="💎 "+d; document.getElementById("diamondShopBalance").textContent="💎 "+d; if(d!==lastShown){lastShown=d;renderShop2();} }
+  function refundNc(){ if(typeof state==="undefined"||!currentUser||state.dmNcRefunded)return; const o=owned(); const ids=["nc-green","nc-blue"].filter(k=>o[k]); state.dmNcRefunded=true; if(!ids.length)return; ids.forEach(k=>{delete o[k];}); if(prof().nameColor==="green"||prof().nameColor==="blue")prof().nameColor="auto"; if(!isAdm()){state.diamonds=D()+ids.length*40; toast("Green and Blue name colours were retired: refunded "+(ids.length*40)+" 💎");} try{save();}catch(e){} }
+  function refresh(){ refund(); refundNc(); adminGrant(); window.dmRbCheck&&window.dmRbCheck(); const d=D(); document.getElementById("diamondPill").textContent="💎 "+d; document.getElementById("diamondShopBalance").textContent="💎 "+d; if(d!==lastShown){lastShown=d;renderShop2();} }
   const prof=()=>(state.dmProfile=state.dmProfile&&typeof state.dmProfile==="object"?state.dmProfile:{});
   // Catalogs. Other players only ever see these ids, never free text.
-  const NC={red:["Red","#ff6b6b"],orange:["Orange","#ffa94d"],gold:["Gold","#ffd43b"],green:["Green","#69db7c"],cyan:["Cyan","#66d9e8"],blue:["Blue","#74a7ff"],purple:["Purple","#b197fc"],pink:["Pink","#ff8ad8"]};
+  const NC={
+    red:{name:"Lava Flow",e:"🌋",c:["#ff3b3b","#ff9a2e","#ffe45c","#ff9a2e","#ff3b3b"],anim:true},
+    orange:{name:"Sunburst",e:"☀️",c:["#fff176","#ffa726","#ff5722","#fff176"],anim:true},
+    gold:{name:"Royal Gold",e:"👑",c:["#fff3b0","#ffc83d","#b8860b","#fff3b0"],anim:true},
+    cyan:{name:"Frostbite",e:"🧊",c:["#e8fdff","#5ee0ff","#3a8dff"]},
+    purple:{name:"Witchcraft",e:"🔮",c:["#d18bff","#7b2dff","#ff5de0","#d18bff"],anim:true},
+    pink:{name:"Cherry Blossom",e:"🌸",c:["#ffe0f0","#ff7fc0","#ff4fa0"]}
+  };
   const TT={hunter:["Star Hunter",50],rebirthed:["Rebirthed",60],baron:["Diamond Baron",100],billy:["Billy's Pal",50],owl:["Night Owl",50]};
   const BI={fire:"🔥",gem:"💎",dragon:"🐉",clover:"🍀",moon:"🌙",bolt:"⚡"};
   // (leaderboard flairs were removed in 1.0.1: leaderboard colours now come from rebirths)
@@ -5964,9 +5945,73 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     {id:"hypercall",type:"use",name:"Call a Hyper Star",cost:20,desc:"Spawn a Hyper Star for you.",run:()=>spawnStar(null,false,true)},
     {id:"cashinject",type:"use",name:"Cash Injection",cost:12,desc:"Instantly receive 5 minutes of your current income.",can:()=>totalIncome()>0,cant:"Place a generator first: you have no income yet.",run:()=>{const g=Math.floor(totalIncome()*300);if(g>0){state.money+=g;try{renderStats();}catch(e){}toast("+"+cash(g)+" cash");}}}
   ];
+
+  // ===== 1.0.2: more backgrounds & UI themes, generated from compact data =====
+  const CL="<g fill='%23fff'><circle cx='60' cy='62' r='30'/><circle cx='105' cy='44' r='38'/><circle cx='154' cy='56' r='32'/><circle cx='190' cy='68' r='20'/><rect x='38' y='62' width='170' height='28' rx='14'/></g><g fill='%23cfe6fa' opacity='.55'><ellipse cx='122' cy='88' rx='80' ry='6'/></g>";
+  const CLOUD='url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 600 100\'>'+CL+'<g transform=\'translate(330 26) scale(.7)\'>'+CL+'</g></svg>")';
+  const WAVE=o=>'url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 400 60\'><path d=\'M0 30 Q50 0 100 30 T200 30 T300 30 T400 30 V60 H0Z\' fill=\'%23ffffff\' fill-opacity=\''+o+'\'/></svg>")';
+  const RAYS="repeating-linear-gradient(105deg,transparent 0 90px,#bfeaff26 120px,transparent 170px)";
+  const BGS=[
+    ["sky","Sky Background",45,"A bright blue sky with clouds drifting by.","linear-gradient(180deg,#1f78d8 0%,#4aa6ee 35%,#8fd0fa 70%,#d6efff 100%)",[{n:5,rx:2,ry:2,cols:["#ffffffe0","#fff6b0e0"],tw:210,th:250,sx:.6,sy:-.3,m:1}],110,[[CLOUD,"900px 150px","0 30px","900px 30px"],[CLOUD,"640px 107px","0 190px","640px 190px"],[CLOUD,"460px 77px","0 340px","460px 340px"],[CLOUD,"780px 130px","0 500px","780px 500px"]]],
+    ["ocean","Ocean Background",45,"Deep blue water with bubbles floating up.","linear-gradient(180deg,#04304f 0%,#065a8a 50%,#0a86b8 100%)",[{n:4,rx:4,ry:4,cols:["#bfeaffb0","#e6f8ffb0"],tw:170,th:210,sx:0,sy:-1,m:1},{n:3,rx:8,ry:8,cols:["#8fd8ff70"],tw:260,th:310,sx:0,sy:-1,m:1}],22,[[WAVE(".22"),"400px 60px","0 100%","400px 100%"],[WAVE(".14"),"640px 96px","0 calc(100% - 14px)","-640px calc(100% - 14px)"],[RAYS,"420px 100%","0 0","420px 0"]]],
+    ["christmas","Christmas Eve",50,"Snow and twinkling lights over a green and red sky.","linear-gradient(180deg,#0b2a14 0%,#14502a 55%,#7a1420 100%)",[{n:4,rx:3,ry:3,cols:["#ffffffee"],tw:150,th:180,sx:-.2,sy:1,m:1},{n:3,rx:3,ry:3,cols:["#ff3b4e","#ffd54a","#5dff8a"],tw:240,th:270,sx:0,sy:1,m:1}],30],
+    ["forest","Firefly Forest",40,"Fireflies drift up through a dark forest.","linear-gradient(180deg,#04110a 0%,#0b2a18 60%,#143d22 100%)",[{n:5,rx:3,ry:3,cols:["#d9ff7a","#fff59a"],tw:200,th:230,sx:.3,sy:-1,m:1}],34],
+    ["candy","Sprinkle Sky",40,"Colourful sprinkles rain down a candy-pink sky.","linear-gradient(180deg,#3a1458 0%,#7a2a8f 55%,#ff7ab8 100%)",[{n:6,rx:3,ry:3,cols:["#ffe14d","#4de1ff","#ff6bd6","#8affc1"],tw:170,th:200,sx:0,sy:1,m:1}],18],
+    ["arctic","Arctic Night",40,"Fine, calm snow over an icy blue sky.","linear-gradient(180deg,#0b2236 0%,#2a5a80 55%,#a9d6ee 100%)",[{n:5,rx:2,ry:2,cols:["#ffffff"],tw:130,th:160,sx:0,sy:1,m:1},{n:3,rx:3,ry:3,cols:["#e4f6ff"],tw:210,th:250,sx:0,sy:1,m:1}],34],
+    ["desert","Dune Wind",40,"Sand blows sideways across a burning sunset.","linear-gradient(180deg,#2a1608 0%,#7a3f14 55%,#d28a3a 100%)",[{n:6,rx:2,ry:2,cols:["#f3c883","#ffe0a8"],tw:180,th:150,sx:-1,sy:.2,m:1}],10]
+  ];
+  const THEMES=[
+    ["ui-xmas","Christmas","🎄",55,"Festive red and green with gold outlines.","#0b2a14","#123d20","#1a4d2a","#e8c14a","#fff5f0","#bfe0c4","#ff4d5a","#c1272d","#7a1018","#0a2410",["#0b2a14","#14502a","#5a1119"],140],
+    ["ui-sky","Sky Blue","☁️",50,"Bright sky blues with soft white text.","#0d2a4a","#17406b","#1d5085","#8fd0ff","#f2faff","#a9d3f2","#6fc3ff","#2f8fe8","#0f3358","#0c2a4a",["#1d6fc0","#3a93e0","#7cc2f5"],210],
+    ["ui-forest","Forest Grove","🌲",50,"Mossy greens like a quiet forest.","#07130b","#12301c","#194127","#6bc47a","#eaffee","#9fd1a8","#7ddf64","#2f8f45","#0b2113","#06100a",["#06120a","#0f2e1a","#1b4a2a"],135],
+    ["ui-candy","Candy Pop","🍬",50,"Purple and bubblegum pink.","#2a0d3d","#4a1a68","#5a2380","#ff7ac8","#fff0fb","#e2b0f0","#ff7ac8","#e0409f","#35104d","#240a36",["#3a1458","#7a2a8f","#ff7ab8"],300],
+    ["ui-lava","Lava Rock","🌋",50,"Charred rock with glowing orange cracks.","#120504","#2c0f0a","#3a150d","#ff6a1a","#fff1e8","#e0a98c","#ff8a3d","#d9480f","#1c0a06","#0e0403",["#0e0302","#2b0d06","#6a1a05"],15],
+    ["ui-arctic","Arctic Ice","🧊",50,"Frozen blues and pale ice.","#0a2236","#164463","#1d5578","#bfeaff","#f4fcff","#a9d4e8","#9fe3ff","#3aa6d8","#0d2f4a","#09263d",["#0a2236","#2a6a96","#bfe6f5"],200],
+    ["ui-sakura","Sakura","🌸",50,"Soft cherry-blossom pinks.","#2a1220","#4a2038","#5c2a46","#ffb3d1","#fff2f7","#e8b8cc","#ff9fc4","#d6578f","#351628","#220d19",["#2a1220","#6a2c52","#e88fb4"],330],
+    ["ui-desert","Desert Dune","🏜️",50,"Warm sand and copper.","#1e1208","#4a2f14","#5c3a18","#e0a458","#fff4e0","#dcc29a","#f0b35a","#b8742a","#2e1b0b","#1a0f06",["#1e1208","#6b3c14","#d28a3a"],30]
+  ];
+  (function(){
+    let css="";
+    BGS.forEach(([id,,,,sky,groups,secs,ex])=>{
+      const L=[],S=[],P=[],Z=[],R=[];
+      groups.forEach(g=>{for(let i=0;i<g.n;i++){
+        const w=g.tw+i*37,h=g.th+i*29,x=(i*53+17)%w,y=(i*71+31)%h,col=g.cols[i%g.cols.length];
+        L.push("radial-gradient("+g.rx+"px "+g.ry+"px at "+x+"px "+y+"px,"+col+" 98%,transparent)");
+        S.push(w+"px "+h+"px"); P.push(Math.round(g.sx*w*g.m)+"px "+Math.round(g.sy*h*g.m)+"px"); Z.push("0 0"); R.push("repeat");
+      }});
+      (ex||[]).slice().reverse().forEach(e=>{L.unshift(e[0]);S.unshift(e[1]);Z.unshift(e[2]);P.unshift(e[3]);R.unshift("repeat-x");});
+      const z=Z.join(","),tw=["christmas","forest","arctic","candy"].includes(id)?",dmtw 3.2s ease-in-out infinite alternate":"";
+      css+="body.dm-snow-"+id+"::before{background-image:"+sky+"!important;background-size:100% 240%!important;background-position:0 0;background-repeat:no-repeat!important;animation:dmsky 26s ease-in-out infinite alternate!important}"
+        +"body.dm-snow-"+id+" .game-shell::before{background-image:"+L.join(",")+"!important;background-size:"+S.join(",")+"!important;background-repeat:"+R.join(",")+"!important;background-position:"+z+";opacity:1!important;animation:dmg-"+id+" "+secs+"s linear infinite"+tw+"!important}"
+        +"@keyframes dmg-"+id+"{to{background-position:"+P.join(",")+"}}";
+    });
+    css+="@keyframes dmsky{to{background-position:0 100%}}@keyframes dmtw{from{opacity:1}to{opacity:.55}}";
+    [1].forEach(()=>{
+    });
+    THEMES.forEach(([id,,,,,bg,pn,p2,ln,tx,mu,ac,bt,hd,hdr,gr,hue])=>{
+      const c="body.dm-"+id;
+      css+=c+"{--bg:"+bg+";--panel:"+pn+";--panel2:"+p2+";--line:"+ln+";--text:"+tx+";--muted:"+mu+";--green:"+ac+";--secondary-color:"+p2+";--h:"+hue+";--sat:1;--black-level:0}"
+        +c+" button:not(.bonus-star):not(.mystery-coin):not(.slot):not(.dm-btn){background:"+bt+"!important;color:#fff!important;border-color:"+bg+"!important;text-shadow:none!important}"
+        +c+" .panel-head{background:"+hd+"!important;color:"+tx+"}"+c+" header{background:"+hdr+"}"
+        +c+':not([class*="dm-snow-"]):not(.dm-aurora)::before{background-image:linear-gradient(180deg,'+gr[0]+' 0%,'+gr[1]+' 60%,'+gr[2]+' 100%)!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;animation:none!important}'
+        +"html:has("+c+"){background:"+bg+"}";
+    });
+    // Classic: a plain solid colour, set with the sliders in the Inventory
+    css+="body.dm-snow-classic::before{background-image:linear-gradient(var(--cb,#0d1a14),var(--cb,#0d1a14))!important;background-size:100% 100%!important;background-repeat:no-repeat!important;animation:none!important}"
+      +"html:not(.snow-disabled) body.dm-snow-classic .game-shell::before{display:none!important}html:has(body.dm-snow-classic){background:var(--cb,#0d1a14)}"
+      +".dm-emo{-webkit-text-fill-color:initial;color:initial;background:none!important;text-shadow:none!important;font-style:normal}"
+      +".inv-sec h3{cursor:pointer;user-select:none}.inv-bar{display:flex;gap:8px;margin:0 0 4px}.inv-bar button{font:700 14px/1.2 \"Trebuchet MS\",Verdana,Arial,sans-serif!important;padding:6px 10px;background:#3a4656!important;color:#fff!important;border-color:#000!important}"
+      +".cb-box{display:grid;gap:4px;margin-top:8px;padding:10px;background:color-mix(in srgb,var(--panel2) 78%,#000 22%);border:2px solid var(--line)}.cb-box .theme-slider-label{margin-top:6px}.cb-prev{height:26px;border:2px solid #fff6;border-radius:6px;background:var(--cb)}";
+    const st=document.createElement("style"); st.id="dmGen102"; st.textContent=css; document.head.append(st);
+  })();
+  const CB_DEF={h:150,s:35,l:10};
+  const cbGet=()=>Object.assign({},CB_DEF,prof().classicBg||{});
+  function applyClassic(){ if(typeof state==="undefined")return; const c=cbGet(); document.documentElement.style.setProperty("--cb","hsl("+c.h+" "+c.s+"% "+c.l+"%)"); }
   const C=(id,group,name,cost,desc,cls)=>({id,type:"cos",group,name,cost,desc,cls});
   const GROUPS=[["snow","Background & snow"],["frame","Tile frames"],["ui","UI themes"],["star","Star skins"],["coin","Billy coin skins"],["cursor","Cursors"],["click","Click effects"],["overlay","Overlays"],["font","Fonts"]];
   const COS=[
+    C("classic","snow","Classic (solid colour)",0,"A plain solid colour. Pick the colour with sliders in your Inventory.","dm-snow-classic"),
+    ...BGS.map(b=>C(b[0],"snow",b[1],b[2],b[3],"dm-snow-"+b[0])),
     C("aurora","snow","Aurora Sky",45,"A glowing northern-lights sky with drifting light curtains.","dm-aurora"),
     C("ember","snow","Ember Rise",35,"Orange sparks rise up the screen.","dm-snow-ember"),
     C("blizzard","snow","Blizzard",40,"Heavy, fast, slanted snow on a stormy sky.","dm-snow-blizzard"),
@@ -5989,6 +6034,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     C("ui-sunset","ui","Sunset Synth",55,"Purple dusk fading into an orange horizon.","dm-ui-sunset"),
     C("ui-mono","ui","Mono Terminal",40,"Pure black and white, like an old terminal.","dm-ui-mono"),
     C("ui-royal","ui","Royal Gold",55,"Black and gold, fit for a king.","dm-ui-royal"),
+    ...THEMES.map(t=>C(t[0],"ui",t[1],t[3],t[4],"dm-"+t[0])),
     C("star-pixel","star","Pixel Star",30,"A proper pixel-art Star with a bobbing animation.","dm-star-pixel"),
     C("star-comet","star","Comet Star",35,"A blazing comet with a flickering tail and sparks.","dm-star-comet"),
     C("star-snow","star","Snowflake Star",30,"Stars look like snowflakes.","dm-star-snow"),
@@ -6034,10 +6080,12 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     {id:"b-inferno",name:"Inferno Bundle",off:.3,items:["ember","f-inferno","star-comet","coin-gold","fx-bolt","cur-cross","ov-dusk"]},
     {id:"b-garden",name:"Garden Party Bundle",off:.3,items:["petals","f-emerald","parchment","fx-hearts","cur-heart","ov-sepia"]},
     {id:"b-arcade",name:"Neon Arcade Bundle",off:.3,items:["aurora","f-neon","rainbow","star-comet","fx-confetti","cur-star","ov-vhs"]},
+    {id:"b-xmas",name:"Christmas Bundle",off:.3,items:["christmas","ui-xmas","f-emerald","star-snow","fx-snow","cur-star","ov-vignette"]},
+    {id:"b-sea",name:"Sea & Sky Bundle",off:.3,items:["sky","ocean","ui-sky","ui-ocean","fx-ripple","coin-diamond"]},
     {id:"b-all",name:"Collector's Vault",off:.4,all:true,items:COS.map(o=>o.id)}
   ];
   const PROF=[];
-  Object.keys(NC).forEach(k=>PROF.push({id:"nc-"+k,sec:"Name colors",kind:"nameColor",val:k,name:NC[k][0]+" name",cost:40,desc:"Your name is "+NC[k][0].toLowerCase()+" in chat and on the leaderboard. Other players see it.",sw:NC[k][1]}));
+  Object.keys(NC).forEach(k=>PROF.push({id:"nc-"+k,sec:"Name colors",kind:"nameColor",val:k,name:NC[k].e+" "+NC[k].name,cost:50,desc:"Your name is "+NC[k].name+" in chat and on the leaderboard. Other players see it.",sw:NC[k].c[0]}));
   Object.keys(TT).forEach(k=>PROF.push({id:"tt-"+k,sec:"Chat titles",kind:"title",val:k,name:"["+TT[k][0]+"]",cost:TT[k][1],desc:k==="season1"?"Limited: only buyable until the end of 2026.":"Shown before your name in global chat.",limited:k==="season1"}));
   PROF.push({id:"anim",sec:"Prestige",kind:"nameAnim",val:true,name:"Shimmering name",cost:150,desc:"Your chat name shimmers with moving colours."});
   Object.keys(BI).forEach(k=>PROF.push({id:"bi-"+k,sec:"Badge icons",kind:"badgeIcon",val:k,name:BI[k]+" badge icon",cost:30,desc:"Replaces the emoji on your chat leaderboard badge."}));
@@ -6046,21 +6094,21 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
 
   // ===== Rebirth colours & titles (earned by rebirthing; one name colour is used for chat AND the leaderboard) =====
   const RB=[
-    {n:1,title:"Getting Started",v:[["Silver",["#cfd6e0"]],["Chalk",["#f4f4f4"]],["Slate",["#8d99ae"]]]},
-    {n:3,title:"Warming Up",v:[["Green",["#6bd36b"]],["Lime",["#b6f04a"]],["Mint",["#7fffd4"]]]},
-    {n:5,title:"Hooked",v:[["Blue",["#5aa9ff"]],["Navy",["#3b6fe0"]],["Sky",["#9fd8ff"]]]},
-    {n:10,title:"Dedicated",v:[["Purple",["#b48cff"]],["Violet",["#8a4bff"]],["Lavender",["#d7c4ff"]]]},
-    {n:15,title:"Veteran",v:[["Frostwave",["#4de1ff","#4f7cff"]],["Tidal",["#3df0c8","#2f7bff"]],["Lagoon",["#7affd9","#3aa0ff"]]]},
-    {n:20,title:"Phoenix",v:[["Candy",["#ff7ad9","#9b6bff"]],["Bubblegum",["#ff9ad5","#ffd1f0"]],["Orchid",["#d16bff","#6b6bff"]]]},
-    {n:25,title:"Grinder",v:[["Sunrise",["#ffe066","#ff8a3d"]],["Honey",["#ffd23f","#ffb347"]],["Peach",["#ffb199","#ff6b81"]]]},
-    {n:30,title:"Unstoppable",v:[["Aurora",["#6bffb0","#3de0ff","#8a7bff"]],["Emerald",["#2bff88","#00b86b"]],["Northern",["#6bffb0","#3de0ff"]]]},
-    {n:35,title:"Eternal",v:[["Inferno",["#ffd23f","#ff5d3d","#d4163c"]],["Magma",["#ffb347","#ff3d3d"]],["Ember",["#ff8a3d","#c4122f"]]]},
-    {n:40,title:"Legend",v:[["Glacier",["#ffffff","#7fd8ff","#5a7dff"]],["Moonlight",["#ffffff","#c7d2ff","#8a9bff"]],["Crystal",["#e6faff","#7fe8ff","#ffffff"]]]},
-    {n:45,title:"Ascended",v:[["Galaxy",["#5b8cff","#b46bff","#ff6bd6"]],["Nebula",["#8a7bff","#ff6bd6","#ffb86b"]],["Cosmos",["#2a3bff","#8a2bff","#ff2bd6"]]]},
-    {n:50,title:"No Life",v:[["Prismatic",["#ff5d5d","#ffd23f","#6bff8a","#3de0ff","#8a7bff","#ff6bd6","#ff5d5d"],true],["Neon Prism",["#ff2bd6","#2bffea","#fff32b","#ff2bd6"],true],["Void Prism",["#ffffff","#b46bff","#2b2bff","#ffffff"],true]]}
+    {n:1,title:"Getting Started",v:[["Steel",["#f2f6fb","#8d9fb8"],0,"⚙️"],["Ghost",["#ffffff","#c9d3e6","#9aa8c4"],0,"👻"]]},
+    {n:3,title:"Warming Up",v:[["Toxic",["#c8ff3d","#27d65a"],0,"☣️"],["Jade",["#7dffb8","#12b886"],0,"🐸"]]},
+    {n:5,title:"Hooked",v:[["Deep Sea",["#6fdcff","#2b6bff"],0,"🐬"],["Skyline",["#e3f6ff","#7ab8ff"],0,"🌤️"]]},
+    {n:10,title:"Dedicated",v:[["Amethyst",["#d7b8ff","#8a4bff"],0,"🦋"],["Nightfall",["#9a7bff","#3a2bd6"],0,"🦇"]]},
+    {n:15,title:"Veteran",v:[["Tidal Wave",["#4de1ff","#4f7cff","#4de1ff"],1,"🌀"],["Lagoon",["#7affd9","#3aa0ff","#7affd9"],1,"🐠"]]},
+    {n:20,title:"Phoenix",v:[["Candy Floss",["#ff7ad9","#9b6bff","#ff7ad9"],1,"🍭"],["Flamingo",["#ff9ad5","#ffd1f0","#ff9ad5"],1,"🦩"]]},
+    {n:25,title:"Grinder",v:[["Sunrise",["#ffe066","#ff8a3d","#ff4f6d","#ffe066"],1,"🌅"],["Peach Fizz",["#ffd1b3","#ff6b81","#ffd1b3"],1,"🍑"]]},
+    {n:30,title:"Unstoppable",v:[["Aurora",["#6bffb0","#3de0ff","#8a7bff","#6bffb0"],1,"🌌"],["Emerald Serpent",["#2bff88","#00b86b","#2bff88"],1,"🐍"]]},
+    {n:35,title:"Eternal",v:[["Hellfire",["#ffd23f","#ff5d3d","#d4163c","#ffd23f"],1,"😈"],["Supernova",["#fff1a8","#ff8a3d","#c4122f","#fff1a8"],1,"💥"]]},
+    {n:40,title:"Legend",v:[["Glacier",["#ffffff","#7fd8ff","#5a7dff","#ffffff"],1,"🏔️"],["Moonlit Wolf",["#ffffff","#c7d2ff","#8a9bff","#ffffff"],1,"🐺"]]},
+    {n:45,title:"Ascended",v:[["Galaxy",["#5b8cff","#b46bff","#ff6bd6","#5b8cff"],1,"🪐"],["Nebula",["#8a7bff","#ff6bd6","#ffb86b","#8a7bff"],1,"✨"]]},
+    {n:50,title:"No Life",v:[["Prismatic",["#ff5d5d","#ffd23f","#6bff8a","#3de0ff","#8a7bff","#ff6bd6","#ff5d5d"],1,"🌈"],["Void Prism",["#ffffff","#b46bff","#2b2bff","#ffffff"],1,"🕳️"]]}
   ];
-  const RBC=[]; // every earnable colour, flattened: ids rb1, rb1b, rb1c, rb3, ...
-  RB.forEach(t=>{t.c=t.v[0][1];t.anim=!!t.v[0][2];t.v.forEach((x,i)=>RBC.push({id:"rb"+t.n+["","b","c"][i],n:t.n,name:x[0],c:x[1],anim:!!x[2]}));});
+  const RBC=[]; // every earnable colour, flattened: ids rb1, rb1b, rb3, ...
+  RB.forEach(t=>{t.c=t.v[0][1];t.anim=!!t.v[0][2];t.e=t.v[0][3];t.v.forEach((x,i)=>RBC.push({id:"rb"+t.n+["","b"][i],n:t.n,name:x[0],c:x[1],anim:!!x[2],e:x[3]}));});
   const rbColor=id=>RBC.find(x=>x.id===id)||null;
   const rbTitle=id=>typeof id==="string"&&id.indexOf("rt")===0?RB.find(t=>"rt"+t.n===id)||null:null;
   const rbCount=()=>Math.max(0,Math.floor(Number(state.rebirths)||0));
@@ -6069,6 +6117,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   const rbGrad=(t,dir)=>"linear-gradient("+(dir||"90deg")+","+t.c.join(",")+")";
   function rbTop(r){let b=null;RB.forEach(t=>{if(r>=t.n)b=t;});return b;}
   function autoColor(r){const t=rbTop(r);return t?RBC.find(x=>x.n===t.n):null;}
+  function emo(el,t){ if(!t||!t.e)return; const s=document.createElement("span"); s.className="dm-emo"; s.textContent=t.e+" "; el.prepend(s); }
   function rbText(el,t){ // colour a piece of text with a colour object {c:[...],anim}
     if(!t)return;
     if(t.c.length===1){el.style.color=t.c[0];return;}
@@ -6079,7 +6128,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   function resolveColor(id,rebirth,auto){
     const r=Math.max(0,Math.floor(Number(rebirth)||0));
     if(id==="none")return null;
-    if(NC[id])return {c:[NC[id][1]],id};
+    if(NC[id])return Object.assign({id},NC[id]);
     const c=rbColor(id); if(c&&c.n<=r)return c;
     return auto?autoColor(r):null;
   }
@@ -6094,7 +6143,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   window.dmFlair=function(nameEl,row,data){
     const rb=Number(data&&data.rebirth)||0, id=data&&data.lbColor;
     const t=id===undefined?autoColor(rb):resolveColor(id,rb,false); if(!t)return;
-    rbText(nameEl,t); nameEl.style.fontWeight="800";
+    rbText(nameEl,t); emo(nameEl,t); nameEl.style.fontWeight="800";
     const fade="linear-gradient(90deg,"+t.c.map((c,i)=>c+(i===0?"3a":"22")).join(",")+",transparent 85%)";
     const stripe=t.c.length===1?"linear-gradient("+t.c[0]+","+t.c[0]+")":rbGrad(t,"180deg");
     row.style.backgroundImage=stripe+","+fade;
@@ -6109,7 +6158,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     const t=rbTop(rbCount()), seen=prof().rbSeen;
     if(!t){return;}
     if(seen===undefined){prof().rbSeen=t.n;return;}   // existing players: no spam on first load
-    if(t.n>seen){prof().rbSeen=t.n; toast("🎨 Rebirth reward: 3 new name colours + the ["+t.title+"] title! Equip them in Inventory.",3600);}
+    if(t.n>seen){prof().rbSeen=t.n; toast("🎨 Rebirth reward: 2 new name colours + the ["+t.title+"] title! Equip them in Inventory.",3600);}
   };
   window.dmPerk=id=>(typeof state==="undefined"?0:lvl(id));
   // Admin account: everything is unlocked
@@ -6160,8 +6209,9 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   function applyCos(){
     const on=new Set(),grp=new Set();
     if(pv)pv.ids.forEach(id=>{const o=byId(id);if(o){on.add(o.cls);grp.add(o.group);}});
-    adminGrant();
+    adminGrant(); if(typeof state!=="undefined"&&currentUser)owned().classic=true;
     COS.forEach(i=>{let v=!!(owned()[i.id]&&equipped()[i.id]); if(pv&&grp.has(i.group))v=on.has(i.cls); document.body.classList.toggle(i.cls,v); if(v&&i.gf)loadFont(i);});
+    applyClassic();
   }
   function pvStage(ids){
     let s=document.getElementById("dmPvStage"); if(s)s.remove(); s=null;
@@ -6225,7 +6275,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     USES.forEach(it=>card(it.name,it.desc,buyBtn(it.cost,()=>buy(it))));
     GROUPS.forEach(([g,title])=>{
       head(title);
-      COS.filter(it=>it.group===g).forEach(it=>{
+      COS.filter(it=>it.group===g&&it.cost>0).forEach(it=>{
         const has=owned()[it.id];
         const btn=has?makeButton(equipped()[it.id]?"Owned · equipped":"Owned · equip in Inventory",()=>{},true,"dm-btn")
                      :buyBtn(it.cost,()=>buy(it));
@@ -6260,7 +6310,14 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     adminGrant();
     const keep=document.querySelector(".main-tab-content"),top=keep?keep.scrollTop:0;
     host.replaceChildren();
-    const sec=(t,sub)=>{const w=document.createElement("div");w.className="inv-sec";const h=document.createElement("h3");h.textContent=t;w.append(h);if(sub){const p=document.createElement("p");p.className="muted small";p.textContent=sub;w.append(p);}const g=document.createElement("div");g.className="inv-grid";w.append(g);host.append(w);return g;};
+    const INV_TITLES=[...GROUPS.map(x=>x[1]),"Name colour","Chat titles","Prestige","Badge icons","Announcement styles"];
+    let closed; try{closed=new Set(JSON.parse(localStorage.getItem("sfInvClosed")||"[]"));}catch(e){closed=new Set();}
+    const setClosed=()=>{try{localStorage.setItem("sfInvClosed",JSON.stringify([...closed]));}catch(e){}};
+    {const bar=document.createElement("div");bar.className="inv-bar";
+     [["Collapse all",()=>{INV_TITLES.forEach(t=>closed.add(t));}],["Expand all",()=>{closed.clear();}]].forEach(([l,fn])=>{const b=makeButton(l,()=>{fn();setClosed();renderInv();},false,"");b.type="button";bar.append(b);});
+     host.append(bar);}
+    let lastW=null;
+    const sec=(t,sub)=>{const w=document.createElement("div");w.className="inv-sec";lastW=w;const shut=closed.has(t);const h=document.createElement("h3");h.textContent=(shut?"▸ ":"▾ ")+t;h.setAttribute("role","button");h.tabIndex=0;h.setAttribute("aria-expanded",String(!shut));const tog=()=>{if(closed.has(t))closed.delete(t);else closed.add(t);setClosed();renderInv();};h.addEventListener("click",tog);h.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();tog();}});w.append(h);host.append(w);const g=document.createElement("div");g.className="inv-grid";if(shut){w.dataset.shut="1";return g;}if(sub){const p=document.createElement("p");p.className="muted small";p.textContent=sub;w.append(p);}w.append(g);return g;};
     const empty=g=>{const e=document.createElement("p");e.className="muted small inv-empty";e.textContent="Nothing here yet. Find it in the 💎 Diamond Shop.";g.append(e);};
     const cell=(g,name,desc,on,locked,fn,paint)=>{
       const c=document.createElement("div");c.className="inv-item"+(on?" inv-on":"")+(locked?" inv-locked":"");
@@ -6273,15 +6330,27 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
       const g=sec(title),list=COS.filter(o=>o.group===grp&&owned()[o.id]);
       if(!list.length)return empty(g);
       list.forEach(it=>cell(g,it.name,it.desc,!!equipped()[it.id],false,()=>{equipCos(it,!equipped()[it.id]);after(false);}));
+      if(grp==="snow"&&lastW&&!lastW.dataset.shut){
+        const box=document.createElement("div");box.className="cb-box";
+        const cap=document.createElement("strong");cap.textContent="Classic background colour";
+        const prev=document.createElement("div");prev.className="cb-prev";
+        box.append(cap,prev);
+        const mk=(label,key,max,track)=>{const l=document.createElement("label");l.className="theme-slider-label";l.textContent=label;const r=document.createElement("input");r.type="range";r.className="theme-range";r.min=0;r.max=max;r.step=1;r.value=cbGet()[key];r.setAttribute("aria-label",label);if(track)r.style.background=track;
+          r.addEventListener("input",()=>{const c=cbGet();c[key]=Number(r.value);prof().classicBg=c;applyClassic();});
+          r.addEventListener("change",()=>{try{save();}catch(e){}});box.append(l,r);};
+        mk("Colour","h",359);mk("Saturation","s",100,"linear-gradient(90deg,hsl(150 0% 40%),hsl(150 100% 40%))");mk("Brightness","l",60,"linear-gradient(90deg,#000,hsl(150 60% 60%))");
+        const note=document.createElement("p");note.className="muted small";note.textContent="Equip \"Classic (solid colour)\" above to use it.";box.append(note);
+        lastW.append(box);
+      }
     });
     // one name colour for chat AND the leaderboard
-    {const g=sec("Name colour","Used in global chat and on the leaderboard. Every rebirth milestone unlocks 3 colours.");
+    {const g=sec("Name colour","Used in global chat and on the leaderboard. Every rebirth milestone unlocks 2 colours, each with its own emoji.");
      const sel=prof().nameColor||"auto";
      const pick=v=>{prof().nameColor=v;after(true);};
      cell(g,"Automatic","Your newest rebirth colour.",sel==="auto"||(!NC[sel]&&!rbColor(sel)&&sel!=="none"),false,()=>pick("auto"));
      cell(g,"None","Plain white name.",sel==="none",false,()=>pick("none"));
-     PROF.filter(p=>p.kind==="nameColor"&&owned()[p.id]).forEach(p=>cell(g,p.name,"Shop colour",sel===p.val,false,()=>pick(p.val),n=>{n.style.color=p.sw;}));
-     RBC.forEach(c=>cell(g,c.name,"Rebirth "+c.n,sel===c.id,!(isAdm()||rbCount()>=c.n),()=>pick(c.id),n=>rbText(n,c)));}
+     PROF.filter(p=>p.kind==="nameColor"&&owned()[p.id]).forEach(p=>cell(g,p.name,"Shop colour",sel===p.val,false,()=>pick(p.val),n=>rbText(n,NC[p.val])));
+     RBC.forEach(c=>cell(g,c.e+" "+c.name,"Rebirth "+c.n,sel===c.id,!(isAdm()||rbCount()>=c.n),()=>pick(c.id),n=>rbText(n,c)));}
     {const g=sec("Chat titles","Bought titles and titles earned from rebirth achievements.");
      PROF.filter(p=>p.kind==="title"&&owned()[p.id]).forEach(p=>cell(g,p.name,"Shop title",isEq(p),false,()=>equipProf(p,!isEq(p))));
      RB.forEach(t=>{const p={kind:"title",val:"rt"+t.n};cell(g,"["+t.title+"]","Reach "+t.n+" rebirth"+(t.n===1?"":"s"),isEq(p),!rbOpen(t),()=>equipProf(p,!isEq(p)),n=>rbText(n,t));});}
@@ -6298,7 +6367,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   window.dmChatFields=function(){const p=prof(),o={};const id=effectiveId();if(id)o.nameColor=id;const rt=rbTitle(p.title);if(TT[p.title]||(rt&&rbOpen(rt)))o.title=p.title;if(p.nameAnim===true)o.nameAnim=true;return o;};
   window.dmAnnFields=function(){const p=prof();return AN[p.annStyle]?{annStyle:p.annStyle}:{};};
   window.dmLbFields=function(){const p=prof();return {badgeIcon:BI[p.badgeIcon]?p.badgeIcon:"",lbColor:effectiveId()};};
-  window.dmChatName=function(el,m){const id=m.nameColor;if(NC[id])el.style.color=NC[id][1];else rbText(el,rbColor(id));if(m.nameAnim===true)el.classList.add("dm-shimmer");};
+  window.dmChatName=function(el,m){const id=m.nameColor,t=NC[id]||rbColor(id);if(t){rbText(el,t);emo(el,t);}if(m.nameAnim===true)el.classList.add("dm-shimmer");};
   window.dmChatTitle=function(m){const t=TT[m.title],r=rbTitle(m.title);if(!t&&!r)return null;const s=document.createElement("span");s.className="dm-title";s.textContent="["+(t?t[0]:r.title)+"] ";if(r)rbText(s,r);return s;};
   window.dmAnn=function(row,textEl,m){const a=AN[m.annStyle];if(!a)return;row.style.borderLeft="4px solid "+a[1];textEl.style.color=a[1];textEl.prepend(a[0]+" ");};
   window.dmBadge=function(tag,user){const e=BI[user&&user.badgeIcon];return e&&tag&&tag.rank?Object.assign({},tag,{text:"("+e+"#"+tag.rank+")"}):tag;};
@@ -6928,79 +6997,6 @@ $("statsCloseBtn").addEventListener("click", () => $("statsDialog").close());
 }
 setInterval(() => { if (!document.hidden) { renderDaily(); renderPlayerStats(); } }, 1000);
 
-/* Theme customization: background tone and secondary color controls */
-const THEME_STORAGE_KEY = "superflowTheme_v1";
-const DEFAULT_THEME_HUE = 150;
-function savedThemeSettings() {
-  try {
-    const t = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY) || "null");
-    return {
-      hue: t && typeof t.h === "number" ? t.h : DEFAULT_THEME_HUE,
-      black: t && typeof t.b === "number" && t.b >= 50 ? 1 : 0,
-      brightness: t && typeof t.br === "number" ? t.br : 100,
-      strength: t && typeof t.st === "number" ? t.st : 50
-    };
-  } catch (e) {}
-  return { hue: DEFAULT_THEME_HUE, black: 0, brightness: 100, strength: 50 };
-}
-function applyThemeSettings(hueValue, blackValue, brightnessValue, persist = true, strengthValue = 50) {
-  blackValue = 0;
-  const hue = Math.max(0, Math.min(359, Math.round(Number(hueValue)) || 0));
-  const black = Number(blackValue) >= 0.5 ? 1 : 0;
-  const brightness = Math.max(50, Math.min(150, Math.round(Number(brightnessValue)) || 100));
-  const strength = Math.max(0, Math.min(100, Math.round(Number(strengthValue)) || 0));
-  const root = document.documentElement;
-  root.style.setProperty("--h", hue);
-  root.style.setProperty("--sat", 1);
-  root.style.setProperty("--black-level", black);
-  root.style.setProperty("--secondary-brightness", brightness / 100);
-  root.style.setProperty("--theme-strength", strength / 100);
-  const lightTint = black ? Math.round((45 + (brightness - 50) * 0.28) * strength / 100) : 0;
-  root.style.setProperty("--light-theme-tint", lightTint + "%");
-  root.style.setProperty("--light-theme-border-tint",
-    Math.min(93, Math.round((65 + (brightness - 50) * 0.28) * strength / 100)) + "%");
-  root.style.setProperty("--login-background", black ? "#ffffff" : "#000000");
-  root.style.setProperty("--login-theme-tint", strength ? Math.round(12 + strength * 0.28) + "%" : "0%");
-  root.style.colorScheme = black ? "light" : "dark";
-  const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", black ? "#ffffff" : "#000000");
-  if (persist) {
-    try { localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify({ h: hue, s: 1, b: black * 100, br: brightness, st: strength })); } catch (e) {}
-  }
-  $("themeCurrent").textContent = (hue === DEFAULT_THEME_HUE ? "Classic green" : "Hue " + hue + "°")
-    + " · " + brightness + "% brightness";
-  $("themePreview").style.background = "linear-gradient(135deg, hsl(" + hue + " 70% "
-    + (48 * brightness / 100) + "%) 0 50%, " + (black ? "#ffffff" : "#000000") + " 50% 100%)";
-  $("themeHue").value = hue;
-  const modeButton = $("themeModeToggle");
-  modeButton.textContent = black ? "Switch to dark mode" : "Switch to light mode";
-  modeButton.setAttribute("aria-pressed", String(Boolean(black)));
-  $("themeBrightness").value = brightness;
-  $("themeStrength").value = strength;
-}
-function initThemePanel() {
-  const update = () => applyThemeSettings(
-    $("themeHue").value,
-    document.documentElement.style.getPropertyValue("--black-level"),
-    $("themeBrightness").value,
-    true,
-    $("themeStrength").value
-  );
-  $("themeHue").addEventListener("input", update);
-  $("themeBrightness").addEventListener("input", update);
-  $("themeStrength").addEventListener("input", update);
-  $("themeModeToggle").addEventListener("click", () => {
-    const black = Number(document.documentElement.style.getPropertyValue("--black-level")) >= 0.5 ? 1 : 0;
-    applyThemeSettings($("themeHue").value, black ? 0 : 1, $("themeBrightness").value,
-      true, $("themeStrength").value);
-  });
-  $("themeReset").addEventListener("click", () =>
-    applyThemeSettings(DEFAULT_THEME_HUE, 0, 100, true, 50)
-  );
-  const settings = savedThemeSettings();
-  applyThemeSettings(settings.hue, settings.black, settings.brightness, false, settings.strength);
-}
-initThemePanel();
 function isAntiCheatAdmin() { return !!currentUser && ANTICHEAT_ADMIN_UIDS.includes(currentUser.uid); }
 async function loadFlags() {
   const list = $("flagList");
