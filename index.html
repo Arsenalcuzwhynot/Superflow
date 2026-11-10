@@ -765,6 +765,64 @@ body.dm-gold,body.dm-f-ice,body.dm-f-obsidian,body.dm-f-rainbow,body.dm-f-infern
 .generator-particles span:nth-child(n+9){display:none!important}
 /* don't animate what the player cannot see */
 .game-shell.low-performance .generator-particles span,.game-shell.low-performance .generator-visual::before,.game-shell.low-performance .generator-visual::after{animation:none!important}
+
+/* ===== 1.0.1: clearer "5" in the game font ===== */
+@font-face{font-family:"Clear5";font-weight:100 900;src:local("Verdana Bold"),local("Verdana-Bold"),local("Trebuchet MS Bold"),local("TrebuchetMS-Bold"),local("DejaVu Sans Bold"),local("DejaVuSans-Bold"),local("Arial Bold"),local("Arial-BoldMT"),local("Roboto Bold"),local("Roboto-Bold"),local("Noto Sans Bold"),local("NotoSans-Bold");unicode-range:U+0035}
+:root{--retro-font:"Clear5","Pixelify Sans","VT323","Courier New",monospace}
+
+/* ===== 1.0.1: UI themes also recolour the page background (a Diamond Shop background still wins if one is equipped) ===== */
+body.dm-ui-gb:not([class*="dm-snow-"]):not(.dm-aurora)::before{background-image:linear-gradient(180deg,#0f380f 0%,#17481a 55%,#306230 100%)!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;animation:none!important}
+body.dm-ui-neon:not([class*="dm-snow-"]):not(.dm-aurora)::before{background-image:radial-gradient(70% 45% at 50% 0%,#5a0a7a99,transparent),linear-gradient(180deg,#05020f 0%,#12062e 60%,#1d0a45 100%)!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;animation:none!important}
+body.dm-ui-parch:not([class*="dm-snow-"]):not(.dm-aurora)::before{background-image:linear-gradient(180deg,#d9c595 0%,#cdb88a 55%,#b99d68 100%)!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;animation:none!important}
+body.dm-ui-wood:not([class*="dm-snow-"]):not(.dm-aurora)::before{background-image:repeating-linear-gradient(90deg,#00000000 0 78px,#0000002e 78px 80px),linear-gradient(180deg,#2a1a0c 0%,#3a2410 60%,#4a2f16 100%)!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;animation:none!important}
+html:has(body.dm-ui-gb){background:#0f380f}html:has(body.dm-ui-neon){background:#05020f}html:has(body.dm-ui-parch){background:#cdb88a}html:has(body.dm-ui-wood){background:#2a1a0c}
+
+body.dm-ui-gb header{background:#0f380f}body.dm-ui-neon header{background:#0a0420}body.dm-ui-parch header{background:#c9a867}body.dm-ui-wood header{background:#2a1a0c}
+/* ===== 1.0.1: fading (gradient) name colours ===== */
+.dm-grad{background-image:var(--g);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent!important;text-shadow:none!important}
+.dm-grad-anim{background-size:300% 100%;animation:dm-gslide 5s linear infinite}
+@keyframes dm-gslide{to{background-position:-300% 0}}
+html.reduced-motion .dm-grad-anim,.low-performance .dm-grad-anim{animation:none}
+
+/* ===== 1.0.1: Inventory tab ===== */
+.inv-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.inv-top strong{font:800 20px/1.2 "Trebuchet MS",Verdana,Arial,sans-serif!important}
+.inv-top p{margin:2px 0 0}
+.inv-top button{font:700 15px/1.2 "Trebuchet MS",Verdana,Arial,sans-serif!important;padding:8px 12px;background:#0e72c9!important;color:#fff!important;border-color:#000!important;text-shadow:none!important}
+.inv-sec h3{margin:16px 0 6px;padding:6px 10px;font:700 17px/1.2 "Trebuchet MS",Verdana,Arial,sans-serif!important;background:var(--panel2);border-left:5px solid var(--line);text-shadow:none!important}
+.inv-sec>p{margin:0 0 6px}
+.inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.inv-item{display:grid;gap:5px;align-content:start;padding:9px;background:color-mix(in srgb,var(--panel2) 78%,#000 22%);border:2px solid var(--line)}
+.inv-item.inv-on{border-color:#ffd43b;box-shadow:inset 0 0 0 1px #ffd43b}
+.inv-item.inv-locked{opacity:.55}
+.inv-name{font:700 15px/1.25 "Trebuchet MS",Verdana,Arial,sans-serif!important;overflow-wrap:anywhere;text-shadow:none!important}
+.inv-desc{font:500 12px/1.35 "Trebuchet MS",Verdana,Arial,sans-serif!important;color:var(--muted);text-shadow:none!important}
+.inv-btn{font:700 14px/1.2 "Trebuchet MS",Verdana,Arial,sans-serif!important;padding:7px 8px;background:#2f7d32!important;color:#fff!important;border-color:#000!important;text-shadow:none!important}
+.inv-btn.inv-btn-on{background:#8a5a00!important}
+.inv-btn:disabled{background:#2b3340!important;color:#c3ccd8!important;opacity:1!important;filter:none!important}
+.inv-empty{grid-column:1/-1;margin:0}
+
+/* ===== 1.0.1: Global broadcast banner + chat message ===== */
+#adminBroadcastBanner{left:50%!important;right:auto!important;top:calc(12px + env(safe-area-inset-top,0px))!important;width:min(780px,calc(100vw - 24px));transform:translateX(-50%);padding:0!important;gap:0;overflow:hidden;text-align:left!important;background:linear-gradient(110deg,#5a0d08 0%,#b3261e 45%,#e0452b 100%)!important;border:3px solid #ffd43b!important;border-radius:10px;box-shadow:0 0 0 3px #000,0 10px 30px #000a,0 0 28px #ff5a4a88!important;color:#fff;font-family:"Trebuchet MS",Verdana,Arial,sans-serif!important}
+#adminBroadcastBanner:not([hidden]){display:flex!important;align-items:stretch}
+#adminBroadcastBanner .bc-icon{flex:0 0 auto;display:grid;place-items:center;width:68px;font-size:32px;background:#00000040;border-right:3px solid #ffd43b66;animation:bc-ring 1.2s ease-in-out infinite}
+#adminBroadcastBanner .bc-body{flex:1 1 auto;min-width:0;padding:10px 16px 14px}
+#adminBroadcastBanner .bc-label{font:800 12px/1 "Trebuchet MS",Verdana,Arial,sans-serif!important;letter-spacing:.18em!important;text-transform:uppercase;color:#ffd43b;margin-bottom:5px}
+#adminBroadcastBanner .bc-text{font:800 21px/1.3 "Trebuchet MS",Verdana,Arial,sans-serif!important;color:#fff;overflow-wrap:anywhere;text-shadow:0 2px 0 #0007!important}
+#adminBroadcastBanner .bc-bar{position:absolute;left:0;right:0;bottom:0;height:5px;background:#00000066}
+#adminBroadcastBanner .bc-bar i{display:block;height:100%;background:linear-gradient(90deg,#ffd43b,#fff3a0);transform-origin:left center}
+#adminBroadcastBanner.bc-in{animation:bc-slide-in .55s cubic-bezier(.2,1.2,.3,1) both}
+#adminBroadcastBanner.bc-out{animation:bc-slide-out .4s ease-in both}
+@keyframes bc-slide-in{from{transform:translate(-50%,-150%);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+@keyframes bc-slide-out{to{transform:translate(-50%,-150%);opacity:0}}
+@keyframes bc-drain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@keyframes bc-ring{0%,100%{background-color:#00000040}50%{background-color:#ffd43b44}}
+html.reduced-motion #adminBroadcastBanner .bc-icon{animation:none}
+@media(max-width:560px){#adminBroadcastBanner .bc-icon{width:48px;font-size:24px}#adminBroadcastBanner .bc-text{font-size:17px!important}}
+.chat-message.chat-broadcast{background:linear-gradient(100deg,#6d100a,#b3261e 55%,#6d100a)!important;border:2px solid #ffd43b!important;border-left:7px solid #ffd43b!important;border-radius:6px;box-shadow:0 0 12px #ff5a4a55;padding:9px 12px!important;margin:6px 0}
+.chat-message.chat-broadcast .chat-meta{display:block;margin-bottom:3px;font-size:12px;opacity:.95}
+.bc-chip{display:inline-block;margin-right:7px;padding:3px 7px;border-radius:3px;background:#ffd43b;color:#5a0d08;font:800 11px/1 "Trebuchet MS",Verdana,Arial,sans-serif!important;letter-spacing:.08em!important}
+.chat-message.chat-broadcast>span:last-child{display:block;font-size:16px;font-weight:800}
 </style></head>
 <body>
 <section class="auth-screen" id="authScreen">
@@ -866,7 +924,7 @@ body.dm-gold,body.dm-f-ice,body.dm-f-obsidian,body.dm-f-rainbow,body.dm-f-infern
     <span id="mathQuestionStatus" class="math-question-status" role="status" aria-live="polite"></span>
   </form>
 </div>
-<div id="adminBroadcastBanner" role="alert" hidden></div>
+<div id="adminBroadcastBanner" role="alert" hidden><div class="bc-icon" aria-hidden="true">📢</div><div class="bc-body"><div class="bc-label">Global broadcast</div><div class="bc-text"></div></div><div class="bc-bar" aria-hidden="true"><i></i></div></div>
 <main>
   <div class="layout">
     <div class="main-left-column">
@@ -933,6 +991,7 @@ body.dm-gold,body.dm-f-ice,body.dm-f-obsidian,body.dm-f-rainbow,body.dm-f-infern
             <div class="shop-tab-box-title">Main</div>
             <div class="shop-tabs" role="tablist" aria-label="Shop, rebirth, upgrades, and gamble">
               <button class="shop-tab" id="shopTabBtn" type="button" role="tab" aria-selected="true" aria-controls="shopTabPanel">Shop</button>
+              <button class="shop-tab" id="inventoryTabBtn" type="button" role="tab" aria-selected="false" aria-controls="inventoryTabPanel">Inventory</button>
               <button class="shop-tab" id="rebirthTabBtn" type="button" role="tab" aria-label="Rebirth" aria-selected="false" aria-controls="rebirthTabPanel">Rebirth<span class="rebirth-badge" id="rebirthAvailableBadge" aria-hidden="true" hidden>!</span></button>
               <button class="shop-tab" id="upgradesTabBtn" type="button" role="tab" aria-selected="false" aria-controls="upgradesTabPanel">Upgrades</button>
               <button class="shop-tab" id="gambleTabBtn" type="button" role="tab" aria-selected="false" aria-controls="gambleTabPanel">Gamble</button>
@@ -959,6 +1018,10 @@ body.dm-gold,body.dm-f-ice,body.dm-f-obsidian,body.dm-f-rainbow,body.dm-f-infern
             <input id="multiBuyAmount" type="hidden" value="1">
           </div>
           <div class="shop-list" id="shop"></div>
+        </div>
+<div id="inventoryTabPanel" role="tabpanel" aria-labelledby="inventoryTabBtn" hidden>
+          <div class="inv-top"><div><strong>Inventory</strong><p class="muted small">Equip everything you own here. Buy new items in the 💎 Diamond Shop.</p></div><button id="invOpenShopBtn" type="button">💎 Diamond Shop</button></div>
+          <div id="inventoryList"></div>
         </div>
 <div id="rebirthTabPanel" role="tabpanel" aria-labelledby="rebirthTabBtn" hidden>
         <div class="rebirth-panel">
@@ -1131,9 +1194,6 @@ body.dm-gold,body.dm-f-ice,body.dm-f-obsidian,body.dm-f-rainbow,body.dm-f-infern
       </section>
     </div>
   </div>
-  <section class="panel dm-hero" id="diamondShopPanel">
-    <h2 id="diamondShopTitle">💎 DIAMOND SHOP</h2><p>Backgrounds, tile frames, themes, star skins, cursors, click effects, overlays, chat styles, perks and bundles. Every item has a Preview button!</p><button id="diamondShopOpenBtn" type="button">Open the Diamond Shop</button>
-  </section>
   <section class="panel admin-panel-bottom" id="adminPanel" hidden>
     <div class="panel-head"><h2>Admin Panel</h2></div>
     <div class="body adm-grid">
@@ -1438,6 +1498,12 @@ const UPDATE_HISTORY = [
     version: GAME_VERSION,
     status: "Current",
     changes: [
+      "Added an Inventory tab right next to Shop: equip every cosmetic, chat colour, title, badge and announcement style there. The Diamond Shop now only buys.",
+      "Rebirthing now earns leaderboard colours. They start as simple colours and become fading, glowing gradients at higher rebirths (Prismatic at 50).",
+      "Added rebirth name colours and titles, from Getting Started up to No Life.",
+      "Removed leaderboard flairs (owned flairs are refunded 60 💎 each) and the lower Diamond Shop button.",
+      "Global broadcasts have a new animated banner with a countdown bar and a nicer chat message.",
+      "UI themes now also recolour the page background, and the number 5 is much easier to read.",
       "Backgrounds, snow, petals, embers, leaves, stars and the aurora now stay behind every tab and panel instead of covering generators.",
       "Billy now only appears from Stars: he comes out of a Star when you collect it, never on his own.",
       "Performance: fewer generator particles, cheaper background animation, no page-wide colour clock unless a tile frame needs it, and no redrawing while the tab is hidden.",
@@ -2507,7 +2573,13 @@ function renderChat(snapshot) {
       meta.append(alphaTag);
     }
     const nameSpan = document.createElement("strong");
-    nameSpan.textContent = (message.isBroadcast ? "📢 Broadcast from " : "") + (message.username || "Player") + ": ";
+    if (message.isBroadcast) {
+      const chip = document.createElement("span");
+      chip.className = "bc-chip";
+      chip.textContent = "📢 BROADCAST";
+      meta.append(chip);
+    }
+    nameSpan.textContent = (message.username || "Player") + ": ";
     if (!message.isBroadcast) {
       const titleSpan = window.dmChatTitle && window.dmChatTitle(message);
       if (titleSpan) meta.append(titleSpan);
@@ -4740,6 +4812,7 @@ function rebirth() {
   render();
   if (firstRebirth) selectShopTab("upgrades");
   save();
+  if (window.dmRbCheck) window.dmRbCheck();
   publishLeaderboardEntry();
   notify("Rebirth complete! " + returnedGenerators + " placed generator"
     + (returnedGenerators === 1 ? " was" : "s were") + " returned to your inventory. You are now " + rebirthLevelLabel()
@@ -4861,7 +4934,7 @@ document.querySelectorAll("[data-leaderboard]").forEach(button => {
   button.addEventListener("click", () => selectLeaderboard(button.dataset.leaderboard));
 });
 function selectShopTab(tab) {
-  ["shop", "tasks", "rebirth", "upgrades", "achievements", "daily", "gamble"].forEach(name => {
+  ["shop", "inventory", "tasks", "rebirth", "upgrades", "achievements", "daily", "gamble"].forEach(name => {
     const selected = name === tab;
     $(name + "TabBtn").setAttribute("aria-selected", String(selected));
     $(name + "TabPanel").hidden = !selected;
@@ -4877,6 +4950,7 @@ function selectShopTab(tab) {
   if (tab === "tasks") renderTasks();
   if (tab === "achievements") updateAchievementAvailability();
   if (tab === "shop") advanceTutorial("shop");
+  if (tab === "inventory" && window.dmRenderInventory) window.dmRenderInventory();
   if (tab === "daily") renderDaily();
   if (tab === "gamble") renderGambling();
 }
@@ -4903,6 +4977,7 @@ $("settingsTabs").addEventListener("keydown", event => {
   selectSettingsTab(nextTab, true);
 });
 $("shopTabBtn").addEventListener("click", () => selectShopTab("shop"));
+$("inventoryTabBtn").addEventListener("click", () => selectShopTab("inventory"));
 $("tasksTabBtn").addEventListener("click", () => selectShopTab("tasks"));
 $("rebirthTabBtn").addEventListener("click", () => selectShopTab("rebirth"));
 $("upgradesTabBtn").addEventListener("click", () => selectShopTab("upgrades"));
@@ -5693,8 +5768,16 @@ startGlobalStarListener = function () { _origStartStar(); startGlobalWipeListene
   let banner=document.getElementById("adminBroadcastBanner");
   if(!banner){banner=document.createElement("div");banner.id="adminBroadcastBanner";banner.setAttribute("role","alert");banner.hidden=true;document.body.appendChild(banner);}
   let unsub=null,hideTimer=null;
-  const hide=()=>{banner.hidden=true;banner.textContent="";clearTimeout(hideTimer);};
-  function show(text,ms){banner.textContent="📢 "+text;banner.hidden=false;clearTimeout(hideTimer);hideTimer=setTimeout(hide,ms);}
+  const q=sel=>banner.querySelector(sel);
+  const hide=()=>{clearTimeout(hideTimer);banner.classList.remove("bc-in","bc-out");banner.hidden=true;const t=q(".bc-text");if(t)t.textContent="";};
+  function show(text,ms){
+    clearTimeout(hideTimer);
+    const t=q(".bc-text"),bar=q(".bc-bar i");
+    if(!t){banner.textContent="📢 "+text;}else{t.textContent=text;}
+    banner.hidden=false;banner.classList.remove("bc-in","bc-out");void banner.offsetWidth;banner.classList.add("bc-in");
+    if(bar){bar.style.animation="none";void bar.offsetWidth;bar.style.animation="bc-drain "+Math.max(500,ms)+"ms linear forwards";}
+    hideTimer=setTimeout(()=>{banner.classList.remove("bc-in");banner.classList.add("bc-out");hideTimer=setTimeout(hide,400);},Math.max(300,ms-400));
+  }
   function start(){
     if(unsub)unsub();unsub=null;hide();
     if(!currentUser||!dbRef)return;
@@ -5792,13 +5875,14 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   function award(n,why){ if(!currentUser||!(n>0))return; state.diamonds=D()+n; refresh(); toast("+"+n+" 💎"+(why?" "+why:"")); clearTimeout(saveT); saveT=setTimeout(()=>{try{save();}catch(e){}},1500); }
   window.dmAward=award;
   let lastShown=-1;
-  function refresh(){ const d=D(); document.getElementById("diamondPill").textContent="💎 "+d; document.getElementById("diamondShopBalance").textContent="💎 "+d; if(d!==lastShown){lastShown=d;renderShop2();} }
+  function refund(){ if(typeof state==="undefined"||!currentUser||state.dmFlairRefunded)return; const o=owned(); const ids=Object.keys(o).filter(k=>k.indexOf("fl-")===0&&o[k]); state.dmFlairRefunded=true; if(!ids.length)return; ids.forEach(k=>{delete o[k];}); delete prof().flair; state.diamonds=D()+ids.length*60; toast("Leaderboard flairs were removed: refunded "+(ids.length*60)+" 💎"); try{save();}catch(e){} }
+  function refresh(){ refund(); window.dmRbCheck&&window.dmRbCheck(); const d=D(); document.getElementById("diamondPill").textContent="💎 "+d; document.getElementById("diamondShopBalance").textContent="💎 "+d; if(d!==lastShown){lastShown=d;renderShop2();} }
   const prof=()=>(state.dmProfile=state.dmProfile&&typeof state.dmProfile==="object"?state.dmProfile:{});
   // Catalogs. Other players only ever see these ids, never free text.
   const NC={red:["Red","#ff6b6b"],orange:["Orange","#ffa94d"],gold:["Gold","#ffd43b"],green:["Green","#69db7c"],cyan:["Cyan","#66d9e8"],blue:["Blue","#74a7ff"],purple:["Purple","#b197fc"],pink:["Pink","#ff8ad8"]};
   const TT={hunter:["Star Hunter",50],rebirthed:["Rebirthed",60],baron:["Diamond Baron",100],billy:["Billy's Pal",50],owl:["Night Owl",50]};
   const BI={fire:"🔥",gem:"💎",dragon:"🐉",clover:"🍀",moon:"🌙",bolt:"⚡"};
-  const FL={flame:["🔥","#ff7a3d"],frost:["❄️","#8fd3ff"],bolt:["⚡","#ffe14d"],clover:["🍀","#5ad66f"],royal:["👑","#c79bff"]};
+  // (leaderboard flairs were removed in 1.0.1: leaderboard colours now come from rebirths)
   const AN={gold:["🎉","#ffd43b"],frost:["❄️","#8fd3ff"],pink:["💖","#ff8ad8"],clover:["🍀","#69db7c"]};
   const SEASON1_ENDS=new Date(2027,0,1).getTime();
   const PERKS=[
@@ -5876,12 +5960,69 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   Object.keys(TT).forEach(k=>PROF.push({id:"tt-"+k,sec:"Chat titles",kind:"title",val:k,name:"["+TT[k][0]+"]",cost:TT[k][1],desc:k==="season1"?"Limited: only buyable until the end of 2026.":"Shown before your name in global chat.",limited:k==="season1"}));
   PROF.push({id:"anim",sec:"Prestige",kind:"nameAnim",val:true,name:"Shimmering name",cost:150,desc:"Your chat name shimmers with moving colours."});
   Object.keys(BI).forEach(k=>PROF.push({id:"bi-"+k,sec:"Badge icons",kind:"badgeIcon",val:k,name:BI[k]+" badge icon",cost:30,desc:"Replaces the emoji on your chat leaderboard badge."}));
-  Object.keys(FL).forEach(k=>PROF.push({id:"fl-"+k,sec:"Leaderboard flair",kind:"flair",val:k,name:FL[k][0]+" flair",cost:60,desc:"A small icon and coloured border next to your name on the leaderboard.",sw:FL[k][1]}));
+  // (flair items removed)
   Object.keys(AN).forEach(k=>PROF.push({id:"an-"+k,sec:"Announcement styles",kind:"annStyle",val:k,name:AN[k][0]+" announcements",cost:75,desc:"Your rebirth and multiplier announcements in chat get this colour and icon.",sw:AN[k][1]}));
+
+  // ===== Rebirth colours & titles (earned by rebirthing; shown on the leaderboard and in chat) =====
+  const RB=[
+    {n:1,title:"Getting Started",name:"Silver",c:["#cfd6e0"]},
+    {n:3,title:"Warming Up",name:"Green",c:["#6bd36b"]},
+    {n:5,title:"Hooked",name:"Blue",c:["#5aa9ff"]},
+    {n:10,title:"Dedicated",name:"Purple",c:["#b48cff"]},
+    {n:15,title:"Veteran",name:"Frostwave",c:["#4de1ff","#4f7cff"]},
+    {n:20,title:"Phoenix",name:"Candy",c:["#ff7ad9","#9b6bff"]},
+    {n:25,title:"Grinder",name:"Sunrise",c:["#ffe066","#ff8a3d"]},
+    {n:30,title:"Unstoppable",name:"Aurora",c:["#6bffb0","#3de0ff","#8a7bff"]},
+    {n:35,title:"Eternal",name:"Inferno",c:["#ffd23f","#ff5d3d","#d4163c"]},
+    {n:40,title:"Legend",name:"Glacier",c:["#ffffff","#7fd8ff","#5a7dff"]},
+    {n:45,title:"Ascended",name:"Galaxy",c:["#5b8cff","#b46bff","#ff6bd6"]},
+    {n:50,title:"No Life",name:"Prismatic",c:["#ff5d5d","#ffd23f","#6bff8a","#3de0ff","#8a7bff","#ff6bd6","#ff5d5d"],anim:true}
+  ];
+  const rbOf=n=>RB.find(t=>t.n===Number(n))||null;
+  const rbById=(id,pre)=>typeof id==="string"&&id.indexOf(pre)===0?rbOf(id.slice(pre.length)):null;
+  const rbCount=()=>Math.max(0,Math.floor(Number(state.rebirths)||0));
+  const rbOpen=t=>rbCount()>=t.n;
+  const rbGrad=(t,dir)=>"linear-gradient("+(dir||"90deg")+","+t.c.join(",")+")";
+  function rbTop(r){let b=null;RB.forEach(t=>{if(r>=t.n)b=t;});return b;}
+  function rbText(el,t){ // colour a piece of text with a tier colour (solid or fading)
+    if(!t)return;
+    if(t.c.length===1){el.style.color=t.c[0];return;}
+    el.classList.add("dm-grad"); if(t.anim)el.classList.add("dm-grad-anim");
+    el.style.setProperty("--g",rbGrad(t));
+  }
+  // Leaderboard: tier chosen by the player (or their highest earned), never above their rebirth count.
+  function lbTierFor(rebirth,sel){
+    const r=Math.max(0,Math.floor(Number(rebirth)||0)); sel=Number(sel)||0;
+    if(sel<0||r<1)return null;
+    const chosen=sel>0?rbOf(sel):null;
+    return chosen&&chosen.n<=r?chosen:rbTop(r);
+  }
+  window.dmFlair=function(nameEl,row,data){
+    const t=lbTierFor(data&&data.rebirth,data&&data.lbTier); if(!t)return;
+    rbText(nameEl,t); nameEl.style.fontWeight="800";
+    const hex=t.c;
+    const fade="linear-gradient(90deg,"+hex.map((c,i)=>c+(i===0?"3a":"22")).join(",")+",transparent 85%)";
+    const stripe=t.c.length===1?"linear-gradient("+t.c[0]+","+t.c[0]+")":rbGrad(t,"180deg");
+    row.style.backgroundImage=stripe+","+fade;
+    row.style.backgroundSize="6px 100%,100% 100%";
+    row.style.backgroundRepeat="no-repeat,no-repeat";
+    row.style.backgroundPosition="left top,left top";
+    row.style.paddingLeft="14px";
+    if(t.n>=30)row.style.boxShadow="0 0 10px "+t.c[0]+"66";
+  };
+  // Chat: rebirth colour ids are "rb<n>", rebirth title ids are "rt<n>"
+  const RB_COLOR_IDS=RB.map(t=>"rb"+t.n), RB_TITLE_IDS=RB.map(t=>"rt"+t.n);
+  window.dmRbCheck=function(){
+    if(typeof state==="undefined"||!currentUser)return;
+    const t=rbTop(rbCount()), seen=prof().rbSeen;
+    if(!t){return;}
+    if(seen===undefined){prof().rbSeen=t.n;return;}   // existing players: no spam on first load
+    if(t.n>seen){prof().rbSeen=t.n; toast("🎨 Unlocked "+t.name+" colour + ["+t.title+"] title! Equip them in Inventory.");}
+  };
   const ITEMS=[...PERKS,...COS,...USES];
   const byId=id=>COS.find(o=>o.id===id);
   const isEq=p=>p.kind==="nameAnim"?prof().nameAnim===true:prof()[p.kind]===p.val;
-  function after(pub){ applyCos(); lastShown=-1; refresh(); try{save();}catch(e){} if(pub){try{publishLeaderboardEntry(true);}catch(e){}} }
+  function after(pub){ applyCos(); lastShown=-1; refresh(); renderInv(); try{save();}catch(e){} if(pub){try{publishLeaderboardEntry(true);}catch(e){}} }
   function equipCos(it,on){ if(on&&it.group)COS.forEach(o=>{if(o.group===it.group&&o.id!==it.id)equipped()[o.id]=false;}); equipped()[it.id]=!!on; }
   function buy(it){
     const l=it.type==="perk"?lvl(it.id):0, c=typeof it.cost==="function"?it.cost(l):it.cost;
@@ -5941,11 +6082,6 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   const openS=new Set();
   function sampleFor(p){
     const w=document.createElement("div"); w.className="dm-sample";
-    if(p.kind==="flair"){
-      const r=document.createElement("div"),a=document.createElement("span"),n=document.createElement("span"),v=document.createElement("span");
-      r.className="leaderboard-row"; a.className="leaderboard-rank"; a.textContent="#3"; n.className="leaderboard-name"; n.textContent="You"; v.className="leaderboard-cash"; v.textContent="1.2M";
-      window.dmFlair(n,r,{flair:p.val}); r.append(a,n,v); w.append(r); return w;
-    }
     const row=document.createElement("div"),meta=document.createElement("span"),txt=document.createElement("span");
     row.className="chat-message"+(p.kind==="annStyle"?" chat-announcement":""); meta.className="chat-meta";
     const nm=document.createElement("strong"); nm.textContent=p.kind==="annStyle"?"":"You: ";
@@ -5982,7 +6118,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
       head(title);
       COS.filter(it=>it.group===g).forEach(it=>{
         const has=owned()[it.id];
-        const btn=has?makeButton(equipped()[it.id]?"Unequip":"Equip",()=>{equipCos(it,!equipped()[it.id]);after(false);},false,"dm-btn dm-equip"+(equipped()[it.id]?" dm-on":""))
+        const btn=has?makeButton(equipped()[it.id]?"Owned · equipped":"Owned · equip in Inventory",()=>{},true,"dm-btn")
                      :buyBtn(it.cost,()=>buy(it));
         card(it.name,it.desc,[pvBtn(()=>startPv([it.id],it.name)),btn]);
       });
@@ -5999,7 +6135,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
       if(p.sec!==sec){sec=p.sec;head(sec+" (visible to other players)");}
       const has=owned()[p.id];
       let btn;
-      if(has)btn=makeButton(isEq(p)?"Unequip":"Equip",()=>equipProf(p,!isEq(p)),false,"dm-btn dm-equip"+(isEq(p)?" dm-on":""));
+      if(has)btn=makeButton(isEq(p)?"Owned · equipped":"Owned · equip in Inventory",()=>{},true,"dm-btn");
       else if(!profAvailable(p))btn=makeButton("No longer available",()=>{},true,"dm-btn");
       else btn=buyBtn(p.cost,()=>buyProf(p));
       const pb=pvBtn(()=>{if(openS.has(p.id))openS.delete(p.id);else openS.add(p.id);renderShop2();});
@@ -6007,15 +6143,61 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     });
     if(scroller)scroller.scrollTop=keepTop;
   }
+
+  // ===== Inventory tab: equip everything here =====
+  function renderInv(){
+    const host=document.getElementById("inventoryList"),tab=document.getElementById("inventoryTabPanel");
+    if(!host||!tab||tab.hidden||typeof state==="undefined")return;
+    const keep=document.querySelector(".main-tab-content"),top=keep?keep.scrollTop:0;
+    host.replaceChildren();
+    const sec=(t,sub)=>{const w=document.createElement("div");w.className="inv-sec";const h=document.createElement("h3");h.textContent=t;w.append(h);if(sub){const p=document.createElement("p");p.className="muted small";p.textContent=sub;w.append(p);}const g=document.createElement("div");g.className="inv-grid";w.append(g);host.append(w);return g;};
+    const empty=g=>{const e=document.createElement("p");e.className="muted small inv-empty";e.textContent="Nothing here yet. Find it in the 💎 Diamond Shop.";g.append(e);};
+    const cell=(g,name,desc,on,locked,fn,paint)=>{
+      const c=document.createElement("div");c.className="inv-item"+(on?" inv-on":"")+(locked?" inv-locked":"");
+      const n=document.createElement("strong");n.className="inv-name";n.textContent=name;if(paint)paint(n);
+      const d=document.createElement("span");d.className="inv-desc";d.textContent=desc||"";
+      const b=makeButton(locked?"🔒 Locked":on?"Equipped ✓":"Equip",fn||(()=>{}),!!locked,"inv-btn"+(on?" inv-btn-on":""));
+      c.append(n,d,b);g.append(c);
+    };
+    // cosmetics
+    GROUPS.forEach(([grp,title])=>{
+      const g=sec(title),list=COS.filter(o=>o.group===grp&&owned()[o.id]);
+      if(!list.length)return empty(g);
+      list.forEach(it=>cell(g,it.name,it.desc,!!equipped()[it.id],false,()=>{equipCos(it,!equipped()[it.id]);after(false);}));
+    });
+    // leaderboard colour
+    {const g=sec("Leaderboard colour","Earned by rebirthing. The higher you rebirth, the cooler the colour. Everyone sees it.");
+     const sel=prof().lbColor;
+     cell(g,"Automatic","Always your highest earned colour.",!sel||sel==="auto",false,()=>{delete prof().lbColor;after(true);});
+     cell(g,"None","Plain leaderboard row.",sel==="none",false,()=>{prof().lbColor="none";after(true);});
+     RB.forEach(t=>cell(g,t.name,"Rebirth "+t.n,Number(sel)===t.n,!rbOpen(t),()=>{prof().lbColor=t.n;after(true);},n=>rbText(n,t)));}
+    // chat name colours
+    {const g=sec("Chat name colours","Bought colours and rebirth colours.");
+     PROF.filter(p=>p.kind==="nameColor"&&owned()[p.id]).forEach(p=>cell(g,p.name,"Shop colour",isEq(p),false,()=>equipProf(p,!isEq(p)),n=>{n.style.color=p.sw;}));
+     RB.forEach(t=>{const p={kind:"nameColor",val:"rb"+t.n};cell(g,t.name,"Rebirth "+t.n,isEq(p),!rbOpen(t),()=>equipProf(p,!isEq(p)),n=>rbText(n,t));});}
+    // chat titles
+    {const g=sec("Chat titles","Bought titles and titles earned from rebirth achievements.");
+     PROF.filter(p=>p.kind==="title"&&owned()[p.id]).forEach(p=>cell(g,p.name,"Shop title",isEq(p),false,()=>equipProf(p,!isEq(p))));
+     RB.forEach(t=>{const p={kind:"title",val:"rt"+t.n};cell(g,"["+t.title+"]","Reach "+t.n+" rebirth"+(t.n===1?"":"s"),isEq(p),!rbOpen(t),()=>equipProf(p,!isEq(p)),n=>rbText(n,t));});}
+    // other profile items
+    [["nameAnim","Prestige"],["badgeIcon","Badge icons"],["annStyle","Announcement styles"]].forEach(([k,title])=>{
+      if(k==="annStyle"&&isPrivilegedUser())return;
+      const g=sec(title),list=PROF.filter(p=>p.kind===k&&owned()[p.id]);
+      if(!list.length)return empty(g);
+      list.forEach(p=>cell(g,p.name,p.desc,isEq(p),false,()=>equipProf(p,!isEq(p)),p.sw?(n=>{n.style.color=p.sw;}):null));
+    });
+    if(keep)keep.scrollTop=top;
+  }
+  window.dmRenderInventory=renderInv;
   // Hooks used by chat and the leaderboard
-  window.dmChatFields=function(){const p=prof(),o={};if(NC[p.nameColor])o.nameColor=p.nameColor;if(TT[p.title])o.title=p.title;if(p.nameAnim===true)o.nameAnim=true;return o;};
+  window.dmChatFields=function(){const p=prof(),o={};const rc=rbById(p.nameColor,"rb"),rt=rbById(p.title,"rt");if(NC[p.nameColor]||(rc&&rbOpen(rc)))o.nameColor=p.nameColor;if(TT[p.title]||(rt&&rbOpen(rt)))o.title=p.title;if(p.nameAnim===true)o.nameAnim=true;return o;};
   window.dmAnnFields=function(){const p=prof();return AN[p.annStyle]?{annStyle:p.annStyle}:{};};
-  window.dmLbFields=function(){const p=prof();return {badgeIcon:BI[p.badgeIcon]?p.badgeIcon:"",flair:FL[p.flair]?p.flair:""};};
-  window.dmChatName=function(el,m){const c=NC[m.nameColor];if(c)el.style.color=c[1];if(m.nameAnim===true)el.classList.add("dm-shimmer");};
-  window.dmChatTitle=function(m){const t=TT[m.title];if(!t)return null;const s=document.createElement("span");s.className="dm-title";s.textContent="["+t[0]+"] ";return s;};
+  window.dmLbFields=function(){const p=prof();const o={badgeIcon:BI[p.badgeIcon]?p.badgeIcon:""};const c=p.lbColor;o.lbTier=c==="none"?-1:(Number(c)>0?Number(c):0);return o;};
+  window.dmChatName=function(el,m){const c=NC[m.nameColor];if(c)el.style.color=c[1];else rbText(el,rbById(m.nameColor,"rb"));if(m.nameAnim===true)el.classList.add("dm-shimmer");};
+  window.dmChatTitle=function(m){const t=TT[m.title],r=rbById(m.title,"rt");if(!t&&!r)return null;const s=document.createElement("span");s.className="dm-title";s.textContent="["+(t?t[0]:r.title)+"] ";if(r)rbText(s,r);return s;};
   window.dmAnn=function(row,textEl,m){const a=AN[m.annStyle];if(!a)return;row.style.borderLeft="4px solid "+a[1];textEl.style.color=a[1];textEl.prepend(a[0]+" ");};
   window.dmBadge=function(tag,user){const e=BI[user&&user.badgeIcon];return e&&tag&&tag.rank?Object.assign({},tag,{text:"("+e+"#"+tag.rank+")"}):tag;};
-  window.dmFlair=function(nameEl,row,data){const f=FL[data&&data.flair];if(!f)return;const ic=document.createElement("span");ic.textContent=f[0]+" ";nameEl.prepend(ic);nameEl.style.color=f[1];nameEl.style.fontWeight="800";row.style.outline="2px solid "+f[1];row.style.outlineOffset="-2px";row.style.borderLeft="8px solid "+f[1];row.style.backgroundImage="linear-gradient(90deg,"+f[1]+"44,transparent 75%)";};
+  // (rebirth leaderboard styling is defined in the Rebirth colours block below)
   const FX={
     "dm-click-sparkle":{n:9,cols:["#ffe14d","#ffffff","#ff9bf0","#7de3ff"],box:6,d:[26,54]},
     "dm-fx-hearts":{n:7,ch:"♥",cols:["#ff4d6d","#ff8fa3","#ff5d8f"],fs:16,d:[20,50],up:1},
@@ -6632,10 +6814,9 @@ $("statsCloseBtn").addEventListener("click", () => $("statsDialog").close());
 {
   const dmDialog = $("diamondShopDialog");
   const openDiamondShop = () => { if (!dmDialog.open) dmDialog.showModal(); };
-  $("diamondShopOpenBtn").addEventListener("click", openDiamondShop);
-  $("diamondShopTitle").addEventListener("click", openDiamondShop);
-  $("diamondPill").addEventListener("click", openDiamondShop);
+      $("diamondPill").addEventListener("click", openDiamondShop);
   $("diamondHeaderBtn").addEventListener("click", openDiamondShop);
+  $("invOpenShopBtn").addEventListener("click", openDiamondShop);
   $("diamondShopCloseBtn").addEventListener("click", () => dmDialog.close());
   dmDialog.addEventListener("click", event => { if (event.target === dmDialog) dmDialog.close(); });
 }
