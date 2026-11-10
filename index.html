@@ -823,6 +823,57 @@ html.reduced-motion #adminBroadcastBanner .bc-icon{animation:none}
 .chat-message.chat-broadcast .chat-meta{display:block;margin-bottom:3px;font-size:12px;opacity:.95}
 .bc-chip{display:inline-block;margin-right:7px;padding:3px 7px;border-radius:3px;background:#ffd43b;color:#5a0d08;font:800 11px/1 "Trebuchet MS",Verdana,Arial,sans-serif!important;letter-spacing:.08em!important}
 .chat-message.chat-broadcast>span:last-child{display:block;font-size:16px;font-weight:800}
+
+/* ===== 1.0.1: more UI themes ===== */
+body.dm-ui-ocean{--bg:#031a2b;--panel:#07304a;--panel2:#0a3a58;--line:#2fb8e6;--text:#e6f7ff;--muted:#8cc7e0;--green:#2fb8e6;--secondary-color:#0a3a58;--h:200;--sat:1;--black-level:0}
+body.dm-ui-ocean button:not(.bonus-star):not(.mystery-coin):not(.slot):not(.dm-btn){background:#0e7fb0!important;color:#ffffff!important;border-color:#031a2b!important;text-shadow:none!important}
+body.dm-ui-ocean .panel-head{background:#04283f!important;color:#e6f7ff}
+body.dm-ui-ocean header{background:#04243a}
+body.dm-ui-ocean:not([class*="dm-snow-"]):not(.dm-aurora)::before{background-image:linear-gradient(180deg,#021524 0%,#06304a 60%,#0a4a6d 100%)!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;animation:none!important}
+html:has(body.dm-ui-ocean){background:#031a2b}
+body.dm-ui-crimson{--bg:#160507;--panel:#3a0f15;--panel2:#2c0b10;--line:#ff4d5e;--text:#fff0f0;--muted:#e0a0a6;--green:#ff4d5e;--secondary-color:#2c0b10;--h:355;--sat:1;--black-level:0}
+body.dm-ui-crimson button:not(.bonus-star):not(.mystery-coin):not(.slot):not(.dm-btn){background:#b3202f!important;color:#ffffff!important;border-color:#160507!important;text-shadow:none!important}
+body.dm-ui-crimson .panel-head{background:#230810!important;color:#fff0f0}
+body.dm-ui-crimson header{background:#1a0609}
+body.dm-ui-crimson:not([class*="dm-snow-"]):not(.dm-aurora)::before{background-image:linear-gradient(180deg,#0f0305 0%,#2a0a10 60%,#451018 100%)!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;animation:none!important}
+html:has(body.dm-ui-crimson){background:#160507}
+body.dm-ui-sunset{--bg:#1a0b2e;--panel:#3a1850;--panel2:#2e1241;--line:#ff8a3d;--text:#fff4e6;--muted:#f2b8a2;--green:#ff8a3d;--secondary-color:#2e1241;--h:290;--sat:1;--black-level:0}
+body.dm-ui-sunset button:not(.bonus-star):not(.mystery-coin):not(.slot):not(.dm-btn){background:#ff8a3d!important;color:#2a0f2e!important;border-color:#1a0b2e!important;text-shadow:none!important}
+body.dm-ui-sunset .panel-head{background:#2a0f3e!important;color:#fff4e6}
+body.dm-ui-sunset header{background:#220c33}
+body.dm-ui-sunset:not([class*="dm-snow-"]):not(.dm-aurora)::before{background-image:linear-gradient(180deg,#1a0b2e 0%,#4a1a5c 50%,#a63a5a 80%,#ff8a3d 100%)!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;animation:none!important}
+html:has(body.dm-ui-sunset){background:#1a0b2e}
+body.dm-ui-mono{--bg:#0a0a0a;--panel:#1a1a1a;--panel2:#232323;--line:#e8e8e8;--text:#f4f4f4;--muted:#aaaaaa;--green:#e8e8e8;--secondary-color:#232323;--h:0;--sat:0;--black-level:0}
+body.dm-ui-mono button:not(.bonus-star):not(.mystery-coin):not(.slot):not(.dm-btn){background:#f0f0f0!important;color:#111111!important;border-color:#000000!important;text-shadow:none!important}
+body.dm-ui-mono .panel-head{background:#000000!important;color:#f4f4f4}
+body.dm-ui-mono header{background:#000000}
+body.dm-ui-mono:not([class*="dm-snow-"]):not(.dm-aurora)::before{background-image:linear-gradient(180deg,#000000 0%,#161616 100%)!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;animation:none!important}
+html:has(body.dm-ui-mono){background:#0a0a0a}
+body.dm-ui-royal{--bg:#120e05;--panel:#2b2209;--panel2:#3a2e0d;--line:#d4a82a;--text:#fff6d6;--muted:#e0c878;--green:#d4a82a;--secondary-color:#3a2e0d;--h:45;--sat:1;--black-level:0}
+body.dm-ui-royal button:not(.bonus-star):not(.mystery-coin):not(.slot):not(.dm-btn){background:#d4a82a!important;color:#2b2209!important;border-color:#120e05!important;text-shadow:none!important}
+body.dm-ui-royal .panel-head{background:#1a1405!important;color:#fff6d6}
+body.dm-ui-royal header{background:#160f03}
+body.dm-ui-royal:not([class*="dm-snow-"]):not(.dm-aurora)::before{background-image:linear-gradient(180deg,#0e0a02 0%,#2b2209 60%,#4a3a0d 100%)!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;animation:none!important}
+html:has(body.dm-ui-royal){background:#120e05}
+
+/* ===== 1.0.1: purchasable fonts (applied across the whole game) ===== */
+body.dm-font-clean *:not(#_a):not(#_b){font-family:"Trebuchet MS",Verdana,Arial,sans-serif!important}
+body.dm-font-serif *:not(#_a):not(#_b){font-family:Georgia,"Times New Roman",serif!important}
+body.dm-font-mono *:not(#_a):not(#_b){font-family:"Share Tech Mono","Courier New",monospace!important}
+body.dm-font-comic *:not(#_a):not(#_b){font-family:"Comic Neue","Comic Sans MS",cursive!important}
+body.dm-font-round *:not(#_a):not(#_b){font-family:Fredoka,"Trebuchet MS",sans-serif!important}
+body.dm-font-type *:not(#_a):not(#_b){font-family:"Special Elite","Courier New",monospace!important}
+body.dm-font-scifi *:not(#_a):not(#_b){font-family:Orbitron,"Trebuchet MS",sans-serif!important}
+body.dm-font-fantasy *:not(#_a):not(#_b){font-family:Cinzel,Georgia,serif!important}
+
+/* ===== 1.0.1: Hyper Stars keep their rainbow colours when a Star skin is equipped (so they never look like Diamond Stars) ===== */
+@keyframes dm-hyperhue{from{filter:hue-rotate(0deg) saturate(2) brightness(1.15) drop-shadow(0 0 9px #fff)}to{filter:hue-rotate(360deg) saturate(2) brightness(1.15) drop-shadow(0 0 9px #fff)}}
+@keyframes dm-hyperpulse{50%{transform:scale(1.07)}}
+body.dm-star-pixel .bonus-star.hyper-star:not(.diamond-star){animation:dm-pxbob .7s steps(2) infinite,dm-hyperhue 2.4s linear infinite!important}
+body.dm-star-comet .bonus-star.hyper-star:not(.diamond-star){animation:dm-cwob 2.2s ease-in-out infinite alternate,dm-hyperhue 2.4s linear infinite!important}
+body.dm-star-snow .bonus-star.hyper-star:not(.diamond-star){animation:dm-hyperpulse 1.2s ease-in-out infinite,dm-hyperhue 2.4s linear infinite!important;background:conic-gradient(#ff3b30,#ff9f0a,#ffe600,#34c759,#00c7ff,#5856d6,#ff2d95,#ff3b30)!important;background-clip:border-box!important;-webkit-background-clip:border-box!important;border-color:#fff!important;box-shadow:0 0 24px 7px #ffffffaa,0 0 46px 12px #ff9bf055!important}
+body.dm-star-snow .bonus-star.hyper-star:not(.diamond-star)::after{color:#fff}
+html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-star){animation:none!important}
 </style></head>
 <body>
 <section class="auth-screen" id="authScreen">
@@ -1498,6 +1549,10 @@ const UPDATE_HISTORY = [
     version: GAME_VERSION,
     status: "Current",
     changes: [
+      "Admin account: everything is unlocked (all cosmetics, colours, titles and perks) and selling generators now pays real cash so rebirths can be tested.",
+      "Every rebirth milestone now unlocks 3 name colours. Chat and the leaderboard share one name colour setting.",
+      "New Diamond Shop items: 5 UI themes, 8 fonts that restyle the whole game, the Lucky Stars and Night Shift perks, and the Cash Injection use.",
+      "Hyper Stars keep animated rainbow colours when a Star skin is equipped. Buying no longer equips: items say they are waiting in your Inventory.",
       "Added an Inventory tab right next to Shop: equip every cosmetic, chat colour, title, badge and announcement style there. The Diamond Shop now only buys.",
       "Rebirthing now earns leaderboard colours. They start as simple colours and become fading, glowing gradients at higher rebirths (Prismatic at 50).",
       "Added rebirth name colours and titles, from Getting Started up to No Life.",
@@ -3165,6 +3220,10 @@ function generatorPrice(generator) {
     ? 0
     : generator.cost * (1 - state.upgrades.genCost * 0.02);
 }
+function generatorSellBase(generator) {
+  // Selling always pays out, even for the free-generator admin account (handy for testing rebirths).
+  return generator.cost * (1 - state.upgrades.genCost * 0.02);
+}
 function owned(id) { return state.inventory[id] || 0; }
 function placed(id) { return state.slots.filter(x => x && x.id === id).length; }
 function available(id) { return Math.max(0, owned(id) - placed(id)); }
@@ -3447,14 +3506,20 @@ function spawnMysteryVisitor(diamond = false) {
 }
 function startStarSpawns() {
   stopStarSpawns();
-  starSpawnTimer = setInterval(() => {
-    if (currentUser && !$("gameShell").hidden) {
-      spawnStar(null, false, false, false, Math.random() < 0.05); // Billy only appears when this Star is collected
-    }
-  }, 5 * 60 * 1000);
+  const scheduleNext = () => {
+    const luck = window.dmPerk ? window.dmPerk("lucky") : 0;           // Lucky Stars: 10% sooner per level
+    const delay = 5 * 60 * 1000 * Math.max(0.5, 1 - 0.1 * luck);
+    starSpawnTimer = setTimeout(() => {
+      if (currentUser && !$("gameShell").hidden) {
+        spawnStar(null, false, false, false, Math.random() < 0.05); // Billy only appears when this Star is collected
+      }
+      scheduleNext();
+    }, delay);
+  };
+  scheduleNext();
 }
 function stopStarSpawns() {
-  if (starSpawnTimer !== null) clearInterval(starSpawnTimer);
+  if (starSpawnTimer !== null) clearTimeout(starSpawnTimer);
   starSpawnTimer = null;
   starCountdownTimers.forEach(timer => clearInterval(timer));
   starCountdownTimers.clear();
@@ -4655,7 +4720,7 @@ function sell(id, slotIndex = null, quantity = 1) {
   if (slotIndex === null) quantity = Math.min(quantity, available(id));
   if (quantity < 1 || (slotIndex !== null
     && (quantity !== 1 || !state.slots[slotIndex] || state.slots[slotIndex].id !== id))) return;
-  const refund = Math.floor(generatorPrice(g) * 0.7) * quantity;
+  const refund = Math.floor(generatorSellBase(g) * 0.7) * quantity;
   if (slotIndex !== null) {
     state.slots[slotIndex] = null;
   }
@@ -4825,7 +4890,7 @@ function clickSlot(index) {
   const slot = state.slots[index];
   if (slot) {
     const g = getGenerator(slot.id);
-    const refund = Math.floor(generatorPrice(g) * 0.7);
+    const refund = Math.floor(generatorSellBase(g) * 0.7);
     showModal(g.name, "This generator earns " + cash(g.income * effectiveMultiplier() * generatorSpeedMultiplier()
       * PERMANENT_CASH_MULTIPLIER * noteDuplicationExpectedMultiplier() / tickIntervalSeconds())
       + " per second. You can return it to inventory or sell it now for " + cash(refund) + ".", [
@@ -5871,12 +5936,12 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   const equipped=()=>(state.dmEquipped=state.dmEquipped&&typeof state.dmEquipped==="object"?state.dmEquipped:{});
   const lvl=id=>Number(perks()[id])||0;
   let saveT=null,toastT=null;
-  function toast(t){const el=document.getElementById("dmToast")||Object.assign(document.body.appendChild(document.createElement("div")),{id:"dmToast"});el.textContent=t;el.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove("show"),1800);}
+  function toast(t,ms){const el=document.getElementById("dmToast")||Object.assign(document.body.appendChild(document.createElement("div")),{id:"dmToast"});el.textContent=t;el.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove("show"),ms||1800);}
   function award(n,why){ if(!currentUser||!(n>0))return; state.diamonds=D()+n; refresh(); toast("+"+n+" 💎"+(why?" "+why:"")); clearTimeout(saveT); saveT=setTimeout(()=>{try{save();}catch(e){}},1500); }
   window.dmAward=award;
   let lastShown=-1;
   function refund(){ if(typeof state==="undefined"||!currentUser||state.dmFlairRefunded)return; const o=owned(); const ids=Object.keys(o).filter(k=>k.indexOf("fl-")===0&&o[k]); state.dmFlairRefunded=true; if(!ids.length)return; ids.forEach(k=>{delete o[k];}); delete prof().flair; state.diamonds=D()+ids.length*60; toast("Leaderboard flairs were removed: refunded "+(ids.length*60)+" 💎"); try{save();}catch(e){} }
-  function refresh(){ refund(); window.dmRbCheck&&window.dmRbCheck(); const d=D(); document.getElementById("diamondPill").textContent="💎 "+d; document.getElementById("diamondShopBalance").textContent="💎 "+d; if(d!==lastShown){lastShown=d;renderShop2();} }
+  function refresh(){ refund(); adminGrant(); window.dmRbCheck&&window.dmRbCheck(); const d=D(); document.getElementById("diamondPill").textContent="💎 "+d; document.getElementById("diamondShopBalance").textContent="💎 "+d; if(d!==lastShown){lastShown=d;renderShop2();} }
   const prof=()=>(state.dmProfile=state.dmProfile&&typeof state.dmProfile==="object"?state.dmProfile:{});
   // Catalogs. Other players only ever see these ids, never free text.
   const NC={red:["Red","#ff6b6b"],orange:["Orange","#ffa94d"],gold:["Gold","#ffd43b"],green:["Green","#69db7c"],cyan:["Cyan","#66d9e8"],blue:["Blue","#74a7ff"],purple:["Purple","#b197fc"],pink:["Pink","#ff8ad8"]};
@@ -5889,15 +5954,18 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     {id:"finder",type:"perk",name:"Diamond Finder",max:5,cost:l=>6*Math.pow(2,l),desc:"+3% diamond chance per level on Stars and Billy coins."},
     {id:"headstart",type:"perk",name:"Head Start",max:3,cost:l=>25*Math.pow(2,l),desc:"After each rebirth, start with +5% of the next rebirth cost per level."},
     {id:"qbonus",type:"perk",name:"Question Bonus",max:3,cost:l=>8*Math.pow(2,l),desc:"Correct math answers extend the ×2 speed by 30s per level."},
-    {id:"fever",type:"perk",name:"Fever Extender",max:3,cost:l=>12*Math.pow(2,l),desc:"Each Star adds 10s of Fever per level."}
+    {id:"fever",type:"perk",name:"Fever Extender",max:3,cost:l=>12*Math.pow(2,l),desc:"Each Star adds 10s of Fever per level."},
+    {id:"lucky",type:"perk",name:"Lucky Stars",max:3,cost:l=>15*Math.pow(2,l),desc:"Stars appear 10% sooner per level."},
+    {id:"offline",type:"perk",name:"Night Shift",max:4,cost:l=>10*Math.pow(2,l),desc:"+25% cash earned while you are away, per level."}
   ];
   const USES=[
     {id:"fevernow",type:"use",name:"Instant Fever",cost:5,desc:"Start a personal Fever now.",run:()=>{state.genSpeedBoostUntil=Date.now()+PERSONAL_FEVER_DURATION_MS;}},
     {id:"starcall",type:"use",name:"Call a Star",cost:8,desc:"Spawn a Star for you.",run:()=>spawnStar()},
-    {id:"hypercall",type:"use",name:"Call a Hyper Star",cost:20,desc:"Spawn a Hyper Star for you.",run:()=>spawnStar(null,false,true)}
+    {id:"hypercall",type:"use",name:"Call a Hyper Star",cost:20,desc:"Spawn a Hyper Star for you.",run:()=>spawnStar(null,false,true)},
+    {id:"cashinject",type:"use",name:"Cash Injection",cost:12,desc:"Instantly receive 5 minutes of your current income.",can:()=>totalIncome()>0,cant:"Place a generator first: you have no income yet.",run:()=>{const g=Math.floor(totalIncome()*300);if(g>0){state.money+=g;try{renderStats();}catch(e){}toast("+"+cash(g)+" cash");}}}
   ];
   const C=(id,group,name,cost,desc,cls)=>({id,type:"cos",group,name,cost,desc,cls});
-  const GROUPS=[["snow","Background & snow"],["frame","Tile frames"],["ui","UI themes"],["star","Star skins"],["coin","Billy coin skins"],["cursor","Cursors"],["click","Click effects"],["overlay","Overlays"]];
+  const GROUPS=[["snow","Background & snow"],["frame","Tile frames"],["ui","UI themes"],["star","Star skins"],["coin","Billy coin skins"],["cursor","Cursors"],["click","Click effects"],["overlay","Overlays"],["font","Fonts"]];
   const COS=[
     C("aurora","snow","Aurora Sky",45,"A glowing northern-lights sky with drifting light curtains.","dm-aurora"),
     C("ember","snow","Ember Rise",35,"Orange sparks rise up the screen.","dm-snow-ember"),
@@ -5916,6 +5984,11 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     C("neon","ui","Neon Night",50,"Dark panels with neon outlines.","dm-ui-neon"),
     C("parchment","ui","Parchment",40,"Warm tan, like old game menus.","dm-ui-parch"),
     C("wood","ui","Wood & Stone",60,"Wooden panels with stone headers.","dm-ui-wood"),
+    C("ui-ocean","ui","Ocean Depths",50,"Deep-sea blues with glowing aqua outlines.","dm-ui-ocean"),
+    C("ui-crimson","ui","Crimson Night",50,"Dark red panels with ruby outlines.","dm-ui-crimson"),
+    C("ui-sunset","ui","Sunset Synth",55,"Purple dusk fading into an orange horizon.","dm-ui-sunset"),
+    C("ui-mono","ui","Mono Terminal",40,"Pure black and white, like an old terminal.","dm-ui-mono"),
+    C("ui-royal","ui","Royal Gold",55,"Black and gold, fit for a king.","dm-ui-royal"),
     C("star-pixel","star","Pixel Star",30,"A proper pixel-art Star with a bobbing animation.","dm-star-pixel"),
     C("star-comet","star","Comet Star",35,"A blazing comet with a flickering tail and sparks.","dm-star-comet"),
     C("star-snow","star","Snowflake Star",30,"Stars look like snowflakes.","dm-star-snow"),
@@ -5945,7 +6018,15 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     C("ov-sepia","overlay","Sepia Tint",35,"A warm old-photo tint.","dm-ov-sepia"),
     C("ov-night","overlay","Night Shade",35,"A cool midnight-blue tint.","dm-ov-night"),
     C("ov-grid","overlay","Pixel Grid",40,"A fine pixel grid over everything.","dm-ov-grid"),
-    C("ov-dusk","overlay","Dusk Glow",40,"An orange-to-purple sunset wash.","dm-ov-dusk")
+    C("ov-dusk","overlay","Dusk Glow",40,"An orange-to-purple sunset wash.","dm-ov-dusk"),
+    Object.assign(C("font-clean","font","Clean Sans",30,"A clear, easy-to-read sans-serif across the whole game.","dm-font-clean"),{}),
+    Object.assign(C("font-serif","font","Classic Serif",30,"A Georgia-style serif across the whole game.","dm-font-serif"),{}),
+    Object.assign(C("font-mono","font","Share Tech Mono",40,"A techy monospace font across the whole game.","dm-font-mono"),{gf:"Share+Tech+Mono"}),
+    Object.assign(C("font-comic","font","Comic Neue",35,"Casual, friendly comic lettering.","dm-font-comic"),{gf:"Comic+Neue:wght@400;700"}),
+    Object.assign(C("font-round","font","Fredoka",45,"Soft, rounded and bubbly lettering.","dm-font-round"),{gf:"Fredoka:wght@400;600;700"}),
+    Object.assign(C("font-type","font","Special Elite",40,"Typewriter lettering.","dm-font-type"),{gf:"Special+Elite"}),
+    Object.assign(C("font-scifi","font","Orbitron",50,"Futuristic sci-fi lettering.","dm-font-scifi"),{gf:"Orbitron:wght@400;700"}),
+    Object.assign(C("font-fantasy","font","Cinzel",50,"Fantasy-style capital lettering.","dm-font-fantasy"),{gf:"Cinzel:wght@400;700"})
   ];
   const BUNDLES=[
     {id:"b-frost",name:"Frostbyte Bundle",off:.3,items:["blizzard","ice","neon","star-snow","coin-diamond","fx-snow","cur-gem","ov-night"]},
@@ -5956,52 +6037,65 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     {id:"b-all",name:"Collector's Vault",off:.4,all:true,items:COS.map(o=>o.id)}
   ];
   const PROF=[];
-  Object.keys(NC).forEach(k=>PROF.push({id:"nc-"+k,sec:"Chat name colors",kind:"nameColor",val:k,name:NC[k][0]+" name",cost:40,desc:"Your name in global chat is "+NC[k][0].toLowerCase()+". Other players see it.",sw:NC[k][1]}));
+  Object.keys(NC).forEach(k=>PROF.push({id:"nc-"+k,sec:"Name colors",kind:"nameColor",val:k,name:NC[k][0]+" name",cost:40,desc:"Your name is "+NC[k][0].toLowerCase()+" in chat and on the leaderboard. Other players see it.",sw:NC[k][1]}));
   Object.keys(TT).forEach(k=>PROF.push({id:"tt-"+k,sec:"Chat titles",kind:"title",val:k,name:"["+TT[k][0]+"]",cost:TT[k][1],desc:k==="season1"?"Limited: only buyable until the end of 2026.":"Shown before your name in global chat.",limited:k==="season1"}));
   PROF.push({id:"anim",sec:"Prestige",kind:"nameAnim",val:true,name:"Shimmering name",cost:150,desc:"Your chat name shimmers with moving colours."});
   Object.keys(BI).forEach(k=>PROF.push({id:"bi-"+k,sec:"Badge icons",kind:"badgeIcon",val:k,name:BI[k]+" badge icon",cost:30,desc:"Replaces the emoji on your chat leaderboard badge."}));
   // (flair items removed)
   Object.keys(AN).forEach(k=>PROF.push({id:"an-"+k,sec:"Announcement styles",kind:"annStyle",val:k,name:AN[k][0]+" announcements",cost:75,desc:"Your rebirth and multiplier announcements in chat get this colour and icon.",sw:AN[k][1]}));
 
-  // ===== Rebirth colours & titles (earned by rebirthing; shown on the leaderboard and in chat) =====
+  // ===== Rebirth colours & titles (earned by rebirthing; one name colour is used for chat AND the leaderboard) =====
   const RB=[
-    {n:1,title:"Getting Started",name:"Silver",c:["#cfd6e0"]},
-    {n:3,title:"Warming Up",name:"Green",c:["#6bd36b"]},
-    {n:5,title:"Hooked",name:"Blue",c:["#5aa9ff"]},
-    {n:10,title:"Dedicated",name:"Purple",c:["#b48cff"]},
-    {n:15,title:"Veteran",name:"Frostwave",c:["#4de1ff","#4f7cff"]},
-    {n:20,title:"Phoenix",name:"Candy",c:["#ff7ad9","#9b6bff"]},
-    {n:25,title:"Grinder",name:"Sunrise",c:["#ffe066","#ff8a3d"]},
-    {n:30,title:"Unstoppable",name:"Aurora",c:["#6bffb0","#3de0ff","#8a7bff"]},
-    {n:35,title:"Eternal",name:"Inferno",c:["#ffd23f","#ff5d3d","#d4163c"]},
-    {n:40,title:"Legend",name:"Glacier",c:["#ffffff","#7fd8ff","#5a7dff"]},
-    {n:45,title:"Ascended",name:"Galaxy",c:["#5b8cff","#b46bff","#ff6bd6"]},
-    {n:50,title:"No Life",name:"Prismatic",c:["#ff5d5d","#ffd23f","#6bff8a","#3de0ff","#8a7bff","#ff6bd6","#ff5d5d"],anim:true}
+    {n:1,title:"Getting Started",v:[["Silver",["#cfd6e0"]],["Chalk",["#f4f4f4"]],["Slate",["#8d99ae"]]]},
+    {n:3,title:"Warming Up",v:[["Green",["#6bd36b"]],["Lime",["#b6f04a"]],["Mint",["#7fffd4"]]]},
+    {n:5,title:"Hooked",v:[["Blue",["#5aa9ff"]],["Navy",["#3b6fe0"]],["Sky",["#9fd8ff"]]]},
+    {n:10,title:"Dedicated",v:[["Purple",["#b48cff"]],["Violet",["#8a4bff"]],["Lavender",["#d7c4ff"]]]},
+    {n:15,title:"Veteran",v:[["Frostwave",["#4de1ff","#4f7cff"]],["Tidal",["#3df0c8","#2f7bff"]],["Lagoon",["#7affd9","#3aa0ff"]]]},
+    {n:20,title:"Phoenix",v:[["Candy",["#ff7ad9","#9b6bff"]],["Bubblegum",["#ff9ad5","#ffd1f0"]],["Orchid",["#d16bff","#6b6bff"]]]},
+    {n:25,title:"Grinder",v:[["Sunrise",["#ffe066","#ff8a3d"]],["Honey",["#ffd23f","#ffb347"]],["Peach",["#ffb199","#ff6b81"]]]},
+    {n:30,title:"Unstoppable",v:[["Aurora",["#6bffb0","#3de0ff","#8a7bff"]],["Emerald",["#2bff88","#00b86b"]],["Northern",["#6bffb0","#3de0ff"]]]},
+    {n:35,title:"Eternal",v:[["Inferno",["#ffd23f","#ff5d3d","#d4163c"]],["Magma",["#ffb347","#ff3d3d"]],["Ember",["#ff8a3d","#c4122f"]]]},
+    {n:40,title:"Legend",v:[["Glacier",["#ffffff","#7fd8ff","#5a7dff"]],["Moonlight",["#ffffff","#c7d2ff","#8a9bff"]],["Crystal",["#e6faff","#7fe8ff","#ffffff"]]]},
+    {n:45,title:"Ascended",v:[["Galaxy",["#5b8cff","#b46bff","#ff6bd6"]],["Nebula",["#8a7bff","#ff6bd6","#ffb86b"]],["Cosmos",["#2a3bff","#8a2bff","#ff2bd6"]]]},
+    {n:50,title:"No Life",v:[["Prismatic",["#ff5d5d","#ffd23f","#6bff8a","#3de0ff","#8a7bff","#ff6bd6","#ff5d5d"],true],["Neon Prism",["#ff2bd6","#2bffea","#fff32b","#ff2bd6"],true],["Void Prism",["#ffffff","#b46bff","#2b2bff","#ffffff"],true]]}
   ];
-  const rbOf=n=>RB.find(t=>t.n===Number(n))||null;
-  const rbById=(id,pre)=>typeof id==="string"&&id.indexOf(pre)===0?rbOf(id.slice(pre.length)):null;
+  const RBC=[]; // every earnable colour, flattened: ids rb1, rb1b, rb1c, rb3, ...
+  RB.forEach(t=>{t.c=t.v[0][1];t.anim=!!t.v[0][2];t.v.forEach((x,i)=>RBC.push({id:"rb"+t.n+["","b","c"][i],n:t.n,name:x[0],c:x[1],anim:!!x[2]}));});
+  const rbColor=id=>RBC.find(x=>x.id===id)||null;
+  const rbTitle=id=>typeof id==="string"&&id.indexOf("rt")===0?RB.find(t=>"rt"+t.n===id)||null:null;
   const rbCount=()=>Math.max(0,Math.floor(Number(state.rebirths)||0));
-  const rbOpen=t=>rbCount()>=t.n;
+  const isAdm=()=>typeof isPrivilegedUser==="function"&&isPrivilegedUser();
+  const rbOpen=t=>isAdm()||rbCount()>=t.n;
   const rbGrad=(t,dir)=>"linear-gradient("+(dir||"90deg")+","+t.c.join(",")+")";
   function rbTop(r){let b=null;RB.forEach(t=>{if(r>=t.n)b=t;});return b;}
-  function rbText(el,t){ // colour a piece of text with a tier colour (solid or fading)
+  function autoColor(r){const t=rbTop(r);return t?RBC.find(x=>x.n===t.n):null;}
+  function rbText(el,t){ // colour a piece of text with a colour object {c:[...],anim}
     if(!t)return;
     if(t.c.length===1){el.style.color=t.c[0];return;}
     el.classList.add("dm-grad"); if(t.anim)el.classList.add("dm-grad-anim");
     el.style.setProperty("--g",rbGrad(t));
   }
-  // Leaderboard: tier chosen by the player (or their highest earned), never above their rebirth count.
-  function lbTierFor(rebirth,sel){
-    const r=Math.max(0,Math.floor(Number(rebirth)||0)); sel=Number(sel)||0;
-    if(sel<0||r<1)return null;
-    const chosen=sel>0?rbOf(sel):null;
-    return chosen&&chosen.n<=r?chosen:rbTop(r);
+  // The colour a viewer should see: shop colours, rebirth colours (clamped to the rebirth count) or the automatic one.
+  function resolveColor(id,rebirth,auto){
+    const r=Math.max(0,Math.floor(Number(rebirth)||0));
+    if(id==="none")return null;
+    if(NC[id])return {c:[NC[id][1]],id};
+    const c=rbColor(id); if(c&&c.n<=r)return c;
+    return auto?autoColor(r):null;
+  }
+  // The colour id this player is showing right now ("" = none)
+  function effectiveId(){
+    const sel=prof().nameColor, r=isAdm()?1e9:rbCount();
+    if(sel==="none")return "";
+    if(NC[sel]&&(owned()["nc-"+sel]||isAdm()))return sel;
+    const c=rbColor(sel); if(c&&c.n<=r)return c.id;
+    const a=autoColor(r); return a?a.id:"";
   }
   window.dmFlair=function(nameEl,row,data){
-    const t=lbTierFor(data&&data.rebirth,data&&data.lbTier); if(!t)return;
+    const rb=Number(data&&data.rebirth)||0, id=data&&data.lbColor;
+    const t=id===undefined?autoColor(rb):resolveColor(id,rb,false); if(!t)return;
     rbText(nameEl,t); nameEl.style.fontWeight="800";
-    const hex=t.c;
-    const fade="linear-gradient(90deg,"+hex.map((c,i)=>c+(i===0?"3a":"22")).join(",")+",transparent 85%)";
+    const fade="linear-gradient(90deg,"+t.c.map((c,i)=>c+(i===0?"3a":"22")).join(",")+",transparent 85%)";
     const stripe=t.c.length===1?"linear-gradient("+t.c[0]+","+t.c[0]+")":rbGrad(t,"180deg");
     row.style.backgroundImage=stripe+","+fade;
     row.style.backgroundSize="6px 100%,100% 100%";
@@ -6010,15 +6104,22 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     row.style.paddingLeft="14px";
     if(t.n>=30)row.style.boxShadow="0 0 10px "+t.c[0]+"66";
   };
-  // Chat: rebirth colour ids are "rb<n>", rebirth title ids are "rt<n>"
-  const RB_COLOR_IDS=RB.map(t=>"rb"+t.n), RB_TITLE_IDS=RB.map(t=>"rt"+t.n);
   window.dmRbCheck=function(){
     if(typeof state==="undefined"||!currentUser)return;
     const t=rbTop(rbCount()), seen=prof().rbSeen;
     if(!t){return;}
     if(seen===undefined){prof().rbSeen=t.n;return;}   // existing players: no spam on first load
-    if(t.n>seen){prof().rbSeen=t.n; toast("🎨 Unlocked "+t.name+" colour + ["+t.title+"] title! Equip them in Inventory.");}
+    if(t.n>seen){prof().rbSeen=t.n; toast("🎨 Rebirth reward: 3 new name colours + the ["+t.title+"] title! Equip them in Inventory.",3600);}
   };
+  window.dmPerk=id=>(typeof state==="undefined"?0:lvl(id));
+  // Admin account: everything is unlocked
+  function adminGrant(){
+    if(typeof state==="undefined"||!currentUser||!isAdm())return;
+    const o=owned(); let ch=false;
+    [...COS,...PROF,...BUNDLES].forEach(i=>{if(!o[i.id]){o[i.id]=true;ch=true;}});
+    PERKS.forEach(pk=>{if(lvl(pk.id)<pk.max){perks()[pk.id]=pk.max;ch=true;}});
+    if(ch){try{save();}catch(e){}}
+  }
   const ITEMS=[...PERKS,...COS,...USES];
   const byId=id=>COS.find(o=>o.id===id);
   const isEq=p=>p.kind==="nameAnim"?prof().nameAnim===true:prof()[p.kind]===p.val;
@@ -6027,9 +6128,12 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   function buy(it){
     const l=it.type==="perk"?lvl(it.id):0, c=typeof it.cost==="function"?it.cost(l):it.cost;
     if(D()<c||(it.type==="perk"&&l>=it.max)||(it.type==="cos"&&owned()[it.id]))return;
+    if(it.type==="use"&&it.can&&!it.can()){toast(it.cant||"Not available right now.",2600);return;}
     state.diamonds=D()-c;
-    if(it.type==="perk")perks()[it.id]=l+1; else if(it.type==="cos"){owned()[it.id]=true;equipCos(it,true);} else it.run();
+    if(it.type==="perk")perks()[it.id]=l+1; else if(it.type==="cos"){owned()[it.id]=true;} else it.run();
     after(false);
+    if(it.type==="cos")toast(it.name+" bought. You can find it in your inventory!",3400);
+    else if(it.type==="perk")toast(it.name+" upgraded to level "+(l+1)+".",2400);
   }
   const cost0=id=>{const o=COS.find(x=>x.id===id);return o?o.cost:0};
   const bFull=b=>b.items.reduce((s,id)=>s+cost0(id),0);
@@ -6038,21 +6142,26 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     const p=bPrice(b); if(D()<p||b.items.every(id=>owned()[id]))return;
     state.diamonds=D()-p; owned()[b.id]=true;
     b.items.forEach(id=>{owned()[id]=true;});
-    if(!b.all)b.items.forEach(id=>equipCos(byId(id),true));
     after(false);
+    toast(b.name+" bought. You can find everything in your inventory!",3400);
   }
   function profAvailable(p){ return !p.limited||owned()[p.id]||Date.now()<SEASON1_ENDS; }
   function buyProf(p){
     if(D()<p.cost||owned()[p.id]||!profAvailable(p))return;
-    state.diamonds=D()-p.cost; owned()[p.id]=true; equipProf(p,true);
+    state.diamonds=D()-p.cost; owned()[p.id]=true; after(true); toast(p.name+" bought. You can find it in your inventory!",3400);
   }
   function equipProf(p,on){ if(p.kind==="nameAnim")prof().nameAnim=!!on; else prof()[p.kind]=on?p.val:""; after(true); }
   let pv=null,pvTick=null;
   const dlg=()=>document.getElementById("diamondShopDialog");
+  function loadFont(i){
+    const id="dmFont-"+i.id; if(document.getElementById(id))return;
+    const l=document.createElement("link"); l.id=id; l.rel="stylesheet"; l.href="https://fonts.googleapis.com/css2?family="+i.gf+"&display=swap"; document.head.append(l);
+  }
   function applyCos(){
     const on=new Set(),grp=new Set();
     if(pv)pv.ids.forEach(id=>{const o=byId(id);if(o){on.add(o.cls);grp.add(o.group);}});
-    COS.forEach(i=>{let v=!!(owned()[i.id]&&equipped()[i.id]); if(pv&&grp.has(i.group))v=on.has(i.cls); document.body.classList.toggle(i.cls,v);});
+    adminGrant();
+    COS.forEach(i=>{let v=!!(owned()[i.id]&&equipped()[i.id]); if(pv&&grp.has(i.group))v=on.has(i.cls); document.body.classList.toggle(i.cls,v); if(v&&i.gf)loadFont(i);});
   }
   function pvStage(ids){
     let s=document.getElementById("dmPvStage"); if(s)s.remove(); s=null;
@@ -6148,6 +6257,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   function renderInv(){
     const host=document.getElementById("inventoryList"),tab=document.getElementById("inventoryTabPanel");
     if(!host||!tab||tab.hidden||typeof state==="undefined")return;
+    adminGrant();
     const keep=document.querySelector(".main-tab-content"),top=keep?keep.scrollTop:0;
     host.replaceChildren();
     const sec=(t,sub)=>{const w=document.createElement("div");w.className="inv-sec";const h=document.createElement("h3");h.textContent=t;w.append(h);if(sub){const p=document.createElement("p");p.className="muted small";p.textContent=sub;w.append(p);}const g=document.createElement("div");g.className="inv-grid";w.append(g);host.append(w);return g;};
@@ -6159,27 +6269,22 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
       const b=makeButton(locked?"🔒 Locked":on?"Equipped ✓":"Equip",fn||(()=>{}),!!locked,"inv-btn"+(on?" inv-btn-on":""));
       c.append(n,d,b);g.append(c);
     };
-    // cosmetics
     GROUPS.forEach(([grp,title])=>{
       const g=sec(title),list=COS.filter(o=>o.group===grp&&owned()[o.id]);
       if(!list.length)return empty(g);
       list.forEach(it=>cell(g,it.name,it.desc,!!equipped()[it.id],false,()=>{equipCos(it,!equipped()[it.id]);after(false);}));
     });
-    // leaderboard colour
-    {const g=sec("Leaderboard colour","Earned by rebirthing. The higher you rebirth, the cooler the colour. Everyone sees it.");
-     const sel=prof().lbColor;
-     cell(g,"Automatic","Always your highest earned colour.",!sel||sel==="auto",false,()=>{delete prof().lbColor;after(true);});
-     cell(g,"None","Plain leaderboard row.",sel==="none",false,()=>{prof().lbColor="none";after(true);});
-     RB.forEach(t=>cell(g,t.name,"Rebirth "+t.n,Number(sel)===t.n,!rbOpen(t),()=>{prof().lbColor=t.n;after(true);},n=>rbText(n,t)));}
-    // chat name colours
-    {const g=sec("Chat name colours","Bought colours and rebirth colours.");
-     PROF.filter(p=>p.kind==="nameColor"&&owned()[p.id]).forEach(p=>cell(g,p.name,"Shop colour",isEq(p),false,()=>equipProf(p,!isEq(p)),n=>{n.style.color=p.sw;}));
-     RB.forEach(t=>{const p={kind:"nameColor",val:"rb"+t.n};cell(g,t.name,"Rebirth "+t.n,isEq(p),!rbOpen(t),()=>equipProf(p,!isEq(p)),n=>rbText(n,t));});}
-    // chat titles
+    // one name colour for chat AND the leaderboard
+    {const g=sec("Name colour","Used in global chat and on the leaderboard. Every rebirth milestone unlocks 3 colours.");
+     const sel=prof().nameColor||"auto";
+     const pick=v=>{prof().nameColor=v;after(true);};
+     cell(g,"Automatic","Your newest rebirth colour.",sel==="auto"||(!NC[sel]&&!rbColor(sel)&&sel!=="none"),false,()=>pick("auto"));
+     cell(g,"None","Plain white name.",sel==="none",false,()=>pick("none"));
+     PROF.filter(p=>p.kind==="nameColor"&&owned()[p.id]).forEach(p=>cell(g,p.name,"Shop colour",sel===p.val,false,()=>pick(p.val),n=>{n.style.color=p.sw;}));
+     RBC.forEach(c=>cell(g,c.name,"Rebirth "+c.n,sel===c.id,!(isAdm()||rbCount()>=c.n),()=>pick(c.id),n=>rbText(n,c)));}
     {const g=sec("Chat titles","Bought titles and titles earned from rebirth achievements.");
      PROF.filter(p=>p.kind==="title"&&owned()[p.id]).forEach(p=>cell(g,p.name,"Shop title",isEq(p),false,()=>equipProf(p,!isEq(p))));
      RB.forEach(t=>{const p={kind:"title",val:"rt"+t.n};cell(g,"["+t.title+"]","Reach "+t.n+" rebirth"+(t.n===1?"":"s"),isEq(p),!rbOpen(t),()=>equipProf(p,!isEq(p)),n=>rbText(n,t));});}
-    // other profile items
     [["nameAnim","Prestige"],["badgeIcon","Badge icons"],["annStyle","Announcement styles"]].forEach(([k,title])=>{
       if(k==="annStyle"&&isPrivilegedUser())return;
       const g=sec(title),list=PROF.filter(p=>p.kind===k&&owned()[p.id]);
@@ -6190,11 +6295,11 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   }
   window.dmRenderInventory=renderInv;
   // Hooks used by chat and the leaderboard
-  window.dmChatFields=function(){const p=prof(),o={};const rc=rbById(p.nameColor,"rb"),rt=rbById(p.title,"rt");if(NC[p.nameColor]||(rc&&rbOpen(rc)))o.nameColor=p.nameColor;if(TT[p.title]||(rt&&rbOpen(rt)))o.title=p.title;if(p.nameAnim===true)o.nameAnim=true;return o;};
+  window.dmChatFields=function(){const p=prof(),o={};const id=effectiveId();if(id)o.nameColor=id;const rt=rbTitle(p.title);if(TT[p.title]||(rt&&rbOpen(rt)))o.title=p.title;if(p.nameAnim===true)o.nameAnim=true;return o;};
   window.dmAnnFields=function(){const p=prof();return AN[p.annStyle]?{annStyle:p.annStyle}:{};};
-  window.dmLbFields=function(){const p=prof();const o={badgeIcon:BI[p.badgeIcon]?p.badgeIcon:""};const c=p.lbColor;o.lbTier=c==="none"?-1:(Number(c)>0?Number(c):0);return o;};
-  window.dmChatName=function(el,m){const c=NC[m.nameColor];if(c)el.style.color=c[1];else rbText(el,rbById(m.nameColor,"rb"));if(m.nameAnim===true)el.classList.add("dm-shimmer");};
-  window.dmChatTitle=function(m){const t=TT[m.title],r=rbById(m.title,"rt");if(!t&&!r)return null;const s=document.createElement("span");s.className="dm-title";s.textContent="["+(t?t[0]:r.title)+"] ";if(r)rbText(s,r);return s;};
+  window.dmLbFields=function(){const p=prof();return {badgeIcon:BI[p.badgeIcon]?p.badgeIcon:"",lbColor:effectiveId()};};
+  window.dmChatName=function(el,m){const id=m.nameColor;if(NC[id])el.style.color=NC[id][1];else rbText(el,rbColor(id));if(m.nameAnim===true)el.classList.add("dm-shimmer");};
+  window.dmChatTitle=function(m){const t=TT[m.title],r=rbTitle(m.title);if(!t&&!r)return null;const s=document.createElement("span");s.className="dm-title";s.textContent="["+(t?t[0]:r.title)+"] ";if(r)rbText(s,r);return s;};
   window.dmAnn=function(row,textEl,m){const a=AN[m.annStyle];if(!a)return;row.style.borderLeft="4px solid "+a[1];textEl.style.color=a[1];textEl.prepend(a[0]+" ");};
   window.dmBadge=function(tag,user){const e=BI[user&&user.badgeIcon];return e&&tag&&tag.rank?Object.assign({},tag,{text:"("+e+"#"+tag.rank+")"}):tag;};
   // (rebirth leaderboard styling is defined in the Rebirth colours block below)
@@ -6446,7 +6551,8 @@ function passiveCashForElapsedMs(elapsedMs) {
     / PASSIVE_CASH_MAX_ELAPSED_MS;
   const lifetimeCash = Math.max(0, Number(state.lifetime) || 0);
   const stonksOfflineMultiplier = state.upgrades.stonks === 1 ? 3 : 1;
-  return Math.min(1e300, lifetimeCash * 0.01 * elapsedFraction * stonksOfflineMultiplier);
+  const nightShift = 1 + 0.25 * (window.dmPerk ? window.dmPerk("offline") : 0); // Night Shift perk
+  return Math.min(1e300, lifetimeCash * 0.01 * elapsedFraction * stonksOfflineMultiplier * nightShift);
 }
 
 function applyPassiveCashElapsed(now = Date.now()) {
