@@ -732,6 +732,13 @@ body.dm-ov-sepia::after{background:#ffb35a30;mix-blend-mode:multiply}
 body.dm-ov-night::after{background:#0a1c5a66;mix-blend-mode:multiply}
 body.dm-ov-grid::after{background-image:linear-gradient(#0000002e 1px,transparent 1px),linear-gradient(90deg,#0000002e 1px,transparent 1px);background-size:4px 4px}
 body.dm-ov-dusk::after{background:linear-gradient(180deg,#ff7a3d33,#8a2be233 60%,#0a1c5a55)}
+/* ===== GTA 6 limited bundle ===== */
+body.dm-f-gta-vice,body.dm-f-gta-palm{animation:dm-pulse 1.4s ease-in-out infinite alternate}
+body.dm-f-gta-vice .slot{border-color:color-mix(in srgb,#ff2e93 calc(var(--dm-pulse)*100%),#ffa63d)!important;outline-color:#2a0638!important;box-shadow:0 0 calc(6px + var(--dm-pulse)*12px) color-mix(in srgb,#ff2e93 calc(var(--dm-pulse)*100%),#ffa63d),inset 0 0 10px #ff2e9340!important}
+body.dm-f-gta-palm .slot{border-color:color-mix(in srgb,#19f6d2 calc(var(--dm-pulse)*100%),#b8ff4a)!important;outline-color:#04201c!important;box-shadow:0 0 calc(6px + var(--dm-pulse)*12px) color-mix(in srgb,#19f6d2 calc(var(--dm-pulse)*100%),#b8ff4a),inset 0 0 10px #19f6d233!important}
+body.dm-star-gta .bonus-star:not(.diamond-star):not(.hyper-star){background:radial-gradient(circle at 40% 35%,#fff 0,#ffd36b 25%,#ff4fa8 62%,#7a1fa8 100%)!important;color:#fff!important;border:2px solid #fff!important;text-shadow:0 0 6px #ff2e93!important;box-shadow:0 0 14px #ff4fa8,0 0 28px #4de1ff!important}
+body.dm-cursor-palm,body.dm-cursor-palm *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><text y='26' font-size='26'>🌴</text></svg>") 6 6,auto!important}
+body.dm-ov-gta::after{background:linear-gradient(180deg,#ff4fa826,#7a2be22a 55%,#19f6d226);mix-blend-mode:screen}
 /* shop: obvious entry, preview */
 .dm-hero{background:linear-gradient(120deg,#062a4d,#0e72c9,#062a4d);background-size:200% 100%;animation:dm-sheen 5s linear infinite;border:3px solid #7fd4ff!important;box-shadow:0 0 calc(8px + var(--dm-pulse)*14px) #4fd0ff!important;text-align:center;padding:14px!important}
 @keyframes dm-sheen{to{background-position:-200% 0}}
@@ -934,7 +941,7 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
   </div>
 </dialog>
 <dialog id="giftDialog" class="stats-dialog">
-  <div class="panel-head"><h2>Generator Gifts</h2><button id="giftsCloseBtn" type="button">Close</button></div>
+  <div class="panel-head"><h2>Gifts</h2><button id="giftsCloseBtn" type="button">Close</button></div>
   <form class="gift-form" id="giftForm">
     <label for="giftRecipient">Recipient username</label>
     <input id="giftRecipient" type="text" maxlength="40" autocomplete="off" placeholder="Username">
@@ -1004,6 +1011,7 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
         <div class="shop-tabs leaderboard-tabs" role="tablist" aria-label="Leaderboard type">
           <button class="shop-tab" type="button" role="tab" aria-selected="true" data-leaderboard="cashEarned">Cash</button>
           <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="multiplier">Multiplier</button>
+          <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="inventoryValue">Inventory value</button>
           <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="starsCollected">Stars</button>
           <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="rebirth">Rebirths</button>
           <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="playtimeSeconds">Playtime</button>
@@ -1011,6 +1019,7 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
         </div>
         <ol class="leaderboard-list" id="leaderboardList"></ol>
         <div class="muted small" id="leaderboardStatus">Sign in to see the leaderboard.</div>
+        <div class="muted small" id="leaderboardTimer" aria-live="off"></div>
       </div>
     </section>
       <section class="panel">
@@ -1262,7 +1271,10 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
     <div class="muted small" id="adminDeleteStatus" role="status" aria-live="polite"></div>
     <div class="adm-sep"></div>
     <div class="adm-row"><input id="adminWipeConfirm" type="text" autocomplete="off" placeholder="Type WIPE to confirm" aria-label="Type WIPE"><button id="adminWipeBtn" class="danger-button" type="button">Wipe all player data</button></div>
-    <div class="muted small">Wipe resets every player's progress but keeps accounts.</div>
+    <div class="muted small">Wipe resets every player's progress but keeps accounts. It also voids every unclaimed gift.</div>
+    <div class="adm-sep"></div>
+    <div class="adm-row"><button id="adminVoidGiftsBtn" class="danger-button" type="button">Void ALL gifts (every player)</button></div>
+    <div class="muted small" id="adminVoidGiftsStatus" role="status" aria-live="polite">Deletes every pending or old generator, multiplier and cosmetic gift. Senders are not refunded.</div>
   </div>
   <div class="muted small" id="adminUidInfo" style="grid-column:1/-1;user-select:all;word-break:break-all"></div>
   <div class="note" id="adminStatus" role="status" aria-live="polite" style="grid-column:1/-1"></div>
@@ -1524,7 +1536,7 @@ const UPDATE_HISTORY = [
     changes: [
       "Admin account: everything is unlocked (all cosmetics, colours, titles and perks) and selling generators now pays real cash so rebirths can be tested.",
       "Every rebirth milestone now unlocks 3 name colours. Chat and the leaderboard share one name colour setting.",
-      "New Diamond Shop items: 5 UI themes, 8 fonts that restyle the whole game, the Lucky Stars and Night Shift perks, and the Cash Injection use.",
+      "New Diamond Shop items: 5 UI themes, 8 fonts that restyle the whole game, and the Lucky Stars and Night Shift perks.",
       "Hyper Stars keep animated rainbow colours when a Star skin is equipped. Buying no longer equips: items say they are waiting in your Inventory.",
       "Added an Inventory tab right next to Shop: equip every cosmetic, chat colour, title, badge and announcement style there. The Diamond Shop now only buys.",
       "Rebirthing now earns leaderboard colours. They start as simple colours and become fading, glowing gradients at higher rebirths (Prismatic at 50).",
@@ -1546,6 +1558,15 @@ const UPDATE_HISTORY = [
       "A wipe now also resets your saved theme.",
       "Added the alpha tag (a) in chat.",
       "Owner announcement styles are now a free setting instead of a shop item.",
+      "Fixed Instant Fever: it now starts a real personal Fever (×2, or Hyper) for 2 minutes instead of only the Star speed boost.",
+      "Cash per second is now exact: generators pay for the real time that passed, so Note Drop Speed upgrades, laggy tabs and background tabs no longer pay more or less than the displayed amount.",
+      "The Cash leaderboard now refreshes about every 45 seconds and the other leaderboards about every 3 minutes (they used to wait 9–10 minutes). A timer under the leaderboard shows when your score updates next.",
+      "New Inventory value leaderboard.",
+      "Removed Cash Injection from the Diamond Shop.",
+      "New Gift button in the Diamond Shop: buy any cosmetic for another player. They accept it in Gifts and it lands in their Inventory (if they already own it they get the diamonds instead).",
+      "Stars collected are now reset by the Reset button, and a wipe can no longer re-publish old Stars.",
+      "Admins can void ALL gifts for every player, and a wipe now voids unclaimed gifts too.",
+      "New Diamond Shop section: Limiteds. First up is the free GTA 6 Bundle with 4 backgrounds, 6 UI themes, 2 tile frames, a Star skin, a cursor, a click effect and an overlay. Everyone gets a notification to claim it.",
       "Settings cleanup: Snow is now Background effects (it also covers the new Diamond Shop backgrounds), and the leftover light-mode theme strength slider is hidden."
     ]
   }
@@ -2194,7 +2215,9 @@ let lastCloudErrorNoticeAt = 0;
 let lastProgressWarningAt = 0;
 let lastLeaderboardPublishAt = 0;
 const CLOUD_SAVE_MIN_MS = 3 * 60 * 1000;
-const LEADERBOARD_MIN_MS = 9 * 60 * 1000;
+const LEADERBOARD_MIN_MS = 3 * 60 * 1000;      // every leaderboard except Cash: full publish at most every 3 minutes
+const LEADERBOARD_CASH_MIN_MS = 45 * 1000;     // the Cash leaderboard (the one people watch): at most every 45 seconds
+let lastLeaderboardCashAt = 0;
 function progressKey(source) { return [Number(source.rebirths) || 0, Number(source.level) || 1]; }
 function progressIsLower(a, b) { return a[0] < b[0] || (a[0] === b[0] && a[1] < b[1]); }
 function applyGeneratorGiftRefunds(refunds) {
@@ -2315,12 +2338,33 @@ async function saveUserState(silent = true, force = false) {
 
 async function publishLeaderboardEntry(force = false) {
   if (!currentUser || !dbRef || !leaderboardPrivacyLoaded || !cloudSaveReady || acSuspicious) return false;
-  if (!force && Date.now() - lastLeaderboardPublishAt < LEADERBOARD_MIN_MS) return true;
+  const nowMs = Date.now();
+  const fullDue = force || nowMs - lastLeaderboardPublishAt >= LEADERBOARD_MIN_MS;
+  const cashDue = nowMs - lastLeaderboardCashAt >= LEADERBOARD_CASH_MIN_MS;
+  if (!fullDue && !cashDue) return true;
   try {
     const leaderboardEntry = dbRef.collection("leaderboard").doc(currentUser.uid);
     if (hideFromLeaderboard) {
       await leaderboardEntry.delete();
+      lastLeaderboardPublishAt = nowMs;
+      lastLeaderboardCashAt = nowMs;
       return true;
+    }
+    if (!fullDue) {
+      // Quick Cash-only update: the other boards keep their older numbers until the next full publish.
+      lastLeaderboardCashAt = nowMs;
+      try {
+        await leaderboardEntry.set({
+          uid: currentUser.uid,
+          username: currentUsername,
+          cashEarned: Math.max(0, Number(state.generatorCashEarned) || 0),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+        return true;
+      } catch (quickError) {
+        lastLeaderboardPublishAt = 0; // entry may be missing: do a full publish next time
+        return false;
+      }
     }
     await leaderboardEntry.set({
       uid: currentUser.uid,
@@ -2332,12 +2376,14 @@ async function publishLeaderboardEntry(force = false) {
       multiplier: Math.max(1, Number(playerMultiplier()) || 1),
       playtimeSeconds: Math.max(0, Number(state.playtimeSeconds) || 0),
       questionsAnswered: Math.max(0, Number(state.questionsAnswered) || 0),
+      inventoryValue: Math.min(1e300, Math.max(0, Number(inventoryValue()) || 0)),
       hideIndicator: hideLeaderboardIndicator,
       chatBadgeMetric,
       ...(window.dmLbFields ? window.dmLbFields() : {}),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
     lastLeaderboardPublishAt = Date.now();
+    lastLeaderboardCashAt = lastLeaderboardPublishAt;
     return true;
   } catch (e) {
     lastLeaderboardPublishAt = Date.now();
@@ -2358,6 +2404,12 @@ const LEADERBOARD_METRICS = {
     heading: "Multiplier leaderboard",
     description: "Highest generator multiplier · Top 25",
     format: value => "×" + number(Math.max(1, Number(value) || 1))
+  },
+  inventoryValue: {
+    label: "Inventory",
+    heading: "Inventory value leaderboard",
+    description: "Total shop value of every generator you own · Top 25",
+    format: value => cash(Math.max(0, Number(value) || 0))
   },
   starsCollected: {
     label: "Stars",
@@ -2638,14 +2690,11 @@ function startCommunityListeners() {
   communityUnsubscribers.push(chatQuery.onSnapshot(renderChat, () => {
     $("chatStatus").textContent = "Chat unavailable. Check Firestore rules.";
   }));
-  let pendingGeneratorGiftCount = 0;
-  let pendingMultiplierGiftCount = 0;
-  const giftQueries = ["generatorGifts", "multiplierGifts"].map(collection =>
+  const pendingGiftCounts = { generatorGifts: 0, multiplierGifts: 0, cosmeticGifts: 0 };
+  const giftQueries = ["generatorGifts", "multiplierGifts", "cosmeticGifts"].map(collection =>
     dbRef.collection(collection).where("recipientUid", "==", currentUser.uid).onSnapshot(snapshot => {
-      const count = snapshot.docs.filter(doc => doc.data().status === "pending").length;
-      if (collection === "generatorGifts") pendingGeneratorGiftCount = count;
-      else pendingMultiplierGiftCount = count;
-      $("giftsAvailableBadge").hidden = pendingGeneratorGiftCount + pendingMultiplierGiftCount === 0;
+      pendingGiftCounts[collection] = snapshot.docs.filter(doc => doc.data().status === "pending").length;
+      $("giftsAvailableBadge").hidden = pendingGiftCounts.generatorGifts + pendingGiftCounts.multiplierGifts + pendingGiftCounts.cosmeticGifts === 0;
     }, error => {
       console.warn("Gift notification listener failed for " + collection + ":", error);
     })
@@ -5519,11 +5568,15 @@ async function handleAllGifts(action) {
   claimButton.disabled = true;
   rejectButton.disabled = true;
   try {
-    const [generatorSnapshot, multiplierSnapshot] = await Promise.all([
+    const [generatorSnapshot, multiplierSnapshot, cosmeticSnapshot] = await Promise.all([
       dbRef.collection("generatorGifts").where("recipientUid", "==", currentUser.uid).get(),
-      dbRef.collection("multiplierGifts").where("recipientUid", "==", currentUser.uid).get()
+      dbRef.collection("multiplierGifts").where("recipientUid", "==", currentUser.uid).get(),
+      dbRef.collection("cosmeticGifts").where("recipientUid", "==", currentUser.uid).get()
     ]);
     const gifts = [
+      // Cosmetic gifts can only be claimed, never rejected (the sender is not refunded).
+      ...(action === "claim" ? cosmeticSnapshot.docs.filter(doc => doc.data().status === "pending")
+        .map(doc => ({ collection: "cosmeticGifts", doc })) : []),
       ...generatorSnapshot.docs.filter(doc => doc.data().status === "pending")
         .map(doc => ({ collection: "generatorGifts", doc })),
       ...multiplierSnapshot.docs.filter(doc => doc.data().status === "pending")
@@ -5535,6 +5588,7 @@ async function handleAllGifts(action) {
       try {
         if (action === "claim") {
           if (gift.collection === "generatorGifts") await acceptGeneratorGift(gift.doc.id);
+          else if (gift.collection === "cosmeticGifts") await window.dmAcceptCosmeticGift(gift.doc.id);
           else await acceptMultiplierGift(gift.doc.id);
         } else {
           await rejectGift(gift.collection, gift.doc.id);
@@ -5573,13 +5627,15 @@ async function refreshGiftInbox() {
   }
   host.textContent = "Loading gifts...";
   try {
-    const [generatorSnapshot, multiplierSnapshot] = await Promise.all([
+    const [generatorSnapshot, multiplierSnapshot, cosmeticSnapshot] = await Promise.all([
       dbRef.collection("generatorGifts").where("recipientUid", "==", currentUser.uid).get(),
-      dbRef.collection("multiplierGifts").where("recipientUid", "==", currentUser.uid).get()
+      dbRef.collection("multiplierGifts").where("recipientUid", "==", currentUser.uid).get(),
+      dbRef.collection("cosmeticGifts").where("recipientUid", "==", currentUser.uid).get()
     ]);
     const pendingGenerators = generatorSnapshot.docs.filter(doc => doc.data().status === "pending");
     const pendingMultipliers = multiplierSnapshot.docs.filter(doc => doc.data().status === "pending");
-    const pendingCount = pendingGenerators.length + pendingMultipliers.length;
+    const pendingCosmetics = cosmeticSnapshot.docs.filter(doc => doc.data().status === "pending");
+    const pendingCount = pendingGenerators.length + pendingMultipliers.length + pendingCosmetics.length;
     $("giftsAvailableBadge").hidden = pendingCount === 0;
     $("claimAllGiftsBtn").disabled = pendingCount === 0 || giftBulkActionBusy;
     $("rejectAllGiftsBtn").disabled = pendingCount === 0 || giftBulkActionBusy;
@@ -5588,6 +5644,36 @@ async function refreshGiftInbox() {
       host.textContent = "No pending gifts.";
       return;
     }
+    pendingCosmetics.forEach(doc => {
+      const gift = doc.data();
+      const row = document.createElement("div");
+      row.className = "gift-row";
+      const description = document.createElement("span");
+      description.textContent = "🎁 " + (gift.senderUsername || "A player") + " sent you "
+        + (window.dmCosmeticGiftName ? window.dmCosmeticGiftName(gift.itemId) : "a cosmetic")
+        + ". It will be added to your Inventory.";
+      const accept = document.createElement("button");
+      accept.type = "button";
+      accept.textContent = "Accept";
+      accept.addEventListener("click", async () => {
+        accept.disabled = true;
+        try {
+          const result = await window.dmAcceptCosmeticGift(doc.id);
+          $("giftStatus").textContent = result && result.dup
+            ? "You already owned it, so you received " + result.dup + " 💎 instead."
+            : "Gift accepted. Find it in your Inventory.";
+          await refreshGiftInbox();
+        } catch (error) {
+          accept.disabled = false;
+          $("giftStatus").textContent = error.message || "Could not accept this gift.";
+        }
+      });
+      const actions = document.createElement("div");
+      actions.className = "game-account-actions";
+      actions.append(accept);
+      row.append(description, actions);
+      host.appendChild(row);
+    });
     pendingGenerators.forEach(doc => {
       const gift = doc.data();
       const row = document.createElement("div");
@@ -5767,10 +5853,41 @@ $("adminWipeBtn").addEventListener("click", async () => {
       const board = await dbRef.collection("leaderboard").get();
       await Promise.all(board.docs.map(d => d.ref.delete().catch(() => { cleanupFailed++; })));
     } catch (e) { cleanupFailed = -1; }
+    window.__wipeStep = "voiding gifts";
+    let giftsVoided = 0;
+    try { giftsVoided = await voidAllGifts(); } catch (e) { giftsVoided = -1; }
     $("adminWipeConfirm").value = "";
-    s.textContent = "Wipe started. Each player resets on their next login or immediately if online."
+    s.textContent = (giftsVoided < 0 ? "Gifts could not be voided (publish the new rules, then use Void ALL gifts). " : "Gifts voided: " + giftsVoided + ". ") + "Wipe started. Each player resets on their next login or immediately if online."
       + (cleanupFailed ? " Leaderboard cleanup was blocked, so old entries stay until players reset." : "");
   } catch (e) { s.textContent = "Blocked at: " + (window.__wipeStep || "unknown step") + " [" + (e.code || "error") + "] " + (e.message || ""); }
+});
+async function voidAllGifts() {
+  // Deletes every document in both gift collections, 400 at a time (admin only, enforced by the rules).
+  let removed = 0;
+  for (const name of ["generatorGifts", "multiplierGifts", "cosmeticGifts"]) {
+    for (;;) {
+      const snap = await dbRef.collection(name).limit(400).get();
+      if (snap.empty) break;
+      const batch = dbRef.batch();
+      snap.docs.forEach(d => batch.delete(d.ref));
+      await batch.commit();
+      removed += snap.size;
+      if (snap.size < 400) break;
+    }
+  }
+  return removed;
+}
+$("adminVoidGiftsBtn").addEventListener("click", async () => {
+  const s = $("adminVoidGiftsStatus");
+  if ($("adminPanel").hidden || !currentUser || !dbRef) return;
+  if (!confirm("Void ALL gifts for ALL players? Every pending gift disappears and senders are NOT refunded. This cannot be undone.")) return;
+  s.textContent = "Voiding gifts...";
+  try {
+    const removed = await voidAllGifts();
+    s.textContent = "Voided " + removed + " gift" + (removed === 1 ? "" : "s") + ". Players see the change right away.";
+  } catch (e) {
+    s.textContent = e.code === "permission-denied" ? "Rules blocked it. Publish the updated rules." : "Failed [" + (e.code || "error") + "] " + (e.message || "");
+  }
 });
 let globalWipeUnsub = null;
 function startGlobalWipeListener() {
@@ -5789,6 +5906,8 @@ function startGlobalWipeListener() {
       cloudSaveReady = false;
       saveUserState = async () => false; // stop the unload handler re-saving the old progress
       save = () => {};
+      try { state = freshState(); } catch (e3) {} // nothing (Stars included) may be re-published from the old save
+      try { localStorage.removeItem("sfInvClosed"); } catch (e3) {}
       if (doc.exists) await userRef.update({ state: {}, wipedAt: wipeMs });
       else await userRef.set({ state: {}, wipedAt: wipeMs });
       Object.keys(localStorage).filter(k => k.indexOf(getPlayerSaveKey(currentUsername)) === 0).forEach(k => localStorage.removeItem(k));
@@ -5915,7 +6034,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   let lastShown=-1;
   function refund(){ if(typeof state==="undefined"||!currentUser||state.dmFlairRefunded)return; const o=owned(); const ids=Object.keys(o).filter(k=>k.indexOf("fl-")===0&&o[k]); state.dmFlairRefunded=true; if(!ids.length)return; ids.forEach(k=>{delete o[k];}); delete prof().flair; state.diamonds=D()+ids.length*60; toast("Leaderboard flairs were removed: refunded "+(ids.length*60)+" 💎"); try{save();}catch(e){} }
   function refundNc(){ if(typeof state==="undefined"||!currentUser||state.dmNcRefunded)return; const o=owned(); const ids=["nc-green","nc-blue"].filter(k=>o[k]); state.dmNcRefunded=true; if(!ids.length)return; ids.forEach(k=>{delete o[k];}); if(prof().nameColor==="green"||prof().nameColor==="blue")prof().nameColor="auto"; if(!isAdm()){state.diamonds=D()+ids.length*40; toast("Green and Blue name colours were retired: refunded "+(ids.length*40)+" 💎");} try{save();}catch(e){} }
-  function refresh(){ refund(); refundNc(); adminGrant(); window.dmRbCheck&&window.dmRbCheck(); const d=D(); document.getElementById("diamondPill").textContent="💎 "+d; document.getElementById("diamondShopBalance").textContent="💎 "+d; if(d!==lastShown){lastShown=d;renderShop2();} }
+  function refresh(){ refund(); refundNc(); adminGrant(); window.dmRbCheck&&window.dmRbCheck(); const d=D(); document.getElementById("diamondPill").textContent="💎 "+d+(freeToClaim()?" 🎁 FREE":""); document.getElementById("diamondShopBalance").textContent="💎 "+d; if(d!==lastShown){lastShown=d;renderShop2();} }
   const prof=()=>(state.dmProfile=state.dmProfile&&typeof state.dmProfile==="object"?state.dmProfile:{});
   // Catalogs. Other players only ever see these ids, never free text.
   const NC={
@@ -5940,10 +6059,9 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     {id:"offline",type:"perk",name:"Night Shift",max:4,cost:l=>10*Math.pow(2,l),desc:"+25% cash earned while you are away, per level."}
   ];
   const USES=[
-    {id:"fevernow",type:"use",name:"Instant Fever",cost:5,desc:"Start a personal Fever now.",run:()=>{state.genSpeedBoostUntil=Date.now()+PERSONAL_FEVER_DURATION_MS;}},
+    {id:"fevernow",type:"use",name:"Instant Fever",cost:5,desc:"Start a personal Fever now.",run:()=>{const msg=activatePersonalFever();try{renderStats();}catch(e){}toast("🎉 "+msg,2800);}},
     {id:"starcall",type:"use",name:"Call a Star",cost:8,desc:"Spawn a Star for you.",run:()=>spawnStar()},
-    {id:"hypercall",type:"use",name:"Call a Hyper Star",cost:20,desc:"Spawn a Hyper Star for you.",run:()=>spawnStar(null,false,true)},
-    {id:"cashinject",type:"use",name:"Cash Injection",cost:12,desc:"Instantly receive 5 minutes of your current income.",can:()=>totalIncome()>0,cant:"Place a generator first: you have no income yet.",run:()=>{const g=Math.floor(totalIncome()*300);if(g>0){state.money+=g;try{renderStats();}catch(e){}toast("+"+cash(g)+" cash");}}}
+    {id:"hypercall",type:"use",name:"Call a Hyper Star",cost:20,desc:"Spawn a Hyper Star for you.",run:()=>spawnStar(null,false,true)}
   ];
 
   // ===== 1.0.2: more backgrounds & UI themes, generated from compact data =====
@@ -5958,6 +6076,10 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     ["forest","Firefly Forest",40,"Fireflies drift up through a dark forest.","linear-gradient(180deg,#04110a 0%,#0b2a18 60%,#143d22 100%)",[{n:5,rx:3,ry:3,cols:["#d9ff7a","#fff59a"],tw:200,th:230,sx:.3,sy:-1,m:1}],34],
     ["candy","Sprinkle Sky",40,"Colourful sprinkles rain down a candy-pink sky.","linear-gradient(180deg,#3a1458 0%,#7a2a8f 55%,#ff7ab8 100%)",[{n:6,rx:3,ry:3,cols:["#ffe14d","#4de1ff","#ff6bd6","#8affc1"],tw:170,th:200,sx:0,sy:1,m:1}],18],
     ["arctic","Arctic Night",40,"Fine, calm snow over an icy blue sky.","linear-gradient(180deg,#0b2236 0%,#2a5a80 55%,#a9d6ee 100%)",[{n:5,rx:2,ry:2,cols:["#ffffff"],tw:130,th:160,sx:0,sy:1,m:1},{n:3,rx:3,ry:3,cols:["#e4f6ff"],tw:210,th:250,sx:0,sy:1,m:1}],34],
+    ["gta-vice","Vice City Sunset",45,"A hot pink and orange sunset sky with neon sparks drifting up.","linear-gradient(180deg,#1a0638 0%,#7a1fa8 30%,#ff3d8f 60%,#ff9a3c 85%,#ffd36b 100%)",[{n:5,rx:2,ry:2,cols:["#ff6bd6","#4de1ff","#ffd36b"],tw:190,th:230,sx:.2,sy:-.5,m:1}],36],
+    ["gta-neon","Neon Strip Night",45,"A midnight skyline glowing magenta and cyan.","linear-gradient(180deg,#04030f 0%,#1a0f5a 45%,#c21e8f 80%,#19f6d2 100%)",[{n:6,rx:2,ry:2,cols:["#ff2bd6","#19f6d2","#ffffff"],tw:160,th:200,sx:-.2,sy:-.8,m:1}],26],
+    ["gta-beach","Ocean Drive",45,"A turquoise coast under a golden sky with rolling waves.","linear-gradient(180deg,#ff8a5c 0%,#ffc46b 35%,#4fd8d0 70%,#0a8fa0 100%)",[{n:3,rx:2,ry:2,cols:["#ffffffb0","#fff3c0b0"],tw:220,th:260,sx:.4,sy:-.2,m:1}],60,[[WAVE(".24"),"400px 60px","0 100%","400px 100%"],[WAVE(".14"),"640px 96px","0 calc(100% - 14px)","-640px calc(100% - 14px)"]]],
+    ["gta-bayou","Leonida Bayou",45,"Fireflies glide over a dark green swamp with a purple glow.","linear-gradient(180deg,#120826 0%,#17402a 55%,#c9b037 120%)",[{n:5,rx:3,ry:3,cols:["#e8ff7a","#ffd36b"],tw:200,th:230,sx:.3,sy:-1,m:1}],34],
     ["desert","Dune Wind",40,"Sand blows sideways across a burning sunset.","linear-gradient(180deg,#2a1608 0%,#7a3f14 55%,#d28a3a 100%)",[{n:6,rx:2,ry:2,cols:["#f3c883","#ffe0a8"],tw:180,th:150,sx:-1,sy:.2,m:1}],10]
   ];
   const THEMES=[
@@ -5968,6 +6090,12 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     ["ui-lava","Lava Rock","🌋",50,"Charred rock with glowing orange cracks.","#120504","#2c0f0a","#3a150d","#ff6a1a","#fff1e8","#e0a98c","#ff8a3d","#d9480f","#1c0a06","#0e0403",["#0e0302","#2b0d06","#6a1a05"],15],
     ["ui-arctic","Arctic Ice","🧊",50,"Frozen blues and pale ice.","#0a2236","#164463","#1d5578","#bfeaff","#f4fcff","#a9d4e8","#9fe3ff","#3aa6d8","#0d2f4a","#09263d",["#0a2236","#2a6a96","#bfe6f5"],200],
     ["ui-sakura","Sakura","🌸",50,"Soft cherry-blossom pinks.","#2a1220","#4a2038","#5c2a46","#ffb3d1","#fff2f7","#e8b8cc","#ff9fc4","#d6578f","#351628","#220d19",["#2a1220","#6a2c52","#e88fb4"],330],
+    ["ui-gta-vice","Vice Pink","🌴",50,"Hot pink and electric cyan on deep purple.","#1a0630","#2d0a4e","#3f1366","#ff4fa8","#fff0fa","#e0b0f0","#4de1ff","#d6247f","#4a0f7a","#200640",["#1a0630","#6a1a8f","#ff4fa8"],320],
+    ["ui-gta-sunset","Leonida Sunset","🌅",50,"Burnt orange and crimson, like the sun going down over the keys.","#2a0c1a","#4a1630","#5e1e3a","#ff9a3c","#fff3e6","#f0c0a0","#ffb347","#e8541f","#7a1f3a","#260a16",["#2a0c1a","#b0302f","#ffa94d"],20],
+    ["ui-gta-neon","Neon Strip","🌃",50,"Midnight blue with glowing mint outlines.","#070a1f","#0f1640","#18215a","#19f6d2","#eafffb","#9fd8ea","#19f6d2","#7b2dff","#1a1060","#050818",["#070a1f","#2a1a7a","#ff2bd6"],280],
+    ["ui-gta-beach","Ocean Drive","🏖️",50,"Teal water, sandy gold outlines and coral buttons.","#06303a","#0b4d5c","#12677a","#ffd166","#fffbea","#bfeee8","#ffd166","#ef476f","#0f7a86","#052a33",["#06303a","#0aa5a0","#ffb86b"],180],
+    ["ui-gta-bayou","Gator Bayou","🐊",50,"Swamp greens with lime outlines.","#07150f","#12301f","#1a4a2e","#b8e04a","#f3ffe0","#a8c9a0","#b8e04a","#2f8f45","#1d5a36","#05110a",["#07150f","#1e5a34","#c9b037"],100],
+    ["ui-gta-heist","Heist Night","💰",50,"Black and gold, ready for the big score.","#0a0a0f","#17171f","#22222e","#ffcf33","#ffffff","#b9b9c9","#ffcf33","#b8860b","#2a2a38","#050508",["#0a0a0f","#262633","#6e5a10"],45],
     ["ui-desert","Desert Dune","🏜️",50,"Warm sand and copper.","#1e1208","#4a2f14","#5c3a18","#e0a458","#fff4e0","#dcc29a","#f0b35a","#b8742a","#2e1b0b","#1a0f06",["#1e1208","#6b3c14","#d28a3a"],30]
   ];
   (function(){
@@ -5980,7 +6108,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
         S.push(w+"px "+h+"px"); P.push(Math.round(g.sx*w*g.m)+"px "+Math.round(g.sy*h*g.m)+"px"); Z.push("0 0"); R.push("repeat");
       }});
       (ex||[]).slice().reverse().forEach(e=>{L.unshift(e[0]);S.unshift(e[1]);Z.unshift(e[2]);P.unshift(e[3]);R.unshift("repeat-x");});
-      const z=Z.join(","),tw=["christmas","forest","arctic","candy"].includes(id)?",dmtw 3.2s ease-in-out infinite alternate":"";
+      const z=Z.join(","),tw=["christmas","forest","arctic","candy","gta-vice","gta-neon","gta-bayou"].includes(id)?",dmtw 3.2s ease-in-out infinite alternate":"";
       css+="body.dm-snow-"+id+"::before{background-image:"+sky+"!important;background-size:100% 240%!important;background-position:0 0;background-repeat:no-repeat!important;animation:dmsky 26s ease-in-out infinite alternate!important}"
         +"body.dm-snow-"+id+" .game-shell::before{background-image:"+L.join(",")+"!important;background-size:"+S.join(",")+"!important;background-repeat:"+R.join(",")+"!important;background-position:"+z+";opacity:1!important;animation:dmg-"+id+" "+secs+"s linear infinite"+tw+"!important}"
         +"@keyframes dmg-"+id+"{to{background-position:"+P.join(",")+"}}";
@@ -6007,11 +6135,20 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   const CB_DEF={h:150,s:35,l:10};
   const cbGet=()=>Object.assign({},CB_DEF,prof().classicBg||{});
   function applyClassic(){ if(typeof state==="undefined")return; const c=cbGet(); document.documentElement.style.setProperty("--cb","hsl("+c.h+" "+c.s+"% "+c.l+"%)"); }
+  // ===== LIMITEDS =====
+  // To add a limited-time offer: give its cosmetics {ltd:"name"} (they then never show in the normal shop sections),
+  // make a BUNDLES entry with ltd:true (free:true makes it free), then add a line here.
+  // ends = a timestamp in ms (e.g. new Date(2026,11,31,23,59).getTime()) or null for no end. Owned items always stay owned.
+  const LIMITEDS=[
+    {bundle:"b-gta6",tag:"🌴",ends:null,blurb:"Vice City vibes, on the house."}
+  ];
+  const freeToClaim=()=>{if(typeof state==="undefined"||!currentUser||isAdm())return null;
+    return LIMITEDS.map(L=>BUNDLES.find(b=>b.id===L.bundle)).find((b,i)=>b&&b.free&&(!LIMITEDS[i].ends||Date.now()<LIMITEDS[i].ends)&&!b.items.every(id=>owned()[id]))||null;};
   const C=(id,group,name,cost,desc,cls)=>({id,type:"cos",group,name,cost,desc,cls});
   const GROUPS=[["snow","Background & snow"],["frame","Tile frames"],["ui","UI themes"],["star","Star skins"],["coin","Billy coin skins"],["cursor","Cursors"],["click","Click effects"],["overlay","Overlays"],["font","Fonts"]];
   const COS=[
     C("classic","snow","Classic (solid colour)",0,"A plain solid colour. Pick the colour with sliders in your Inventory.","dm-snow-classic"),
-    ...BGS.map(b=>C(b[0],"snow",b[1],b[2],b[3],"dm-snow-"+b[0])),
+    ...BGS.map(b=>Object.assign(C(b[0],"snow",b[1],b[2],b[3],"dm-snow-"+b[0]),b[0].indexOf("gta-")===0?{ltd:"gta6"}:{})),
     C("aurora","snow","Aurora Sky",45,"A glowing northern-lights sky with drifting light curtains.","dm-aurora"),
     C("ember","snow","Ember Rise",35,"Orange sparks rise up the screen.","dm-snow-ember"),
     C("blizzard","snow","Blizzard",40,"Heavy, fast, slanted snow on a stormy sky.","dm-snow-blizzard"),
@@ -6025,6 +6162,8 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     C("f-inferno","frame","Inferno Frames",45,"Flickering fire-coloured outlines.","dm-f-inferno"),
     C("f-emerald","frame","Emerald Frames",35,"Pulsing green gem outlines.","dm-f-emerald"),
     C("f-neon","frame","Neon Pulse Frames",55,"Outlines that fade between pink and cyan.","dm-f-neon"),
+    Object.assign(C("f-gta-vice","frame","Vice Frames",50,"Outlines that glow from hot pink to sunset orange.","dm-f-gta-vice"),{ltd:"gta6"}),
+    Object.assign(C("f-gta-palm","frame","Palm Neon Frames",50,"Outlines that fade between cyan and lime.","dm-f-gta-palm"),{ltd:"gta6"}),
     C("gameboy","ui","Gameboy Green",50,"A green monochrome palette.","dm-ui-gb"),
     C("neon","ui","Neon Night",50,"Dark panels with neon outlines.","dm-ui-neon"),
     C("parchment","ui","Parchment",40,"Warm tan, like old game menus.","dm-ui-parch"),
@@ -6034,13 +6173,15 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     C("ui-sunset","ui","Sunset Synth",55,"Purple dusk fading into an orange horizon.","dm-ui-sunset"),
     C("ui-mono","ui","Mono Terminal",40,"Pure black and white, like an old terminal.","dm-ui-mono"),
     C("ui-royal","ui","Royal Gold",55,"Black and gold, fit for a king.","dm-ui-royal"),
-    ...THEMES.map(t=>C(t[0],"ui",t[1],t[3],t[4],"dm-"+t[0])),
+    ...THEMES.map(t=>Object.assign(C(t[0],"ui",t[1],t[3],t[4],"dm-"+t[0]),t[0].indexOf("ui-gta-")===0?{ltd:"gta6"}:{})),
     C("star-pixel","star","Pixel Star",30,"A proper pixel-art Star with a bobbing animation.","dm-star-pixel"),
     C("star-comet","star","Comet Star",35,"A blazing comet with a flickering tail and sparks.","dm-star-comet"),
     C("star-snow","star","Snowflake Star",30,"Stars look like snowflakes.","dm-star-snow"),
+    Object.assign(C("star-gta","star","Vice Star",40,"Stars glow hot pink with an electric cyan halo.","dm-star-gta"),{ltd:"gta6"}),
     C("coin-gold","coin","Gold Coin Billy",30,"Billy's coins look like shiny gold coins.","dm-coin-gold"),
     C("coin-diamond","coin","Diamond Coin Billy",30,"Billy's coins look like diamonds.","dm-coin-diamond"),
     C("sword","cursor","Pixel Sword Cursor",35,"Your mouse pointer becomes a pixel sword.","dm-cursor-sword"),
+    Object.assign(C("cur-palm","cursor","Palm Tree Cursor",35,"Your pointer is a palm tree.","dm-cursor-palm"),{ltd:"gta6"}),
     C("cur-heart","cursor","Heart Cursor",30,"A red heart pointer.","dm-cursor-heart"),
     C("cur-star","cursor","Star Cursor",30,"A golden star pointer.","dm-cursor-star"),
     C("cur-cross","cursor","Crosshair Cursor",30,"A red crosshair pointer.","dm-cursor-cross"),
@@ -6048,6 +6189,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     C("cur-wand","cursor","Magic Wand Cursor",35,"A wand with a star on the tip.","dm-cursor-wand"),
     C("cur-arrow","cursor","Retro Arrow Cursor",25,"A big classic white arrow.","dm-cursor-arrow"),
     C("sparkle","click","Click Sparkles",45,"Sparkles burst where you click.","dm-click-sparkle"),
+    Object.assign(C("fx-gta","click","Neon Sparks",45,"Pink, cyan and orange sparks fly out of every click.","dm-fx-gta"),{ltd:"gta6"}),
     C("fx-hearts","click","Click Hearts",45,"Hearts float up from every click.","dm-fx-hearts"),
     C("fx-confetti","click","Click Confetti",50,"Confetti pops where you click.","dm-fx-confetti"),
     C("fx-ripple","click","Click Ripples",40,"Water rings spread from every click.","dm-fx-ripple"),
@@ -6057,6 +6199,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     C("fx-snow","click","Snowflake Puff",40,"Snowflakes puff out and drift.","dm-fx-snow"),
     C("fx-stars","click","Star Burst",45,"Little stars burst from clicks.","dm-fx-stars"),
     C("crt","overlay","CRT Scanlines",60,"Retro scanline overlay.","dm-crt"),
+    Object.assign(C("ov-gta","overlay","Vice Haze",40,"A pink-to-cyan neon haze over the screen.","dm-ov-gta"),{ltd:"gta6"}),
     C("ov-vignette","overlay","Vignette",35,"Darkened screen corners.","dm-ov-vignette"),
     C("ov-grain","overlay","Film Grain",45,"Animated film grain.","dm-ov-grain"),
     C("ov-vhs","overlay","VHS Tape",60,"Scanlines, colour fringes and a rolling bar.","dm-ov-vhs"),
@@ -6082,7 +6225,8 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     {id:"b-arcade",name:"Neon Arcade Bundle",off:.3,items:["aurora","f-neon","rainbow","star-comet","fx-confetti","cur-star","ov-vhs"]},
     {id:"b-xmas",name:"Christmas Bundle",off:.3,items:["christmas","ui-xmas","f-emerald","star-snow","fx-snow","cur-star","ov-vignette"]},
     {id:"b-sea",name:"Sea & Sky Bundle",off:.3,items:["sky","ocean","ui-sky","ui-ocean","fx-ripple","coin-diamond"]},
-    {id:"b-all",name:"Collector's Vault",off:.4,all:true,items:COS.map(o=>o.id)}
+    {id:"b-gta6",name:"GTA 6 Bundle",off:1,free:true,ltd:true,items:COS.filter(o=>o.ltd==="gta6").map(o=>o.id)},
+    {id:"b-all",name:"Collector's Vault",off:.4,all:true,items:COS.filter(o=>!o.ltd).map(o=>o.id)}
   ];
   const PROF=[];
   Object.keys(NC).forEach(k=>PROF.push({id:"nc-"+k,sec:"Name colors",kind:"nameColor",val:k,name:NC[k].e+" "+NC[k].name,cost:50,desc:"Your name is "+NC[k].name+" in chat and on the leaderboard. Other players see it.",sw:NC[k].c[0]}));
@@ -6186,13 +6330,89 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   }
   const cost0=id=>{const o=COS.find(x=>x.id===id);return o?o.cost:0};
   const bFull=b=>b.items.reduce((s,id)=>s+cost0(id),0);
-  const bPrice=b=>Math.max(1,Math.round(b.items.filter(id=>!owned()[id]).reduce((s,id)=>s+cost0(id),0)*(1-b.off)));
+  const bPrice=b=>b.free?0:Math.max(1,Math.round(b.items.filter(id=>!owned()[id]).reduce((s,id)=>s+cost0(id),0)*(1-b.off)));
   function buyBundle(b){
     const p=bPrice(b); if(D()<p||b.items.every(id=>owned()[id]))return;
     state.diamonds=D()-p; owned()[b.id]=true;
     b.items.forEach(id=>{owned()[id]=true;});
     after(false);
     toast(b.name+" bought. You can find everything in your inventory!",3400);
+  }
+  // ===== Gifting cosmetics =====
+  const giftable=it=>it&&it.type==="cos"&&it.cost>0&&!it.ltd;
+  window.dmCosmeticGiftName=id=>{const o=COS.find(x=>x.id===id);return o?o.name:"a cosmetic";};
+  async function sendCosmeticGift(it,username,status){
+    if(!currentUser||!dbRef||!cloudSaveReady)throw new Error("Cloud saving must be available before you can send gifts.");
+    if(!/^[A-Za-z0-9_]{2,20}$/.test(username))throw new Error("Enter a valid username (2–20 letters, numbers, or underscores).");
+    const adm=isAdm(), cost=it.cost;
+    if(!adm&&D()<cost)throw new Error("You need "+cost+" 💎 to send this gift.");
+    status.textContent="Finding player...";
+    const recipient=await findGiftRecipient(username);
+    if(recipient.id===currentUser.uid)throw new Error("You cannot send a gift to yourself.");
+    status.textContent="Sending...";
+    const saved=await saveUserState(true,true);
+    if(!saved)throw new Error("Your latest save could not be synchronized. Try again when cloud saving is active.");
+    const senderUid=currentUser.uid,senderRef=dbRef.collection("users").doc(senderUid),giftRef=dbRef.collection("cosmeticGifts").doc();
+    await dbRef.runTransaction(async tx=>{
+      const snap=await tx.get(senderRef);
+      if(!snap.exists||!snap.data().state)throw new Error("Your cloud save is not ready yet. Try again in a moment.");
+      const st=snap.data().state, have=Math.max(0,Math.floor(Number(st.diamonds)||0));
+      if(!adm&&have<cost)throw new Error("You need "+cost+" 💎 to send this gift.");
+      tx.update(senderRef,{state:Object.assign({},st,{diamonds:adm?have:have-cost}),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+      tx.set(giftRef,{senderUid,senderUsername:currentUsername,recipientUid:recipient.id,recipientUsername:recipient.data().username,itemId:it.id,price:cost,status:"pending",createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    });
+    if(!adm)state.diamonds=Math.max(0,D()-cost);
+    after(false); await saveUserState(true,true);
+    return recipient.data().username||username;
+  }
+  window.dmAcceptCosmeticGift=async function(giftId){
+    if(!currentUser||!dbRef||!cloudSaveReady)throw new Error("Cloud saving must be available to accept gifts.");
+    const saved=await saveUserState(true,true);
+    if(!saved)throw new Error("Your latest save could not be synchronized. Try again when cloud saving is active.");
+    const uid=currentUser.uid,giftRef=dbRef.collection("cosmeticGifts").doc(giftId),meRef=dbRef.collection("users").doc(uid);
+    const res=await dbRef.runTransaction(async tx=>{
+      const gs=await tx.get(giftRef);
+      if(!gs.exists)throw new Error("This gift is no longer available.");
+      const g=gs.data();
+      if(g.recipientUid!==uid||g.status!=="pending")throw new Error("This gift has already been accepted or is not addressed to you.");
+      const item=COS.find(x=>x.id===g.itemId);
+      if(!item||!giftable(item)||!Number.isSafeInteger(g.price)||g.price<1||g.price>500)throw new Error("This gift contains invalid data.");
+      const ms=await tx.get(meRef);
+      const st=ms.exists&&ms.data().state?ms.data().state:state;
+      const own=Object.assign({},st.dmOwned&&typeof st.dmOwned==="object"?st.dmOwned:{});
+      let diamonds=Math.max(0,Math.floor(Number(st.diamonds)||0)),dup=0;
+      if(own[item.id]){dup=g.price;diamonds+=dup;}else own[item.id]=true;
+      tx.set(meRef,{state:Object.assign({},st,{dmOwned:own,diamonds}),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+      tx.update(giftRef,{status:"accepted",acceptedAt:firebase.firestore.FieldValue.serverTimestamp()});
+      return {id:item.id,name:item.name,dup};
+    });
+    if(res.dup)state.diamonds=D()+res.dup; else owned()[res.id]=true;
+    after(false); toast(res.dup?"You already had "+res.name+": +"+res.dup+" 💎":"🎁 "+res.name+" added to your Inventory!",3400);
+    await saveUserState(true,true);
+    return res;
+  };
+  function openGiftDialog(it){
+    let d=document.getElementById("dmGiftDlg");
+    if(!d){d=document.createElement("dialog");d.id="dmGiftDlg";d.className="stats-dialog";document.body.append(d);}
+    d.replaceChildren();
+    const head=document.createElement("div");head.className="panel-head";
+    const h=document.createElement("h2");h.textContent="🎁 Gift "+it.name;
+    const close=makeButton("Close",()=>d.close(),false,"");close.type="button";head.append(h,close);
+    const info=document.createElement("p");info.className="muted small";
+    info.textContent=(isAdm()?"Free for admins.":"You pay 💎 "+it.cost+" (you keep your own copy if you own one).")+" The player finds it in their Gifts and can't refuse it, so double-check the name. If they already own it, they get "+it.cost+" 💎 instead.";
+    const form=document.createElement("form");form.className="gift-form";
+    const lab=document.createElement("label");lab.textContent="Recipient username";
+    const inp=document.createElement("input");inp.type="text";inp.maxLength=40;inp.autocomplete="off";inp.placeholder="Username";
+    const send=document.createElement("button");send.type="submit";send.textContent="Send gift";
+    form.append(lab,inp,send);
+    const status=document.createElement("div");status.className="muted small";status.setAttribute("role","status");
+    form.addEventListener("submit",async e=>{
+      e.preventDefault(); send.disabled=true;
+      try{const to=await sendCosmeticGift(it,inp.value.trim(),status);status.textContent="Gift sent to "+to+".";inp.value="";}
+      catch(err){status.textContent=err.message||"Could not send the gift.";}
+      finally{send.disabled=false;}
+    });
+    d.append(head,info,form,status); if(!d.open)d.showModal(); setTimeout(()=>inp.focus(),50);
   }
   function profAvailable(p){ return !p.limited||owned()[p.id]||Date.now()<SEASON1_ENDS; }
   function buyProf(p){
@@ -6268,6 +6488,19 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     };
     const buyBtn=(c,fn,off)=>makeButton("Buy · 💎 "+c,fn,off||D()<c,"dm-btn dm-buy");
     const pvBtn=fn=>makeButton("👁 Preview",fn,false,"dm-btn dm-pv");
+    // ===== Limiteds: add new limited-time bundles to LIMITEDS (see its comment) =====
+    {const live=LIMITEDS.filter(L=>{const b=BUNDLES.find(x=>x.id===L.bundle);return b&&(!L.ends||Date.now()<L.ends||owned()[b.id]);});
+     if(live.length){
+       head("⏳ Limiteds");
+       const note=document.createElement("p");note.className="dm-desc";note.textContent="Limited-time items. When they are gone, they are gone.";host.append(note);
+       live.forEach(L=>{const b=BUNDLES.find(x=>x.id===L.bundle),done=b.items.every(id=>owned()[id]);
+         const names=b.items.map(id=>{const o=byId(id);return o?o.name:id;}).join(", ");
+         const left=L.ends?" Ends "+new Date(L.ends).toLocaleString()+".":"";
+         const price=bPrice(b);
+         const btn=done?makeButton("Owned",()=>{},true,"dm-btn"):(b.free?makeButton("🎁 Claim FREE",()=>buyBundle(b),false,"dm-btn dm-buy"):buyBtn(price,()=>buyBundle(b)));
+         card((L.tag?L.tag+" ":"")+b.name+(b.free?" · FREE":""),(L.blurb||"")+" Includes "+b.items.length+" items: "+names+"."+left,[pvBtn(()=>startPv(b.items.slice(),b.name)),btn]);
+       });
+     }}
     head("Perks");
     PERKS.forEach(it=>{const l=lvl(it.id);
       card(it.name+" ("+l+"/"+it.max+")",it.desc,l>=it.max?makeButton("Maxed",()=>{},true,"dm-btn"):buyBtn(it.cost(l),()=>buy(it)));});
@@ -6275,15 +6508,16 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     USES.forEach(it=>card(it.name,it.desc,buyBtn(it.cost,()=>buy(it))));
     GROUPS.forEach(([g,title])=>{
       head(title);
-      COS.filter(it=>it.group===g&&it.cost>0).forEach(it=>{
+      COS.filter(it=>it.group===g&&it.cost>0&&!it.ltd).forEach(it=>{
         const has=owned()[it.id];
         const btn=has?makeButton(equipped()[it.id]?"Owned · equipped":"Owned · equip in Inventory",()=>{},true,"dm-btn")
                      :buyBtn(it.cost,()=>buy(it));
-        card(it.name,it.desc,[pvBtn(()=>startPv([it.id],it.name)),btn]);
+        const gb=makeButton("🎁 Gift",()=>openGiftDialog(it),false,"dm-btn");
+        card(it.name,it.desc,[pvBtn(()=>startPv([it.id],it.name)),gb,btn]);
       });
     });
     head("Bundles (you only pay for items you don't own yet)");
-    BUNDLES.forEach(b=>{
+    BUNDLES.filter(b=>!b.ltd).forEach(b=>{
       const done=b.items.every(id=>owned()[id]),price=bPrice(b),full=bFull(b),pct=Math.round(b.off*100);
       const names=b.all?"Every cosmetic in the shop ("+b.items.length+" items)":b.items.map(id=>{const o=byId(id);return o?o.name:id;}).join(", ");
       card(b.name,names+". Full price 💎 "+full+" · "+pct+"% off.",[pvBtn(()=>startPv(b.items.filter(id=>{const o=byId(id);return o&&o.group!=="ui"||!b.all;}),b.name)),done?makeButton("Owned",()=>{},true,"dm-btn"):buyBtn(price,()=>buyBundle(b))]);
@@ -6380,6 +6614,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     "dm-fx-bolt":{n:5,ch:"⚡",cols:["#ffe14d"],fs:18,d:[22,46]},
     "dm-fx-coins":{n:6,ch:"🪙",cols:["#ffffff"],fs:16,d:[24,56],up:1},
     "dm-fx-snow":{n:9,ch:"❄",cols:["#d6f1ff","#9fdcff","#ffffff"],fs:15,d:[20,50],grav:.5},
+    "dm-fx-gta":{n:10,ch:"✦",cols:["#ff4fa8","#4de1ff","#ffb347","#ffffff"],fs:17,d:[24,60]},
     "dm-fx-stars":{n:8,ch:"★",cols:["#ffe14d","#fff3a0","#ffb300"],fs:15,d:[24,56]}
   };
   document.addEventListener("pointerdown",e=>{
@@ -6447,6 +6682,9 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     }
     const annRow=document.getElementById("annStyleRow"),annSel=document.getElementById("annStyleSelect");
     if(annRow&&annSel){const adm=isPrivilegedUser();annRow.hidden=!adm;if(adm&&document.activeElement!==annSel){const v=AN[prof().annStyle]?prof().annStyle:"";if(annSel.value!==v)annSel.value=v;}}
+    {const fb=cloudSaveReady?freeToClaim():null;
+     if(fb){const seen=(state.dmFreeSeen=state.dmFreeSeen&&typeof state.dmFreeSeen==="object"?state.dmFreeSeen:{});
+       if(!seen[fb.id]){seen[fb.id]=true; notify("🎁 You have something free in the shop to claim"); toast("🎁 You have something free in the shop to claim",5000); try{save();}catch(e){}}}}
     applyCos(); refresh();
   },1000);
   (function(){const s=document.getElementById("annStyleSelect");if(!s)return;
@@ -6506,7 +6744,7 @@ $("rebirthBtn").addEventListener("click", rebirth);
 $("globalBoostBtn").addEventListener("click", contributeToGlobalBoost);
 $("resetUpgradesBtn").addEventListener("click", resetUpgrades);
 $("resetBtn").addEventListener("click", () => {
-  if (!confirm("Reset your money, lifetime earnings, inventory, level, rebirths, rebirth points, upgrades, achievements, XP, multiplier, Note Fever progress, speed boosts, and placed generators? Crates and task progress are kept. This cannot be undone.")) return;
+  if (!confirm("Reset your money, lifetime earnings, inventory, level, rebirths, rebirth points, upgrades, achievements, XP, multiplier, Note Fever progress, speed boosts, and placed generators? Crates and quest progress are kept, but your Stars collected are reset. This cannot be undone.")) return;
   syncNewAccountBoostRemaining();
   const taskProgress = {
     lowPerformanceMode: state.lowPerformanceMode,
@@ -6517,7 +6755,6 @@ $("resetBtn").addEventListener("click", () => {
     announcedTaskCompletions: state.announcedTaskCompletions,
     claimedTaskRewards: state.claimedTaskRewards,
     taskGenerationsPlaced: state.taskGenerationsPlaced,
-    taskStarsCollected: state.taskStarsCollected,
     taskBonusStarEvents: state.taskBonusStarEvents,
     taskRebirthPointsSpent: state.taskRebirthPointsSpent,
     taskSpentAllRebirthPoints: state.taskSpentAllRebirthPoints,
@@ -6538,11 +6775,22 @@ $("resetBtn").addEventListener("click", () => {
 });
 window.addEventListener("beforeunload", () => { void saveUserState(true, true); });
 
+let lastGameTickAt = 0;
+let noteRemainder = 0;
+const MAX_TICK_CATCHUP_SECONDS = 90; // longest gap one tick may pay for (throttled background tabs)
 function gameTick() {
-  if (!currentUser) return;
-  state.playtimeSeconds = (Number(state.playtimeSeconds) || 0) + tickIntervalSeconds();
+  if (!currentUser) { lastGameTickAt = 0; return; }
+  // Pay for the REAL time since the last tick, in whole or partial drops, so that one second always pays
+  // exactly what the cash/second display says, even with Note Drop Speed upgrades, laggy or background tabs.
+  const nowMs = Date.now();
+  const dropSeconds = tickIntervalSeconds();
+  const intervalSeconds = lastGameTickAt
+    ? Math.min(MAX_TICK_CATCHUP_SECONDS, Math.max(0, (nowMs - lastGameTickAt) / 1000))
+    : dropSeconds;
+  lastGameTickAt = nowMs;
+  const dropCount = intervalSeconds / dropSeconds;
+  state.playtimeSeconds = (Number(state.playtimeSeconds) || 0) + intervalSeconds;
   const feverEnded = expirePersonalFever();
-  const intervalSeconds = tickIntervalSeconds();
   const activeGenerators = state.generatorsDisabledUntil > Date.now()
     ? []
     : state.slots.filter(Boolean).map(slot => getGenerator(slot.id));
@@ -6551,9 +6799,9 @@ function gameTick() {
   let generatedCash = 0;
   let generatedNotes = 0;
   activeGenerators.forEach(generator => {
-    const duplicate = duplicateChance > 0 && Math.random() < duplicateChance;
-    generatedCash += generator.income * payoutMultiplier * (duplicate ? 2 : 1);
-    generatedNotes += duplicate ? 2 : 1;
+    // Note Duplication is paid as its average (1 + chance) so the displayed cash/second is exact.
+    generatedCash += generator.income * payoutMultiplier * dropCount * (1 + duplicateChance);
+    generatedNotes += dropCount * (1 + duplicateChance);
   });
   state.money += generatedCash;
   const statCash = generatedCash / globalBoostMultiplier(); // global boost does not count toward stats or rankings
@@ -6564,7 +6812,10 @@ function gameTick() {
   state.lifetime = Math.min(1e300, state.lifetime + stonksCash / globalBoostMultiplier());
   let feverStartedMessage = "";
   if (state.personalFeverUntil <= Date.now()) {
-    state.personalNotes += generatedNotes;
+    noteRemainder += generatedNotes;
+    const wholeNotes = Math.floor(noteRemainder);
+    noteRemainder -= wholeNotes;
+    state.personalNotes += wholeNotes;
     if (state.personalNotes >= PERSONAL_FEVER_NOTE_TARGET) {
       feverStartedMessage = activatePersonalFever();
     }
@@ -7116,13 +7367,29 @@ document.addEventListener("visibilitychange", () => {
     }
   }
 });
+function updateLeaderboardTimer() {
+  const el = $("leaderboardTimer");
+  if (!el) return;
+  const metric = LEADERBOARD_METRICS[activeLeaderboard];
+  if (!currentUser || !metric) { el.textContent = ""; return; }
+  if (hideFromLeaderboard) { el.textContent = "You are hidden from the leaderboards, so your scores are not being published."; return; }
+  const isCash = activeLeaderboard === "cashEarned";
+  const last = isCash ? lastLeaderboardCashAt : lastLeaderboardPublishAt;
+  const left = Math.max(0, Math.ceil((last + (isCash ? LEADERBOARD_CASH_MIN_MS : LEADERBOARD_MIN_MS) - Date.now()) / 1000));
+  const clock = Math.floor(left / 60) + ":" + String(left % 60).padStart(2, "0");
+  el.textContent = "⏱ Your " + metric.label + " score updates " + (left > 0 ? "in " + clock : "now")
+    + (document.hidden ? " (paused while this tab is hidden)" : "")
+    + " · Cash updates about every " + (LEADERBOARD_CASH_MIN_MS / 1000) + " s, other boards about every "
+    + Math.round(LEADERBOARD_MIN_MS / 60000) + " min.";
+}
+setInterval(updateLeaderboardTimer, 1000);
 configureGameTickTimer();
 setInterval(() => {
   if (currentUser) save(true);
 }, 60000);
 setInterval(() => {
-  if (currentUser) publishLeaderboardEntry();
-}, 600000);
+  if (currentUser && !document.hidden) publishLeaderboardEntry(); // gated inside: Cash ~45 s, everything else ~3 min
+}, 5000);
 
 
 })();
