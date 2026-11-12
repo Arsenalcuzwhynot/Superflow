@@ -1566,7 +1566,8 @@ const UPDATE_HISTORY = [
       "New Gift button in the Diamond Shop: buy any cosmetic for another player. They accept it in Gifts and it lands in their Inventory (if they already own it they get the diamonds instead).",
       "Stars collected are now reset by the Reset button, and a wipe can no longer re-publish old Stars.",
       "Admins can void ALL gifts for every player, and a wipe now voids unclaimed gifts too.",
-      "New Diamond Shop section: Limiteds. First up is the free GTA 6 Bundle with 4 backgrounds, 6 UI themes, 2 tile frames, a Star skin, a cursor, a click effect and an overlay. Everyone gets a notification to claim it.",
+      "New Diamond Shop section: Limiteds. First up are the free GTA 6 bundles (Vice City, Neon Strip, Ocean Drive, Gator Bayou, Leonida Sunset and Heist Night), split by theme. Everyone gets a notification to claim them.",
+      "New Equip all button on every owned bundle in the Diamond Shop: it equips the whole set in one click.",
       "Settings cleanup: Snow is now Background effects (it also covers the new Diamond Shop backgrounds), and the leftover light-mode theme strength slider is hidden."
     ]
   }
@@ -6140,7 +6141,12 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   // make a BUNDLES entry with ltd:true (free:true makes it free), then add a line here.
   // ends = a timestamp in ms (e.g. new Date(2026,11,31,23,59).getTime()) or null for no end. Owned items always stay owned.
   const LIMITEDS=[
-    {bundle:"b-gta6",tag:"🌴",ends:null,blurb:"Vice City vibes, on the house."}
+    {bundle:"b-gta-vice",tag:"🌴",ends:null,blurb:"Hot pink Vice City nights, on the house."},
+    {bundle:"b-gta-neon",tag:"🌃",ends:null,blurb:"Neon Strip after dark, on the house."},
+    {bundle:"b-gta-beach",tag:"🏖️",ends:null,blurb:"Ocean Drive sunshine, on the house."},
+    {bundle:"b-gta-bayou",tag:"🐊",ends:null,blurb:"Leonida swamp life, on the house."},
+    {bundle:"b-gta-sunset",tag:"🌅",ends:null,blurb:"Leonida sunset, on the house."},
+    {bundle:"b-gta-heist",tag:"💰",ends:null,blurb:"The big score, on the house."}
   ];
   const freeToClaim=()=>{if(typeof state==="undefined"||!currentUser||isAdm())return null;
     return LIMITEDS.map(L=>BUNDLES.find(b=>b.id===L.bundle)).find((b,i)=>b&&b.free&&(!LIMITEDS[i].ends||Date.now()<LIMITEDS[i].ends)&&!b.items.every(id=>owned()[id]))||null;};
@@ -6225,7 +6231,13 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     {id:"b-arcade",name:"Neon Arcade Bundle",off:.3,items:["aurora","f-neon","rainbow","star-comet","fx-confetti","cur-star","ov-vhs"]},
     {id:"b-xmas",name:"Christmas Bundle",off:.3,items:["christmas","ui-xmas","f-emerald","star-snow","fx-snow","cur-star","ov-vignette"]},
     {id:"b-sea",name:"Sea & Sky Bundle",off:.3,items:["sky","ocean","ui-sky","ui-ocean","fx-ripple","coin-diamond"]},
-    {id:"b-gta6",name:"GTA 6 Bundle",off:1,free:true,ltd:true,items:COS.filter(o=>o.ltd==="gta6").map(o=>o.id)},
+    // GTA 6 limiteds, split by theme. Each has at most one item per slot, so "Equip all" equips the whole bundle.
+    {id:"b-gta-vice",name:"Vice City Bundle",off:1,free:true,ltd:true,lt:"gta6",items:["gta-vice","ui-gta-vice","f-gta-vice","star-gta","fx-gta"]},
+    {id:"b-gta-neon",name:"Neon Strip Bundle",off:1,free:true,ltd:true,lt:"gta6",items:["gta-neon","ui-gta-neon","f-gta-palm","ov-gta"]},
+    {id:"b-gta-beach",name:"Ocean Drive Bundle",off:1,free:true,ltd:true,lt:"gta6",items:["gta-beach","ui-gta-beach","cur-palm"]},
+    {id:"b-gta-bayou",name:"Gator Bayou Bundle",off:1,free:true,ltd:true,lt:"gta6",items:["gta-bayou","ui-gta-bayou"]},
+    {id:"b-gta-sunset",name:"Leonida Sunset Bundle",off:1,free:true,ltd:true,lt:"gta6",items:["gta-vice","ui-gta-sunset","f-gta-vice","fx-gta"]},
+    {id:"b-gta-heist",name:"Heist Night Bundle",off:1,free:true,ltd:true,lt:"gta6",items:["gta-neon","ui-gta-heist","f-gta-palm","star-gta"]},
     {id:"b-all",name:"Collector's Vault",off:.4,all:true,items:COS.filter(o=>!o.ltd).map(o=>o.id)}
   ];
   const PROF=[];
@@ -6331,6 +6343,16 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   const cost0=id=>{const o=COS.find(x=>x.id===id);return o?o.cost:0};
   const bFull=b=>b.items.reduce((s,id)=>s+cost0(id),0);
   const bPrice=b=>b.free?0:Math.max(1,Math.round(b.items.filter(id=>!owned()[id]).reduce((s,id)=>s+cost0(id),0)*(1-b.off)));
+  // Equip a whole bundle: one item per slot (first owned item in bundle order wins), other slots are left alone.
+  function bundlePlan(b){const pick={};b.items.forEach(id=>{const o=byId(id);if(o&&o.group&&owned()[id]&&!pick[o.group])pick[o.group]=o;});return Object.values(pick);}
+  const bundleEquipped=b=>{const pl=bundlePlan(b);return pl.length>0&&pl.every(o=>equipped()[o.id]);};
+  function equipBundle(b){
+    const pl=bundlePlan(b); if(!pl.length)return;
+    pl.forEach(o=>equipCos(o,true));
+    after(false);
+    const skipped=b.items.filter(id=>{const o=byId(id);return o&&owned()[id]&&!pl.includes(o);}).length;
+    toast(b.name+" equipped"+(skipped?" ("+skipped+" extra item"+(skipped>1?"s":"")+" skipped: only one per slot can be equipped)":"")+".",3400);
+  }
   function buyBundle(b){
     const p=bPrice(b); if(D()<p||b.items.every(id=>owned()[id]))return;
     state.diamonds=D()-p; owned()[b.id]=true;
@@ -6497,7 +6519,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
          const names=b.items.map(id=>{const o=byId(id);return o?o.name:id;}).join(", ");
          const left=L.ends?" Ends "+new Date(L.ends).toLocaleString()+".":"";
          const price=bPrice(b);
-         const btn=done?makeButton("Owned",()=>{},true,"dm-btn"):(b.free?makeButton("🎁 Claim FREE",()=>buyBundle(b),false,"dm-btn dm-buy"):buyBtn(price,()=>buyBundle(b)));
+         const btn=done?(bundleEquipped(b)?makeButton("Equipped ✓",()=>{},true,"dm-btn"):makeButton("✨ Equip all",()=>equipBundle(b),false,"dm-btn dm-buy")):(b.free?makeButton("🎁 Claim FREE",()=>buyBundle(b),false,"dm-btn dm-buy"):buyBtn(price,()=>buyBundle(b)));
          card((L.tag?L.tag+" ":"")+b.name+(b.free?" · FREE":""),(L.blurb||"")+" Includes "+b.items.length+" items: "+names+"."+left,[pvBtn(()=>startPv(b.items.slice(),b.name)),btn]);
        });
      }}
@@ -6520,7 +6542,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     BUNDLES.filter(b=>!b.ltd).forEach(b=>{
       const done=b.items.every(id=>owned()[id]),price=bPrice(b),full=bFull(b),pct=Math.round(b.off*100);
       const names=b.all?"Every cosmetic in the shop ("+b.items.length+" items)":b.items.map(id=>{const o=byId(id);return o?o.name:id;}).join(", ");
-      card(b.name,names+". Full price 💎 "+full+" · "+pct+"% off.",[pvBtn(()=>startPv(b.items.filter(id=>{const o=byId(id);return o&&o.group!=="ui"||!b.all;}),b.name)),done?makeButton("Owned",()=>{},true,"dm-btn"):buyBtn(price,()=>buyBundle(b))]);
+      card(b.name,names+". Full price 💎 "+full+" · "+pct+"% off.",[pvBtn(()=>startPv(b.items.filter(id=>{const o=byId(id);return o&&o.group!=="ui"||!b.all;}),b.name)),done?(b.all?makeButton("Owned",()=>{},true,"dm-btn"):(bundleEquipped(b)?makeButton("Equipped ✓",()=>{},true,"dm-btn"):makeButton("✨ Equip all",()=>equipBundle(b),false,"dm-btn dm-buy"))):buyBtn(price,()=>buyBundle(b))]);
     });
     let sec=null;
     PROF.forEach(p=>{
@@ -6684,7 +6706,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     if(annRow&&annSel){const adm=isPrivilegedUser();annRow.hidden=!adm;if(adm&&document.activeElement!==annSel){const v=AN[prof().annStyle]?prof().annStyle:"";if(annSel.value!==v)annSel.value=v;}}
     {const fb=cloudSaveReady?freeToClaim():null;
      if(fb){const seen=(state.dmFreeSeen=state.dmFreeSeen&&typeof state.dmFreeSeen==="object"?state.dmFreeSeen:{});
-       if(!seen[fb.id]){seen[fb.id]=true; notify("🎁 You have something free in the shop to claim"); toast("🎁 You have something free in the shop to claim",5000); try{save();}catch(e){}}}}
+       const sk=fb.lt||fb.id; if(!seen[sk]){seen[sk]=true; notify("🎁 You have something free in the shop to claim"); toast("🎁 You have something free in the shop to claim",5000); try{save();}catch(e){}}}}
     applyCos(); refresh();
   },1000);
   (function(){const s=document.getElementById("annStyleSelect");if(!s)return;
