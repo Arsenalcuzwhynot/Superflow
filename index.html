@@ -205,6 +205,10 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .slot[data-generator-id="common"] .generator-mark{color:#caced0!important}
 .slot[data-generator-id="ethereal"] .tier,.slot[data-generator-id="ethereal"] .gen-name,.slot[data-generator-id="ethereal"] .gen-income{color:#d6dde3!important}
 .slot[data-generator-id="ethereal"] .generator-mark{color:#aab8c4!important}
+.slot[data-look="common"] .tier,.slot[data-look="common"] .gen-name,.slot[data-look="common"] .gen-income{color:hsl(calc(var(--h) - 6) calc(36% * var(--sat)) 95%)!important}
+.slot[data-look="common"] .generator-mark{color:#caced0!important}
+.slot[data-look="ethereal"] .tier,.slot[data-look="ethereal"] .gen-name,.slot[data-look="ethereal"] .gen-income{color:#d6dde3!important}
+.slot[data-look="ethereal"] .generator-mark{color:#aab8c4!important}
 .empty-mark{font-size:25px;color:hsl(calc(var(--h) - 5) calc(29% * var(--sat)) 26%)}
 .tip{margin:13px 2px 0;color:var(--muted);font-size:11px;text-align:center}
 .admin-panel-bottom{margin-top:16px}
@@ -365,6 +369,11 @@ body.mode-mobile .notice-area{padding:6px 10px 0}body.mode-mobile .top-hud{paddi
 .dev-card h2{margin:0;font-size:20px}.dev-card p{margin:0;color:var(--muted);font-size:14px}
 .dev-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .dev-choice{display:grid;gap:4px;justify-items:center;padding:16px 8px;min-height:110px;font-size:15px;font-weight:800;border:2px solid var(--line);border-radius:10px;cursor:pointer}
+.dm-tut-bar{border-color:#6fc3ff;background:rgba(30,80,150,.38)}.dm-tut-bar strong{color:#aee6ff}
+.dm-dialog-body>.dm-tut-bar{position:sticky;top:0;z-index:5;margin:0 0 10px}
+@keyframes dm-tut-pulse{0%,100%{box-shadow:0 0 0 0 rgba(111,195,255,.85)}50%{box-shadow:0 0 0 7px rgba(111,195,255,0)}}
+.dm-tut-pulse,.dm-tut-hl{outline:2px solid #6fc3ff;outline-offset:2px;animation:dm-tut-pulse 1.2s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.dm-tut-pulse,.dm-tut-hl{animation:none}}
 .dev-choice span{font-size:34px;line-height:1}.dev-choice small{font-size:11px;font-weight:700;color:var(--green)}
 
 
@@ -1184,6 +1193,7 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
             <div class="settings-options">
             <label class="setting-row" id="annStyleRow" hidden><span><strong>Announcement style (owner)</strong><small>Free style for your rebirth and multiplier announcements in chat.</small><select id="annStyleSelect"></select></span></label>
             <div class="setting-row" id="deviceModeRow"><span><strong>Layout</strong><small>Choose the layout that fits your device. Misclicked on the first screen? Change it here (saved on this device only).</small><select id="deviceModeSelect" aria-label="Layout"><option value="auto">Auto</option><option value="desktop">Desktop</option><option value="mobile">Mobile</option></select></span></div>
+            <div class="setting-row" id="dmTutRow"><span><strong>Diamond Shop tutorial</strong><small>Replay the guide to buying a theme, equipping it and saving looks as Loadouts.</small><button id="dmTutReplayBtn" type="button">Start tutorial</button></span></div>
             <label class="setting-row" for="lowPerformanceToggle">
               <input id="lowPerformanceToggle" type="checkbox">
               <span><strong>Low Performance Mode</strong><small>Slows generator color cycling and turns off generator particles.</small></span>
@@ -1315,7 +1325,7 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
   <div class="note" id="adminStatus" role="status" aria-live="polite" style="grid-column:1/-1"></div>
     </div>
   </section>
-  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">1.3.0</span><button id="updateHistoryBtn" type="button">Update history</button></div>
+  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">1.3.5</span><button id="updateHistoryBtn" type="button">Update history</button></div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
@@ -1386,7 +1396,7 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 100000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "1.3.0";
+const GAME_VERSION = "1.3.5";
 const GLOBAL_BOOST_MILESTONES = [
   { cost: 1e6, multiplier: 1.2 }, { cost: 1e7, multiplier: 1.4 },
   { cost: 1e8, multiplier: 1.6 }, { cost: 1e9, multiplier: 1.8 },
@@ -1628,13 +1638,21 @@ const UPDATE_HISTORY = [
   },
   {
     version: "1.3.0",
-    status: "Current",
+    status: "Previous",
     changes: [
       "New first-time screen asking if you are on Desktop or Mobile, plus a Layout setting (Auto, Desktop, Mobile) in Settings so you can switch if you misclick.",
       "Mobile layout improvements: the leaderboard tabs are now a tidy tap-friendly grid instead of a cramped row, and leaderboard rows and buttons are easier to hit.",
       "Fixed the stats bar on desktop: the five boxes (Money, Income, Generators placed, Level, Multiplier) now sit evenly on one row instead of leaving one box stranded on its own line.",
       "Mods can now see an online indicator next to leaderboard names (green: online, amber: seen recently, grey: offline).",
       "Mods can send everyone their BEST generator, only active players, or only inactive players.",
+    ]
+  },
+  {
+    version: "1.3.5",
+    status: "Current",
+    changes: [
+      "Alpha Generator redesigned: it now looks like the generator above your best (its colours, border, particles and effects) so you can see what you are working toward. It is still called the Alpha Generator and still earns like your best generator.",
+      "New Diamond Shop tutorial after the starter tutorial: open the shop to get 100 free diamonds, buy a cheap theme, equip it in the Inventory, then learn how to save and swap Loadouts. You can replay it any time from Settings.",
     ]
   }
 ];
@@ -3359,8 +3377,12 @@ function currentGeneratorId(id) {
 function getGenerator(id) {
   id = currentGeneratorId(id);
   if (id === "alpha") {
+    // The Alpha LOOKS like the generator above your best (colours, border, particles, effects) but still earns like your best.
     const best = bestOwnedGenerator();
-    return { ...ALPHA_GENERATOR, index: best.index, income: best.income, xpPerSecond: best.xpPerSecond };
+    const next = GENERATORS.find(g => g.index === best.index + 1);
+    const look = next || best;
+    return { ...look, id: "alpha", name: "Alpha Generator", cost: 0, income: best.income, xpPerSecond: best.xpPerSecond,
+      index: best.index, lookIndex: look.index, lookId: look.id, nextId: next ? next.id : "" };
   }
   return GENERATORS.find(g => g.id === id);
 }
@@ -4600,19 +4622,21 @@ function makeSlotButton(index, slot) {
   const accent = g.accent || g.color;
   button.classList.add("filled");
   button.dataset.generatorId = g.id;
+  if (g.id === "alpha") { button.dataset.look = g.lookId; button.dataset.alphaLook = g.lookId + ">" + g.nextId; }
   button.style.borderColor = accent;
   button.style.setProperty("--tier-color", g.color);
   button.style.setProperty("--tier-accent", accent);
   button.style.setProperty("--particle-color", accent);
-  if (g.index > 7 && g.colorCycling !== false) {
+  if ((g.lookIndex ?? g.index) > 7 && g.colorCycling !== false) {
     button.classList.add("color-cycling");
     const sameHueCycle = !g.cycleFrom && !g.cycleTo;
     button.style.setProperty("--cycle-from", g.cycleFrom || "color-mix(in srgb, " + g.color + " 82%, #000)");
     button.style.setProperty("--cycle-to", g.cycleTo || (sameHueCycle ? "color-mix(in srgb, " + g.color + " 82%, #fff)" : g.color));
     button.style.setProperty("--cycle-duration", (g.cycleDuration || 2.4) + "s");
-    button.classList.add("cycle-" + g.id);
+    button.classList.add("cycle-" + (g.lookId || g.id));
   }
-  const hasParticleEffects = g.index >= 11 && g.id !== "magma" && g.id !== "neon";
+  const lookIndex = g.lookIndex ?? g.index, lookId = g.lookId || g.id;
+  const hasParticleEffects = lookIndex >= 11 && lookId !== "magma" && lookId !== "neon";
   if (hasParticleEffects && !state.lowPerformanceMode) button.classList.add("effect-" + (g.effect || "dots"));
   const tier = document.createElement("span");
   tier.className = "tier";
@@ -4665,11 +4689,14 @@ function renderSlots() {
     const index = firstSlot + visibleIndex;
     const slot = state.slots[index];
     const existing = host.children[visibleIndex];
-    const expectedId = slot ? getGenerator(slot.id).id : null;
+    const expectedGen = slot ? getGenerator(slot.id) : null;
+    const expectedId = expectedGen ? expectedGen.id : null;
+    const expectedLook = expectedGen && expectedGen.id === "alpha" ? expectedGen.lookId + ">" + expectedGen.nextId : "";
     const existingId = existing && existing.dataset.generatorId || null;
     let button = existing;
     if (!existing || existing.dataset.slotIndex !== String(index)
-      || existingId !== expectedId || existing.classList.contains("locked") !== (index >= state.slots.length)) {
+      || existingId !== expectedId || (existing.dataset.alphaLook || "") !== expectedLook
+      || existing.classList.contains("locked") !== (index >= state.slots.length)) {
       button = makeSlotButton(index, slot);
       if (existing) existing.replaceWith(button);
       else host.appendChild(button);
@@ -4836,13 +4863,14 @@ function advanceTutorial(action) {
     progressed = true;
   }
   if (!progressed) return;
-  if (state.tutorialComplete) grantTutorialBasicCrate();
+  if (state.tutorialComplete) { grantTutorialBasicCrate(); if (window.dmTutStart) window.dmTutStart(); }
   renderTutorial();
   save();
 }
 function skipTutorial() {
   state.tutorialComplete = true;
   grantTutorialBasicCrate();
+  if (window.dmTutStart) window.dmTutStart();
   renderTutorial();
   save();
 }
@@ -6362,7 +6390,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   let lastShown=-1;
   function refund(){ if(typeof state==="undefined"||!currentUser||state.dmFlairRefunded)return; const o=owned(); const ids=Object.keys(o).filter(k=>k.indexOf("fl-")===0&&o[k]); state.dmFlairRefunded=true; if(!ids.length)return; ids.forEach(k=>{delete o[k];}); delete prof().flair; state.diamonds=D()+ids.length*60; toast("Leaderboard flairs were removed: refunded "+(ids.length*60)+" 💎"); try{save();}catch(e){} }
   function refundNc(){ if(typeof state==="undefined"||!currentUser||state.dmNcRefunded)return; const o=owned(); const ids=["nc-green","nc-blue"].filter(k=>o[k]); state.dmNcRefunded=true; if(!ids.length)return; ids.forEach(k=>{delete o[k];}); if(prof().nameColor==="green"||prof().nameColor==="blue")prof().nameColor="auto"; if(!isAdm()){state.diamonds=D()+ids.length*40; toast("Green and Blue name colours were retired: refunded "+(ids.length*40)+" 💎");} try{save();}catch(e){} }
-  function refresh(){ refund(); refundNc(); adminGrant(); window.dmRbCheck&&window.dmRbCheck(); const d=D(); document.getElementById("diamondPill").textContent="💎 "+d+(freeToClaim()?" 🎁 FREE":""); document.getElementById("diamondShopBalance").textContent="💎 "+d; if(d!==lastShown){lastShown=d;renderShop2();} }
+  function refresh(){ try{window.dmTutRender&&window.dmTutRender();}catch(e){} refund(); refundNc(); adminGrant(); window.dmRbCheck&&window.dmRbCheck(); const d=D(); document.getElementById("diamondPill").textContent="💎 "+d+(freeToClaim()?" 🎁 FREE":""); document.getElementById("diamondShopBalance").textContent="💎 "+d; if(d!==lastShown){lastShown=d;renderShop2();} }
   const prof=()=>(state.dmProfile=state.dmProfile&&typeof state.dmProfile==="object"?state.dmProfile:{});
   // Catalogs. Other players only ever see these ids, never free text.
   const NC={
@@ -6664,7 +6692,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   const ITEMS=[...PERKS,...COS,...USES];
   const byId=id=>COS.find(o=>o.id===id);
   const isEq=p=>p.kind==="nameAnim"?prof().nameAnim===true:prof()[p.kind]===p.val;
-  function after(pub){ applyCos(); lastShown=-1; refresh(); renderInv(); try{save();}catch(e){} if(pub){try{publishLeaderboardEntry(true);}catch(e){}} }
+  function after(pub){ applyCos(); lastShown=-1; refresh(); renderInv(); try{window.dmTutCheck&&window.dmTutCheck();}catch(e){} try{save();}catch(e){} if(pub){try{publishLeaderboardEntry(true);}catch(e){}} }
   function equipCos(it,on){ if(on&&it.group)COS.forEach(o=>{if(o.group===it.group&&o.id!==it.id)equipped()[o.id]=false;}); equipped()[it.id]=!!on; }
   function buy(it){
     const l=it.type==="perk"?lvl(it.id):0, c=typeof it.cost==="function"?it.cost(l):it.cost;
@@ -6898,6 +6926,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
       card(p.name,p.desc,[pb,btn],p.sw,openS.has(p.id)?sampleFor(p):null);
     });
     if(scroller)scroller.scrollTop=keepTop;
+    try{window.dmTutAfterShop&&window.dmTutAfterShop();}catch(e){}
   }
 
   // ===== Inventory tab: equip everything here =====
@@ -6905,6 +6934,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     const host=document.getElementById("inventoryList"),tab=document.getElementById("inventoryTabPanel");
     if(!host||!tab||tab.hidden||typeof state==="undefined")return;
     adminGrant();
+    try{window.dmTutOnInv&&window.dmTutOnInv();}catch(e){}
     const keep=document.querySelector(".main-tab-content"),top=keep?keep.scrollTop:0;
     host.replaceChildren();
     const INV_TITLES=["Loadouts",...GROUPS.map(x=>x[1]),"Name colour","Chat titles","Prestige","Badge icons","Announcement styles"];
@@ -6932,7 +6962,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
        const n=document.createElement("strong");n.className="inv-name";n.textContent="Loadout "+(i+1);
        const d=document.createElement("span");d.className="inv-desc";
        d.textContent=L?have.length+" item"+(have.length===1?"":"s")+(have.length<L.ids.length?" (some are no longer owned)":""):"Empty";
-       const eq=makeButton("Equip",()=>{COS.forEach(o=>{equipped()[o.id]=false;});have.forEach(id=>{equipped()[id]=true;});after(false);toast("Loadout "+(i+1)+" equipped.",2000);},!L||!have.length,"inv-btn");
+       const eq=makeButton("Equip",()=>{COS.forEach(o=>{equipped()[o.id]=false;});have.forEach(id=>{equipped()[id]=true;});after(false);toast("Loadout "+(i+1)+" equipped.",2000);try{window.dmTutLoadoutEquip&&window.dmTutLoadoutEquip();}catch(e){}},!L||!have.length,"inv-btn");
        const sv=makeButton(L?"Overwrite":"Save current",()=>{
          const ids=COS.filter(o=>owned()[o.id]&&equipped()[o.id]).map(o=>o.id);
          if(!ids.length){toast("Equip something first.",2200);return;}
@@ -6975,7 +7005,115 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
       list.forEach(p=>cell(g,p.name,p.desc,isEq(p),false,()=>equipProf(p,!isEq(p)),p.sw?(n=>{n.style.color=p.sw;}):null));
     });
     if(keep)keep.scrollTop=top;
+    try{window.dmTutAfterInv&&window.dmTutAfterInv();}catch(e){}
   }
+
+  // ===== 1.3.5: Diamond Shop tutorial (open shop -> 100 free diamonds -> buy cheapest theme -> Inventory -> equip -> Loadouts) =====
+  const TUT_GIFT=100;
+  const tut=()=>(state.dmTut=state.dmTut&&typeof state.dmTut==="object"?state.dmTut:{step:0,done:false,started:false,rewarded:false});
+  const tutTheme=()=>COS.filter(o=>o.group==="ui"&&o.cost>0&&!o.ltd).reduce((b,o)=>!b||o.cost<b.cost?o:b,null);
+  const tutActive=()=>typeof state!=="undefined"&&!!currentUser&&tut().step>0&&!tut().done;
+  let tutBars=null,tutSig="",tutScrolled=false;
+  function tutSteps(){
+    const th=tutTheme(),nm=th?th.name:"a UI theme",c=th?th.cost:40;
+    return {
+      1:["Open the Diamond Shop","Click or tap the 💎 Diamond Shop button at the top of the page. Opening it gives you "+TUT_GIFT+" free diamonds!"],
+      2:["Buy “"+nm+"”","You got "+TUT_GIFT+" 💎! Find “"+nm+"” under UI themes in the shop and buy it for 💎 "+c+"."],
+      3:["Open your Inventory","Nice! Close the shop and open the Inventory tab. Everything you buy is equipped from there."],
+      4:["Equip “"+nm+"”","In the Inventory, find UI themes and press Equip on “"+nm+"”. Your whole game changes colour."],
+      5:["Save it as a Loadout","Loadouts save everything you have equipped (theme, background, frames, cursor...). Press Save current on Loadout 1 at the top of the Inventory."],
+      6:["Equip your Loadout","Press Equip on Loadout 1 to put the whole saved look back on in one click. You have 3 Loadouts, so save different looks and swap any time."],
+      7:["Diamond Shop tutorial complete 🎉","You can buy, equip and save looks now. Earn more 💎 from Stars, Billy, math questions, daily rewards and more."]
+    };
+  }
+  function tutMkBar(){
+    const b=document.createElement("div");b.className="tutorial-guide dm-tut-bar";b.hidden=true;
+    const w=document.createElement("div"),s1=document.createElement("strong"),p1=document.createElement("span");w.append(s1,p1);
+    const btn=document.createElement("button");btn.type="button";btn.addEventListener("click",tutFinish);
+    b.append(w,btn);b._s=s1;b._p=p1;b._b=btn;return b;
+  }
+  function tutEnsureBars(){
+    if(tutBars)return tutBars;
+    const main=tutMkBar(),dlg2=tutMkBar(),inv=tutMkBar();
+    const tg=document.getElementById("tutorialGuide"),ds=document.getElementById("diamondShopScroll"),ip=document.getElementById("inventoryTabPanel");
+    if(tg)tg.after(main); if(ds)ds.prepend(dlg2); if(ip)ip.prepend(inv);
+    tutBars={main,dlg:dlg2,inv}; return tutBars;
+  }
+  function tutRender(force){
+    const on=typeof state!=="undefined"&&!!currentUser&&tut().step>0&&!tut().done, st=on?tut().step:0;
+    const sig=(on?"1":"0")+st; if(!force&&sig===tutSig)return; tutSig=sig;
+    const bars=tutEnsureBars(), txt=on?tutSteps()[st]:null;
+    [[bars.main,on],[bars.dlg,on&&(st===2||st===3)],[bars.inv,on&&st>=3&&st<=7]].forEach(([b,show])=>{
+      b.hidden=!show; if(!show||!txt)return;
+      b._s.textContent=txt[0]; b._p.textContent=txt[1]; b._b.textContent=st===7?"OK":"Skip";
+    });
+    document.querySelectorAll(".dm-tut-pulse").forEach(e=>e.classList.remove("dm-tut-pulse"));
+    const pulse=id=>{const e=document.getElementById(id);if(e)e.classList.add("dm-tut-pulse");};
+    if(on&&st===1){pulse("diamondHeaderBtn");pulse("diamondPill");}
+    if(on&&st===3)pulse("inventoryTabBtn");
+  }
+  function tutSave(){try{save();}catch(e){}}
+  function tutSetStep(n){const t=tut();t.step=n;tutScrolled=false;tutSave();tutRender(true);}
+  function tutFinish(){
+    const t=tut();t.done=true;t.step=0;tutSave();tutRender(true);
+    document.querySelectorAll(".dm-tut-hl").forEach(e=>e.classList.remove("dm-tut-hl"));
+    toast("Diamond Shop tutorial finished.",2200);
+  }
+  function tutStart(replay){
+    if(typeof state==="undefined"||!currentUser)return;
+    const t=tut();
+    if(!replay&&(t.started||t.done||t.step>0))return;
+    t.started=true;t.done=false;t.step=1;tutScrolled=false;tutSave();tutRender(true);
+  }
+  window.dmTutCheck=tutCheck; window.dmTutStart=tutStart; window.dmTutRender=()=>{try{tutRender(false);}catch(e){}};
+  function tutOpenSections(){ // make sure the section we are teaching is not collapsed
+    const t=tut(), need=t.step===4?["UI themes"]:(t.step===5||t.step===6)?["Loadouts"]:[]; if(!need.length)return;
+    try{const c=new Set(JSON.parse(localStorage.getItem("sfInvClosed")||"[]"));let ch=false;need.forEach(x=>{if(c.delete(x))ch=true;});if(ch)localStorage.setItem("sfInvClosed",JSON.stringify([...c]));}catch(e){}
+  }
+  function tutCheck(){
+    if(!tutActive())return;
+    const t=tut(),th=tutTheme();let ch=false;
+    for(let i=0;i<6;i++){
+      const s0=t.step;
+      if(s0===2&&th&&owned()[th.id])t.step=3;
+      else if(s0===4&&th&&equipped()[th.id])t.step=5;
+      else if(s0===5&&Array.isArray(state.dmLoadouts)&&state.dmLoadouts.some(Boolean))t.step=6;
+      else break;
+      ch=true;
+    }
+    if(ch){tutScrolled=false;tutSave();tutRender(true);}
+  }
+  window.dmTutOnShopOpen=function(){
+    if(!tutActive()||tut().step!==1)return;
+    const t=tut();
+    if(!t.rewarded){t.rewarded=true;award(TUT_GIFT,"Diamond Shop tutorial gift");}
+    t.step=2;tutScrolled=false;tutCheck();tutSave();tutRender(true);lastShown=-1;refresh();
+  };
+  window.dmTutOnInv=function(){ // called every time the Inventory tab renders
+    if(!tutActive())return;
+    if(tut().step===3){tut().step=4;tutScrolled=false;tutSave();tutRender(true);}
+    tutCheck();tutOpenSections();
+  };
+  window.dmTutLoadoutEquip=function(){ if(tutActive()&&tut().step===6)tutSetStep(7); };
+  function tutHighlight(el){
+    if(!el)return; el.classList.add("dm-tut-hl");
+    if(!tutScrolled){tutScrolled=true;try{el.scrollIntoView({block:"center",behavior:"smooth"});}catch(e){}}
+  }
+  window.dmTutAfterShop=function(){
+    document.querySelectorAll("#diamondShopList .dm-tut-hl").forEach(e=>e.classList.remove("dm-tut-hl"));
+    if(!tutActive()||tut().step!==2)return;
+    const th=tutTheme(); if(!th)return;
+    tutHighlight([...document.querySelectorAll("#diamondShopList .dm-item")].find(r=>{const n=r.querySelector(".dm-name");return n&&n.textContent===th.name;}));
+  };
+  window.dmTutAfterInv=function(){
+    document.querySelectorAll("#inventoryList .dm-tut-hl").forEach(e=>e.classList.remove("dm-tut-hl"));
+    if(!tutActive())return;
+    const st=tut().step,items=[...document.querySelectorAll("#inventoryList .inv-item")],th=tutTheme();
+    const named=n=>items.find(r=>{const e=r.querySelector(".inv-name");return e&&e.textContent===n;});
+    if(st===4&&th)tutHighlight(named(th.name));
+    if(st===5||st===6){const card=named("Loadout 1");if(card){const bs=card.querySelectorAll(".inv-btn");tutHighlight(st===5?bs[1]:bs[0]);}}
+  };
+  {const rb=document.getElementById("dmTutReplayBtn");if(rb)rb.addEventListener("click",()=>{if(typeof state==="undefined"||!currentUser){toast("Sign in first.",2000);return;}tutStart(true);});}
   window.dmRenderInventory=renderInv;
   // Hooks used by chat and the leaderboard
   window.dmChatFields=function(){const p=prof(),o={};const id=effectiveId();if(id)o.nameColor=id;const rt=rbTitle(p.title);if(TT[p.title]||(rt&&rbOpen(rt)))o.title=p.title;if(p.nameAnim===true)o.nameAnim=true;return o;};
@@ -7622,7 +7760,7 @@ $("statsOpenBtn").addEventListener("click", () => { renderPlayerStats(); $("stat
 $("statsCloseBtn").addEventListener("click", () => $("statsDialog").close());
 {
   const dmDialog = $("diamondShopDialog");
-  const openDiamondShop = () => { if (!dmDialog.open) dmDialog.showModal(); };
+  const openDiamondShop = () => { if (!dmDialog.open) dmDialog.showModal(); if (window.dmTutOnShopOpen) window.dmTutOnShopOpen(); };
       $("diamondPill").addEventListener("click", openDiamondShop);
   $("diamondHeaderBtn").addEventListener("click", openDiamondShop);
   $("invOpenShopBtn").addEventListener("click", openDiamondShop);
