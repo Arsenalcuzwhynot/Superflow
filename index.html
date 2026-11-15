@@ -1016,7 +1016,7 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
       </div>
     </section>
     <section class="panel">
-      <div class="panel-head"><h2 id="leaderboardHeading">Cash leaderboard</h2><span class="muted small" id="leaderboardDescription">Generator-produced cash · Top 25</span></div>
+      <div class="panel-head"><h2 id="leaderboardHeading">Cash leaderboard</h2><span class="muted small" id="leaderboardDescription">Total cash earned (same as your Cash earned stat) · Top 25</span></div>
       <div class="body">
         <div class="shop-tabs leaderboard-tabs" role="tablist" aria-label="Leaderboard type">
           <button class="shop-tab" type="button" role="tab" aria-selected="true" data-leaderboard="cashEarned">Cash</button>
@@ -1601,6 +1601,7 @@ const UPDATE_HISTORY = [
       "Fixed random logouts: logins were kept in memory only, so every page reload (an \"Update available\" reload, a wipe, a refresh or a phone discarding the tab) signed players out. Players now stay signed in, and the sign-in screen has a Stay signed in on this device tick box.",
       "New Chess theme: Chess Club and Checkmate UI themes, a sliding Chessboard background, Chess Frames, a Knight Cursor, Chess Pieces click effect, and a discounted Chess Set bundle.",
       "New Gift button in the Diamond Shop: buy any cosmetic for another player. They accept it in Gifts and it lands in their Inventory (if they already own it they get the diamonds instead).",
+      "The Cash leaderboard now ranks the same Cash earned number shown in your stats (it used to use a smaller generator-only number). Stars, Hyper Stars, Billy, the wheel, daily rewards, offline cash, Stonks and Head Start all count; selling generators does not.",
       "Bundles in the Diamond Shop now have an Equip all button that equips every item in the bundle at once.",
       "The GTA 6 bundle is now six free bundles: Vice City, Leonida Sunset, Neon Strip, Ocean Drive, Gator Bayou and Heist Night, with 6 backgrounds, 6 UI themes, 2 tile frames, a Star skin, a cursor, a click effect and an overlay. They leave the shop on November 20 (anything you claimed is yours to keep), and each Limited shows a countdown.",
       "New Loadouts in the Inventory: save everything you have equipped into Loadout 1, 2 or 3 and swap with one click.",
@@ -2180,7 +2181,7 @@ let acBaseline = null;
 let acSuspicious = false;
 let lastFlagAt = 0;
 function acSnapshot() {
-  return { earned: Number(state.generatorCashEarned) || 0, rebirths: Number(state.rebirths) || 0, level: Number(state.level) || 1, multiplier: Number(state.multiplier) || 1 };
+  return { earned: Number(state.lifetime) || 0, rebirths: Number(state.rebirths) || 0, level: Number(state.level) || 1, multiplier: Number(state.multiplier) || 1 };
 }
 function sanitizeState() {
   const issues = [];
@@ -2416,7 +2417,7 @@ async function publishLeaderboardEntry(force = false) {
       lastLeaderboardCashAt = nowMs;
       return true;
     }
-    const cashEarned = Math.max(0, Number(state.generatorCashEarned) || 0);
+    const cashEarned = Math.max(0, Number(state.lifetime) || 0); // same number as the "Cash earned" stat
     let entry = null;
     let signature = "";
     if (fullDue) {
@@ -2477,8 +2478,8 @@ async function publishLeaderboardEntry(force = false) {
 const LEADERBOARD_METRICS = {
   cashEarned: {
     label: "Cash",
-    heading: "Generator cash leaderboard",
-    description: "Generator-produced cash · Top 25",
+    heading: "Cash earned leaderboard",
+    description: "Total cash earned (same as your Cash earned stat) · Top 25",
     format: value => cash(Math.max(0, Number(value) || 0))
   },
   multiplier: {
@@ -6981,7 +6982,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   // Rebirth milestones + Head Start
   const MILE={1:5,5:10,10:15,25:25,50:40,75:60,91:100};
   const _reb=rebirth;
-  rebirth=function(){const b=state.rebirths;_reb.apply(this,arguments);if(state.rebirths>b){if(MILE[state.rebirths])award(MILE[state.rebirths],"Rebirth "+state.rebirths);if(lvl("headstart")){const g=rebirthCost()*0.05*lvl("headstart");state.money+=g;}}};
+  rebirth=function(){const b=state.rebirths;_reb.apply(this,arguments);if(state.rebirths>b){if(MILE[state.rebirths])award(MILE[state.rebirths],"Rebirth "+state.rebirths);if(lvl("headstart")){const g=rebirthCost()*0.05*lvl("headstart");state.money+=g;state.lifetime=Math.min(1e300,(Number(state.lifetime)||0)+g);}}};
   // Level milestones, cosmetics, balance refresh
   let lastLevel=null;
   setInterval(()=>{
