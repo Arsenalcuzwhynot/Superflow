@@ -58,11 +58,12 @@ input::placeholder{color:hsl(calc(var(--h) - 6) calc(12% * var(--sat)) 48%)}
 .game-account-actions{display:flex;align-items:center;gap:8px}
 .danger-button{background:#46262d;border-color:#78414b}
 .game-account .auth-status{margin:0}
-header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px clamp(14px,3vw,32px);border-bottom:1px solid var(--line);background:hsl(calc(var(--h) - 2) calc(39% * var(--sat) * (1 - var(--black-level))) calc(6% + var(--black-level) * 94%));position:relative;z-index:4}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 16px;padding:14px clamp(14px,3vw,32px);border-bottom:1px solid var(--line);background:hsl(calc(var(--h) - 2) calc(39% * var(--sat) * (1 - var(--black-level))) calc(6% + var(--black-level) * 94%));position:relative;z-index:4}
 .brand{display:flex;align-items:center;gap:9px;white-space:nowrap}
 .game-account{flex-wrap:wrap;justify-content:flex-end}
-.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.stat{min-width:112px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:7px 11px}
+.stats{order:3;flex:1 1 100%;display:grid;grid-template-columns:1fr 1fr 1fr 1.8fr 1fr;gap:8px}
+@media(max-width:900px){.stats{grid-template-columns:repeat(6,minmax(0,1fr))}.stats .stat:nth-child(-n+3){grid-column:span 2}.stats .stat:nth-child(n+4){grid-column:span 3}}
+.stat{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:7px 11px}
 .stat small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
 .stat strong{font-size:16px}
 main{max-width:1250px;margin:auto;padding:20px}
@@ -351,8 +352,21 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 @media(prefers-reduced-motion:reduce){body::before,.game-shell::before,.slot.filled::before,.generator-particles span,.bonus-star,.generator-visual::before,.generator-visual::after{animation:none!important}}
 @media(max-width:850px){.layout{grid-template-columns:minmax(0,1fr) minmax(280px,.9fr)}}
 @media(max-width:700px){.layout{grid-template-columns:1fr}}
-@media(max-width:560px){.notice-area{padding:6px 10px 0}.top-hud{padding:5px 10px 0}.note{width:100%;padding:11px 13px;font-size:14px;max-height:34vh}header{align-items:flex-start;flex-direction:column;padding:12px}.stats{justify-content:flex-start;width:100%;gap:6px}.stat{flex:1 1 calc(50% - 6px);min-width:0;padding:6px 8px}.stat strong{font-size:14px}.game-account{width:100%;justify-content:space-between}.game-account-actions{gap:5px}.game-account-actions button{padding:7px 8px;font-size:11px}main{padding:10px}.panel-head{padding:11px 12px}.body{padding:11px}.shop-item{grid-template-columns:34px minmax(0,1fr);gap:8px}.swatch{width:32px;height:32px;font-size:18px}.shop-actions{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.shop-actions button{min-height:40px;padding:7px 6px}.shop-content{max-height:min(520px,70vh)}.slot-grid{gap:3px}.slot-pagination{gap:6px}}
+@media(max-width:560px){.notice-area{padding:6px 10px 0}.top-hud{padding:5px 10px 0}.note{width:100%;padding:11px 13px;font-size:14px;max-height:34vh}header{align-items:flex-start;flex-direction:column;padding:12px}.stats{order:0;flex:none;display:flex;flex-wrap:wrap;justify-content:flex-start;width:100%;gap:6px}.stat{flex:1 1 calc(50% - 6px);min-width:0;padding:6px 8px}.stat strong{font-size:14px}.game-account{width:100%;justify-content:space-between}.game-account-actions{gap:5px}.game-account-actions button{padding:7px 8px;font-size:11px}main{padding:10px}.panel-head{padding:11px 12px}.body{padding:11px}.shop-item{grid-template-columns:34px minmax(0,1fr);gap:8px}.swatch{width:32px;height:32px;font-size:18px}.shop-actions{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.shop-actions button{min-height:40px;padding:7px 6px}.shop-content{max-height:min(520px,70vh)}.slot-grid{gap:3px}.slot-pagination{gap:6px}}
 @media(max-width:560px){.shop-tabs{gap:2px;padding-inline:8px}.shop-tab{font-size:10px;padding-inline:2px}}
+/* 1.3.0 mobile layout: automatic on narrow screens, or forced via Settings > Layout */
+@media(max-width:700px){body:not(.mode-desktop) .layout{grid-template-columns:1fr}body:not(.mode-desktop) .leaderboard-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:0;margin:0 0 10px}body:not(.mode-desktop) .leaderboard-tabs .shop-tab{flex:none;min-height:42px;padding:8px 6px;font-size:13px;line-height:1.15;white-space:normal;text-align:center;border:1px solid var(--line);border-radius:8px;background:var(--panel2)}body:not(.mode-desktop) .leaderboard-tabs .shop-tab[aria-selected="true"]{border-color:var(--green);box-shadow:inset 0 -3px 0 var(--green);color:var(--text)}body:not(.mode-desktop) .leaderboard-tabs .shop-tab:last-child:nth-child(odd){grid-column:1/-1}body:not(.mode-desktop) .leaderboard-row{grid-template-columns:34px minmax(0,1fr) auto;gap:8px;padding:9px 8px;font-size:14px}body:not(.mode-desktop) .leaderboard-list{min-height:200px;max-height:62vh}body:not(.mode-desktop) .game-account-actions button{min-height:38px}}
+body.mode-mobile .notice-area{padding:6px 10px 0}body.mode-mobile .top-hud{padding:5px 10px 0}body.mode-mobile .note{width:100%;padding:11px 13px;font-size:14px;max-height:34vh}body.mode-mobile header{align-items:flex-start;flex-direction:column;padding:12px}body.mode-mobile .stats{order:0;flex:none;display:flex;flex-wrap:wrap;justify-content:flex-start;width:100%;gap:6px}body.mode-mobile .stat{flex:1 1 calc(50% - 6px);min-width:0;padding:6px 8px}body.mode-mobile .stat strong{font-size:14px}body.mode-mobile .game-account{width:100%;justify-content:space-between}body.mode-mobile .game-account-actions{gap:5px}body.mode-mobile .game-account-actions button{padding:7px 8px;font-size:11px}body.mode-mobile main{padding:10px}body.mode-mobile .panel-head{padding:11px 12px}body.mode-mobile .body{padding:11px}body.mode-mobile .shop-item{grid-template-columns:34px minmax(0,1fr);gap:8px}body.mode-mobile .swatch{width:32px;height:32px;font-size:18px}body.mode-mobile .shop-actions{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}body.mode-mobile .shop-actions button{min-height:40px;padding:7px 6px}body.mode-mobile .shop-content{max-height:min(520px,70vh)}body.mode-mobile .slot-grid{gap:3px}body.mode-mobile .slot-pagination{gap:6px}body.mode-mobile .shop-tabs{gap:2px;padding-inline:8px}body.mode-mobile .shop-tab{font-size:10px;padding-inline:2px}body.mode-mobile .layout{grid-template-columns:1fr}body.mode-mobile .leaderboard-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:0;margin:0 0 10px}body.mode-mobile .leaderboard-tabs .shop-tab{flex:none;min-height:42px;padding:8px 6px;font-size:13px;line-height:1.15;white-space:normal;text-align:center;border:1px solid var(--line);border-radius:8px;background:var(--panel2)}body.mode-mobile .leaderboard-tabs .shop-tab[aria-selected="true"]{border-color:var(--green);box-shadow:inset 0 -3px 0 var(--green);color:var(--text)}body.mode-mobile .leaderboard-tabs .shop-tab:last-child:nth-child(odd){grid-column:1/-1}body.mode-mobile .leaderboard-row{grid-template-columns:34px minmax(0,1fr) auto;gap:8px;padding:9px 8px;font-size:14px}body.mode-mobile .leaderboard-list{min-height:200px;max-height:62vh}body.mode-mobile .game-account-actions button{min-height:38px}body.mode-mobile .stats{display:flex;flex-wrap:wrap}
+.lb-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle;background:#6b7280;box-shadow:0 0 0 1px rgba(0,0,0,.4)}
+.lb-dot.on{background:#3ddc84;box-shadow:0 0 7px #3ddc84}.lb-dot.recent{background:#f5b942}
+#lbPresenceLegend{margin-top:6px}
+.dev-overlay{position:fixed;inset:0;z-index:100000;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.72)}
+.dev-card{width:min(440px,100%);background:var(--panel);color:var(--text);border:2px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:14px;text-align:center}
+.dev-card h2{margin:0;font-size:20px}.dev-card p{margin:0;color:var(--muted);font-size:14px}
+.dev-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dev-choice{display:grid;gap:4px;justify-items:center;padding:16px 8px;min-height:110px;font-size:15px;font-weight:800;border:2px solid var(--line);border-radius:10px;cursor:pointer}
+.dev-choice span{font-size:34px;line-height:1}.dev-choice small{font-size:11px;font-weight:700;color:var(--green)}
+
 
 
 .theme-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin-top:10px}
@@ -1030,6 +1044,7 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
         <ol class="leaderboard-list" id="leaderboardList"></ol>
         <div class="muted small" id="leaderboardStatus">Sign in to see the leaderboard.</div>
         <div class="muted small" id="leaderboardTimer" aria-live="off"></div>
+        <div class="muted small" id="lbPresenceLegend" hidden>Mod view: <span class="lb-dot on"></span>online (last 3 min) &nbsp;<span class="lb-dot recent"></span>seen in the last 15 min &nbsp;<span class="lb-dot"></span>offline</div>
       </div>
     </section>
       <section class="panel">
@@ -1168,6 +1183,7 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
           <div id="mainSettingsPanel" class="settings-tab-panel" role="tabpanel" aria-labelledby="mainSettingsTab">
             <div class="settings-options">
             <label class="setting-row" id="annStyleRow" hidden><span><strong>Announcement style (owner)</strong><small>Free style for your rebirth and multiplier announcements in chat.</small><select id="annStyleSelect"></select></span></label>
+            <div class="setting-row" id="deviceModeRow"><span><strong>Layout</strong><small>Choose the layout that fits your device. Misclicked on the first screen? Change it here (saved on this device only).</small><select id="deviceModeSelect" aria-label="Layout"><option value="auto">Auto</option><option value="desktop">Desktop</option><option value="mobile">Mobile</option></select></span></div>
             <label class="setting-row" for="lowPerformanceToggle">
               <input id="lowPerformanceToggle" type="checkbox">
               <span><strong>Low Performance Mode</strong><small>Slows generator color cycling and turns off generator particles.</small></span>
@@ -1261,8 +1277,9 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
     <div class="adm-row"><input id="adminAllDiamonds" type="number" min="1" step="1" placeholder="Diamonds" aria-label="Diamonds"><button id="adminAllDiamondsBtn" type="button">Send 💎</button></div>
     <div class="adm-sub">Generators (they accept them in Gifts)</div>
     <div class="adm-row"><select id="adminAllGenerator" aria-label="Generator"></select><input id="adminAllGenAmount" type="number" min="1" max="100" step="1" value="1" aria-label="Amount" style="max-width:84px"><button id="adminGiftEveryoneBtn" type="button">Gift everyone</button></div>
-    <div class="adm-row"><button id="adminBestGenEveryoneBtn" type="button">Gift everyone their BEST generator</button></div>
-    <div class="muted small">Each player gets the best generator they have reached (uses the amount above).</div>
+    <div class="adm-row"><select id="adminBestGenWho" aria-label="Who gets their best generator"><option value="all">Everyone</option><option value="active">Only active players (last 10 min)</option><option value="inactive">Only inactive players</option></select></div>
+    <div class="adm-row"><button id="adminBestGenEveryoneBtn" type="button">Gift their BEST generator</button></div>
+    <div class="muted small">Each chosen player gets the best generator they have reached (uses the amount above). Active = played in the last 10 minutes.</div>
     <div class="adm-sub">Spawn on every active player's screen</div>
     <div class="adm-row"><button id="adminStarEveryoneBtn" type="button">Star</button><button id="adminHyperEveryoneBtn" type="button">Hyper Star</button><button id="adminDiamondStarEveryoneBtn" type="button">Diamond Star</button></div>
     <div class="adm-row"><button id="adminBillyEveryoneBtn" type="button">Billy</button><button id="adminDiamondRainBtn" type="button">Diamond rain</button></div>
@@ -1298,7 +1315,7 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
   <div class="note" id="adminStatus" role="status" aria-live="polite" style="grid-column:1/-1"></div>
     </div>
   </section>
-  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">1.2.5</span><button id="updateHistoryBtn" type="button">Update history</button></div>
+  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">1.3.0</span><button id="updateHistoryBtn" type="button">Update history</button></div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
@@ -1369,7 +1386,7 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 100000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "1.2.5";
+const GAME_VERSION = "1.3.0";
 const GLOBAL_BOOST_MILESTONES = [
   { cost: 1e6, multiplier: 1.2 }, { cost: 1e7, multiplier: 1.4 },
   { cost: 1e8, multiplier: 1.6 }, { cost: 1e9, multiplier: 1.8 },
@@ -1595,7 +1612,7 @@ const UPDATE_HISTORY = [
   },
   {
     version: "1.2.5",
-    status: "Current",
+    status: "Previous",
     changes: [
       "Cash leaderboard now refreshes about every 45 seconds and the other boards about every 3 minutes, with a timer under the leaderboard showing when your score updates next. Unchanged scores are no longer re-written, which saves Firestore usage.",
       "Fixed random logouts: logins were kept in memory only, so every page reload (an \"Update available\" reload, a wipe, a refresh or a phone discarding the tab) signed players out. Players now stay signed in, and the sign-in screen has a Stay signed in on this device tick box.",
@@ -1607,6 +1624,17 @@ const UPDATE_HISTORY = [
       "New Loadouts in the Inventory: save everything you have equipped into Loadout 1, 2 or 3 and swap with one click.",
       "Admin panel rebuilt into three boxes: For me, For 1 player and For everyone. Each can give cash, diamonds, generators, Stars, Hyper Stars, Diamond Stars and Billy, and the For everyone box can gift every player their own best generator.",
       "Removed the Generator gamble tab.",
+    ]
+  },
+  {
+    version: "1.3.0",
+    status: "Current",
+    changes: [
+      "New first-time screen asking if you are on Desktop or Mobile, plus a Layout setting (Auto, Desktop, Mobile) in Settings so you can switch if you misclick.",
+      "Mobile layout improvements: the leaderboard tabs are now a tidy tap-friendly grid instead of a cramped row, and leaderboard rows and buttons are easier to hit.",
+      "Fixed the stats bar on desktop: the five boxes (Money, Income, Generators placed, Level, Multiplier) now sit evenly on one row instead of leaving one box stranded on its own line.",
+      "Mods can now see an online indicator next to leaderboard names (green: online, amber: seen recently, grey: offline).",
+      "Mods can send everyone their BEST generator, only active players, or only inactive players.",
     ]
   }
 ];
@@ -2522,6 +2550,20 @@ const LEADERBOARD_METRICS = {
   }
 };
 
+const LB_ONLINE_MS = 3 * 60 * 1000, LB_RECENT_MS = 15 * 60 * 1000, ACTIVE_WINDOW_MS = 10 * 60 * 1000;
+function tsMs(t) { try { return t && typeof t.toMillis === "function" ? t.toMillis() : 0; } catch (e) { return 0; } }
+function isModViewer() { return isAntiCheatAdmin() || (!!$("adminPanel") && !$("adminPanel").hidden); }
+function agoText(ms) { const m = Math.round(ms / 60000); return m < 60 ? m + " min ago" : m < 1440 ? Math.round(m / 60) + " h ago" : Math.round(m / 1440) + " d ago"; }
+function paintLbDot(dot) {
+  const t = Number(dot.dataset.t) || 0, age = Date.now() - t;
+  let cls = "lb-dot", label;
+  if (!t) label = "No activity recorded";
+  else if (age <= LB_ONLINE_MS) { cls += " on"; label = "Online now"; }
+  else if (age <= LB_RECENT_MS) { cls += " recent"; label = "Last seen " + agoText(age); }
+  else label = "Offline · last seen " + agoText(age);
+  dot.className = cls; dot.title = label;
+}
+setInterval(() => document.querySelectorAll(".lb-dot[data-t]").forEach(paintLbDot), 20000);
 function renderLeaderboard(snapshot, metricName) {
   const metric = LEADERBOARD_METRICS[metricName];
   const host = $("leaderboardList");
@@ -2537,12 +2579,14 @@ function renderLeaderboard(snapshot, metricName) {
     username.className = "leaderboard-name";
     username.textContent = data.username || "Player";
     if (window.dmFlair) window.dmFlair(username, row, data);
+    if (isModViewer()) { const dot = document.createElement("span"); dot.dataset.t = String(tsMs(data.updatedAt)); paintLbDot(dot); username.prepend(dot); }
     const value = document.createElement("span");
     value.className = "leaderboard-cash";
     value.textContent = metric.format(data[metricName], data);
     row.append(rank, username, value);
     host.appendChild(row);
   });
+  if ($("lbPresenceLegend")) $("lbPresenceLegend").hidden = !isModViewer();
   $("leaderboardStatus").textContent = snapshot.empty
     ? "No scores yet. Be the first on the board!"
     : "Showing the top " + snapshot.size + " players by " + metric.label.toLowerCase() + ".";
@@ -5569,7 +5613,9 @@ async function sendAdminBestGeneratorToEveryone() {
     status.textContent = "Enter a whole number from 1 to 100.";
     return;
   }
-  if (!confirm("Send EVERY player " + perPlayer + " of the best generator they have reached? They accept it in Gifts. This cannot be undone.")) return;
+  const who = ($("adminBestGenWho") && $("adminBestGenWho").value) || "all";
+  const whoText = who === "active" ? "every ACTIVE player (played in the last 10 minutes)" : who === "inactive" ? "every INACTIVE player (not seen in the last 10 minutes)" : "EVERY player";
+  if (!confirm("Send " + whoText + " " + perPlayer + " of the best generator they have reached? They accept it in Gifts. This cannot be undone.")) return;
   const button = $("adminBestGenEveryoneBtn");
   button.disabled = true;
   let giftsCreated = 0;
@@ -5578,6 +5624,13 @@ async function sendAdminBestGeneratorToEveryone() {
   try {
     const users = dbRef.collection("users");
     const gifts = dbRef.collection("generatorGifts");
+    const cutoff = Date.now() - ACTIVE_WINDOW_MS;
+    const activeUids = new Set();
+    if (who !== "all") {
+      status.textContent = "Checking who is online...";
+      const live = await dbRef.collection("leaderboard").where("updatedAt", ">=", firebase.firestore.Timestamp.fromMillis(cutoff)).get();
+      live.forEach(d => activeUids.add(d.id));
+    }
     let lastUser = null;
     while (true) {
       let query = users.orderBy(firebase.firestore.FieldPath.documentId()).limit(400);
@@ -5589,6 +5642,11 @@ async function sendAdminBestGeneratorToEveryone() {
       let inBatch = 0;
       page.docs.filter(user => user.id !== currentUser.uid).forEach(user => {
         const saved = user.data().state || {};
+        if (who !== "all") {
+          // Active = recent leaderboard activity, or a recent cloud save (covers players hidden from the leaderboard)
+          const isActive = activeUids.has(user.id) || tsMs(user.data().updatedAt) >= cutoff;
+          if ((who === "active") !== isActive) return;
+        }
         const bestIndex = Math.max(0, Math.floor(Number(saved.bestGeneratorIndex) || 0));
         const generator = GENERATORS.find(g => g.index === bestIndex) || GENERATORS[Math.min(bestIndex, GENERATORS.length - 1)];
         if (!generator || generator.id === "alpha" || !isGiftableGenerator(generator.id)) return;
@@ -5613,7 +5671,7 @@ async function sendAdminBestGeneratorToEveryone() {
     const breakdown = Object.keys(perGenerator).map(name => perGenerator[name] + "× " + name).join(", ");
     status.textContent = giftsCreated
       ? "Sent " + perPlayer + " best generator" + (perPlayer === 1 ? "" : "s") + " to " + giftsCreated + " player(s): " + breakdown + ". They'll find it in Gifts."
-      : "No other player accounts were found.";
+      : "No matching player accounts were found.";
   } catch (error) {
     status.textContent = "Could not finish after " + giftsCreated + " gift(s): " + (error.message || "check Firestore permissions.");
   } finally {
@@ -7717,6 +7775,53 @@ setInterval(() => {
 }, 5000);
 
 
+
+// ===== 1.3.0: Desktop / Mobile layout choice =====
+(function setupDeviceMode() {
+  const KEY = "sfDeviceMode_v1";
+  const read = () => { try { return localStorage.getItem(KEY); } catch (e) { return null; } };
+  const write = v => { try { localStorage.setItem(KEY, v); } catch (e) {} };
+  function apply(choice) {
+    const mode = choice === "desktop" || choice === "mobile" ? choice : "";
+    document.body.classList.toggle("mode-mobile", mode === "mobile");
+    document.body.classList.toggle("mode-desktop", mode === "desktop");
+    const vp = document.querySelector('meta[name="viewport"]');
+    // On a phone, "Desktop" asks the browser for a wide page, like "Request desktop site".
+    if (vp) vp.setAttribute("content", mode === "desktop" ? "width=1100" : "width=device-width, initial-scale=1");
+    const sel = $("deviceModeSelect");
+    if (sel) sel.value = mode || "auto";
+  }
+  function choose(v) { write(v); apply(v); }
+  const sel = $("deviceModeSelect");
+  if (sel) sel.addEventListener("change", () => choose(sel.value));
+  const saved = read();
+  apply(saved);
+  if (saved) return;
+  const likelyMobile = (window.matchMedia && matchMedia("(pointer:coarse)").matches) || window.innerWidth < 700;
+  const overlay = document.createElement("div");
+  overlay.className = "dev-overlay";
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-modal", "true");
+  overlay.setAttribute("aria-label", "Choose your layout");
+  const card = document.createElement("div");
+  card.className = "dev-card";
+  const h = document.createElement("h2"); h.textContent = "How are you playing?";
+  const pTxt = document.createElement("p"); pTxt.textContent = "Pick the layout that fits your device. You can change this later in Settings.";
+  const row = document.createElement("div"); row.className = "dev-choices";
+  [["desktop", "\uD83D\uDDA5\uFE0F", "Desktop"], ["mobile", "\uD83D\uDCF1", "Mobile"]].forEach(([id, icon, label]) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "dev-choice";
+    const i = document.createElement("span"); i.textContent = icon;
+    const t = document.createElement("div"); t.textContent = label;
+    b.append(i, t);
+    if ((id === "mobile") === likelyMobile) { const r = document.createElement("small"); r.textContent = "Recommended"; b.append(r); }
+    b.addEventListener("click", () => { choose(id); overlay.remove(); });
+    row.appendChild(b);
+  });
+  card.append(h, pTxt, row);
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+})();
 })();
 </script>
 
