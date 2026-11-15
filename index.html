@@ -597,6 +597,10 @@ body.dm-crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index
 .dm-desc{margin:0!important;font:500 14px/1.4 "Trebuchet MS",Verdana,Arial,sans-serif!important;color:#dbe6f2!important}
 .dm-btn{font:700 15px/1.2 "Trebuchet MS",Verdana,Arial,sans-serif!important;padding:8px 10px!important;color:#fff!important;background:#3a4656!important;border-color:#000!important}
 .dm-btn.dm-buy:not(:disabled){background:#0e72c9!important}
+.adm-box{border-width:2px}
+.adm-sub{font-weight:600;font-size:12px;opacity:.75;margin:8px 0 2px}
+.auth-stay{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13px;opacity:.85;margin-top:6px;cursor:pointer}
+.auth-stay input{width:auto;margin:0}
 .dm-btn.dm-equip{background:#2f7d32!important}
 .dm-btn.dm-equip.dm-on{background:#8a5a00!important}
 .dm-btn:disabled{filter:none!important;background:#2b3340!important;color:#c3ccd8!important;opacity:1!important}
@@ -732,6 +736,11 @@ body.dm-ov-sepia::after{background:#ffb35a30;mix-blend-mode:multiply}
 body.dm-ov-night::after{background:#0a1c5a66;mix-blend-mode:multiply}
 body.dm-ov-grid::after{background-image:linear-gradient(#0000002e 1px,transparent 1px),linear-gradient(90deg,#0000002e 1px,transparent 1px);background-size:4px 4px}
 body.dm-ov-dusk::after{background:linear-gradient(180deg,#ff7a3d33,#8a2be233 60%,#0a1c5a55)}
+/* ===== Chess set ===== */
+html body.dm-snow-chess::before{background-image:conic-gradient(#e9dcc3 25%,#7d5a3c 0 50%,#e9dcc3 0 75%,#7d5a3c 0)!important;background-size:140px 140px!important;background-repeat:repeat!important;background-position:0 0;opacity:.5;animation:dmchess 24s linear infinite!important}
+@keyframes dmchess{to{background-position:140px 140px}}
+body.dm-f-chess .slot{border:3px solid transparent!important;border-image:conic-gradient(#fff 25%,#111 0 50%,#fff 0 75%,#111 0) 1!important;box-shadow:0 0 8px #0009!important}
+body.dm-cursor-knight,body.dm-cursor-knight *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><text y='27' font-size='28' fill='white' stroke='black' stroke-width='1'>♞</text></svg>") 6 6,auto!important}
 /* ===== GTA 6 limited bundle ===== */
 body.dm-f-gta-vice,body.dm-f-gta-palm{animation:dm-pulse 1.4s ease-in-out infinite alternate}
 body.dm-f-gta-vice .slot{border-color:color-mix(in srgb,#ff2e93 calc(var(--dm-pulse)*100%),#ffa63d)!important;outline-color:#2a0638!important;box-shadow:0 0 calc(6px + var(--dm-pulse)*12px) color-mix(in srgb,#ff2e93 calc(var(--dm-pulse)*100%),#ffa63d),inset 0 0 10px #ff2e9340!important}
@@ -895,6 +904,7 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
         <button id="loginBtn" type="button">Sign in</button>
         <button id="signupBtn" type="button" class="secondary">Create account</button>
       </div>
+      <label class="auth-stay"><input id="staySignedIn" type="checkbox" checked /> Stay signed in on this device</label>
     </div>
     <div class="auth-hint">Usernames are case-sensitive.</div>
     <div class="auth-hint" style="color:#ffd447;font-weight:700">⚠ Do not use your real name as your username.</div>
@@ -1045,12 +1055,11 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
         <div class="shop-tab-groups">
           <div class="shop-tab-box">
             <div class="shop-tab-box-title">Main</div>
-            <div class="shop-tabs" role="tablist" aria-label="Shop, rebirth, upgrades, and gamble">
+            <div class="shop-tabs" role="tablist" aria-label="Shop, rebirth, and upgrades">
               <button class="shop-tab" id="shopTabBtn" type="button" role="tab" aria-selected="true" aria-controls="shopTabPanel">Shop</button>
               <button class="shop-tab" id="inventoryTabBtn" type="button" role="tab" aria-selected="false" aria-controls="inventoryTabPanel">Inventory</button>
               <button class="shop-tab" id="rebirthTabBtn" type="button" role="tab" aria-label="Rebirth" aria-selected="false" aria-controls="rebirthTabPanel">Rebirth<span class="rebirth-badge" id="rebirthAvailableBadge" aria-hidden="true" hidden>!</span></button>
               <button class="shop-tab" id="upgradesTabBtn" type="button" role="tab" aria-selected="false" aria-controls="upgradesTabPanel">Upgrades</button>
-              <button class="shop-tab" id="gambleTabBtn" type="button" role="tab" aria-selected="false" aria-controls="gambleTabPanel">Gamble</button>
             </div>
           </div>
           <div class="shop-tab-box">
@@ -1096,18 +1105,6 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
           <div class="multibuy-control">
             <span class="muted small" id="upgradeResetCost">Reset all upgrades and refund spent rebirth points for 20% of your current cash.</span>
             <button id="resetUpgradesBtn" type="button" disabled>Reset upgrades</button>
-          </div>
-        </div>
-<div id="gambleTabPanel" role="tabpanel" aria-labelledby="gambleTabBtn" hidden>
-          <div class="rebirth-panel">
-            <strong>Generator gamble</strong>
-            <p class="muted small">Choose unplaced generators to wager. You have a 50% chance to double your bet or lose it all.</p>
-            <label class="theme-slider-label" for="gambleGenerator">Generator</label>
-            <select id="gambleGenerator"></select>
-            <label class="theme-slider-label" for="gambleAmount">Amount to wager</label>
-            <input id="gambleAmount" type="number" min="1" step="1" value="1" inputmode="numeric">
-            <button id="gambleBtn" type="button" disabled>Place bet</button>
-            <div class="muted small" id="gambleStatus" role="status" aria-live="polite"></div>
           </div>
         </div>
         </div>
@@ -1230,27 +1227,48 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
   <section class="panel admin-panel-bottom" id="adminPanel" hidden>
     <div class="panel-head"><h2>Admin Panel</h2></div>
     <div class="body adm-grid">
-  <div class="adm-card"><h3>Spawn</h3>
-    <div class="adm-row"><button id="adminStarBtn" type="button">Star</button><button id="adminHyperStarBtn" type="button">Hyper Star</button><button id="adminDiamondRainBtn" type="button">Diamond rain</button><button id="adminQuestionBtn" type="button">Question (me)</button></div>
-    <div class="adm-row"><button id="adminDiamondStarBtn" type="button">Diamond Star (me)</button><button id="adminDiamondBillyBtn" type="button">Diamond Billy (me)</button></div>
-    <div class="adm-row"><button id="adminStarEveryoneBtn" type="button">Star: everyone</button><button id="adminBillyEveryoneBtn" type="button">Billy: everyone</button></div>
-    <div class="muted small" id="adminStarEveryoneStatus" role="status" aria-live="polite"></div>
-  </div>
-  <div class="adm-card"><h3>Grant myself</h3>
+  <div class="adm-card adm-box"><h3>👤 For me</h3>
+    <div class="adm-sub">Cash, levels, multiplier</div>
     <div class="adm-row"><input id="adminCashAmount" type="number" min="0.01" step="any" placeholder="Cash" aria-label="Cash amount"><button id="adminCashBtn" type="button">Cash</button></div>
     <div class="adm-row"><input id="adminLevelAmount" type="number" min="1" step="1" value="1" aria-label="Levels"><button id="adminLevelBtn" type="button">Levels</button></div>
     <div class="adm-row"><input id="adminSelfMulti" type="number" min="0.01" step="any" placeholder="Multi" aria-label="Multiplier amount"><button id="adminSelfMultiBtn" type="button">Multi</button></div>
+    <div class="adm-sub">Diamonds</div>
     <div class="adm-row"><input id="adminDiamondAmount" type="number" min="1" step="1" placeholder="Diamonds" aria-label="Diamonds"><button id="adminDiamondBtn" type="button">Add 💎</button><button id="adminDiamondRemoveBtn" type="button">Remove 💎</button></div>
+    <div class="adm-sub">Generators</div>
+    <div class="adm-row"><select id="adminMeGenerator" aria-label="Generator"></select><input id="adminMeGenAmount" type="number" min="1" step="1" value="1" aria-label="Amount" style="max-width:84px"><button id="adminMeGenBtn" type="button">Add generators</button></div>
+    <div class="adm-sub">Spawn on my screen</div>
+    <div class="adm-row"><button id="adminStarBtn" type="button">Star</button><button id="adminHyperStarBtn" type="button">Hyper Star</button><button id="adminDiamondStarBtn" type="button">Diamond Star</button></div>
+    <div class="adm-row"><button id="adminBillyMeBtn" type="button">Billy</button><button id="adminDiamondBillyBtn" type="button">Diamond Billy</button><button id="adminQuestionBtn" type="button">Question</button></div>
     <div class="muted small" id="adminExtraStatus" role="status" aria-live="polite"></div>
   </div>
-  <div class="adm-card"><h3>Send multiplier</h3>
-    <div class="adm-row"><input id="adminMultiplierRecipient" type="text" maxlength="40" autocomplete="off" placeholder="Username" aria-label="Recipient username"><input id="adminMultiplierAmount" type="number" min="0.01" step="0.01" placeholder="Amount" aria-label="Multiplier amount"><button id="adminMultiplierBtn" type="button">Send</button></div>
+  <div class="adm-card adm-box"><h3>🎯 For 1 player</h3>
+    <div class="adm-row"><input id="adminPlayerName" type="text" maxlength="20" autocomplete="off" placeholder="Player username (must be on the leaderboard)" aria-label="Player username"></div>
+    <div class="adm-sub">Cash and diamonds (arrive when they are online)</div>
+    <div class="adm-row"><input id="adminPlayerCash" type="number" min="0.01" step="any" placeholder="Cash" aria-label="Cash amount"><button id="adminPlayerCashBtn" type="button">Send cash</button></div>
+    <div class="adm-row"><input id="adminPlayerDiamonds" type="number" min="1" step="1" placeholder="Diamonds" aria-label="Diamonds"><button id="adminPlayerDiamondsBtn" type="button">Send 💎</button></div>
+    <div class="adm-sub">Generators and multiplier (they accept them in Gifts)</div>
+    <div class="adm-row"><select id="adminGiftGenerator" aria-label="Generator"></select><input id="adminGiftAmount" type="number" min="1" max="100" step="1" value="1" aria-label="Amount" style="max-width:84px"><button id="adminGiftBtn" type="button">Send generators</button></div>
+    <div class="adm-row"><input id="adminMultiplierAmount" type="number" min="0.01" step="0.01" placeholder="Multiplier amount" aria-label="Multiplier amount"><button id="adminMultiplierBtn" type="button">Send multiplier</button></div>
+    <div class="adm-sub">Spawn on their screen</div>
+    <div class="adm-row"><button id="adminPStarBtn" type="button">Star</button><button id="adminPHyperBtn" type="button">Hyper Star</button><button id="adminPDiamondStarBtn" type="button">Diamond Star</button><button id="adminPBillyBtn" type="button">Billy</button></div>
+    <div class="muted small" id="adminPlayerStatus" role="status" aria-live="polite"></div>
+    <div class="muted small" id="adminGiftStatus" role="status" aria-live="polite"></div>
     <div class="muted small" id="adminMultiplierStatus" role="status" aria-live="polite"></div>
   </div>
-  <div class="adm-card"><h3>Send generators</h3>
-    <div class="adm-row"><input id="adminGiftRecipient" type="text" maxlength="20" autocomplete="off" placeholder="Username" aria-label="Recipient username"><select id="adminGiftGenerator" aria-label="Generator"></select><input id="adminGiftAmount" type="number" min="1" max="100" step="1" value="1" aria-label="Amount" style="max-width:64px"></div>
-    <div class="adm-row"><button id="adminGiftBtn" type="button">Send to player</button><button id="adminGiftEveryoneBtn" type="button">Gift everyone (1)</button></div>
-    <div class="muted small" id="adminGiftStatus" role="status" aria-live="polite"></div><div class="muted small" id="adminGiftEveryoneStatus" role="status" aria-live="polite"></div>
+  <div class="adm-card adm-box"><h3>🌍 For everyone</h3>
+    <div class="adm-sub">Cash and diamonds (each player gets it once, when they are next online)</div>
+    <div class="adm-row"><input id="adminAllCash" type="number" min="0.01" step="any" placeholder="Cash" aria-label="Cash amount"><button id="adminAllCashBtn" type="button">Send cash</button></div>
+    <div class="adm-row"><input id="adminAllDiamonds" type="number" min="1" step="1" placeholder="Diamonds" aria-label="Diamonds"><button id="adminAllDiamondsBtn" type="button">Send 💎</button></div>
+    <div class="adm-sub">Generators (they accept them in Gifts)</div>
+    <div class="adm-row"><select id="adminAllGenerator" aria-label="Generator"></select><input id="adminAllGenAmount" type="number" min="1" max="100" step="1" value="1" aria-label="Amount" style="max-width:84px"><button id="adminGiftEveryoneBtn" type="button">Gift everyone</button></div>
+    <div class="adm-row"><button id="adminBestGenEveryoneBtn" type="button">Gift everyone their BEST generator</button></div>
+    <div class="muted small">Each player gets the best generator they have reached (uses the amount above).</div>
+    <div class="adm-sub">Spawn on every active player's screen</div>
+    <div class="adm-row"><button id="adminStarEveryoneBtn" type="button">Star</button><button id="adminHyperEveryoneBtn" type="button">Hyper Star</button><button id="adminDiamondStarEveryoneBtn" type="button">Diamond Star</button></div>
+    <div class="adm-row"><button id="adminBillyEveryoneBtn" type="button">Billy</button><button id="adminDiamondRainBtn" type="button">Diamond rain</button></div>
+    <div class="muted small" id="adminAllStatus" role="status" aria-live="polite"></div>
+    <div class="muted small" id="adminStarEveryoneStatus" role="status" aria-live="polite"></div>
+    <div class="muted small" id="adminGiftEveryoneStatus" role="status" aria-live="polite"></div>
   </div>
   <div class="adm-card"><h3>Broadcast message</h3>
     <div class="adm-row"><input id="adminBroadcastText" type="text" maxlength="200" autocomplete="off" placeholder="Message to all players" aria-label="Broadcast message"></div>
@@ -1280,7 +1298,7 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
   <div class="note" id="adminStatus" role="status" aria-live="polite" style="grid-column:1/-1"></div>
     </div>
   </section>
-  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">1.0.1</span><button id="updateHistoryBtn" type="button">Update history</button></div>
+  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">1.2.5</span><button id="updateHistoryBtn" type="button">Update history</button></div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
@@ -1351,7 +1369,7 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 100000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "1.0.1";
+const GAME_VERSION = "1.2.5";
 const GLOBAL_BOOST_MILESTONES = [
   { cost: 1e6, multiplier: 1.2 }, { cost: 1e7, multiplier: 1.4 },
   { cost: 1e8, multiplier: 1.6 }, { cost: 1e9, multiplier: 1.8 },
@@ -1531,8 +1549,8 @@ const UPDATE_HISTORY = [
     ]
   },
   {
-    version: GAME_VERSION,
-    status: "Current",
+    version: "1.1",
+    status: "Previous",
     changes: [
       "Admin account: everything is unlocked (all cosmetics, colours, titles and perks) and selling generators now pays real cash so rebirths can be tested.",
       "Every rebirth milestone now unlocks 3 name colours. Chat and the leaderboard share one name colour setting.",
@@ -1558,17 +1576,36 @@ const UPDATE_HISTORY = [
       "A wipe now also resets your saved theme.",
       "Added the alpha tag (a) in chat.",
       "Owner announcement styles are now a free setting instead of a shop item.",
+      "Settings cleanup: Snow is now Background effects (it also covers the new Diamond Shop backgrounds), and the leftover light-mode theme strength slider is hidden.",
+    ]
+  },
+  {
+    version: "1.2",
+    status: "Previous",
+    changes: [
+      "Leaderboards now update much faster: the Cash board and the other boards used to wait 9–10 minutes between updates.",
       "Fixed Instant Fever: it now starts a real personal Fever (×2, or Hyper) for 2 minutes instead of only the Star speed boost.",
       "Cash per second is now exact: generators pay for the real time that passed, so Note Drop Speed upgrades, laggy tabs and background tabs no longer pay more or less than the displayed amount.",
-      "The Cash leaderboard now refreshes about every 45 seconds and the other leaderboards about every 3 minutes (they used to wait 9–10 minutes). A timer under the leaderboard shows when your score updates next.",
       "New Inventory value leaderboard.",
       "Removed Cash Injection from the Diamond Shop.",
-      "New Gift button in the Diamond Shop: buy any cosmetic for another player. They accept it in Gifts and it lands in their Inventory (if they already own it they get the diamonds instead).",
       "Stars collected are now reset by the Reset button, and a wipe can no longer re-publish old Stars.",
       "Admins can void ALL gifts for every player, and a wipe now voids unclaimed gifts too.",
-      "New Diamond Shop section: Limiteds. First up are the free GTA 6 bundles (Vice City, Neon Strip, Ocean Drive, Gator Bayou, Leonida Sunset and Heist Night), split by theme. Everyone gets a notification to claim them.",
-      "New Equip all button on every owned bundle in the Diamond Shop: it equips the whole set in one click.",
-      "Settings cleanup: Snow is now Background effects (it also covers the new Diamond Shop backgrounds), and the leftover light-mode theme strength slider is hidden."
+      "New Diamond Shop section: Limiteds, starting with a free GTA 6 Bundle. Everyone gets a notification to claim it.",
+    ]
+  },
+  {
+    version: "1.2.5",
+    status: "Current",
+    changes: [
+      "Cash leaderboard now refreshes about every 45 seconds and the other boards about every 3 minutes, with a timer under the leaderboard showing when your score updates next. Unchanged scores are no longer re-written, which saves Firestore usage.",
+      "Fixed random logouts: logins were kept in memory only, so every page reload (an \"Update available\" reload, a wipe, a refresh or a phone discarding the tab) signed players out. Players now stay signed in, and the sign-in screen has a Stay signed in on this device tick box.",
+      "New Chess theme: Chess Club and Checkmate UI themes, a sliding Chessboard background, Chess Frames, a Knight Cursor, Chess Pieces click effect, and a discounted Chess Set bundle.",
+      "New Gift button in the Diamond Shop: buy any cosmetic for another player. They accept it in Gifts and it lands in their Inventory (if they already own it they get the diamonds instead).",
+      "Bundles in the Diamond Shop now have an Equip all button that equips every item in the bundle at once.",
+      "The GTA 6 bundle is now six free bundles: Vice City, Leonida Sunset, Neon Strip, Ocean Drive, Gator Bayou and Heist Night, with 6 backgrounds, 6 UI themes, 2 tile frames, a Star skin, a cursor, a click effect and an overlay. They leave the shop on November 20 (anything you claimed is yours to keep), and each Limited shows a countdown.",
+      "New Loadouts in the Inventory: save everything you have equipped into Loadout 1, 2 or 3 and swap with one click.",
+      "Admin panel rebuilt into three boxes: For me, For 1 player and For everyone. Each can give cash, diamonds, generators, Stars, Hyper Stars, Diamond Stars and Billy, and the For everyone box can gift every player their own best generator.",
+      "Removed the Generator gamble tab.",
     ]
   }
 ];
@@ -1596,6 +1633,9 @@ let cloudSaveReady = false;
 let playerSaveLoadGeneration = 0;
 let communityUnsubscribers = [];
 let leaderboardUnsubscribe = null;
+let adminGrantUnsubs = [];
+let adminGrantsActiveFor = null;
+const handledAdminGrants = new Set();
 let activeLeaderboard = "cashEarned";
 let hideLeaderboardIndicator = false;
 let chatBadgeMetric = "best";
@@ -1623,6 +1663,18 @@ function getPlayerSaveKey(username) {
   return PLAYER_SAVE_PREFIX + encodeURIComponent(username);
 }
 
+// Signed in on this device (LOCAL) survives reloads and browser restarts; unticked (SESSION) survives reloads but ends when the tab closes.
+async function applyAuthPersistence() {
+  const box = document.getElementById("staySignedIn");
+  const stay = box ? box.checked : true;
+  try { localStorage.setItem("sfStaySignedIn", stay ? "1" : "0"); } catch (e) {}
+  await authRef.setPersistence(stay ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION);
+}
+function authEmailToUsername(email) {
+  const m = /^player-((?:[0-9a-f]{2})+)@accounts\.generator-grid\.invalid$/.exec(String(email || ""));
+  if (!m) return null;
+  try { return new TextDecoder().decode(Uint8Array.from(m[1].match(/../g), h => parseInt(h, 16))); } catch (e) { return null; }
+}
 function usernameToAuthEmail(username) {
   const usernameHex = Array.from(new TextEncoder().encode(username), byte => byte.toString(16).padStart(2, "0")).join("");
   return "player-" + usernameHex + "@accounts.generator-grid.invalid";
@@ -1732,6 +1784,7 @@ async function enterGame(username, user, firstTime = false) {
   progressHigh = null;
   lastCloudSaveAt = 0;
   lastLeaderboardPublishAt = 0;
+  resetLeaderboardWriteMemory();
   acBaseline = null;
   acSuspicious = false;
   lastFlagAt = 0;
@@ -2337,6 +2390,17 @@ async function saveUserState(silent = true, force = false) {
   }
 }
 
+let lastLeaderboardSignature = "";
+let lastLeaderboardFullWriteAt = 0;
+let lastLeaderboardCashValue = null;
+const LEADERBOARD_FULL_HEARTBEAT_MS = 10 * 60 * 1000; // a full write at least this often, even if only Cash and play time moved
+function resetLeaderboardWriteMemory() {
+  lastLeaderboardSignature = "";
+  lastLeaderboardFullWriteAt = 0;
+  lastLeaderboardCashValue = null;
+  lastLeaderboardCashAt = 0;
+}
+
 async function publishLeaderboardEntry(force = false) {
   if (!currentUser || !dbRef || !leaderboardPrivacyLoaded || !cloudSaveReady || acSuspicious) return false;
   const nowMs = Date.now();
@@ -2347,45 +2411,62 @@ async function publishLeaderboardEntry(force = false) {
     const leaderboardEntry = dbRef.collection("leaderboard").doc(currentUser.uid);
     if (hideFromLeaderboard) {
       await leaderboardEntry.delete();
+      resetLeaderboardWriteMemory();
       lastLeaderboardPublishAt = nowMs;
       lastLeaderboardCashAt = nowMs;
       return true;
     }
-    if (!fullDue) {
-      // Quick Cash-only update: the other boards keep their older numbers until the next full publish.
-      lastLeaderboardCashAt = nowMs;
-      try {
-        await leaderboardEntry.set({
-          uid: currentUser.uid,
-          username: currentUsername,
-          cashEarned: Math.max(0, Number(state.generatorCashEarned) || 0),
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
-        return true;
-      } catch (quickError) {
-        lastLeaderboardPublishAt = 0; // entry may be missing: do a full publish next time
-        return false;
-      }
+    const cashEarned = Math.max(0, Number(state.generatorCashEarned) || 0);
+    let entry = null;
+    let signature = "";
+    if (fullDue) {
+      entry = {
+        uid: currentUser.uid,
+        username: currentUsername,
+        cashEarned,
+        starsCollected: Math.max(0, Number(state.taskStarsCollected) || 0),
+        rebirth: Math.max(0, Number(state.rebirths) || 0),
+        level: Math.max(1, Number(state.level) || 1),
+        multiplier: Math.max(1, Number(playerMultiplier()) || 1),
+        playtimeSeconds: Math.max(0, Number(state.playtimeSeconds) || 0),
+        questionsAnswered: Math.max(0, Number(state.questionsAnswered) || 0),
+        inventoryValue: Math.min(1e300, Math.max(0, Number(inventoryValue()) || 0)),
+        hideIndicator: hideLeaderboardIndicator,
+        chatBadgeMetric,
+        ...(window.dmLbFields ? window.dmLbFields() : {})
+      };
+      const { cashEarned: ignoredCash, playtimeSeconds: ignoredPlaytime, ...rest } = entry;
+      signature = JSON.stringify(rest); // Cash and play time change every second, so they are not part of "did anything change"
     }
-    await leaderboardEntry.set({
-      uid: currentUser.uid,
-      username: currentUsername,
-      cashEarned: Math.max(0, Number(state.generatorCashEarned) || 0),
-      starsCollected: Math.max(0, Number(state.taskStarsCollected) || 0),
-      rebirth: Math.max(0, Number(state.rebirths) || 0),
-      level: Math.max(1, Number(state.level) || 1),
-      multiplier: Math.max(1, Number(playerMultiplier()) || 1),
-      playtimeSeconds: Math.max(0, Number(state.playtimeSeconds) || 0),
-      questionsAnswered: Math.max(0, Number(state.questionsAnswered) || 0),
-      inventoryValue: Math.min(1e300, Math.max(0, Number(inventoryValue()) || 0)),
-      hideIndicator: hideLeaderboardIndicator,
-      chatBadgeMetric,
-      ...(window.dmLbFields ? window.dmLbFields() : {}),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
-    lastLeaderboardPublishAt = Date.now();
-    lastLeaderboardCashAt = lastLeaderboardPublishAt;
-    return true;
+    const needsFull = fullDue && (signature !== lastLeaderboardSignature
+      || nowMs - lastLeaderboardFullWriteAt >= LEADERBOARD_FULL_HEARTBEAT_MS);
+    if (needsFull) {
+      await leaderboardEntry.set({ ...entry, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+      lastLeaderboardSignature = signature;
+      lastLeaderboardFullWriteAt = Date.now();
+      lastLeaderboardCashValue = cashEarned;
+      lastLeaderboardPublishAt = lastLeaderboardFullWriteAt;
+      lastLeaderboardCashAt = lastLeaderboardFullWriteAt;
+      return true;
+    }
+    // Only Cash and play time moved: write just Cash, and write nothing at all if Cash did not move either.
+    if (fullDue) lastLeaderboardPublishAt = nowMs;
+    lastLeaderboardCashAt = nowMs;
+    if (cashEarned === lastLeaderboardCashValue) return true;
+    try {
+      await leaderboardEntry.set({
+        uid: currentUser.uid,
+        username: currentUsername,
+        cashEarned,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+      lastLeaderboardCashValue = cashEarned;
+      return true;
+    } catch (quickError) {
+      lastLeaderboardFullWriteAt = 0; // the entry may be missing: do a full publish next time
+      lastLeaderboardPublishAt = 0;
+      return false;
+    }
   } catch (e) {
     lastLeaderboardPublishAt = Date.now();
     $("leaderboardStatus").textContent = "Leaderboard could not update. Check Firestore rules.";
@@ -3579,7 +3660,7 @@ async function createAccountWithUsername() {
     return;
   }
   try {
-    await authRef.setPersistence(firebase.auth.Auth.Persistence.NONE);
+    await applyAuthPersistence();
     const credential = await authRef.createUserWithEmailAndPassword(usernameToAuthEmail(username), password);
     const accounts = getAccountStore();
     delete accounts[username];
@@ -3603,7 +3684,7 @@ async function loginWithUsername() {
     return;
   }
   try {
-    await authRef.setPersistence(firebase.auth.Auth.Persistence.NONE);
+    await applyAuthPersistence();
     const credential = await authRef.signInWithEmailAndPassword(usernameToAuthEmail(username), password);
     const accounts = getAccountStore();
     delete accounts[username];
@@ -3632,6 +3713,9 @@ async function logoutUser() {
   stopMathQuestionTimer();
   stopGlobalBoostListener();
   stopGlobalStarListener();
+  stopAdminGrantListener();
+  adminGrantsActiveFor = null;
+  handledAdminGrants.clear();
   stopNewAccountBoost();
   stopStarSpawns();
   if (dailyWheelSpinTimer !== null) clearTimeout(dailyWheelSpinTimer);
@@ -3913,6 +3997,66 @@ function stopGlobalBoostListener() {
   globalBoostUnsubscribe = null;
 }
 
+function stopAdminGrantListener() {
+  adminGrantUnsubs.forEach(unsubscribe => { try { unsubscribe(); } catch (e) {} });
+  adminGrantUnsubs = [];
+}
+function applyAdminGrant(grant) {
+  const kind = grant.kind;
+  const amount = Number(grant.amount) || 0;
+  if (kind === "cash") {
+    if (!(amount > 0 && amount <= 1e100)) return;
+    state.money = (Number(state.money) || 0) + amount;
+    notify("🎁 You received " + cash(amount) + " from the admin.");
+    renderStats();
+  } else if (kind === "diamonds") {
+    const n = Math.min(1e6, Math.floor(amount));
+    if (n < 1) return;
+    state.diamonds = Math.max(0, Math.floor(Number(state.diamonds) || 0)) + n;
+    notify("🎁 You received " + n + " 💎 from the admin.");
+  } else if (!$("gameShell").hidden) {
+    if (kind === "star") spawnStar();
+    else if (kind === "hyper") spawnStar(null, false, true);
+    else if (kind === "diamondstar") spawnStar(null, false, false, true);
+    else if (kind === "billy") spawnMysteryVisitor(false);
+  }
+}
+function startAdminGrantListener() {
+  stopAdminGrantListener();
+  if (!currentUser || !dbRef) return;
+  const uid = currentUser.uid;
+  if (!Number.isFinite(Number(state.dmGrantsSince))) state.dmGrantsSince = Date.now();
+  if (!Array.isArray(state.dmGrantsDone)) state.dmGrantsDone = [];
+  const process = (snapshot, shared) => {
+    const docs = snapshot.docs
+      .filter(d => d.data().createdAt && typeof d.data().createdAt.toMillis === "function")
+      .sort((a, b) => a.data().createdAt.toMillis() - b.data().createdAt.toMillis());
+    let changed = false;
+    docs.forEach(d => {
+      const grant = d.data();
+      const ms = grant.createdAt.toMillis();
+      if (handledAdminGrants.has(d.id)) return;
+      if (shared && (ms <= Number(state.dmGrantsSince) || state.dmGrantsDone.includes(d.id))) return;
+      handledAdminGrants.add(d.id);
+      const isSpawn = grant.kind !== "cash" && grant.kind !== "diamonds";
+      const tooOld = isSpawn && Date.now() - ms > 5 * 60 * 1000;
+      if (!tooOld && grant.senderUid !== uid) { applyAdminGrant(grant); changed = true; }
+      if (shared) {
+        state.dmGrantsDone.push(d.id);
+        state.dmGrantsDone = state.dmGrantsDone.slice(-40);
+        state.dmGrantsSince = Math.max(Number(state.dmGrantsSince) || 0, ms);
+        changed = true;
+      } else {
+        d.ref.delete().catch(() => {});
+      }
+    });
+    if (changed) { try { save(); } catch (e) {} }
+  };
+  const onError = error => console.error("Admin grant listener failed:", error);
+  adminGrantUnsubs.push(dbRef.collection("adminGrants").where("targetUid", "==", uid).onSnapshot(snapshot => process(snapshot, false), onError));
+  adminGrantUnsubs.push(dbRef.collection("adminGrants").where("targetUid", "==", "all").onSnapshot(snapshot => process(snapshot, true), onError));
+}
+
 function stopGlobalStarListener() {
   if (globalStarUnsubscribe) globalStarUnsubscribe();
   globalStarUnsubscribe = null;
@@ -3935,7 +4079,7 @@ function startGlobalStarListener() {
       const age = Date.now() - broadcast.createdAt.toMillis();
       if (age < 0 || age > 5 * 60 * 1000) return;
       lastGlobalStarBroadcastId = broadcast.broadcastId;
-      if (currentUser && !$("gameShell").hidden) { spawnStar(null, false, false, false, broadcast.kind === "billy"); if (broadcast.kind === "diamondrain") window.dmRainUntil = Date.now() + 10 * 60 * 1000; }
+      if (currentUser && !$("gameShell").hidden) { spawnStar(null, false, broadcast.kind === "hyper", broadcast.kind === "diamond", broadcast.kind === "billy"); if (broadcast.kind === "diamondrain") window.dmRainUntil = Date.now() + 10 * 60 * 1000; }
     }, error => {
       console.error("Global Star listener failed:", error);
     });
@@ -4530,52 +4674,6 @@ function renderShop() {
     host.appendChild(makeShopRow(GENERATORS[bestIndex + 1], "shop", true));
   }
 }
-function renderGambling() {
-  const select = $("gambleGenerator");
-  if (!select) return;
-  const selectedId = select.value;
-  select.replaceChildren();
-  const options = GENERATORS.filter(generator => available(generator.id) > 0)
-    .map(generator => ({ id: generator.id, name: generator.name }));
-  options.forEach(generator => {
-    const option = document.createElement("option");
-    option.value = generator.id;
-    option.textContent = generator.name + " · " + available(generator.id) + " unplaced";
-    select.appendChild(option);
-  });
-  if (options.some(generator => generator.id === selectedId)) select.value = selectedId;
-  const amount = Number($("gambleAmount").value);
-  const betIsValid = Number.isSafeInteger(amount) && amount > 0
-    && (select.value ? available(select.value) >= amount : false);
-  $("gambleBtn").disabled = !currentUser || !betIsValid;
-  if (!options.length) $("gambleStatus").textContent = "You need an unplaced generator to place a bet.";
-}
-function placeGeneratorBet() {
-  const id = $("gambleGenerator").value;
-  const amount = Number($("gambleAmount").value);
-  const generator = getGenerator(id);
-  if (id === "alpha") {
-    $("gambleStatus").textContent = "Alpha Generators cannot be gambled.";
-    return;
-  }
-  if (!currentUser || !generator || !Number.isSafeInteger(amount) || amount < 1
-    || available(id) < amount) {
-    $("gambleStatus").textContent = "Choose an unplaced generator and a valid quantity.";
-    return;
-  }
-  state.inventory[id] = owned(id) - amount;
-  const won = Math.random() < 0.5;
-  if (won) state.inventory[id] = owned(id) + amount * 2;
-  if (id !== "alpha" && won) state.bestGeneratorIndex = Math.max(state.bestGeneratorIndex, generator.index);
-  const result = won
-    ? "You won! Your " + amount + " " + generator.name + " bet doubled."
-    : "You lost all " + amount + " " + generator.name + " wagered.";
-  render();
-  $("gambleStatus").textContent = result;
-  save();
-  publishLeaderboardEntry();
-  notify(result);
-}
 function updateShopBuyButtons() {
   const quantity = getMultiBuyAmount();
   const placedCounts = new Map();
@@ -4639,7 +4737,7 @@ function renderInventory() {
   if (host) host.innerHTML = "";
 }
 
-function render() { renderStats(); renderPlayerStats(); renderSlots(); renderShop(); renderInventory(); renderGambling(); renderUpgrades(); renderAchievements(); renderTasks(); }
+function render() { renderStats(); renderPlayerStats(); renderSlots(); renderShop(); renderInventory(); renderUpgrades(); renderAchievements(); renderTasks(); }
 function renderTutorial() {
   const guide = $("tutorialGuide");
   guide.hidden = !state.tutorialStarted;
@@ -5005,7 +5103,24 @@ function closeModal() { $("modalBg").classList.remove("open"); }
 $("loginBtn").addEventListener("click", loginWithUsername);
 $("signupBtn").addEventListener("click", createAccountWithUsername);
 const firebaseEnabled = initFirebase();
-if (firebaseEnabled) authRef.setPersistence(firebase.auth.Auth.Persistence.NONE).catch(() => {});
+if (document.getElementById("staySignedIn")) {
+  try { document.getElementById("staySignedIn").checked = localStorage.getItem("sfStaySignedIn") !== "0"; } catch (e) {}
+}
+if (firebaseEnabled) {
+  // Resume the saved login once at startup (after a reload, an update reload or a wipe) instead of showing the sign-in screen.
+  let authResumeDone = false;
+  authRef.onAuthStateChanged(async user => {
+    if (authResumeDone) return;
+    authResumeDone = true;
+    if (!user || currentUser) return;
+    const resumedName = authEmailToUsername(user.email);
+    if (!resumedName || !/^[A-Za-z0-9_]{2,20}$/.test(resumedName)) { try { await authRef.signOut(); } catch (e) {} return; }
+    try {
+      await enterGame(resumedName, user);
+      notify("Welcome back, " + resumedName + ".");
+    } catch (e) { console.error("Automatic sign-in failed:", e); }
+  });
+}
 updateAuthUI();
 if (!firebaseEnabled) {
   showAuthError("Game services could not start. Refresh the page and check your connection.");
@@ -5022,7 +5137,7 @@ document.querySelectorAll("[data-leaderboard]").forEach(button => {
   button.addEventListener("click", () => selectLeaderboard(button.dataset.leaderboard));
 });
 function selectShopTab(tab) {
-  ["shop", "inventory", "tasks", "rebirth", "upgrades", "achievements", "daily", "gamble"].forEach(name => {
+  ["shop", "inventory", "tasks", "rebirth", "upgrades", "achievements", "daily"].forEach(name => {
     const selected = name === tab;
     $(name + "TabBtn").setAttribute("aria-selected", String(selected));
     $(name + "TabPanel").hidden = !selected;
@@ -5040,7 +5155,6 @@ function selectShopTab(tab) {
   if (tab === "shop") advanceTutorial("shop");
   if (tab === "inventory" && window.dmRenderInventory) window.dmRenderInventory();
   if (tab === "daily") renderDaily();
-  if (tab === "gamble") renderGambling();
 }
 function selectSettingsTab(tabName, moveFocus = false) {
   ["main"].forEach(name => {
@@ -5071,11 +5185,7 @@ $("rebirthTabBtn").addEventListener("click", () => selectShopTab("rebirth"));
 $("upgradesTabBtn").addEventListener("click", () => selectShopTab("upgrades"));
 $("achievementsTabBtn").addEventListener("click", () => selectShopTab("achievements"));
 $("dailyTabBtn").addEventListener("click", () => selectShopTab("daily"));
-$("gambleTabBtn").addEventListener("click", () => selectShopTab("gamble"));
 $("dailyWheelBtn").addEventListener("click", spinDailyWheel);
-$("gambleBtn").addEventListener("click", placeGeneratorBet);
-$("gambleGenerator").addEventListener("change", renderGambling);
-$("gambleAmount").addEventListener("input", renderGambling);
 $("autoPlaceToggle").addEventListener("change", () => {
   state.autoPlaceEnabled = $("autoPlaceToggle").checked && state.upgrades.autoPlace > 0;
   configureAutoPlaceTimer();
@@ -5220,7 +5330,7 @@ async function sendAdminMultiplierGift() {
     status.textContent = "Admin access is required to send multiplier gifts.";
     return;
   }
-  const recipientUsername = $("adminMultiplierRecipient").value.trim();
+  const recipientUsername = $("adminPlayerName").value.trim();
   const amount = readAdminAmount("adminMultiplierAmount", { max: 1e6 });
   if (amount === null) return;
   if (Math.round(amount * 100) / 100 !== amount) {
@@ -5248,7 +5358,7 @@ async function sendAdminMultiplierGift() {
     });
     status.textContent = "Sent a ×" + number(amount) + " multiplier gift to "
       + recipient.data().username + ". They can accept it from Gifts.";
-    $("adminMultiplierRecipient").value = "";
+    
     $("adminMultiplierAmount").value = "";
   } catch (error) {
     status.textContent = error.message || "Could not send multiplier gift.";
@@ -5349,7 +5459,7 @@ async function sendAdminGeneratorGift() {
     status.textContent = "Admin access is required to grant generators.";
     return;
   }
-  const recipientUsername = $("adminGiftRecipient").value.trim();
+  const recipientUsername = $("adminPlayerName").value.trim();
   const generatorId = $("adminGiftGenerator").value;
   const amount = Number($("adminGiftAmount").value);
   if (!/^[A-Za-z0-9_]{2,20}$/.test(recipientUsername)) {
@@ -5379,7 +5489,6 @@ async function sendAdminGeneratorGift() {
     });
     status.textContent = amount + " " + getGenerator(generatorId).name
       + (amount === 1 ? " sent to " : "s sent to ") + recipient.data().username + ".";
-    $("adminGiftRecipient").value = "";
   } catch (error) {
     status.textContent = error.message || "Could not grant those generators.";
   } finally {
@@ -5392,7 +5501,12 @@ async function sendAdminGeneratorGiftToEveryone() {
     status.textContent = "Admin access is required to gift all players.";
     return;
   }
-  const generatorId = $("adminGiftGenerator").value;
+  const generatorId = $("adminAllGenerator").value;
+  const everyoneAmount = Number($("adminAllGenAmount").value);
+  if (!Number.isSafeInteger(everyoneAmount) || everyoneAmount < 1 || everyoneAmount > 100) {
+    status.textContent = "Enter a whole number from 1 to 100.";
+    return;
+  }
   if (!isGiftableGenerator(generatorId)) {
     status.textContent = "Choose a valid generator.";
     return;
@@ -5421,7 +5535,7 @@ async function sendAdminGeneratorGiftToEveryone() {
             recipientUid: user.id,
             recipientUsername: "Player",
             generatorId,
-            amount: 1,
+            amount: everyoneAmount,
             status: "pending",
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
@@ -5439,6 +5553,68 @@ async function sendAdminGeneratorGiftToEveryone() {
   } catch (error) {
     status.textContent = "Could not finish the broadcast after " + giftsCreated
       + " gift(s): " + (error.message || "check Firestore permissions.");
+  } finally {
+    button.disabled = false;
+  }
+}
+async function sendAdminBestGeneratorToEveryone() {
+  const status = $("adminGiftEveryoneStatus");
+  if ($("adminPanel").hidden || !currentUser || !dbRef) {
+    status.textContent = "Admin access is required to gift all players.";
+    return;
+  }
+  const perPlayer = Number($("adminAllGenAmount").value);
+  if (!Number.isSafeInteger(perPlayer) || perPlayer < 1 || perPlayer > 100) {
+    status.textContent = "Enter a whole number from 1 to 100.";
+    return;
+  }
+  if (!confirm("Send EVERY player " + perPlayer + " of the best generator they have reached? They accept it in Gifts. This cannot be undone.")) return;
+  const button = $("adminBestGenEveryoneBtn");
+  button.disabled = true;
+  let giftsCreated = 0;
+  const perGenerator = {};
+  status.textContent = "Looking up each player's best generator...";
+  try {
+    const users = dbRef.collection("users");
+    const gifts = dbRef.collection("generatorGifts");
+    let lastUser = null;
+    while (true) {
+      let query = users.orderBy(firebase.firestore.FieldPath.documentId()).limit(400);
+      if (lastUser) query = query.startAfter(lastUser);
+      const page = await query.get();
+      if (page.empty) break;
+      lastUser = page.docs[page.docs.length - 1];
+      const batch = dbRef.batch();
+      let inBatch = 0;
+      page.docs.filter(user => user.id !== currentUser.uid).forEach(user => {
+        const saved = user.data().state || {};
+        const bestIndex = Math.max(0, Math.floor(Number(saved.bestGeneratorIndex) || 0));
+        const generator = GENERATORS.find(g => g.index === bestIndex) || GENERATORS[Math.min(bestIndex, GENERATORS.length - 1)];
+        if (!generator || generator.id === "alpha" || !isGiftableGenerator(generator.id)) return;
+        batch.set(gifts.doc(), {
+          senderUid: currentUser.uid,
+          senderUsername: currentUsername || "Admin",
+          recipientUid: user.id,
+          recipientUsername: "Player",
+          generatorId: generator.id,
+          amount: perPlayer,
+          status: "pending",
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        perGenerator[generator.name] = (perGenerator[generator.name] || 0) + 1;
+        inBatch++;
+      });
+      if (inBatch) await batch.commit();
+      giftsCreated += inBatch;
+      status.textContent = "Gifted " + giftsCreated + " player(s)...";
+      if (page.size < 400) break;
+    }
+    const breakdown = Object.keys(perGenerator).map(name => perGenerator[name] + "× " + name).join(", ");
+    status.textContent = giftsCreated
+      ? "Sent " + perPlayer + " best generator" + (perPlayer === 1 ? "" : "s") + " to " + giftsCreated + " player(s): " + breakdown + ". They'll find it in Gifts."
+      : "No other player accounts were found.";
+  } catch (error) {
+    status.textContent = "Could not finish after " + giftsCreated + " gift(s): " + (error.message || "check Firestore permissions.");
   } finally {
     button.disabled = false;
   }
@@ -5781,14 +5957,17 @@ GENERATORS.forEach(generator => {
   option.value = generator.id;
   option.textContent = generator.name;
   $("giftGenerator").appendChild(option);
-  const adminOption = option.cloneNode(true);
-  $("adminGiftGenerator").appendChild(adminOption);
+  $("adminGiftGenerator").appendChild(option.cloneNode(true));
+  $("adminMeGenerator").appendChild(option.cloneNode(true));
+  $("adminAllGenerator").appendChild(option.cloneNode(true));
 });
 {
   const option = document.createElement("option");
   option.value = "alpha";
   option.textContent = "Alpha Generator";
   $("adminGiftGenerator").appendChild(option);
+  $("adminMeGenerator").appendChild(option.cloneNode(true));
+  $("adminAllGenerator").appendChild(option.cloneNode(true));
 }
 function refreshGiftAlphaOption() {
   const select = $("giftGenerator");
@@ -5826,8 +6005,97 @@ $("adminSelfMultiBtn").addEventListener("click", () => {
   renderStats(); renderShop(); renderSlotEarnings(); save(); publishLeaderboardEntry();
   s.textContent = "Added ×" + number(amount) + " to your multiplier.";
 });
+// ---- Admin: For me / For 1 player / For everyone ----
+function adminOk(status) {
+  if ($("adminPanel").hidden || !currentUser || !dbRef) { status.textContent = "Admin access is required."; return false; }
+  return true;
+}
+function adminNumber(id, { integer = false, max = 1e100 } = {}) {
+  const n = Number($(id).value);
+  if (!isFinite(n) || n <= 0 || n > max || (integer && !Number.isSafeInteger(n))) return null;
+  return n;
+}
+function adminErrorText(e) {
+  return e && e.code === "permission-denied" ? "Rules blocked it. Publish the updated rules." : ((e && e.message) || "Failed.");
+}
+function wireAdminButton(buttonId, statusId, action) {
+  $(buttonId).addEventListener("click", async () => {
+    const status = $(statusId);
+    if (!adminOk(status)) return;
+    const button = $(buttonId);
+    button.disabled = true;
+    try { status.textContent = await action(); } catch (e) { status.textContent = adminErrorText(e); } finally { button.disabled = false; }
+  });
+}
+async function adminTargetPlayer() {
+  const name = $("adminPlayerName").value.trim();
+  if (!/^[A-Za-z0-9_]{2,20}$/.test(name)) throw new Error("Type the player's username first (2–20 letters, numbers or underscores).");
+  const doc = await findGiftRecipient(name);
+  if (doc.id === currentUser.uid) throw new Error("That is you. Use the For me box.");
+  return doc;
+}
+function writeAdminGrant(targetUid, kind, amount) {
+  return dbRef.collection("adminGrants").add({
+    targetUid, kind, amount, senderUid: currentUser.uid,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+}
+async function broadcastKind(kind) {
+  await dbRef.collection("globalStarBroadcasts").doc("current").set({
+    broadcastId: currentUser.uid + "-" + Date.now(), kind, senderUid: currentUser.uid,
+    senderUsername: currentUsername || "Admin", createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+}
+// For me
+wireAdminButton("adminMeGenBtn", "adminExtraStatus", async () => {
+  const id = $("adminMeGenerator").value;
+  const n = adminNumber("adminMeGenAmount", { integer: true, max: 1000000 });
+  if (!isGiftableGenerator(id) || n === null) throw new Error("Choose a generator and a whole number up to 1,000,000.");
+  const generator = getGenerator(id);
+  state.inventory[id] = owned(id) + n;
+  if (id !== "alpha" && generator) state.bestGeneratorIndex = Math.max(state.bestGeneratorIndex, generator.index);
+  render(); save();
+  return "Added " + n + " " + generator.name + (n === 1 ? "." : "s.");
+});
+$("adminBillyMeBtn").addEventListener("click", () => { if (!$("adminPanel").hidden) spawnMysteryVisitor(false); });
+// For 1 player
+wireAdminButton("adminPlayerCashBtn", "adminPlayerStatus", async () => {
+  const n = adminNumber("adminPlayerCash");
+  if (n === null) throw new Error("Enter a positive cash amount.");
+  const doc = await adminTargetPlayer();
+  await writeAdminGrant(doc.id, "cash", n);
+  return "Sent " + cash(n) + " to " + doc.data().username + ".";
+});
+wireAdminButton("adminPlayerDiamondsBtn", "adminPlayerStatus", async () => {
+  const n = adminNumber("adminPlayerDiamonds", { integer: true, max: 1000000 });
+  if (n === null) throw new Error("Enter a whole number of diamonds up to 1,000,000.");
+  const doc = await adminTargetPlayer();
+  await writeAdminGrant(doc.id, "diamonds", n);
+  return "Sent " + n + " 💎 to " + doc.data().username + ".";
+});
+[["adminPStarBtn", "star", "a Star"], ["adminPHyperBtn", "hyper", "a Hyper Star"], ["adminPDiamondStarBtn", "diamondstar", "a Diamond Star"], ["adminPBillyBtn", "billy", "Billy"]]
+  .forEach(([buttonId, kind, label]) => wireAdminButton(buttonId, "adminPlayerStatus", async () => {
+    const doc = await adminTargetPlayer();
+    await writeAdminGrant(doc.id, kind, 1);
+    return "Sent " + label + " to " + doc.data().username + " (it spawns if they are online in the next 5 minutes).";
+  }));
+// For everyone
+wireAdminButton("adminAllCashBtn", "adminAllStatus", async () => {
+  const n = adminNumber("adminAllCash");
+  if (n === null) throw new Error("Enter a positive cash amount.");
+  await writeAdminGrant("all", "cash", n);
+  return "Sent " + cash(n) + " to everyone. Each player receives it once.";
+});
+wireAdminButton("adminAllDiamondsBtn", "adminAllStatus", async () => {
+  const n = adminNumber("adminAllDiamonds", { integer: true, max: 1000000 });
+  if (n === null) throw new Error("Enter a whole number of diamonds up to 1,000,000.");
+  await writeAdminGrant("all", "diamonds", n);
+  return "Sent " + n + " 💎 to everyone. Each player receives them once.";
+});
+wireAdminButton("adminHyperEveryoneBtn", "adminAllStatus", async () => { await broadcastKind("hyper"); return "Hyper Star sent to active players."; });
+wireAdminButton("adminDiamondStarEveryoneBtn", "adminAllStatus", async () => { await broadcastKind("diamond"); return "Diamond Star sent to active players."; });
 $("adminBillyEveryoneBtn").addEventListener("click", async () => {
-  const s = $("adminExtraStatus");
+  const s = $("adminAllStatus");
   if ($("adminPanel").hidden || !currentUser || !dbRef) return;
   try {
     await dbRef.collection("globalStarBroadcasts").doc("current").set({
@@ -6080,7 +6348,10 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     ["gta-vice","Vice City Sunset",45,"A hot pink and orange sunset sky with neon sparks drifting up.","linear-gradient(180deg,#1a0638 0%,#7a1fa8 30%,#ff3d8f 60%,#ff9a3c 85%,#ffd36b 100%)",[{n:5,rx:2,ry:2,cols:["#ff6bd6","#4de1ff","#ffd36b"],tw:190,th:230,sx:.2,sy:-.5,m:1}],36],
     ["gta-neon","Neon Strip Night",45,"A midnight skyline glowing magenta and cyan.","linear-gradient(180deg,#04030f 0%,#1a0f5a 45%,#c21e8f 80%,#19f6d2 100%)",[{n:6,rx:2,ry:2,cols:["#ff2bd6","#19f6d2","#ffffff"],tw:160,th:200,sx:-.2,sy:-.8,m:1}],26],
     ["gta-beach","Ocean Drive",45,"A turquoise coast under a golden sky with rolling waves.","linear-gradient(180deg,#ff8a5c 0%,#ffc46b 35%,#4fd8d0 70%,#0a8fa0 100%)",[{n:3,rx:2,ry:2,cols:["#ffffffb0","#fff3c0b0"],tw:220,th:260,sx:.4,sy:-.2,m:1}],60,[[WAVE(".24"),"400px 60px","0 100%","400px 100%"],[WAVE(".14"),"640px 96px","0 calc(100% - 14px)","-640px calc(100% - 14px)"]]],
+    ["gta-sunset","Keys Sunset",45,"A blood-orange sun sinking behind warm, drifting embers.","linear-gradient(180deg,#2a0c1a 0%,#b0302f 45%,#ff7a3c 75%,#ffd36b 100%)",[{n:5,rx:2,ry:2,cols:["#ffd36b","#ff9a3c","#ffffff"],tw:200,th:240,sx:.2,sy:-.6,m:1}],38],
+    ["gta-heist","Heist Skyline",45,"A black skyline with slow gold sparks rising.","linear-gradient(180deg,#05050a 0%,#14141f 55%,#3a2f0a 100%)",[{n:5,rx:2,ry:2,cols:["#ffcf33","#fff3b0"],tw:210,th:250,sx:0,sy:-.7,m:1}],42],
     ["gta-bayou","Leonida Bayou",45,"Fireflies glide over a dark green swamp with a purple glow.","linear-gradient(180deg,#120826 0%,#17402a 55%,#c9b037 120%)",[{n:5,rx:3,ry:3,cols:["#e8ff7a","#ffd36b"],tw:200,th:230,sx:.3,sy:-1,m:1}],34],
+    ["chess","Chessboard",45,"A slowly sliding chessboard with drifting gold dust.","linear-gradient(180deg,#2b2118 0%,#1a130d 100%)",[{n:4,rx:2,ry:2,cols:["#e6c35c","#fff3b0"],tw:220,th:260,sx:0,sy:-.4,m:1}],60],
     ["desert","Dune Wind",40,"Sand blows sideways across a burning sunset.","linear-gradient(180deg,#2a1608 0%,#7a3f14 55%,#d28a3a 100%)",[{n:6,rx:2,ry:2,cols:["#f3c883","#ffe0a8"],tw:180,th:150,sx:-1,sy:.2,m:1}],10]
   ];
   const THEMES=[
@@ -6097,6 +6368,8 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     ["ui-gta-beach","Ocean Drive","🏖️",50,"Teal water, sandy gold outlines and coral buttons.","#06303a","#0b4d5c","#12677a","#ffd166","#fffbea","#bfeee8","#ffd166","#ef476f","#0f7a86","#052a33",["#06303a","#0aa5a0","#ffb86b"],180],
     ["ui-gta-bayou","Gator Bayou","🐊",50,"Swamp greens with lime outlines.","#07150f","#12301f","#1a4a2e","#b8e04a","#f3ffe0","#a8c9a0","#b8e04a","#2f8f45","#1d5a36","#05110a",["#07150f","#1e5a34","#c9b037"],100],
     ["ui-gta-heist","Heist Night","💰",50,"Black and gold, ready for the big score.","#0a0a0f","#17171f","#22222e","#ffcf33","#ffffff","#b9b9c9","#ffcf33","#b8860b","#2a2a38","#050508",["#0a0a0f","#262633","#6e5a10"],45],
+    ["ui-chess","Chess Club","♞",50,"Dark walnut wood, cream outlines and gold accents.","#14110f","#211c18","#2e2721","#d9c7a0","#f6efe0","#c2b49a","#e6c35c","#6b4a2b","#3a2f25","#0e0c0a",["#14110f","#4a3a2a","#e9dcc3"],35],
+    ["ui-checkmate","Checkmate","♚",50,"Pure black and white, like the board itself.","#0a0a0a","#161616","#222222","#ffffff","#ffffff","#bdbdbd","#ffffff","#3a3a3a","#2a2a2a","#000000",["#000000","#444444","#ffffff"],0],
     ["ui-desert","Desert Dune","🏜️",50,"Warm sand and copper.","#1e1208","#4a2f14","#5c3a18","#e0a458","#fff4e0","#dcc29a","#f0b35a","#b8742a","#2e1b0b","#1a0f06",["#1e1208","#6b3c14","#d28a3a"],30]
   ];
   (function(){
@@ -6109,7 +6382,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
         S.push(w+"px "+h+"px"); P.push(Math.round(g.sx*w*g.m)+"px "+Math.round(g.sy*h*g.m)+"px"); Z.push("0 0"); R.push("repeat");
       }});
       (ex||[]).slice().reverse().forEach(e=>{L.unshift(e[0]);S.unshift(e[1]);Z.unshift(e[2]);P.unshift(e[3]);R.unshift("repeat-x");});
-      const z=Z.join(","),tw=["christmas","forest","arctic","candy","gta-vice","gta-neon","gta-bayou"].includes(id)?",dmtw 3.2s ease-in-out infinite alternate":"";
+      const z=Z.join(","),tw=["christmas","forest","arctic","candy","gta-vice","gta-neon","gta-bayou","gta-sunset","gta-heist"].includes(id)?",dmtw 3.2s ease-in-out infinite alternate":"";
       css+="body.dm-snow-"+id+"::before{background-image:"+sky+"!important;background-size:100% 240%!important;background-position:0 0;background-repeat:no-repeat!important;animation:dmsky 26s ease-in-out infinite alternate!important}"
         +"body.dm-snow-"+id+" .game-shell::before{background-image:"+L.join(",")+"!important;background-size:"+S.join(",")+"!important;background-repeat:"+R.join(",")+"!important;background-position:"+z+";opacity:1!important;animation:dmg-"+id+" "+secs+"s linear infinite"+tw+"!important}"
         +"@keyframes dmg-"+id+"{to{background-position:"+P.join(",")+"}}";
@@ -6140,13 +6413,14 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   // To add a limited-time offer: give its cosmetics {ltd:"name"} (they then never show in the normal shop sections),
   // make a BUNDLES entry with ltd:true (free:true makes it free), then add a line here.
   // ends = a timestamp in ms (e.g. new Date(2026,11,31,23,59).getTime()) or null for no end. Owned items always stay owned.
+  const GTA6_ENDS=Date.UTC(2026,10,20,7,0,0); // 20 Nov 2026, 00:00 Alberta time (UTC-7). Change this to move the end date.
   const LIMITEDS=[
-    {bundle:"b-gta-vice",tag:"🌴",ends:null,blurb:"Hot pink Vice City nights, on the house."},
-    {bundle:"b-gta-neon",tag:"🌃",ends:null,blurb:"Neon Strip after dark, on the house."},
-    {bundle:"b-gta-beach",tag:"🏖️",ends:null,blurb:"Ocean Drive sunshine, on the house."},
-    {bundle:"b-gta-bayou",tag:"🐊",ends:null,blurb:"Leonida swamp life, on the house."},
-    {bundle:"b-gta-sunset",tag:"🌅",ends:null,blurb:"Leonida sunset, on the house."},
-    {bundle:"b-gta-heist",tag:"💰",ends:null,blurb:"The big score, on the house."}
+    {bundle:"b-gta6-vice",tag:"🌴",ends:GTA6_ENDS,blurb:"Pink and cyan Vice City, on the house."},
+    {bundle:"b-gta6-sunset",tag:"🌅",ends:GTA6_ENDS,blurb:"A burning orange Leonida evening."},
+    {bundle:"b-gta6-neon",tag:"🌃",ends:GTA6_ENDS,blurb:"Midnight neon, with a palm tree cursor."},
+    {bundle:"b-gta6-beach",tag:"🏖️",ends:GTA6_ENDS,blurb:"Turquoise waves and golden light."},
+    {bundle:"b-gta6-bayou",tag:"🐊",ends:GTA6_ENDS,blurb:"Swamp greens and fireflies."},
+    {bundle:"b-gta6-heist",tag:"💰",ends:GTA6_ENDS,blurb:"Black and gold for the big score."}
   ];
   const freeToClaim=()=>{if(typeof state==="undefined"||!currentUser||isAdm())return null;
     return LIMITEDS.map(L=>BUNDLES.find(b=>b.id===L.bundle)).find((b,i)=>b&&b.free&&(!LIMITEDS[i].ends||Date.now()<LIMITEDS[i].ends)&&!b.items.every(id=>owned()[id]))||null;};
@@ -6168,6 +6442,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     C("f-inferno","frame","Inferno Frames",45,"Flickering fire-coloured outlines.","dm-f-inferno"),
     C("f-emerald","frame","Emerald Frames",35,"Pulsing green gem outlines.","dm-f-emerald"),
     C("f-neon","frame","Neon Pulse Frames",55,"Outlines that fade between pink and cyan.","dm-f-neon"),
+    C("f-chess","frame","Chess Frames",50,"Black and white checkered outlines.","dm-f-chess"),
     Object.assign(C("f-gta-vice","frame","Vice Frames",50,"Outlines that glow from hot pink to sunset orange.","dm-f-gta-vice"),{ltd:"gta6"}),
     Object.assign(C("f-gta-palm","frame","Palm Neon Frames",50,"Outlines that fade between cyan and lime.","dm-f-gta-palm"),{ltd:"gta6"}),
     C("gameboy","ui","Gameboy Green",50,"A green monochrome palette.","dm-ui-gb"),
@@ -6187,6 +6462,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     C("coin-gold","coin","Gold Coin Billy",30,"Billy's coins look like shiny gold coins.","dm-coin-gold"),
     C("coin-diamond","coin","Diamond Coin Billy",30,"Billy's coins look like diamonds.","dm-coin-diamond"),
     C("sword","cursor","Pixel Sword Cursor",35,"Your mouse pointer becomes a pixel sword.","dm-cursor-sword"),
+    C("cur-knight","cursor","Knight Cursor",35,"Your pointer is a chess knight.","dm-cursor-knight"),
     Object.assign(C("cur-palm","cursor","Palm Tree Cursor",35,"Your pointer is a palm tree.","dm-cursor-palm"),{ltd:"gta6"}),
     C("cur-heart","cursor","Heart Cursor",30,"A red heart pointer.","dm-cursor-heart"),
     C("cur-star","cursor","Star Cursor",30,"A golden star pointer.","dm-cursor-star"),
@@ -6195,6 +6471,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     C("cur-wand","cursor","Magic Wand Cursor",35,"A wand with a star on the tip.","dm-cursor-wand"),
     C("cur-arrow","cursor","Retro Arrow Cursor",25,"A big classic white arrow.","dm-cursor-arrow"),
     C("sparkle","click","Click Sparkles",45,"Sparkles burst where you click.","dm-click-sparkle"),
+    C("fx-chess","click","Chess Pieces",45,"Chess pieces scatter from every click.","dm-fx-chess"),
     Object.assign(C("fx-gta","click","Neon Sparks",45,"Pink, cyan and orange sparks fly out of every click.","dm-fx-gta"),{ltd:"gta6"}),
     C("fx-hearts","click","Click Hearts",45,"Hearts float up from every click.","dm-fx-hearts"),
     C("fx-confetti","click","Click Confetti",50,"Confetti pops where you click.","dm-fx-confetti"),
@@ -6231,13 +6508,13 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     {id:"b-arcade",name:"Neon Arcade Bundle",off:.3,items:["aurora","f-neon","rainbow","star-comet","fx-confetti","cur-star","ov-vhs"]},
     {id:"b-xmas",name:"Christmas Bundle",off:.3,items:["christmas","ui-xmas","f-emerald","star-snow","fx-snow","cur-star","ov-vignette"]},
     {id:"b-sea",name:"Sea & Sky Bundle",off:.3,items:["sky","ocean","ui-sky","ui-ocean","fx-ripple","coin-diamond"]},
-    // GTA 6 limiteds, split by theme. Each has at most one item per slot, so "Equip all" equips the whole bundle.
-    {id:"b-gta-vice",name:"Vice City Bundle",off:1,free:true,ltd:true,lt:"gta6",items:["gta-vice","ui-gta-vice","f-gta-vice","star-gta","fx-gta"]},
-    {id:"b-gta-neon",name:"Neon Strip Bundle",off:1,free:true,ltd:true,lt:"gta6",items:["gta-neon","ui-gta-neon","f-gta-palm","ov-gta"]},
-    {id:"b-gta-beach",name:"Ocean Drive Bundle",off:1,free:true,ltd:true,lt:"gta6",items:["gta-beach","ui-gta-beach","cur-palm"]},
-    {id:"b-gta-bayou",name:"Gator Bayou Bundle",off:1,free:true,ltd:true,lt:"gta6",items:["gta-bayou","ui-gta-bayou"]},
-    {id:"b-gta-sunset",name:"Leonida Sunset Bundle",off:1,free:true,ltd:true,lt:"gta6",items:["gta-vice","ui-gta-sunset","f-gta-vice","fx-gta"]},
-    {id:"b-gta-heist",name:"Heist Night Bundle",off:1,free:true,ltd:true,lt:"gta6",items:["gta-neon","ui-gta-heist","f-gta-palm","star-gta"]},
+    {id:"b-gta6-vice",name:"GTA 6: Vice City",off:1,free:true,ltd:true,nkey:"gta6",items:["ui-gta-vice","gta-vice","f-gta-vice","star-gta","fx-gta","ov-gta"]},
+    {id:"b-gta6-sunset",name:"GTA 6: Leonida Sunset",off:1,free:true,ltd:true,nkey:"gta6",items:["ui-gta-sunset","gta-sunset"]},
+    {id:"b-gta6-neon",name:"GTA 6: Neon Strip",off:1,free:true,ltd:true,nkey:"gta6",items:["ui-gta-neon","gta-neon","f-gta-palm","cur-palm"]},
+    {id:"b-gta6-beach",name:"GTA 6: Ocean Drive",off:1,free:true,ltd:true,nkey:"gta6",items:["ui-gta-beach","gta-beach"]},
+    {id:"b-gta6-bayou",name:"GTA 6: Gator Bayou",off:1,free:true,ltd:true,nkey:"gta6",items:["ui-gta-bayou","gta-bayou"]},
+    {id:"b-gta6-heist",name:"GTA 6: Heist Night",off:1,free:true,ltd:true,nkey:"gta6",items:["ui-gta-heist","gta-heist"]},
+    {id:"b-chess",name:"Chess Set",off:.2,items:["ui-chess","chess","f-chess","cur-knight","fx-chess"]},
     {id:"b-all",name:"Collector's Vault",off:.4,all:true,items:COS.filter(o=>!o.ltd).map(o=>o.id)}
   ];
   const PROF=[];
@@ -6343,17 +6620,21 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   const cost0=id=>{const o=COS.find(x=>x.id===id);return o?o.cost:0};
   const bFull=b=>b.items.reduce((s,id)=>s+cost0(id),0);
   const bPrice=b=>b.free?0:Math.max(1,Math.round(b.items.filter(id=>!owned()[id]).reduce((s,id)=>s+cost0(id),0)*(1-b.off)));
-  // Equip a whole bundle: one item per slot (first owned item in bundle order wins), other slots are left alone.
-  function bundlePlan(b){const pick={};b.items.forEach(id=>{const o=byId(id);if(o&&o.group&&owned()[id]&&!pick[o.group])pick[o.group]=o;});return Object.values(pick);}
-  const bundleEquipped=b=>{const pl=bundlePlan(b);return pl.length>0&&pl.every(o=>equipped()[o.id]);};
+  // Equip every owned item of a bundle in one click (one item per slot: the bundles are built that way)
+  const bundleEquipIds=b=>b.all?[]:b.items.filter(id=>owned()[id]&&byId(id)&&byId(id).type==="cos");
   function equipBundle(b){
-    const pl=bundlePlan(b); if(!pl.length)return;
-    pl.forEach(o=>equipCos(o,true));
+    const ids=bundleEquipIds(b); if(!ids.length)return;
+    const allOn=ids.every(id=>equipped()[id]);
+    ids.forEach(id=>{const o=byId(id); if(o)equipCos(o,!allOn);});
     after(false);
-    const skipped=b.items.filter(id=>{const o=byId(id);return o&&owned()[id]&&!pl.includes(o);}).length;
-    toast(b.name+" equipped"+(skipped?" ("+skipped+" extra item"+(skipped>1?"s":"")+" skipped: only one per slot can be equipped)":"")+".",3400);
+    toast(allOn?b.name+" unequipped.":b.name+" equipped ("+ids.length+" item"+(ids.length===1?"":"s")+").",2600);
   }
+  const eqBundleBtn=b=>{const ids=bundleEquipIds(b); if(!ids.length)return null;
+    const allOn=ids.every(id=>equipped()[id]);
+    return makeButton(allOn?"✔ Equipped · unequip all":"✨ Equip all ("+ids.length+")",()=>equipBundle(b),false,"dm-btn dm-equip"+(allOn?" dm-on":""));};
+  const timeLeft=ms=>{const m=Math.max(0,Math.floor(ms/60000)),d=Math.floor(m/1440),h=Math.floor(m%1440/60),mi=m%60;return d>0?d+"d "+h+"h":h>0?h+"h "+mi+"m":mi+"m";};
   function buyBundle(b){
+    {const L=LIMITEDS.find(x=>x.bundle===b.id); if(L&&L.ends&&Date.now()>=L.ends)return;}
     const p=bPrice(b); if(D()<p||b.items.every(id=>owned()[id]))return;
     state.diamonds=D()-p; owned()[b.id]=true;
     b.items.forEach(id=>{owned()[id]=true;});
@@ -6517,10 +6798,11 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
        const note=document.createElement("p");note.className="dm-desc";note.textContent="Limited-time items. When they are gone, they are gone.";host.append(note);
        live.forEach(L=>{const b=BUNDLES.find(x=>x.id===L.bundle),done=b.items.every(id=>owned()[id]);
          const names=b.items.map(id=>{const o=byId(id);return o?o.name:id;}).join(", ");
-         const left=L.ends?" Ends "+new Date(L.ends).toLocaleString()+".":"";
+         const msLeft=L.ends?L.ends-Date.now():0;
+         const left=!L.ends?"":(msLeft>0?" ⏳ Leaves the shop in "+timeLeft(msLeft)+" ("+new Date(L.ends).toLocaleDateString(undefined,{month:"long",day:"numeric"})+"). Claim it before then to keep it forever.":" This offer has ended. You keep what you claimed.");
          const price=bPrice(b);
-         const btn=done?(bundleEquipped(b)?makeButton("Equipped ✓",()=>{},true,"dm-btn"):makeButton("✨ Equip all",()=>equipBundle(b),false,"dm-btn dm-buy")):(b.free?makeButton("🎁 Claim FREE",()=>buyBundle(b),false,"dm-btn dm-buy"):buyBtn(price,()=>buyBundle(b)));
-         card((L.tag?L.tag+" ":"")+b.name+(b.free?" · FREE":""),(L.blurb||"")+" Includes "+b.items.length+" items: "+names+"."+left,[pvBtn(()=>startPv(b.items.slice(),b.name)),btn]);
+         const btn=done?makeButton("Owned",()=>{},true,"dm-btn"):(b.free?makeButton("🎁 Claim FREE",()=>buyBundle(b),false,"dm-btn dm-buy"):buyBtn(price,()=>buyBundle(b)));
+         card((msLeft>0&&msLeft<864e5?"⏰ LAST CHANCE · ":"")+(L.tag?L.tag+" ":"")+b.name+(b.free?" · FREE":""),(L.blurb||"")+" Includes "+b.items.length+" items: "+names+"."+left,[pvBtn(()=>startPv(b.items.slice(),b.name)),eqBundleBtn(b),btn].filter(Boolean));
        });
      }}
     head("Perks");
@@ -6542,7 +6824,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     BUNDLES.filter(b=>!b.ltd).forEach(b=>{
       const done=b.items.every(id=>owned()[id]),price=bPrice(b),full=bFull(b),pct=Math.round(b.off*100);
       const names=b.all?"Every cosmetic in the shop ("+b.items.length+" items)":b.items.map(id=>{const o=byId(id);return o?o.name:id;}).join(", ");
-      card(b.name,names+". Full price 💎 "+full+" · "+pct+"% off.",[pvBtn(()=>startPv(b.items.filter(id=>{const o=byId(id);return o&&o.group!=="ui"||!b.all;}),b.name)),done?(b.all?makeButton("Owned",()=>{},true,"dm-btn"):(bundleEquipped(b)?makeButton("Equipped ✓",()=>{},true,"dm-btn"):makeButton("✨ Equip all",()=>equipBundle(b),false,"dm-btn dm-buy"))):buyBtn(price,()=>buyBundle(b))]);
+      card(b.name,names+". Full price 💎 "+full+" · "+pct+"% off.",[pvBtn(()=>startPv(b.items.filter(id=>{const o=byId(id);return o&&o.group!=="ui"||!b.all;}),b.name)),eqBundleBtn(b),done?makeButton("Owned",()=>{},true,"dm-btn"):buyBtn(price,()=>buyBundle(b))].filter(Boolean));
     });
     let sec=null;
     PROF.forEach(p=>{
@@ -6566,7 +6848,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     adminGrant();
     const keep=document.querySelector(".main-tab-content"),top=keep?keep.scrollTop:0;
     host.replaceChildren();
-    const INV_TITLES=[...GROUPS.map(x=>x[1]),"Name colour","Chat titles","Prestige","Badge icons","Announcement styles"];
+    const INV_TITLES=["Loadouts",...GROUPS.map(x=>x[1]),"Name colour","Chat titles","Prestige","Badge icons","Announcement styles"];
     let closed; try{closed=new Set(JSON.parse(localStorage.getItem("sfInvClosed")||"[]"));}catch(e){closed=new Set();}
     const setClosed=()=>{try{localStorage.setItem("sfInvClosed",JSON.stringify([...closed]));}catch(e){}};
     {const bar=document.createElement("div");bar.className="inv-bar";
@@ -6582,6 +6864,23 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
       const b=makeButton(locked?"🔒 Locked":on?"Equipped ✓":"Equip",fn||(()=>{}),!!locked,"inv-btn"+(on?" inv-btn-on":""));
       c.append(n,d,b);g.append(c);
     };
+    {const g=sec("Loadouts","Save everything you have equipped (theme, background, frame, cursor, click effect, Star skin...) and swap back with one click.");
+     if(!Array.isArray(state.dmLoadouts))state.dmLoadouts=[null,null,null];
+     [0,1,2].forEach(i=>{
+       const L=state.dmLoadouts[i]&&Array.isArray(state.dmLoadouts[i].ids)?state.dmLoadouts[i]:null;
+       const have=L?L.ids.filter(id=>owned()[id]&&COS.some(o=>o.id===id)):[];
+       const c=document.createElement("div");c.className="inv-item";
+       const n=document.createElement("strong");n.className="inv-name";n.textContent="Loadout "+(i+1);
+       const d=document.createElement("span");d.className="inv-desc";
+       d.textContent=L?have.length+" item"+(have.length===1?"":"s")+(have.length<L.ids.length?" (some are no longer owned)":""):"Empty";
+       const eq=makeButton("Equip",()=>{COS.forEach(o=>{equipped()[o.id]=false;});have.forEach(id=>{equipped()[id]=true;});after(false);toast("Loadout "+(i+1)+" equipped.",2000);},!L||!have.length,"inv-btn");
+       const sv=makeButton(L?"Overwrite":"Save current",()=>{
+         const ids=COS.filter(o=>owned()[o.id]&&equipped()[o.id]).map(o=>o.id);
+         if(!ids.length){toast("Equip something first.",2200);return;}
+         state.dmLoadouts[i]={ids};after(false);toast("Loadout "+(i+1)+" saved ("+ids.length+" items).",2200);
+       },false,"inv-btn");
+       c.append(n,d,eq,sv);g.append(c);
+     });}
     GROUPS.forEach(([grp,title])=>{
       const g=sec(title),list=COS.filter(o=>o.group===grp&&owned()[o.id]);
       if(!list.length)return empty(g);
@@ -6636,6 +6935,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     "dm-fx-bolt":{n:5,ch:"⚡",cols:["#ffe14d"],fs:18,d:[22,46]},
     "dm-fx-coins":{n:6,ch:"🪙",cols:["#ffffff"],fs:16,d:[24,56],up:1},
     "dm-fx-snow":{n:9,ch:"❄",cols:["#d6f1ff","#9fdcff","#ffffff"],fs:15,d:[20,50],grav:.5},
+    "dm-fx-chess":{n:7,ch:"♟",chs:["♔","♕","♖","♗","♘","♙"],cols:["#ffffff","#e6c35c","#d9c7a0"],fs:20,d:[24,58],spin:1},
     "dm-fx-gta":{n:10,ch:"✦",cols:["#ff4fa8","#4de1ff","#ffb347","#ffffff"],fs:17,d:[24,60]},
     "dm-fx-stars":{n:8,ch:"★",cols:["#ffe14d","#fff3a0","#ffb300"],fs:15,d:[24,56]}
   };
@@ -6649,7 +6949,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
       let dx=Math.cos(a)*d,dy=Math.sin(a)*d; if(f.up)dy=-Math.abs(dy)-10; if(f.grav)dy+=40*f.grav;
       const s=document.createElement("span"); s.className="dm-spark"+(f.ch?" dm-fxch":"");
       const col=f.cols[i%f.cols.length];
-      if(f.ch){s.textContent=f.ch;s.style.fontSize=f.fs+"px";s.style.color=col;}
+      if(f.ch){s.textContent=f.chs?f.chs[Math.floor(Math.random()*f.chs.length)]:f.ch;s.style.fontSize=f.fs+"px";s.style.color=col;}
       else{s.style.width=s.style.height=f.box+"px";s.style.margin=(-f.box/2)+"px 0 0 "+(-f.box/2)+"px";s.style.background=col;}
       s.style.left=x+"px";s.style.top=y+"px";s.style.setProperty("--dx",dx.toFixed(1)+"px");s.style.setProperty("--dy",dy.toFixed(1)+"px");
       if(f.spin)s.style.setProperty("--rot",((Math.random()*720-360)|0)+"deg");
@@ -6704,9 +7004,10 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     }
     const annRow=document.getElementById("annStyleRow"),annSel=document.getElementById("annStyleSelect");
     if(annRow&&annSel){const adm=isPrivilegedUser();annRow.hidden=!adm;if(adm&&document.activeElement!==annSel){const v=AN[prof().annStyle]?prof().annStyle:"";if(annSel.value!==v)annSel.value=v;}}
+    if(cloudSaveReady&&currentUser&&adminGrantsActiveFor!==currentUser.uid){adminGrantsActiveFor=currentUser.uid;try{startAdminGrantListener();}catch(e){console.error(e);}}
     {const fb=cloudSaveReady?freeToClaim():null;
      if(fb){const seen=(state.dmFreeSeen=state.dmFreeSeen&&typeof state.dmFreeSeen==="object"?state.dmFreeSeen:{});
-       const sk=fb.lt||fb.id; if(!seen[sk]){seen[sk]=true; notify("🎁 You have something free in the shop to claim"); toast("🎁 You have something free in the shop to claim",5000); try{save();}catch(e){}}}}
+       const nk=fb.nkey||fb.id; if(!seen[nk]){seen[nk]=true; notify("🎁 You have something free in the shop to claim"); toast("🎁 You have something free in the shop to claim",5000); try{save();}catch(e){}}}}
     applyCos(); refresh();
   },1000);
   (function(){const s=document.getElementById("annStyleSelect");if(!s)return;
@@ -6737,6 +7038,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
 
 $("adminGiftBtn").addEventListener("click", sendAdminGeneratorGift);
 $("adminGiftEveryoneBtn").addEventListener("click", sendAdminGeneratorGiftToEveryone);
+$("adminBestGenEveryoneBtn").addEventListener("click", sendAdminBestGeneratorToEveryone);
 $("adminDeleteAccountBtn").addEventListener("click", deletePlayerAccount);
 $("giftForm").addEventListener("submit", sendGeneratorGift);
 $("claimAllGiftsBtn").addEventListener("click", () => handleAllGifts("claim"));
