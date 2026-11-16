@@ -90,7 +90,7 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .slot.filled::before{content:"";display:none;position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;opacity:.38;background:var(--cycle-from,var(--tier-color))}
 .slot.filled.color-cycling::before{display:block;animation:tier-color-cycle var(--cycle-duration,2.4s) ease-in-out infinite alternate}
 .slot.filled.cycle-chroma::before{animation-name:tier-rainbow;animation-timing-function:linear;animation-iteration-count:infinite;animation-direction:normal}
-.slot.filled.cycle-blossom::before,.slot.filled.cycle-absolute::before,.slot.filled.cycle-astral::before,.slot.filled.cycle-celestial::before,.slot.filled.cycle-aether::before,.slot.filled.cycle-nebulous::before,.slot.filled.cycle-paradox::before,.slot.filled.cycle-singularity::before,.slot.filled.cycle-arsenal::before,.slot.filled.cycle-extravagent::before,.slot.filled.cycle-extravagent2::before,.slot.filled.cycle-extravagent3::before,.slot.filled.cycle-extravagent4::before,.slot.filled.cycle-extravagentPrime::before,.slot.filled.cycle-extravagentCrown::before{animation-direction:alternate}
+.slot.filled.cycle-blossom::before,.slot.filled.cycle-absolute::before,.slot.filled.cycle-astral::before,.slot.filled.cycle-celestial::before,.slot.filled.cycle-aether::before,.slot.filled.cycle-nebulous::before,.slot.filled.cycle-dragon::before,.slot.filled.cycle-singularity::before,.slot.filled.cycle-arsenal::before,.slot.filled.cycle-extravagent::before,.slot.filled.cycle-abyssal::before,.slot.filled.cycle-resplendent::before,.slot.filled.cycle-opulent::before,.slot.filled.cycle-transcendent::before,.slot.filled.cycle-eternal::before{animation-direction:alternate}
 .game-shell{position:relative;isolation:isolate}
 .game-shell::before{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;background-image:radial-gradient(3px 3px at 18px 22px,#ffffffd8 99%,transparent),radial-gradient(5px 5px at 112px 86px,#d8eaffd8 99%,transparent),radial-gradient(2px 2px at 65px 132px,#ffffffcf 99%,transparent),radial-gradient(4px 4px at 158px 44px,#ffffffc8 99%,transparent);background-size:160px 180px,230px 245px,195px 210px,285px 310px;background-position:0 0,40px 30px,110px 120px,80px 60px;animation:snowfall 26s linear infinite;opacity:calc(1 - var(--black-level) * .2)}
 .snow-disabled .game-shell::before,.snow-disabled .auth-screen::before{display:none}
@@ -180,17 +180,22 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .effect-nebulous .generator-particles span{width:4px;height:4px;background:#b8f5ff;box-shadow:0 0 10px 3px #4e6dff}
 .effect-nebulous .generator-particles span:nth-child(odd)::before{content:"✦";color:#fff;text-shadow:0 0 8px #8b66ff,0 0 15px #42d9ff}
 .effect-nebulous .generator-particles span:nth-child(4n)::before{content:"·";color:#ffc7fa;text-shadow:0 0 8px #d45dff}
-.effect-paradox .generator-particles span{width:3px;height:11px;border-radius:4px;background:#ffc36a;box-shadow:0 0 10px 3px #e53a22;transform:translate(-50%,-50%) rotate(35deg)}
-.effect-paradox .generator-particles span:nth-child(odd)::before{content:"✦";color:#ffe7c0;text-shadow:0 0 10px #d21d27}
 .effect-singularity .generator-particles span{width:5px;height:5px;background:#fff1a3;box-shadow:0 0 12px 4px #ff7b00}
 .effect-singularity .generator-particles span:nth-child(3n)::before{content:"✧";color:#fff7c2;text-shadow:0 0 11px #ff9400}
+.effect-dragon .generator-particles span{width:4px;height:10px;border-radius:50% 50% 50% 50%/65% 65% 35% 35%;background:#fff;box-shadow:0 0 8px 2px #fff,0 0 16px 5px #000;transform:translate(-50%,-50%) rotate(25deg)}
+.effect-dragon .generator-particles span:nth-child(odd)::before{content:"✦";color:#fff;text-shadow:0 0 6px #000,0 0 12px #000}
+.effect-dragon .generator-particles span:nth-child(4n)::before{content:"☯";color:#fff;font-size:12px;text-shadow:0 0 6px #000,0 0 10px #000}
+.effect-dragon .generator-visual::before{content:"";position:absolute;inset:-5px;border-radius:50%;pointer-events:none;background:conic-gradient(#fff,#000,#fff,#000,#fff);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));filter:drop-shadow(0 0 5px #fff) drop-shadow(0 0 9px #000);animation:particle-orbit 2.2s linear infinite}
+.effect-dragon .generator-visual::after{content:"";position:absolute;inset:-10px;border-radius:50%;pointer-events:none;border:2px dashed #fff;box-shadow:0 0 10px #000,inset 0 0 8px #000;animation:particle-orbit 4.5s linear infinite reverse}
+.slot[data-generator-id="dragon"] .generator-mark,.slot[data-look="dragon"] .generator-mark{animation:dragon-mark 2.4s ease-in-out infinite alternate}
+@keyframes dragon-mark{from{color:#fff;filter:drop-shadow(0 0 4px #000)}to{color:#000;filter:drop-shadow(0 0 4px #fff)}}
+.slot[data-generator-id="dragon"] .tier,.slot[data-generator-id="dragon"] .gen-name,.slot[data-generator-id="dragon"] .gen-income,.slot[data-look="dragon"] .tier,.slot[data-look="dragon"] .gen-name,.slot[data-look="dragon"] .gen-income{color:#fff!important;-webkit-text-stroke:.5px #000;text-shadow:0 0 4px #000,0 0 7px #000}
 .effect-extravagent .generator-particles span{width:4px;height:6px;border-radius:90% 10% 90% 10%;background:#c9ff9a;box-shadow:0 0 9px 3px #39e75b}
 .effect-extravagent .generator-particles span:nth-child(odd)::before{content:"✦";color:#e4ffb2;text-shadow:0 0 9px #1aa842}
-.effect-astral .generator-visual::before,.effect-nebulous .generator-visual::before,.effect-paradox .generator-visual::before,.effect-singularity .generator-visual::before,.effect-extravagent .generator-visual::before{content:"";position:absolute;inset:-4px;border-radius:50%;pointer-events:none}
+.effect-astral .generator-visual::before,.effect-nebulous .generator-visual::before,.effect-singularity .generator-visual::before,.effect-extravagent .generator-visual::before{content:"";position:absolute;inset:-4px;border-radius:50%;pointer-events:none}
 .effect-astral .generator-visual::before{border:2px solid #9fc5ff;box-shadow:0 0 16px 4px #527dde;animation:particle-orbit 1.2s linear infinite}
 .effect-nebulous .generator-visual::before{inset:-4px;border:2px solid #7a75ff;box-shadow:0 0 16px 4px #3349db,inset 0 0 10px #8b4dff;animation:particle-orbit 3.2s linear infinite}
 .effect-nebulous .generator-visual::after{content:"";position:absolute;inset:-8px;border:1px dashed #c9a5ff;border-radius:50%;box-shadow:0 0 10px #714bff;animation:particle-orbit 5s linear infinite reverse}
-.effect-paradox .generator-visual::before{border:2px solid #ff7a27;box-shadow:0 0 15px 3px #a20d21;animation:obsidian-pulse .8s ease-in-out infinite alternate}
 .effect-singularity .generator-visual::before{inset:-5px;border:2px solid #ffcf52;box-shadow:0 0 17px 4px #ff6a00;animation:particle-orbit 2s linear infinite}
 .effect-extravagent .generator-visual::before{border:2px dashed #90ff78;box-shadow:0 0 15px 4px #20aa45;animation:particle-orbit 2.4s linear infinite}
 @keyframes tier-color-cycle{from{background-color:var(--cycle-from,var(--tier-color))}to{background-color:var(--cycle-to,var(--tier-accent))}}
@@ -203,12 +208,12 @@ h2{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:11px}
 .slot .gen-income{font-size:clamp(5px,calc(10px * var(--slot-scale,1)),10px);color:#dce4ee}
 .slot[data-generator-id="common"] .tier,.slot[data-generator-id="common"] .gen-name,.slot[data-generator-id="common"] .gen-income{color:hsl(calc(var(--h) - 6) calc(36% * var(--sat)) 95%)!important}
 .slot[data-generator-id="common"] .generator-mark{color:#caced0!important}
-.slot[data-generator-id="ethereal"] .tier,.slot[data-generator-id="ethereal"] .gen-name,.slot[data-generator-id="ethereal"] .gen-income{color:#d6dde3!important}
-.slot[data-generator-id="ethereal"] .generator-mark{color:#aab8c4!important}
+.slot[data-generator-id="bloxy"] .tier,.slot[data-generator-id="bloxy"] .gen-name,.slot[data-generator-id="bloxy"] .gen-income{color:#d6dde3!important}
+.slot[data-generator-id="bloxy"] .generator-mark{color:#aab8c4!important}
 .slot[data-look="common"] .tier,.slot[data-look="common"] .gen-name,.slot[data-look="common"] .gen-income{color:hsl(calc(var(--h) - 6) calc(36% * var(--sat)) 95%)!important}
 .slot[data-look="common"] .generator-mark{color:#caced0!important}
-.slot[data-look="ethereal"] .tier,.slot[data-look="ethereal"] .gen-name,.slot[data-look="ethereal"] .gen-income{color:#d6dde3!important}
-.slot[data-look="ethereal"] .generator-mark{color:#aab8c4!important}
+.slot[data-look="bloxy"] .tier,.slot[data-look="bloxy"] .gen-name,.slot[data-look="bloxy"] .gen-income{color:#d6dde3!important}
+.slot[data-look="bloxy"] .generator-mark{color:#aab8c4!important}
 .empty-mark{font-size:25px;color:hsl(calc(var(--h) - 5) calc(29% * var(--sat)) 26%)}
 .tip{margin:13px 2px 0;color:var(--muted);font-size:11px;text-align:center}
 .admin-panel-bottom{margin-top:16px}
@@ -369,6 +374,29 @@ body.mode-mobile .notice-area{padding:6px 10px 0}body.mode-mobile .top-hud{paddi
 .dev-card h2{margin:0;font-size:20px}.dev-card p{margin:0;color:var(--muted);font-size:14px}
 .dev-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .dev-choice{display:grid;gap:4px;justify-items:center;padding:16px 8px;min-height:110px;font-size:15px;font-weight:800;border:2px solid var(--line);border-radius:10px;cursor:pointer}
+@property --crown-a{syntax:"<angle>";initial-value:0deg;inherits:false}
+.crown-layer{position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit}
+.crown-layer::before{content:"";position:absolute;inset:2px;border-radius:inherit;border:2px solid var(--cr1);box-shadow:0 0 10px 1px var(--cr1),inset 0 0 10px var(--cr2);opacity:var(--cr-op,1)}
+.crown-layer.l1{--cr-op:.4}.crown-layer.l2{--cr-op:.7}.crown-layer.l3{--cr-op:1}
+.crown-layer.l3::before{box-shadow:0 0 16px 3px var(--cr1),inset 0 0 14px var(--cr2)}
+.crown-layer.l1::after,.crown-layer.fam-pulse::after{display:none}
+.crown-layer:is(.l2,.l3)::before{animation:crown-pulse 2.6s ease-in-out infinite alternate}
+.crown-layer.fam-chase:is(.l2,.l3)::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:3px;opacity:var(--cr-op,1);background:conic-gradient(from var(--crown-a),transparent 0 68%,var(--cr1) 90%,var(--cr2) 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);animation:crown-spin 2.4s linear infinite}
+.crown-layer.fam-chase.l2::after{animation-duration:4.2s}
+.crown-layer.fam-flame:is(.l2,.l3)::after{content:"";position:absolute;left:8%;right:8%;bottom:0;height:62%;background:radial-gradient(ellipse at 50% 100%,var(--cr1),var(--cr2) 45%,transparent 72%);opacity:calc(var(--cr-op,1)*.8);filter:blur(3px);transform-origin:50% 100%;animation:crown-flame .9s ease-in-out infinite alternate}
+.crown-layer.fam-flash:is(.l2,.l3)::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(circle at 50% 45%,var(--cr1),transparent 70%);opacity:0;animation:crown-flash 2.8s ease-in-out infinite}
+.crown-badge{position:absolute;top:2px;right:2px;z-index:3;font:800 10px/1.2 system-ui,sans-serif;color:#fff;background:rgba(0,0,0,.72);border:1px solid var(--cr1);border-radius:8px;padding:0 4px;pointer-events:none}
+.crown-burst-ring{position:absolute;inset:0;z-index:4;pointer-events:none;border-radius:inherit;border:3px solid var(--cr1);box-shadow:0 0 18px 4px var(--cr1);animation:crown-burst 1.6s ease-out forwards}
+@keyframes crown-pulse{from{opacity:calc(var(--cr-op,1)*.55)}to{opacity:var(--cr-op,1)}}
+@keyframes crown-spin{to{--crown-a:360deg}}
+@keyframes crown-flame{from{transform:scaleY(.8)}to{transform:scaleY(1.15)}}
+@keyframes crown-flash{0%,68%,100%{opacity:0}76%{opacity:var(--cr-op,1)}82%{opacity:.15}88%{opacity:var(--cr-op,1)}}
+@keyframes crown-burst{0%{transform:scale(.8);opacity:1}100%{transform:scale(1.9);opacity:0}}
+.low-performance .crown-layer::before,.low-performance .crown-layer::after,html.reduced-motion .crown-layer::before,html.reduced-motion .crown-layer::after{animation:none!important}
+.low-performance .crown-burst-ring,html.reduced-motion .crown-burst-ring{display:none}
+#genFirstBanner{position:fixed;left:50%;top:calc(64px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:2147483646;width:max-content;max-width:min(760px,calc(100vw - 24px));padding:10px 20px;border-radius:12px;text-align:center;font:800 17px/1.35 system-ui,sans-serif;color:#fff;text-shadow:0 0 4px #000,0 0 9px #000;border:2px solid var(--gf-accent,#fff);box-shadow:0 0 26px var(--gf-accent,#fff);animation:gf-in .5s ease-out}
+#genFirstBanner[hidden]{display:none}
+@keyframes gf-in{from{opacity:0;transform:translateX(-50%) translateY(-14px)}to{opacity:1;transform:translateX(-50%)}}
 .dm-tut-bar{border-color:#6fc3ff;background:rgba(30,80,150,.38)}.dm-tut-bar strong{color:#aee6ff}
 .dm-dialog-body>.dm-tut-bar{position:sticky;top:0;z-index:5;margin:0 0 10px}
 @keyframes dm-tut-pulse{0%,100%{box-shadow:0 0 0 0 rgba(111,195,255,.85)}50%{box-shadow:0 0 0 7px rgba(111,195,255,0)}}
@@ -1354,16 +1382,16 @@ const GENERATOR_TIERS = [
   { id:"epic",       name:"Epic",       color:"#805282", accent:"#b879bc" },
   { id:"legendary",  name:"Legendary",  color:"#a47a39", accent:"#d0ad66" },
   { id:"mythical",   name:"Mythical",   color:"#a94e65", accent:"#d9778e" },
-  { id:"ethereal",   name:"Bloxy",      color:"#66727d", accent:"#aab6c0", colorCycling:false },
+  { id:"bloxy",   name:"Bloxy",      color:"#66727d", accent:"#aab6c0", colorCycling:false },
   { id:"magma",      name:"Magma",      color:"#e27a36", accent:"#ffc979", cycleFrom:"#a51e08", cycleTo:"#ff8a12", cycleDuration:1.2 },
   { id:"hyper",      name:"Hyper",      color:"#cf4058", accent:"#ff9a79" },
   { id:"neon",       name:"Neon",       color:"#243c70", accent:"#8db1ed", cycleFrom:"#07194f", cycleTo:"#397aff", cycleDuration:1.5 },
   { id:"divine",     name:"Divine",     color:"#e984ba", accent:"#ffd0e8", effect:"dots" },
-  { id:"godly",      name:"Sky",        color:"#69cfff", accent:"#e5f8ff", effect:"sky", cycleFrom:"#163b8a", cycleTo:"#87ddff", cycleDuration:12 },
+  { id:"sky",      name:"Sky",        color:"#69cfff", accent:"#e5f8ff", effect:"sky", cycleFrom:"#163b8a", cycleTo:"#87ddff", cycleDuration:12 },
   { id:"quantum",    name:"Quantum",    color:"#7254c7", accent:"#d1a2ff", effect:"stars" },
-  { id:"plasma",     name:"Crispin",    color:"#ee3f43", accent:"#ff6b73", effect:"crispin" },
-  { id:"radiant",    name:"Almighty",  color:"#ffe04a", accent:"#fff9bf", effect:"crosses" },
-  { id:"surge",      name:"Hyena",      color:"#249fc9", accent:"#a9efff", effect:"lightning" },
+  { id:"crispin",     name:"Crispin",    color:"#ee3f43", accent:"#ff6b73", effect:"crispin" },
+  { id:"almighty",    name:"Almighty",  color:"#ffe04a", accent:"#fff9bf", effect:"crosses" },
+  { id:"hyena",      name:"Hyena",      color:"#249fc9", accent:"#a9efff", effect:"lightning" },
   { id:"chroma",     name:"Chroma",     color:"#b83b9d", accent:"#ff83dc", effect:"chroma", cycleDuration:2.2 },
   { id:"blossom",    name:"Blossom",    color:"#a94361", accent:"#ff9a4a", effect:"fog", cycleFrom:"#8f365a", cycleTo:"#ed8138", cycleDuration:3.2 },
   { id:"absolute",   name:"Absolute",   color:"#45bd32", accent:"#b4ff66", effect:"absolute", cycleDuration:1.05 },
@@ -1371,15 +1399,15 @@ const GENERATOR_TIERS = [
   { id:"celestial",  name:"Celestial",  color:"#ff861d", accent:"#ffe08a", effect:"celestial", cycleFrom:"#d84b12", cycleTo:"#ffbd36", cycleDuration:1.5 },
   { id:"aether",     name:"Aether",     color:"#18bfd1", accent:"#ff78d1", effect:"aether", cycleFrom:"#00b9d6", cycleTo:"#f35ec5", cycleDuration:1.7 },
   { id:"nebulous",   name:"Nebulous",   color:"#30266f", accent:"#bb8aff", effect:"nebulous", cycleFrom:"#18104f", cycleTo:"#186e98", cycleDuration:2.1 },
-  { id:"paradox",    name:"Paradox",    color:"#f46a1d", accent:"#ff9a49", effect:"paradox", cycleFrom:"#f48220", cycleTo:"#510817", cycleDuration:2.1 },
+  { id:"dragon",    name:"Dragon",    color:"#0b0b0c", accent:"#ffffff", effect:"dragon", cycleFrom:"#050506", cycleTo:"#e4e4e8", cycleDuration:2.4 },
   { id:"singularity",name:"Singularity",color:"#ffd13e", accent:"#fff0a0", effect:"singularity", cycleFrom:"#e9bd28", cycleTo:"#ff6500", cycleDuration:1.7 },
   { id:"arsenal",    name:"Arsenal",    color:"#d51c36", accent:"#ff6870", effect:"arsenal", cycleFrom:"#b4122b", cycleTo:"#f13243", cycleDuration:1.9 },
   { id:"extravagent",name:"Extravagent",color:"#39e548",accent:"#d5ff91",effect:"extravagent",cycleFrom:"#08441d",cycleTo:"#8aff63",cycleDuration:2.2 },
-  { id:"extravagent2",name:"Abyssal",color:"#44e5c4",accent:"#b0fff0",effect:"lagoon",cycleFrom:"#075348",cycleTo:"#83ffe1",cycleDuration:2.1 },
-  { id:"extravagent3",name:"Resplendent",color:"#7590ff",accent:"#d0d9ff",effect:"sapphire",cycleFrom:"#202b7a",cycleTo:"#9cafff",cycleDuration:2 },
-  { id:"extravagent4",name:"Opulent",color:"#ff71d0",accent:"#ffd2f1",effect:"rosegold",cycleFrom:"#78105b",cycleTo:"#ff9be1",cycleDuration:1.9 },
-  { id:"extravagentPrime",name:"Transcendent",color:"#fff16a",accent:"#fffbd0",effect:"solstice",cycleFrom:"#b87300",cycleTo:"#fff29a",cycleDuration:1.8 },
-  { id:"extravagentCrown",name:"Eternal",color:"#bd8cff",accent:"#f0dcff",effect:"euphoria",cycleFrom:"#502875",cycleTo:"#dbb7ff",cycleDuration:1.7 },
+  { id:"abyssal",name:"Abyssal",color:"#44e5c4",accent:"#b0fff0",effect:"lagoon",cycleFrom:"#075348",cycleTo:"#83ffe1",cycleDuration:2.1 },
+  { id:"resplendent",name:"Resplendent",color:"#7590ff",accent:"#d0d9ff",effect:"sapphire",cycleFrom:"#202b7a",cycleTo:"#9cafff",cycleDuration:2 },
+  { id:"opulent",name:"Opulent",color:"#ff71d0",accent:"#ffd2f1",effect:"rosegold",cycleFrom:"#78105b",cycleTo:"#ff9be1",cycleDuration:1.9 },
+  { id:"transcendent",name:"Transcendent",color:"#fff16a",accent:"#fffbd0",effect:"solstice",cycleFrom:"#b87300",cycleTo:"#fff29a",cycleDuration:1.8 },
+  { id:"eternal",name:"Eternal",color:"#bd8cff",accent:"#f0dcff",effect:"euphoria",cycleFrom:"#502875",cycleTo:"#dbb7ff",cycleDuration:1.7 },
 ];
 const FREE_GENERATOR_USERNAME = "Arsenalmod";
 function isPrivilegedUser(username = currentUsername) {
@@ -1824,6 +1852,7 @@ async function enterGame(username, user, firstTime = false) {
   currentUsername = username;
   startGlobalBoostListener();
   startGlobalStarListener();
+  startGenFirstListener();
   state = freshState();
   const loadGeneration = ++playerSaveLoadGeneration;
   cloudSaveReady = false;
@@ -2115,16 +2144,9 @@ async function loadUserSave(generation = playerSaveLoadGeneration) {
         state[key] = Number.isSafeInteger(savedUntil) && savedUntil > Date.now() ? savedUntil : 0;
       });
     const savedInventory = state.inventory && typeof state.inventory === "object" ? state.inventory : {};
-    state.inventory = {};
-    for (const g of GENERATORS) {
-      const sourceIds = g.id === "magma" ? ["ultimate"]
-        : g.id === "neon" ? ["neon", "supreme"] : [g.id];
-      const count = sourceIds.reduce((total, id) =>
-        total + Math.max(0, Number(savedInventory[id]) || 0), 0);
-      state.inventory[g.id] = Math.floor(count + (g.id === "magma"
-        ? Math.max(Number(savedInventory.sky) || 0, Number(savedInventory.magma) || 0)
-        : 0));
-    }
+    const genMigrated = savedState.genIdsV2 === true;
+    state.inventory = migrateInventoryCounts(savedInventory, genMigrated);
+    state.genIdsV2 = true;
     state.inventory.alpha = Math.max(0, Math.floor(Number(savedInventory.alpha) || 0));
     state.alphaStarterGranted = savedState.alphaStarterGranted === true;
     state.alphaStarterRepaired = savedState.alphaStarterRepaired === true;
@@ -2142,7 +2164,7 @@ async function loadUserSave(generation = playerSaveLoadGeneration) {
     });
     const savedSlots = Array.isArray(savedState.slots) ? savedState.slots : [];
     const normalizedSlots = savedSlots.map(slot => {
-      const id = slot ? currentGeneratorId(slot.id) : null;
+      const id = slot ? loadGeneratorId(slot.id, genMigrated) : null;
       if (!id || !getGenerator(id)) return null;
       return { id };
     });
@@ -2165,7 +2187,7 @@ async function loadUserSave(generation = playerSaveLoadGeneration) {
       state.slots = Array(state.level + permanentBonusSlots()).fill(null);
       previousGenerators.forEach((slot, index) => { state.slots[index] = slot; });
     }
-    state.selected = currentGeneratorId(state.selected);
+    state.selected = loadGeneratorId(state.selected, genMigrated);
     if (!getGenerator(state.selected) || available(state.selected) <= 0) state.selected = null;
     const savedOfflineCashLastAt = Number(state.offlineCashLastAt);
     state.offlineCashLastAt = Number.isSafeInteger(savedOfflineCashLastAt) && savedOfflineCashLastAt > 0
@@ -2951,8 +2973,8 @@ async function sendChatMessage(event) {
 }
 
 // Standard tiers use 10x cost and 3x income/XP; the final two tiers are premium steps.
-const EXTRAVAGENT_PRIME_INDEX = GENERATOR_TIERS.findIndex(tier => tier.id === "extravagentPrime");
-const EXTRAVAGENT_CROWN_INDEX = GENERATOR_TIERS.findIndex(tier => tier.id === "extravagentCrown");
+const EXTRAVAGENT_PRIME_INDEX = GENERATOR_TIERS.findIndex(tier => tier.id === "transcendent");
+const EXTRAVAGENT_CROWN_INDEX = GENERATOR_TIERS.findIndex(tier => tier.id === "eternal");
 const EXTRAVAGENT_PRIME_COST = 1000 * Math.pow(10, EXTRAVAGENT_PRIME_INDEX - 1);
 const EXTRAVAGENT_PRIME_INCOME = 10 * Math.pow(3, EXTRAVAGENT_PRIME_INDEX - 1);
 const EXTRAVAGENT_PRIME_XP = 5 * Math.pow(3, EXTRAVAGENT_PRIME_INDEX - 1);
@@ -3190,6 +3212,7 @@ function xpRequiredForLevel(level) {
 const PASSIVE_CASH_MAX_ELAPSED_MS = 8 * 60 * 60 * 1000;
 
 const freshState = () => ({
+  genIdsV2: true,
   money: 10,
   lifetime: 0,
   generatorCashEarned: 0,
@@ -3369,10 +3392,30 @@ function bestOwnedGenerator() {
   GENERATORS[0]);
 }
 function bestOwnedGeneratorIncome() { return bestOwnedGenerator().income; }
-function currentGeneratorId(id) {
-  if (id === "ultimate" || id === "sky") return "magma";
-  if (id === "supreme") return "neon";
-  return id;
+// Old generator ids -> current ids (ids now match the generator names).
+const GENERATOR_ID_RENAMES = {
+  ethereal: "bloxy", godly: "sky", plasma: "crispin", radiant: "almighty", surge: "hyena", paradox: "dragon",
+  extravagent2: "abyssal", extravagent3: "resplendent", extravagent4: "opulent",
+  extravagentPrime: "transcendent", extravagentCrown: "eternal", ultimate: "magma", supreme: "neon"
+};
+function currentGeneratorId(id) { return GENERATOR_ID_RENAMES[id] || id; }
+// Saves made before ids were renamed (no genIdsV2 flag) used "sky" for the old tier that became Magma.
+function loadGeneratorId(id, migrated) { return !migrated && id === "sky" ? "magma" : currentGeneratorId(id); }
+// Rebuild inventory counts using current ids, merging every old/new name of a generator without ever adding counts together twice.
+function migrateInventoryCounts(saved, migrated) {
+  saved = saved && typeof saved === "object" ? saved : {};
+  const num = k => Math.max(0, Number(saved[k]) || 0);
+  const out = {};
+  for (const g of GENERATORS) {
+    if (g.id === "magma") out.magma = Math.floor(num("ultimate") + Math.max(migrated ? 0 : num("sky"), num("magma")));
+    else if (g.id === "neon") out.neon = Math.floor(num("neon") + num("supreme"));
+    else {
+      const own = g.id === "sky" && !migrated ? 0 : num(g.id);
+      const olds = Object.keys(GENERATOR_ID_RENAMES).filter(k => GENERATOR_ID_RENAMES[k] === g.id);
+      out[g.id] = Math.floor(Math.max(own, ...olds.map(num)));
+    }
+  }
+  return out;
 }
 function getGenerator(id) {
   id = currentGeneratorId(id);
@@ -3780,6 +3823,7 @@ async function logoutUser() {
   stopMathQuestionTimer();
   stopGlobalBoostListener();
   stopGlobalStarListener();
+  stopGenFirstListener();
   stopAdminGrantListener();
   adminGrantsActiveFor = null;
   handledAdminGrants.clear();
@@ -3823,13 +3867,13 @@ function makeShopRow(generator, mode, mystery = false) {
   const swatch = document.createElement("div");
   swatch.className = "swatch";
   swatch.style.background = generator.color;
-  swatch.style.color = mystery ? "#62676c" : generator.id === "godly" ? "#427c77" : "#ffffff";
+  swatch.style.color = mystery ? "#62676c" : generator.id === "sky" ? "#427c77" : "#ffffff";
   swatch.textContent = "◆";
   const details = document.createElement("div");
   const title = document.createElement("div");
   title.className = "item-title";
   title.textContent = mystery ? "???" : generator.name;
-  title.style.color = mystery ? "#62676c" : generator.id === "plasma" ? "#ee3f43" : generator.accent || generator.color;
+  title.style.color = mystery ? "#62676c" : generator.id === "crispin" ? "#ee3f43" : generator.accent || generator.color;
 
   const numbers = document.createElement("div");
   numbers.className = "item-numbers";
@@ -4122,6 +4166,58 @@ function startAdminGrantListener() {
   const onError = error => console.error("Admin grant listener failed:", error);
   adminGrantUnsubs.push(dbRef.collection("adminGrants").where("targetUid", "==", uid).onSnapshot(snapshot => process(snapshot, false), onError));
   adminGrantUnsubs.push(dbRef.collection("adminGrants").where("targetUid", "==", "all").onSnapshot(snapshot => process(snapshot, true), onError));
+}
+
+// ===== Global announcement: first player to BUY each top-tier generator =====
+const GLOBAL_FIRST_MIN_INDEX = GENERATORS.find(g => g.id === "almighty").index; // generators from this one up are announced
+let genFirstUnsub = null;
+const genFirstClaimed = new Set(), genFirstTried = new Set(), genFirstQueue = [];
+let genFirstBusy = false;
+function genFirstLabel(g) { return /generator$/i.test(g.name) ? g.name : g.name + " Generator"; }
+function nextGenFirst() {
+  const item = genFirstQueue.shift();
+  if (!item) { genFirstBusy = false; return; }
+  genFirstBusy = true;
+  let el = $("genFirstBanner");
+  if (!el) { el = document.createElement("div"); el.id = "genFirstBanner"; el.hidden = true; document.body.appendChild(el); }
+  const g = item.g;
+  el.style.background = "linear-gradient(90deg," + (g.cycleFrom || g.color) + "," + g.color + "," + (g.cycleTo || g.accent || g.color) + ")";
+  el.style.setProperty("--gf-accent", g.accent || g.color);
+  el.textContent = "GLOBAL: " + item.username + " has bought the first " + genFirstLabel(g) + "!";
+  el.hidden = false;
+  setTimeout(() => { el.hidden = true; setTimeout(nextGenFirst, 500); }, 10000);
+}
+function stopGenFirstListener() {
+  if (genFirstUnsub) genFirstUnsub();
+  genFirstUnsub = null;
+  genFirstClaimed.clear(); genFirstTried.clear();
+}
+function startGenFirstListener() {
+  stopGenFirstListener();
+  if (!currentUser || !dbRef) return;
+  genFirstUnsub = dbRef.collection("generatorFirsts").onSnapshot(snapshot => {
+    snapshot.docChanges().forEach(change => {
+      if (change.type !== "added") return;
+      genFirstClaimed.add(change.doc.id);
+      const data = change.doc.data(), g = GENERATORS.find(x => x.id === change.doc.id);
+      if (!g || typeof data.username !== "string") return;
+      const ts = data.createdAt && typeof data.createdAt.toMillis === "function" ? data.createdAt.toMillis() : Date.now();
+      if (Date.now() - ts > 60000) return; // only announce fresh claims, never old ones
+      genFirstQueue.push({ g, username: data.username });
+      if (!genFirstBusy) nextGenFirst();
+    });
+  }, error => console.error("Generator firsts listener failed:", error));
+}
+function maybeClaimGeneratorFirst(g) {
+  try {
+    if (!currentUser || !dbRef || !currentUsername || !g || g.index < GLOBAL_FIRST_MIN_INDEX
+      || genFirstClaimed.has(g.id) || genFirstTried.has(g.id)) return;
+    genFirstTried.add(g.id);
+    dbRef.collection("generatorFirsts").doc(g.id).set({
+      generatorId: g.id, uid: currentUser.uid, username: currentUsername,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(() => { /* someone already claimed it */ });
+  } catch (e) { /* ignore */ }
 }
 
 function stopGlobalStarListener() {
@@ -4669,6 +4765,63 @@ function makeSlotButton(index, slot) {
   button.append(tier, visual, name, earn);
   return button;
 }
+// ===== Crown layer: your best placed generator (and the two below it) get a theme that fades with rank =====
+const CROWN_FAMILY = { magma: "flame", hyper: "flame", crispin: "flame", divine: "flash", quantum: "chase", almighty: "flash", hyena: "flash",
+  chroma: "chase", absolute: "chase", astral: "chase", celestial: "flash", aether: "chase", nebulous: "chase", dragon: "chase",
+  singularity: "flash", arsenal: "flash", extravagent: "chase", resplendent: "chase", transcendent: "flash", eternal: "chase" };
+function crownInfo() {
+  let bestIdx = -1;
+  state.slots.forEach(sl => { if (sl && sl.id !== "alpha") { const g = getGenerator(sl.id); if (g && g.index > bestIdx) bestIdx = g.index; } });
+  const tiers = {};
+  if (bestIdx >= 0) state.slots.forEach((sl, i) => {
+    if (!sl || sl.id === "alpha") return;
+    const g = getGenerator(sl.id), diff = g ? bestIdx - g.index : -1;
+    if (diff < 0 || diff > 2) return;
+    const t = tiers[g.id] || (tiers[g.id] = { level: 3 - diff, first: i, count: 0, g });
+    t.count++;
+  });
+  return { bestIdx, tiers };
+}
+function applyCrown(button, index, slot, info) {
+  const g = slot ? getGenerator(slot.id) : null;
+  const t = g && g.id !== "alpha" ? info.tiers[g.id] : null;
+  const level = t && t.first === index ? t.level : 0;
+  const sig = level ? level + ":" + t.count : "";
+  if ((button.dataset.crown || "") === sig) return;
+  button.dataset.crown = sig;
+  button.querySelectorAll(":scope > .crown-layer, :scope > .crown-badge").forEach(e => e.remove());
+  if (!level) return;
+  const layer = document.createElement("i");
+  layer.className = "crown-layer l" + level + " fam-" + (CROWN_FAMILY[g.id] || "pulse");
+  layer.style.setProperty("--cr1", g.accent || g.color);
+  layer.style.setProperty("--cr2", g.color);
+  layer.setAttribute("aria-hidden", "true");
+  button.prepend(layer);
+  if (level === 3) {
+    const badge = document.createElement("b");
+    badge.className = "crown-badge";
+    badge.style.setProperty("--cr1", g.accent || g.color);
+    badge.textContent = t.count > 1 ? "\uD83D\uDC51 \u00D7" + t.count : "\uD83D\uDC51";
+    button.append(badge);
+  }
+}
+function crownCelebrate(info) {
+  if (typeof state.crownCelebrated !== "number") { state.crownCelebrated = info.bestIdx; return; } // existing players: adopt silently
+  if (info.bestIdx <= state.crownCelebrated) return;
+  state.crownCelebrated = info.bestIdx;
+  const top = Object.values(info.tiers).find(t => t.level === 3);
+  if (top && !document.querySelector(".game-shell.low-performance")) {
+    const btn = $("slots").children[top.first - currentSlotPage * 25];
+    if (btn) {
+      const ring = document.createElement("i");
+      ring.className = "crown-burst-ring";
+      ring.style.setProperty("--cr1", top.g.accent || top.g.color);
+      btn.append(ring);
+      setTimeout(() => ring.remove(), 1800);
+    }
+  }
+  try { save(); } catch (e) { /* ignore */ }
+}
 function renderSlots() {
   const host = $("slots");
   const pageCount = Math.max(1, Math.ceil(state.slots.length / 25));
@@ -4685,6 +4838,7 @@ function renderSlots() {
   $("placeBestBtn").disabled = totalOwned() === 0;
   const visibleSlotCount = Math.min(25, state.slots.length - firstSlot);
   while (host.children.length > visibleSlotCount) host.lastElementChild.remove();
+  const crownData = crownInfo();
   for (let visibleIndex = 0; visibleIndex < visibleSlotCount; visibleIndex++) {
     const index = firstSlot + visibleIndex;
     const slot = state.slots[index];
@@ -4715,7 +4869,9 @@ function renderSlots() {
         button.title = g.name + ": " + earnings + " per second. Click to inspect.";
       }
     }
+    applyCrown(button, index, slot, crownData);
   }
+  crownCelebrate(crownData);
 }
 function renderSlotEarnings() {
   document.querySelectorAll("#slots .slot.filled").forEach(button => {
@@ -4895,6 +5051,7 @@ function buy(id, quantity = 1) {
   state.money -= generatorPrice(g) * quantity;
   state.inventory[id] = owned(id) + quantity;
   state.selected = id;
+  maybeClaimGeneratorFirst(g);
   if (id === "basic") advanceTutorial("buy-basic");
   const tutorialReward = tutorialWasIncomplete && state.tutorialComplete
     ? " Tutorial complete! You received a Basic crate."
@@ -4987,7 +5144,7 @@ function placeOneBestGenerator() {
   const slotIndex = state.slots.findIndex(slot => !slot);
   if (slotIndex < 0) return;
   const generator = [...GENERATORS].reverse().find(item => available(item.id) > 0);
-  const id = generator ? generator.id : available("alpha") > 0 ? "alpha" : null;
+  const id = available("alpha") > 0 ? "alpha" : generator ? generator.id : null; // Alpha generators are placed first
   if (!id) return;
   state.slots[slotIndex] = { id };
   state.taskGenerationsPlaced++;
@@ -5447,6 +5604,7 @@ async function findGiftRecipient(username) {
   return matches.docs[0];
 }
 function isGiftableGenerator(id) {
+  id = currentGeneratorId(id);
   return id === "alpha" || id === "magma" || GENERATORS.some(generator => generator.id === id);
 }
 async function sendGeneratorGift(event) {
