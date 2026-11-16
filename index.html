@@ -394,6 +394,15 @@ body.mode-mobile .notice-area{padding:6px 10px 0}body.mode-mobile .top-hud{paddi
 @keyframes crown-burst{0%{transform:scale(.8);opacity:1}100%{transform:scale(1.9);opacity:0}}
 .low-performance .crown-layer::before,.low-performance .crown-layer::after,html.reduced-motion .crown-layer::before,html.reduced-motion .crown-layer::after{animation:none!important}
 .low-performance .crown-burst-ring,html.reduced-motion .crown-burst-ring{display:none}
+.hof-dialog{width:min(900px,calc(100vw - 20px));max-height:90vh;overflow:auto}
+.hof-sec{margin:14px 0 4px}
+.hof-sec h3{margin:0 0 6px;font-size:15px}
+.hof-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.hof-row{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);border-radius:8px}
+.hof-row.unclaimed{opacity:.55}
+.hof-row.mine{outline:2px solid #ffd54a;box-shadow:0 0 12px rgba(255,213,74,.35)}
+.hof-what{font-weight:700;font-size:13px}.hof-who{font-size:13px}.hof-when{font-size:11px;opacity:.7}
+.hof-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle;border:1px solid rgba(255,255,255,.5)}
 #genFirstBanner{position:fixed;left:50%;top:calc(64px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:2147483646;width:max-content;max-width:min(760px,calc(100vw - 24px));padding:10px 20px;border-radius:12px;text-align:center;font:800 17px/1.35 system-ui,sans-serif;color:#fff;text-shadow:0 0 4px #000,0 0 9px #000;border:2px solid var(--gf-accent,#fff);box-shadow:0 0 26px var(--gf-accent,#fff);animation:gf-in .5s ease-out}
 #genFirstBanner[hidden]{display:none}
 @keyframes gf-in{from{opacity:0;transform:translateX(-50%) translateY(-14px)}to{opacity:1;transform:translateX(-50%)}}
@@ -979,6 +988,7 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
     <div class="game-account-actions">
       <button id="diamondHeaderBtn" type="button">💎 Diamond Shop</button>
       <button id="statsOpenBtn" type="button">Stats</button>
+      <button id="hofOpenBtn" type="button">🏆 Hall of Fame</button>
               <button id="giftsOpenBtn" type="button">Gifts<span class="activity-badge" id="giftsAvailableBadge" aria-label="Pending gifts" hidden>!</span></button>
       <button id="logoutBtn" type="button">Log out</button>
     </div>
@@ -990,6 +1000,12 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
     <p class="dm-intro">Earn diamonds: math question 1 · Star 8% (Hyper Star 2) · Billy coin 30% · crate challenge 1+ · daily 2 (+5 every 7th day) · achievement 1 · every 10 levels 2 · rebirth milestones · admin events. Diamonds can't be gifted or traded.</p>
     <div id="diamondShopList" class="dm-grid"></div>
   </div>
+</dialog>
+<dialog id="hofDialog" class="stats-dialog hof-dialog">
+  <div class="panel-head"><h2>🏆 Hall of Fame</h2><button id="hofCloseBtn" type="button">Close</button></div>
+  <p class="muted small">The history of Superflow!: the very first player to reach each milestone. Records are permanent, so claim yours.</p>
+  <p class="muted small" id="hofSummary"></p>
+  <div id="hofBody" class="hof-body"></div>
 </dialog>
 <dialog id="statsDialog" class="stats-dialog">
   <div class="panel-head"><h2>Player Stats</h2><button id="statsCloseBtn" type="button">Close</button></div>
@@ -1325,6 +1341,13 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
     <div class="muted small" id="adminStarEveryoneStatus" role="status" aria-live="polite"></div>
     <div class="muted small" id="adminGiftEveryoneStatus" role="status" aria-live="polite"></div>
   </div>
+  <div class="adm-card adm-box"><h3>🏆 Hall of Fame</h3>
+    <div class="muted small">Correct history from before 1.4: set who really was first (optional date), or clear a record so the next qualifying player claims it.</div>
+    <div class="adm-row"><select id="adminHofRecord" aria-label="Record"></select></div>
+    <div class="adm-row"><input id="adminHofUser" type="text" maxlength="20" autocomplete="off" placeholder="Holder username (on the leaderboard)" aria-label="Holder username"><input id="adminHofDate" type="date" aria-label="Date (optional)"></div>
+    <div class="adm-row"><button id="adminHofSetBtn" type="button">Set holder</button><button id="adminHofClearBtn" type="button">Clear record</button></div>
+    <div class="muted small" id="adminHofStatus" role="status" aria-live="polite"></div>
+  </div>
   <div class="adm-card"><h3>Broadcast message</h3>
     <div class="adm-row"><input id="adminBroadcastText" type="text" maxlength="200" autocomplete="off" placeholder="Message to all players" aria-label="Broadcast message"></div>
     <div class="adm-row"><button id="adminBroadcastBtn" type="button">Send</button><button id="adminBroadcastClearBtn" type="button">Clear</button></div>
@@ -1353,7 +1376,7 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
   <div class="note" id="adminStatus" role="status" aria-live="polite" style="grid-column:1/-1"></div>
     </div>
   </section>
-  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">1.3.5</span><button id="updateHistoryBtn" type="button">Update history</button></div>
+  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">1.4</span><button id="updateHistoryBtn" type="button">Update history</button></div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
@@ -1424,7 +1447,7 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 100000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "1.3.5";
+const GAME_VERSION = "1.4";
 const GLOBAL_BOOST_MILESTONES = [
   { cost: 1e6, multiplier: 1.2 }, { cost: 1e7, multiplier: 1.4 },
   { cost: 1e8, multiplier: 1.6 }, { cost: 1e9, multiplier: 1.8 },
@@ -1677,10 +1700,20 @@ const UPDATE_HISTORY = [
   },
   {
     version: "1.3.5",
-    status: "Current",
+    status: "Previous",
     changes: [
       "Alpha Generator redesigned: it now looks like the generator above your best (its colours, border, particles and effects) so you can see what you are working toward. It is still called the Alpha Generator and still earns like your best generator.",
       "New Diamond Shop tutorial after the starter tutorial: open the shop to get 100 free diamonds, buy a cheap theme, equip it in the Inventory, then learn how to save and swap Loadouts. You can replay it any time from Settings.",
+    ]
+  },
+  {
+    version: "1.4",
+    status: "Current",
+    changes: [
+      "New 🏆 Hall of Fame (button next to Stats): the history of the game. See who was the first to buy every generator, the first to earn $10K up to $100Sx, the first to reach every rebirth milestone (1, 5, 10 ... 70), plus firsts for Level, Stars, Questions, Multiplier and Playtime, and who holds the current record on every leaderboard.",
+      "Every generator now has a first-to-buy record, not only the top tiers (only the top tiers still get the on-screen announcement). The first big Hall of Fame milestones are announced to everyone too.",
+      "Your best generator's crown effect now shows on every copy you have placed, not just the first one. The 👑 counter still sits on the first copy.",
+      "Admins: new Hall of Fame tool to set or clear a record holder (with an optional date), so history from before 1.4 can be corrected.",
     ]
   }
 ];
@@ -4171,7 +4204,7 @@ function startAdminGrantListener() {
 // ===== Global announcement: first player to BUY each top-tier generator =====
 const GLOBAL_FIRST_MIN_INDEX = GENERATORS.find(g => g.id === "almighty").index; // generators from this one up are announced
 let genFirstUnsub = null;
-const genFirstClaimed = new Set(), genFirstTried = new Set(), genFirstQueue = [];
+const genFirstClaimed = new Set(), genFirstTried = new Set(), genFirstQueue = [], genFirstData = new Map();
 let genFirstBusy = false;
 function genFirstLabel(g) { return /generator$/i.test(g.name) ? g.name : g.name + " Generator"; }
 function nextGenFirst() {
@@ -4180,37 +4213,51 @@ function nextGenFirst() {
   genFirstBusy = true;
   let el = $("genFirstBanner");
   if (!el) { el = document.createElement("div"); el.id = "genFirstBanner"; el.hidden = true; document.body.appendChild(el); }
-  const g = item.g;
-  el.style.background = "linear-gradient(90deg," + (g.cycleFrom || g.color) + "," + g.color + "," + (g.cycleTo || g.accent || g.color) + ")";
-  el.style.setProperty("--gf-accent", g.accent || g.color);
-  el.textContent = "GLOBAL: " + item.username + " has bought the first " + genFirstLabel(g) + "!";
+  if (item.text) {
+    el.style.background = "linear-gradient(90deg,#b8860b,#ffd54a,#b8860b)";
+    el.style.color = "#241800";
+    el.style.setProperty("--gf-accent", "#fff3b0");
+    el.textContent = item.text;
+  } else {
+    const g = item.g;
+    el.style.color = "";
+    el.style.background = "linear-gradient(90deg," + (g.cycleFrom || g.color) + "," + g.color + "," + (g.cycleTo || g.accent || g.color) + ")";
+    el.style.setProperty("--gf-accent", g.accent || g.color);
+    el.textContent = "GLOBAL: " + item.username + " has bought the first " + genFirstLabel(g) + "!";
+  }
   el.hidden = false;
   setTimeout(() => { el.hidden = true; setTimeout(nextGenFirst, 500); }, 10000);
 }
 function stopGenFirstListener() {
   if (genFirstUnsub) genFirstUnsub();
   genFirstUnsub = null;
-  genFirstClaimed.clear(); genFirstTried.clear();
+  genFirstClaimed.clear(); genFirstTried.clear(); genFirstData.clear();
+  stopHallOfFameListener();
 }
 function startGenFirstListener() {
   stopGenFirstListener();
   if (!currentUser || !dbRef) return;
   genFirstUnsub = dbRef.collection("generatorFirsts").onSnapshot(snapshot => {
     snapshot.docChanges().forEach(change => {
+      if (change.type === "removed") { genFirstData.delete(change.doc.id); genFirstClaimed.delete(change.doc.id); genFirstTried.delete(change.doc.id); return; }
+      const holder = change.doc.data();
+      genFirstData.set(change.doc.id, { username: holder.username, uid: holder.uid, ts: tsMs(holder.createdAt) });
       if (change.type !== "added") return;
       genFirstClaimed.add(change.doc.id);
       const data = change.doc.data(), g = GENERATORS.find(x => x.id === change.doc.id);
-      if (!g || typeof data.username !== "string") return;
+      if (!g || typeof data.username !== "string" || g.index < GLOBAL_FIRST_MIN_INDEX) return;
       const ts = data.createdAt && typeof data.createdAt.toMillis === "function" ? data.createdAt.toMillis() : Date.now();
       if (Date.now() - ts > 60000) return; // only announce fresh claims, never old ones
       genFirstQueue.push({ g, username: data.username });
       if (!genFirstBusy) nextGenFirst();
     });
+    if ($("hofDialog") && $("hofDialog").open) renderHallOfFame();
   }, error => console.error("Generator firsts listener failed:", error));
+  startHallOfFameListener();
 }
 function maybeClaimGeneratorFirst(g) {
   try {
-    if (!currentUser || !dbRef || !currentUsername || !g || g.index < GLOBAL_FIRST_MIN_INDEX
+    if (!currentUser || !dbRef || !currentUsername || !g || g.id === "alpha" || isPrivilegedUser()
       || genFirstClaimed.has(g.id) || genFirstTried.has(g.id)) return;
     genFirstTried.add(g.id);
     dbRef.collection("generatorFirsts").doc(g.id).set({
@@ -4219,6 +4266,200 @@ function maybeClaimGeneratorFirst(g) {
     }).catch(() => { /* someone already claimed it */ });
   } catch (e) { /* ignore */ }
 }
+
+// ===== Hall of Fame (1.4): the first player to reach each milestone =====
+const HOF_RECORDS = [];
+const HOF_GROUPS = [
+  ["cash", "💰 First to earn"], ["rebirth", "♻️ First to rebirth"],
+  ["level", "⭐ First to reach a level"], ["stars", "🌟 First to collect Stars"],
+  ["questions", "🧮 First to answer questions"], ["multi", "✖️ First to reach a multiplier"], ["play", "⏱️ First to play for"]
+];
+[["10k", 1e4, "$10K"], ["1m", 1e6, "$1M"], ["1b", 1e9, "$1B"], ["1t", 1e12, "$1T"], ["1qd", 1e15, "$1Qd"], ["10qd", 1e16, "$10Qd"],
+  ["100qd", 1e17, "$100Qd"], ["1qn", 1e18, "$1Qn"], ["100qn", 1e20, "$100Qn"], ["1sx", 1e21, "$1Sx"], ["10sx", 1e22, "$10Sx"], ["100sx", 1e23, "$100Sx"]]
+  .forEach(([key, value, text]) => HOF_RECORDS.push({ id: "cash-" + key, group: "cash", label: "First to earn " + text,
+    test: () => (Number(state.generatorCashEarned) || 0) >= value, big: value >= 1e12 }));
+[1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]
+  .forEach(n => HOF_RECORDS.push({ id: "rebirth-" + n, group: "rebirth", label: "First to reach Rebirth " + n,
+    test: () => (Number(state.rebirths) || 0) >= n, big: n >= 10 }));
+[50, 100, 200].forEach(n => HOF_RECORDS.push({ id: "level-" + n, group: "level", label: "First to reach Level " + n,
+  test: () => (Number(state.level) || 0) >= n, big: n >= 100 }));
+[100, 1000, 10000].forEach(n => HOF_RECORDS.push({ id: "stars-" + n, group: "stars", label: "First to collect " + n.toLocaleString("en-CA") + " Stars",
+  test: () => (Number(state.taskStarsCollected) || 0) >= n, big: n >= 1000 }));
+[100, 1000, 10000].forEach(n => HOF_RECORDS.push({ id: "questions-" + n, group: "questions", label: "First to answer " + n.toLocaleString("en-CA") + " questions",
+  test: () => (Number(state.questionsAnswered) || 0) >= n, big: n >= 1000 }));
+[10, 100, 1000, 10000].forEach(n => HOF_RECORDS.push({ id: "multi-" + n, group: "multi", label: "First to reach ×" + n.toLocaleString("en-CA") + " multiplier",
+  test: () => (Number(playerMultiplier()) || 1) >= n, big: n >= 1000 }));
+[["10h", 36000, "10 hours"], ["100h", 360000, "100 hours"]]
+  .forEach(([key, seconds, text]) => HOF_RECORDS.push({ id: "play-" + key, group: "play", label: "First to play for " + text,
+    test: () => (Number(state.playtimeSeconds) || 0) >= seconds, big: seconds >= 360000 }));
+const HOF_BY_ID = {};
+HOF_RECORDS.forEach(r => { HOF_BY_ID[r.id] = r; });
+
+let hofUnsub = null, hofLoaded = false, hofLoadedAt = 0, hofLiveAt = 0, hofLiveLoading = false, hofLive = [];
+const hofData = new Map(), hofTried = new Set();
+function stopHallOfFameListener() {
+  if (hofUnsub) { try { hofUnsub(); } catch (e) {} }
+  hofUnsub = null; hofLoaded = false; hofLoadedAt = 0; hofData.clear(); hofTried.clear();
+}
+function startHallOfFameListener() {
+  if (hofUnsub) { try { hofUnsub(); } catch (e) {} hofUnsub = null; }
+  if (!currentUser || !dbRef) return;
+  hofLoaded = false;
+  hofUnsub = dbRef.collection("hallOfFame").onSnapshot(snapshot => {
+    snapshot.docChanges().forEach(change => {
+      if (change.type === "removed") { hofData.delete(change.doc.id); hofTried.delete(change.doc.id); return; }
+      const d = change.doc.data();
+      hofData.set(change.doc.id, { username: d.username, uid: d.uid, ts: tsMs(d.createdAt), manual: !!d.manual });
+      const rec = HOF_BY_ID[change.doc.id], ts = tsMs(d.createdAt);
+      if (change.type === "added" && hofLoaded && rec && rec.big && !d.backfill && !d.manual && ts && Date.now() - ts < 60000 && genFirstQueue.length < 4) {
+        genFirstQueue.push({ text: "🏆 HALL OF FAME: " + d.username + " is the " + rec.label.replace(/^First/, "first") + "!" });
+        if (!genFirstBusy) nextGenFirst();
+      }
+    });
+    if (!hofLoaded) { hofLoaded = true; hofLoadedAt = Date.now(); setTimeout(checkHallOfFame, 4000); }
+    if ($("hofDialog") && $("hofDialog").open) renderHallOfFame();
+  }, error => console.error("Hall of Fame listener failed:", error));
+}
+function checkHallOfFame() {
+  try {
+    if (!currentUser || !dbRef || !currentUsername || !cloudSaveReady || !hofLoaded || acSuspicious || isPrivilegedUser()) return;
+    if (Date.now() - hofLoadedAt < 3000) return;
+    const todo = HOF_RECORDS.filter(r => !hofData.has(r.id) && !hofTried.has(r.id) && r.test());
+    const backfill = todo.length > 2; // a burst means the player already had these before the Hall of Fame existed: do not announce
+    todo.forEach(r => {
+      hofTried.add(r.id);
+      const doc = { recordId: r.id, uid: currentUser.uid, username: currentUsername, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+      if (backfill) doc.backfill = true;
+      dbRef.collection("hallOfFame").doc(r.id).set(doc).catch(error => { if (!error || error.code !== "permission-denied") hofTried.delete(r.id); });
+    });
+    const best = getBestGeneratorIndex();
+    GENERATORS.forEach(g => { if (g.id !== "alpha" && g.index <= best) maybeClaimGeneratorFirst(g); });
+  } catch (e) { /* ignore */ }
+}
+setInterval(checkHallOfFame, 20000);
+
+function hofRow(label, entry, swatch) {
+  const row = document.createElement("div");
+  row.className = "hof-row";
+  const mine = !!entry && !!currentUser && entry.uid === currentUser.uid;
+  if (!entry) row.classList.add("unclaimed");
+  if (mine) row.classList.add("mine");
+  const what = document.createElement("div");
+  what.className = "hof-what";
+  if (swatch) { const dot = document.createElement("i"); dot.className = "hof-dot"; dot.style.background = swatch; what.append(dot); }
+  what.append(label);
+  const who = document.createElement("div");
+  who.className = "hof-who";
+  who.textContent = entry ? "👑 " + entry.username + (mine ? " (you)" : "") : "Unclaimed: could be you!";
+  row.append(what, who);
+  if (entry && entry.ts) {
+    const when = document.createElement("div");
+    when.className = "hof-when";
+    when.textContent = new Date(entry.ts).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    row.append(when);
+  }
+  return row;
+}
+function hofSection(title, rows, note) {
+  const sec = document.createElement("section");
+  sec.className = "hof-sec";
+  const h = document.createElement("h3");
+  h.textContent = title;
+  sec.append(h);
+  if (note) { const p = document.createElement("p"); p.className = "muted small"; p.textContent = note; sec.append(p); }
+  const grid = document.createElement("div");
+  grid.className = "hof-grid";
+  rows.forEach(r => grid.append(r));
+  sec.append(grid);
+  return sec;
+}
+function renderHallOfFame() {
+  const body = $("hofBody");
+  if (!body) return;
+  body.replaceChildren();
+  const uid = currentUser ? currentUser.uid : "";
+  const gens = GENERATORS.filter(g => g.id !== "alpha");
+  let claimed = 0, mineCount = 0;
+  gens.forEach(g => { const e = genFirstData.get(g.id); if (e) { claimed++; if (e.uid === uid) mineCount++; } });
+  HOF_RECORDS.forEach(r => { const e = hofData.get(r.id); if (e) { claimed++; if (e.uid === uid) mineCount++; } });
+  const total = gens.length + HOF_RECORDS.length;
+  $("hofSummary").textContent = claimed + " of " + total + " records claimed" + (mineCount ? " · you hold " + mineCount : "");
+  body.append(hofSection("🏭 First to buy each generator", gens.map(g => hofRow(genFirstLabel(g), genFirstData.get(g.id), g.color))));
+  HOF_GROUPS.forEach(([group, title]) => body.append(hofSection(title,
+    HOF_RECORDS.filter(r => r.group === group).map(r => hofRow(r.label.replace(/^First to (earn |reach |collect |answer |play for )?/, ""), hofData.get(r.id))))));
+  const live = hofSection("📊 Current record holders", hofLive.map(item => {
+    const row = hofRow(item.label, { username: item.username, uid: item.uid, ts: 0 });
+    const val = document.createElement("div");
+    val.className = "hof-when";
+    val.textContent = item.value;
+    row.append(val);
+    return row;
+  }), hofLive.length ? "Live from the leaderboards: these change as players pass each other." : (hofLiveLoading ? "Loading..." : "No leaderboard data yet."));
+  body.append(live);
+}
+async function loadHofLive() {
+  if (!currentUser || !dbRef || hofLiveLoading || Date.now() - hofLiveAt < 5 * 60 * 1000) return;
+  hofLiveLoading = true;
+  try {
+    const result = [];
+    for (const key of Object.keys(LEADERBOARD_METRICS)) {
+      const metric = LEADERBOARD_METRICS[key];
+      let q = dbRef.collection("leaderboard");
+      (metric.fields || [key]).forEach(field => { q = q.orderBy(field, "desc"); });
+      const snap = await q.limit(1).get();
+      if (snap.empty) continue;
+      const d = snap.docs[0].data();
+      result.push({ label: "Highest " + metric.label.toLowerCase(), username: d.username || "Player", uid: d.uid || snap.docs[0].id, value: metric.format(d[key], d) });
+    }
+    hofLive = result;
+    hofLiveAt = Date.now();
+  } catch (e) { console.error("Could not load record holders:", e); }
+  hofLiveLoading = false;
+  if ($("hofDialog").open) renderHallOfFame();
+}
+$("hofOpenBtn").addEventListener("click", () => { renderHallOfFame(); $("hofDialog").showModal(); loadHofLive(); });
+$("hofCloseBtn").addEventListener("click", () => $("hofDialog").close());
+
+// Admin: set or clear a record holder (to correct history from before the Hall of Fame existed)
+(function setupAdminHallOfFame() {
+  const sel = $("adminHofRecord");
+  if (!sel) return;
+  const og1 = document.createElement("optgroup"); og1.label = "First to buy a generator";
+  GENERATORS.filter(g => g.id !== "alpha").forEach(g => { const o = document.createElement("option"); o.value = "gen:" + g.id; o.textContent = genFirstLabel(g); og1.append(o); });
+  sel.append(og1);
+  const og2 = document.createElement("optgroup"); og2.label = "Milestones";
+  HOF_RECORDS.forEach(r => { const o = document.createElement("option"); o.value = "hof:" + r.id; o.textContent = r.label; og2.append(o); });
+  sel.append(og2);
+  const target = () => {
+    const [kind, id] = sel.value.split(":");
+    return kind === "gen" ? { coll: "generatorFirsts", id, field: "generatorId" } : { coll: "hallOfFame", id, field: "recordId" };
+  };
+  $("adminHofSetBtn").addEventListener("click", async () => {
+    const status = $("adminHofStatus");
+    if ($("adminPanel").hidden || !currentUser || !dbRef) { status.textContent = "Admin access is required."; return; }
+    const name = $("adminHofUser").value.trim();
+    if (!/^[A-Za-z0-9_]{2,20}$/.test(name)) { status.textContent = "Type the holder's username (2–20 letters, numbers or underscores)."; return; }
+    try {
+      status.textContent = "Working...";
+      const player = await findGiftRecipient(name);
+      const t = target();
+      const day = $("adminHofDate").value;
+      const when = day ? firebase.firestore.Timestamp.fromDate(new Date(day + "T12:00:00")) : firebase.firestore.FieldValue.serverTimestamp();
+      await dbRef.collection(t.coll).doc(t.id).set({ [t.field]: t.id, uid: player.id, username: player.data().username || name, createdAt: when, manual: true });
+      status.textContent = "Set " + (player.data().username || name) + " as the holder of: " + sel.options[sel.selectedIndex].textContent + ".";
+    } catch (e) { status.textContent = e && e.code === "permission-denied" ? "Rules blocked it. Publish the updated rules." : ((e && e.message) || "Failed."); }
+  });
+  $("adminHofClearBtn").addEventListener("click", async () => {
+    const status = $("adminHofStatus");
+    if ($("adminPanel").hidden || !currentUser || !dbRef) { status.textContent = "Admin access is required."; return; }
+    const t = target();
+    if (!confirm("Clear this record? The next player who qualifies will claim it.")) return;
+    try {
+      await dbRef.collection(t.coll).doc(t.id).delete();
+      status.textContent = "Cleared: " + sel.options[sel.selectedIndex].textContent + ".";
+    } catch (e) { status.textContent = e && e.code === "permission-denied" ? "Rules blocked it. Publish the updated rules." : ((e && e.message) || "Failed."); }
+  });
+})();
 
 function stopGlobalStarListener() {
   if (globalStarUnsubscribe) globalStarUnsubscribe();
@@ -4785,8 +5026,9 @@ function crownInfo() {
 function applyCrown(button, index, slot, info) {
   const g = slot ? getGenerator(slot.id) : null;
   const t = g && g.id !== "alpha" ? info.tiers[g.id] : null;
-  const level = t && t.first === index ? t.level : 0;
-  const sig = level ? level + ":" + t.count : "";
+  const level = t ? t.level : 0;
+  const isFirstCopy = !!t && t.first === index;
+  const sig = level ? level + ":" + t.count + (isFirstCopy ? "f" : "") : "";
   if ((button.dataset.crown || "") === sig) return;
   button.dataset.crown = sig;
   button.querySelectorAll(":scope > .crown-layer, :scope > .crown-badge").forEach(e => e.remove());
@@ -4797,7 +5039,7 @@ function applyCrown(button, index, slot, info) {
   layer.style.setProperty("--cr2", g.color);
   layer.setAttribute("aria-hidden", "true");
   button.prepend(layer);
-  if (level === 3) {
+  if (level === 3 && isFirstCopy) {
     const badge = document.createElement("b");
     badge.className = "crown-badge";
     badge.style.setProperty("--cr1", g.accent || g.color);
