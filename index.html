@@ -3078,19 +3078,38 @@ function startCommunityListeners() {
 }
 
 async function sendGlobalRebirthAnnouncement(rebirthCount) {
-  if (!currentUser || !dbRef || rebirthCount < 10) return;
+  // Rebirths 16–30 appear in global chat. Rebirths 31+ appear in chat
+  // and trigger a global banner for everyone currently online.
+  if (!currentUser || !dbRef || rebirthCount < 16) return;
+  const username = currentUsername || "Player";
   try {
     const messageRef = dbRef.collection("chatMessages").doc();
     await messageRef.set({
       uid: currentUser.uid,
-      username: currentUsername || "Player",
-      text: (currentUsername || "Player") + " has reached rebirth " + rebirthCount + "!",
+      username,
+      text: username + " has reached rebirth " + rebirthCount + "!",
       isAnnouncement: true,
       ...(window.dmAnnFields ? window.dmAnnFields() : {}),
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
   } catch (e) {
-    console.warn("Could not send global rebirth announcement:", e);
+    console.warn("Could not send global rebirth chat announcement:", e);
+  }
+
+  if (rebirthCount >= 31) {
+    try {
+      // One immutable document per player/milestone prevents duplicate broadcasts.
+      await dbRef.collection("rebirthBroadcasts")
+        .doc(currentUser.uid + "-" + rebirthCount)
+        .set({
+          uid: currentUser.uid,
+          username,
+          rebirth: rebirthCount,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    } catch (e) {
+      console.warn("Could not send global rebirth broadcast:", e);
+    }
   }
 }
 
@@ -4357,7 +4376,7 @@ function startAdminGrantListener() {
 
 // ===== Global announcement: first player to BUY each top-tier generator =====
 const GLOBAL_FIRST_MIN_INDEX = GENERATORS.find(g => g.id === "almighty").index; // generators from this one up are announced
-let genFirstUnsub = null;
+let genFirstUnsub = null, rebirthBroadcastUnsub = null;
 const genFirstClaimed = new Set(), genFirstTried = new Set(), genFirstQueue = [], genFirstData = new Map();
 let genFirstBusy = false;
 function genFirstLabel(g) { return /generator$/i.test(g.name) ? g.name : g.name + " Generator"; }
@@ -4384,7 +4403,8 @@ function nextGenFirst() {
 }
 function stopGenFirstListener() {
   if (genFirstUnsub) genFirstUnsub();
-  genFirstUnsub = null;
+  if (rebirthBroadcastUnsub) rebirthBroadcastUnsub();
+  genFirstUnsub = null; rebirthBroadcastUnsub = null;
   genFirstClaimed.clear(); genFirstTried.clear(); genFirstData.clear();
   stopHallOfFameListener();
 }
@@ -4409,6 +4429,23 @@ function startGenFirstListener() {
     });
     if ($("hofDialog") && $("hofDialog").open) renderHallOfFame();
   }, error => console.error("Generator firsts listener failed:", error));
+
+  // Rebirth 31+ announcements use the same global banner queue as first-to-buy notices.
+  let initialRebirthBroadcasts = true;
+  rebirthBroadcastUnsub = dbRef.collection("rebirthBroadcasts").onSnapshot(snapshot => {
+    const initial = initialRebirthBroadcasts;
+    initialRebirthBroadcasts = false;
+    if (initial) return; // Do not replay old milestones to players joining later.
+    snapshot.docChanges().forEach(change => {
+      if (change.type !== "added") return;
+      const d = change.doc.data();
+      if (typeof d.username !== "string" || !Number.isInteger(d.rebirth) || d.rebirth < 31) return;
+      genFirstQueue.push({
+        text: "🌟 GLOBAL: " + d.username + " has reached Rebirth " + d.rebirth + "!"
+      });
+      if (!genFirstBusy) nextGenFirst();
+    });
+  }, error => console.error("Rebirth broadcast listener failed:", error));
   startHallOfFameListener();
 }
 function maybeClaimGeneratorFirst(g, backfill = false) {
