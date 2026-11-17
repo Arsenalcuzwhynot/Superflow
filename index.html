@@ -1093,6 +1093,7 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
           <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="rebirth">Rebirths</button>
           <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="playtimeSeconds">Playtime</button>
           <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="questionsAnswered">Questions answered</button>
+          <button class="shop-tab" type="button" role="tab" aria-selected="false" data-leaderboard="monthlyCash">Monthly cash</button>
         </div>
         <ol class="leaderboard-list" id="leaderboardList"></ol>
         <div class="muted small" id="leaderboardStatus">Sign in to see the leaderboard.</div>
@@ -1345,7 +1346,8 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
     <div class="muted small">Correct history from before 1.4: set who really was first (optional date), or clear a record so the next qualifying player claims it.</div>
     <div class="adm-row"><select id="adminHofRecord" aria-label="Record"></select></div>
     <div class="adm-row"><input id="adminHofUser" type="text" maxlength="20" autocomplete="off" placeholder="Holder username (on the leaderboard)" aria-label="Holder username"><input id="adminHofDate" type="date" aria-label="Date (optional)"></div>
-    <div class="adm-row"><button id="adminHofSetBtn" type="button">Set holder</button><button id="adminHofClearBtn" type="button">Clear record</button></div>
+    <div class="adm-row"><input id="adminHofAmount" type="number" min="0" step="any" placeholder="Cash earned (monthly records only)" aria-label="Cash earned for a monthly record"></div>
+    <div class="adm-row"><button id="adminHofSetBtn" type="button">Set holder</button><button id="adminHofClearBtn" type="button">Clear record</button><button id="adminHofPreviewBtn" type="button">Preview announcement</button></div>
     <div class="muted small" id="adminHofStatus" role="status" aria-live="polite"></div>
   </div>
   <div class="adm-card"><h3>Broadcast message</h3>
@@ -1447,7 +1449,7 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 100000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "1.4";
+const GAME_VERSION = "1.5";
 const GLOBAL_BOOST_MILESTONES = [
   { cost: 1e6, multiplier: 1.2 }, { cost: 1e7, multiplier: 1.4 },
   { cost: 1e8, multiplier: 1.6 }, { cost: 1e9, multiplier: 1.8 },
@@ -1708,12 +1710,25 @@ const UPDATE_HISTORY = [
   },
   {
     version: "1.4",
-    status: "Current",
+    status: "Previous",
     changes: [
       "New 🏆 Hall of Fame (button next to Stats): the history of the game. See who was the first to buy every generator, the first to earn $10K up to $100Sx, the first to reach every rebirth milestone (1, 5, 10 ... 70), plus firsts for Level, Stars, Questions, Multiplier and Playtime, and who holds the current record on every leaderboard.",
       "Every generator now has a first-to-buy record, not only the top tiers (only the top tiers still get the on-screen announcement). The first big Hall of Fame milestones are announced to everyone too.",
       "Your best generator's crown effect now shows on every copy you have placed, not just the first one. The 👑 counter still sits on the first copy.",
       "Admins: new Hall of Fame tool to set or clear a record holder (with an optional date), so history from before 1.4 can be corrected.",
+    ]
+  },
+  {
+    version: "1.5",
+    status: "Current",
+    changes: [
+      "New Monthly cash leaderboard: it shows the cash everyone earned this month and resets on the 1st (UTC). The top earner of each month is added to the Hall of Fame under the month's name, for example November 2026.",
+      "Hall of Fame: generators you have not discovered yet now show as ??? (the player who claimed the record is still shown).",
+      "Fixed the Hall of Fame and \"first to buy\" announcements not reaching everyone. They no longer depend on your device clock, and generators you get from crates or gifts can no longer take the \"first to buy\" record of a top generator.",
+      "Admins: the Hall of Fame tool can now also set or clear the monthly top earners (with the amount), and can preview an announcement.",
+      "Stronger chat moderation: words stuck to other words, stretched letters, split letters and look-alike characters are now caught, and certain word combinations are blocked even when each word is fine on its own.",
+      "The Diamond Shop now shows a small Today's shop that changes once a day, with a countdown timer, instead of one very long list.",
+      "One-time consumables (Instant Fever, Call a Star, Call a Hyper Star) now cost 1.5× more each time you buy them.",
     ]
   }
 ];
@@ -2620,8 +2635,67 @@ const LEADERBOARD_METRICS = {
     heading: "Questions answered leaderboard",
     description: "Correct math questions · Top 25",
     format: value => number(Math.max(0, Number(value) || 0))
+  },
+  monthlyCash: {
+    label: "Monthly cash",
+    heading: "Monthly cash leaderboard",
+    description: "Cash earned this month, resets on the 1st (UTC). The top earner enters the Hall of Fame · Top 25",
+    monthly: true,
+    field: "cash",
+    format: value => cash(Math.max(0, Number(value) || 0))
   }
 };
+
+// ===== Monthly cash (1.5): leaderboard that resets every month (UTC) + Hall of Fame monthly champions =====
+function utcMonthKey(ms = Date.now()) { const d = new Date(ms); return d.getUTCFullYear() + "-" + String(d.getUTCMonth() + 1).padStart(2, "0"); }
+function prevMonthKey(key, n = 1) {
+  const [y, m] = key.split("-").map(Number), d = new Date(Date.UTC(y, m - 1 - n, 1));
+  return d.getUTCFullYear() + "-" + String(d.getUTCMonth() + 1).padStart(2, "0");
+}
+function monthLabel(key) {
+  const [y, m] = String(key).split("-").map(Number);
+  if (!y || !m) return String(key);
+  return new Date(Date.UTC(y, m - 1, 1)).toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+}
+function monthlyCashNow() { // cash earned since the first time this month the game saw this player (same "Cash earned" stat as the Cash board)
+  const key = utcMonthKey(), life = Math.max(0, Number(state.lifetime) || 0);
+  if (!state.monthBase || state.monthBase.key !== key || !Number.isFinite(Number(state.monthBase.base))) state.monthBase = { key, base: life };
+  return Math.max(0, life - Number(state.monthBase.base));
+}
+let lastMonthlyValue = null, lastMonthlyKey = "", lastMonthlyAt = 0;
+async function publishMonthlyCash() {
+  if (!currentUser || !dbRef || !leaderboardPrivacyLoaded || !cloudSaveReady || acSuspicious || document.hidden) return;
+  const key = utcMonthKey(), ref = dbRef.collection("monthlyCash").doc(key).collection("entries").doc(currentUser.uid);
+  try {
+    if (hideFromLeaderboard) { if (lastMonthlyValue !== -1) { await ref.delete(); lastMonthlyValue = -1; } return; }
+    const value = monthlyCashNow();
+    if (value === lastMonthlyValue && key === lastMonthlyKey && Date.now() - lastMonthlyAt < 10 * 60 * 1000) return;
+    await ref.set({ uid: currentUser.uid, username: currentUsername, cash: value, updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      ...(window.dmLbFields ? window.dmLbFields() : {}) }, { merge: true });
+    lastMonthlyValue = value; lastMonthlyKey = key; lastMonthlyAt = Date.now();
+  } catch (e) { /* the Monthly board is a bonus: never block the game */ }
+}
+setInterval(publishMonthlyCash, 60000);
+const monthTried = new Set();
+let monthFinalAt = 0;
+async function finalizeMonthlyChampions() { // the first player online after a month ends records its top earner in the Hall of Fame
+  if (Date.now() - monthFinalAt < 10 * 60 * 1000) return;
+  monthFinalAt = Date.now();
+  const cur = utcMonthKey();
+  for (const key of [prevMonthKey(cur, 1), prevMonthKey(cur, 2)]) {
+    const id = "month-" + key;
+    if (hofData.has(id) || monthTried.has(id)) continue;
+    monthTried.add(id);
+    try {
+      const snap = await dbRef.collection("monthlyCash").doc(key).collection("entries").orderBy("cash", "desc").limit(1).get();
+      if (snap.empty) continue;
+      const d = snap.docs[0].data();
+      if (!(Number(d.cash) > 0) || typeof d.username !== "string") continue;
+      await dbRef.collection("hallOfFame").doc(id).set({ recordId: id, uid: d.uid || snap.docs[0].id, username: d.username, amount: Number(d.cash), month: key,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+    } catch (e) { if (!e || e.code !== "permission-denied") monthTried.delete(id); }
+  }
+}
 
 const LB_ONLINE_MS = 3 * 60 * 1000, LB_RECENT_MS = 15 * 60 * 1000, ACTIVE_WINDOW_MS = 10 * 60 * 1000;
 function tsMs(t) { try { return t && typeof t.toMillis === "function" ? t.toMillis() : 0; } catch (e) { return 0; } }
@@ -2655,7 +2729,7 @@ function renderLeaderboard(snapshot, metricName) {
     if (isModViewer()) { const dot = document.createElement("span"); dot.dataset.t = String(tsMs(data.updatedAt)); paintLbDot(dot); username.prepend(dot); }
     const value = document.createElement("span");
     value.className = "leaderboard-cash";
-    value.textContent = metric.format(data[metricName], data);
+    value.textContent = metric.format(data[metric.field || metricName], data);
     row.append(rank, username, value);
     host.appendChild(row);
   });
@@ -2678,7 +2752,7 @@ function selectLeaderboard(metricName) {
   document.querySelectorAll("[data-leaderboard]").forEach(button => {
     button.setAttribute("aria-selected", String(button.dataset.leaderboard === metricName));
   });
-  $("leaderboardHeading").textContent = metric.heading;
+  $("leaderboardHeading").textContent = metric.monthly ? monthLabel(utcMonthKey()) + " cash leaderboard" : metric.heading;
   $("leaderboardDescription").textContent = metric.description;
   $("leaderboardList").replaceChildren();
   stopLeaderboardListener();
@@ -2687,10 +2761,15 @@ function selectLeaderboard(metricName) {
     return;
   }
   $("leaderboardStatus").textContent = "Loading leaderboard...";
-  let leaderboardQuery = dbRef.collection("leaderboard");
-  (metric.fields || [metricName]).forEach(field => {
-    leaderboardQuery = leaderboardQuery.orderBy(field, "desc");
-  });
+  let leaderboardQuery;
+  if (metric.monthly) {
+    leaderboardQuery = dbRef.collection("monthlyCash").doc(utcMonthKey()).collection("entries").orderBy("cash", "desc");
+  } else {
+    leaderboardQuery = dbRef.collection("leaderboard");
+    (metric.fields || [metricName]).forEach(field => {
+      leaderboardQuery = leaderboardQuery.orderBy(field, "desc");
+    });
+  }
   leaderboardUnsubscribe = leaderboardQuery.limit(25)
     .onSnapshot(
       snapshot => renderLeaderboard(snapshot, metricName),
@@ -2704,19 +2783,42 @@ function selectLeaderboard(metricName) {
 }
 
 const CHAT_BLURRED_MARKER = "████";
-const CHAT_PROFANITY = new Set([
-  "fuck", "fuk", "fck", "fucking", "fucked", "fucker", "fuckers", "fucks", "fuckface", "fuckwit",
-  "shit", "shite", "shitty", "shits", "shithead", "shitface", "bullshit", "dipshit", "horseshit",
-  "bitch", "bitches", "bitchy", "bitching", "bastard", "bastards", "ass", "asshole", "assholes",
-  "arse", "arsehole", "dumbass", "jackass", "dick", "dicks", "dickhead", "cock", "cocks", "cocksucker",
-  "pussy", "pussies", "cunt", "cunts", "motherfucker", "motherfuckers", "motherfucking",
-  "damn", "dammit", "goddamn", "hell", "crap", "crappy", "piss", "pissed", "pissing",
-  "slut", "sluts", "whore", "whores", "twat", "prick", "pricks", "douche", "douchebag",
-  "wanker", "bollocks", "fag", "faggot", "nigger", "nigga", "retard", "retarded", "wtf", "stfu"
+// ===== Chat moderation (1.5) =====
+// 1) SEVERE words are blocked anywhere inside a word, so glued words ("shutthefuckup"), extra letters and stretched letters are caught.
+// 2) BOUNDARY words are common inside normal words, so only the exact word (and listed endings) is blocked.
+// 3) Split letters ("f u c k", "sh it"), look-alike characters and leetspeak are normalised first.
+// 4) CHAT_COMBOS blocks word combinations even when every word is fine on its own. Add your own lines to the lists below.
+const CHAT_SEVERE = ["fuck", "shit", "cunt", "bitch", "nigger", "nigga", "faggot", "whore", "slut", "wank", "bollock", "bastard",
+  "asshole", "arsehole", "dumbass", "jackass", "fatass", "smartass", "dickhead", "cocksuck", "pussy", "retard", "piss", "goddam",
+  "twat", "douche", "motherf"];
+// Innocent words that happen to contain a severe word.
+const CHAT_ALLOWED_WORDS = /scunthorpe|shiitake|shitake|mishit|niggard|snigger|swank|wankel|retardant|pussycat|pussywillow|atwater/g;
+const CHAT_ALLOWED_RAW = /^(?:who['\u2019]re|he['\u2019]ll)$/i;
+const chatEndings = (base, ...ends) => [base, ...ends.map(e => base + e)];
+const CHAT_BOUNDARY = new Set([
+  ...chatEndings("ass", "s", "es", "y"), ...chatEndings("arse", "s"), ...chatEndings("damn", "s", "ed", "ing", "it"), "dammit",
+  ...chatEndings("hell", "s"), ...chatEndings("crap", "s", "py", "ped", "ping"), ...chatEndings("dick", "s", "heads"),
+  ...chatEndings("cock", "s"), ...chatEndings("prick", "s"), ...chatEndings("fag", "s"), ...chatEndings("fuk", "s"),
+  ...chatEndings("fck", "s"), "fcuk", "fuq", "sht", "shyt", "biatch", "wtf", "stfu", "kys", "tits", "titty"
 ]);
+const CHAT_COMBOS = [
+  { gap: 2, seq: [["kill", "kil", "hang", "unalive", "neck", "shoot", "drown"], ["yourself", "urself", "yrself", "youself", "yourselves", "urselfs", "yourselfs"]] },
+  { gap: 1, seq: [["kill", "kil", "hang", "unalive", "neck", "shoot", "drown"], ["your", "ur", "yo", "ya"], ["self"]] },
+  { gap: 1, seq: [["go", "gtfo"], ["die", "dead"]] },
+  { gap: 2, seq: [["hope", "wish"], ["you", "u", "ur", "your", "yall"], ["die", "dies", "dead", "death"]] },
+  { gap: 1, seq: [["heil"], ["hitler"]] },
+  { gap: 0, seq: [["white"], ["power", "supremacy"]] },
+  { gap: 2, seq: [["gas"], ["jews", "jew"]] },
+  { gap: 1, seq: [["send"], ["nudes", "nude"]] },
+  { gap: 1, seq: [["free"], ["robux", "vbucks", "nitro"]] }
+];
+const chatStretch = word => word.replace(/(.)\1*/g, (run, ch) => ch + "{" + run.length + ",}");
+const CHAT_SEVERE_RE = new RegExp(CHAT_SEVERE.map(chatStretch).join("|"));
+const CHAT_HOMOGLYPHS = { "\u0430": "a", "\u0435": "e", "\u043e": "o", "\u0440": "p", "\u0441": "c", "\u0445": "x", "\u0443": "y", "\u0456": "i",
+  "\u0458": "j", "\u0455": "s", "\u03bf": "o", "\u03b1": "a", "\u03b5": "e", "\u03b9": "i", "\u03c1": "p", "\u03bd": "v" };
 
 function normalizeChatToken(token) {
-  return Array.from(token.normalize("NFKD").toLowerCase()).join("")
+  return Array.from(token.normalize("NFKD").toLowerCase()).map(ch => CHAT_HOMOGLYPHS[ch] || ch).join("")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[0]/g, "o")
     .replace(/[1!|]/g, "i")
@@ -2732,20 +2834,72 @@ function normalizeChatToken(token) {
     .replace(/[^a-z]/g, "")
     .replace(/(.)\1{2,}/g, "$1$1");
 }
-
+function chatAltView(v) { return v.replace(/ph/g, "f").replace(/v/g, "u").replace(/y/g, "i"); } // phuck, fvck, shyt
+function isBadChatNorm(v) {
+  if (!v) return false;
+  for (const view of [v, chatAltView(v)]) {
+    if (CHAT_BOUNDARY.has(view)) return true;
+    if (CHAT_SEVERE_RE.test(view.replace(CHAT_ALLOWED_WORDS, ""))) return true;
+  }
+  return false;
+}
 function containsChatProfanity(token) {
-  return CHAT_PROFANITY.has(normalizeChatToken(token));
+  return !CHAT_ALLOWED_RAW.test(token) && isBadChatNorm(normalizeChatToken(token));
+}
+function chatComboEnd(norms, combo, start) {
+  let pos = start;
+  if (!combo.seq[0].includes(norms[pos])) return -1;
+  for (let k = 1; k < combo.seq.length; k++) {
+    let found = -1;
+    for (let j = pos + 1; j <= pos + 1 + combo.gap && j < norms.length; j++) {
+      if (combo.seq[k].includes(norms[j])) { found = j; break; }
+    }
+    if (found < 0) return -1;
+    pos = found;
+  }
+  return pos;
 }
 
 function moderateChatText(value) {
-  const spacedLetters = /(^|[^\p{L}\p{N}])((?:[\p{L}\p{N}][\s._*\-]+){2,}[\p{L}\p{N}])(?=$|[^\p{L}\p{N}])/gu;
-  const separated = String(value).replace(spacedLetters, (match, boundary, token) =>
-    containsChatProfanity(token) ? boundary + CHAT_BLURRED_MARKER : match
-  );
-  const separatedPunctuation = /[\p{L}\p{N}]+(?:[^\p{L}\p{N}\s]+[\p{L}\p{N}]+)*/gu;
-  return separated.replace(separatedPunctuation, token =>
-    containsChatProfanity(token) ? CHAT_BLURRED_MARKER : token
-  );
+  const text = String(value);
+  const re = /[\p{L}\p{N}]+(?:[^\p{L}\p{N}\s]+[\p{L}\p{N}]+)*/gu;
+  const toks = [];
+  let m;
+  while ((m = re.exec(text))) toks.push({ s: m.index, e: m.index + m[0].length, raw: m[0], n: normalizeChatToken(m[0]) });
+  const bad = new Array(toks.length).fill(false);
+  toks.forEach((t, i) => { if (!CHAT_ALLOWED_RAW.test(t.raw) && isBadChatNorm(t.n)) bad[i] = true; });
+  // Split letters / short fragments in a row: "f u c k", "sh it", "fu ck"
+  for (let i = 0; i < toks.length; i++) {
+    if (toks[i].n.length > 2) continue;
+    let j = i;
+    while (j < toks.length && toks[j].n.length <= 2) j++;
+    if (j - i >= 2) {
+      for (let a = i; a < j; a++) {
+        for (let b = a + 2; b <= Math.min(j, a + 6); b++) {
+          if (isBadChatNorm(toks.slice(a, b).map(t => t.n).join(""))) for (let k = a; k < b; k++) bad[k] = true;
+        }
+      }
+    }
+    i = j - 1;
+  }
+  // Blocked word combinations
+  const norms = toks.map(t => t.n);
+  CHAT_COMBOS.forEach(combo => {
+    for (let i = 0; i < toks.length; i++) {
+      const end = chatComboEnd(norms, combo, i);
+      if (end >= 0) for (let k = i; k <= end; k++) bad[k] = true;
+    }
+  });
+  let out = "", last = 0, lastWasBad = false;
+  toks.forEach((t, i) => {
+    if (!bad[i]) { lastWasBad = false; return; }
+    const gapText = text.slice(last, t.s);
+    if (lastWasBad && gapText.trim() === "") { last = t.e; return; } // merge neighbours into one block
+    out += gapText + CHAT_BLURRED_MARKER;
+    last = t.e;
+    lastWasBad = true;
+  });
+  return out + text.slice(last);
 }
 
 function renderModeratedChatText(element, value) {
@@ -4237,33 +4391,42 @@ function stopGenFirstListener() {
 function startGenFirstListener() {
   stopGenFirstListener();
   if (!currentUser || !dbRef) return;
+  let initial = true;
   genFirstUnsub = dbRef.collection("generatorFirsts").onSnapshot(snapshot => {
+    const first = initial; initial = false;
     snapshot.docChanges().forEach(change => {
       if (change.type === "removed") { genFirstData.delete(change.doc.id); genFirstClaimed.delete(change.doc.id); genFirstTried.delete(change.doc.id); return; }
       const holder = change.doc.data();
       genFirstData.set(change.doc.id, { username: holder.username, uid: holder.uid, ts: tsMs(holder.createdAt) });
       if (change.type !== "added") return;
       genFirstClaimed.add(change.doc.id);
-      const data = change.doc.data(), g = GENERATORS.find(x => x.id === change.doc.id);
-      if (!g || typeof data.username !== "string" || g.index < GLOBAL_FIRST_MIN_INDEX) return;
-      const ts = data.createdAt && typeof data.createdAt.toMillis === "function" ? data.createdAt.toMillis() : Date.now();
-      if (Date.now() - ts > 60000) return; // only announce fresh claims, never old ones
-      genFirstQueue.push({ g, username: data.username });
+      if (first) return; // everything in the first snapshot already existed when this player joined
+      const g = GENERATORS.find(x => x.id === change.doc.id);
+      // No timestamp check on purpose: a wrong device clock used to hide announcements.
+      if (!g || typeof holder.username !== "string" || g.index < GLOBAL_FIRST_MIN_INDEX || holder.manual || holder.backfill) return;
+      genFirstQueue.push({ g, username: holder.username });
       if (!genFirstBusy) nextGenFirst();
     });
     if ($("hofDialog") && $("hofDialog").open) renderHallOfFame();
   }, error => console.error("Generator firsts listener failed:", error));
   startHallOfFameListener();
 }
-function maybeClaimGeneratorFirst(g) {
+function maybeClaimGeneratorFirst(g, backfill = false) {
   try {
     if (!currentUser || !dbRef || !currentUsername || !g || g.id === "alpha" || isPrivilegedUser()
       || genFirstClaimed.has(g.id) || genFirstTried.has(g.id)) return;
     genFirstTried.add(g.id);
-    dbRef.collection("generatorFirsts").doc(g.id).set({
-      generatorId: g.id, uid: currentUser.uid, username: currentUsername,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    }).catch(() => { /* someone already claimed it */ });
+    const ref = dbRef.collection("generatorFirsts").doc(g.id);
+    const doc = { generatorId: g.id, uid: currentUser.uid, username: currentUsername, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+    if (backfill) doc.backfill = true; // quiet claim for history: never announced
+    ref.set(doc).catch(async error => {
+      if (error && error.code === "permission-denied") {
+        try {
+          const snap = await ref.get();
+          if (!snap.exists) { console.error("The first-to-buy claim for " + g.id + " was blocked by the Firestore rules:", error); if (isModViewer()) notify("First-to-buy claim blocked: publish the latest Firestore rules.", true); }
+        } catch (e) { /* ignore */ }
+      } else genFirstTried.delete(g.id); // network trouble: try again later
+    });
   } catch (e) { /* ignore */ }
 }
 
@@ -4309,9 +4472,13 @@ function startHallOfFameListener() {
     snapshot.docChanges().forEach(change => {
       if (change.type === "removed") { hofData.delete(change.doc.id); hofTried.delete(change.doc.id); return; }
       const d = change.doc.data();
-      hofData.set(change.doc.id, { username: d.username, uid: d.uid, ts: tsMs(d.createdAt), manual: !!d.manual });
+      hofData.set(change.doc.id, { username: d.username, uid: d.uid, ts: tsMs(d.createdAt), manual: !!d.manual, amount: Number(d.amount) || 0, month: d.month || "" });
       const rec = HOF_BY_ID[change.doc.id], ts = tsMs(d.createdAt);
-      if (change.type === "added" && hofLoaded && rec && rec.big && !d.backfill && !d.manual && ts && Date.now() - ts < 60000 && genFirstQueue.length < 4) {
+      if (change.type === "added" && hofLoaded && /^month-/.test(change.doc.id) && !d.manual && genFirstQueue.length < 4) {
+        genFirstQueue.push({ text: "🏆 HALL OF FAME: " + d.username + " earned the most cash in " + monthLabel(d.month || change.doc.id.slice(6)) + " (" + cash(Number(d.amount) || 0) + ")!" });
+        if (!genFirstBusy) nextGenFirst();
+      }
+      if (change.type === "added" && hofLoaded && rec && rec.big && !d.backfill && !d.manual && genFirstQueue.length < 4) {
         genFirstQueue.push({ text: "🏆 HALL OF FAME: " + d.username + " is the " + rec.label.replace(/^First/, "first") + "!" });
         if (!genFirstBusy) nextGenFirst();
       }
@@ -4324,6 +4491,7 @@ function checkHallOfFame() {
   try {
     if (!currentUser || !dbRef || !currentUsername || !cloudSaveReady || !hofLoaded || acSuspicious || isPrivilegedUser()) return;
     if (Date.now() - hofLoadedAt < 3000) return;
+    finalizeMonthlyChampions();
     const todo = HOF_RECORDS.filter(r => !hofData.has(r.id) && !hofTried.has(r.id) && r.test());
     const backfill = todo.length > 2; // a burst means the player already had these before the Hall of Fame existed: do not announce
     todo.forEach(r => {
@@ -4333,7 +4501,9 @@ function checkHallOfFame() {
       dbRef.collection("hallOfFame").doc(r.id).set(doc).catch(error => { if (!error || error.code !== "permission-denied") hofTried.delete(r.id); });
     });
     const best = getBestGeneratorIndex();
-    GENERATORS.forEach(g => { if (g.id !== "alpha" && g.index <= best) maybeClaimGeneratorFirst(g); });
+    // Quiet history claims only for the lower generators. Top generators can only be claimed by really BUYING them,
+    // so a crate or a gift can no longer take the "first to buy" record (and its announcement) away from the real buyer.
+    GENERATORS.forEach(g => { if (g.id !== "alpha" && g.index <= best && g.index < GLOBAL_FIRST_MIN_INDEX) maybeClaimGeneratorFirst(g, true); });
   } catch (e) { /* ignore */ }
 }
 setInterval(checkHallOfFame, 20000);
@@ -4373,6 +4543,16 @@ function hofSection(title, rows, note) {
   sec.append(grid);
   return sec;
 }
+function monthRow(id, entry) {
+  const row = document.createElement("div");
+  const mine = !!entry && !!currentUser && entry.uid === currentUser.uid;
+  row.className = "hof-row" + (mine ? " mine" : "");
+  const what = document.createElement("div"); what.className = "hof-what"; what.textContent = monthLabel(entry.month || id.slice(6));
+  const who = document.createElement("div"); who.className = "hof-who"; who.textContent = "👑 " + entry.username + (mine ? " (you)" : "");
+  row.append(what, who);
+  if (entry.amount) { const v = document.createElement("div"); v.className = "hof-when"; v.textContent = cash(entry.amount) + " earned"; row.append(v); }
+  return row;
+}
 function renderHallOfFame() {
   const body = $("hofBody");
   if (!body) return;
@@ -4384,7 +4564,14 @@ function renderHallOfFame() {
   HOF_RECORDS.forEach(r => { const e = hofData.get(r.id); if (e) { claimed++; if (e.uid === uid) mineCount++; } });
   const total = gens.length + HOF_RECORDS.length;
   $("hofSummary").textContent = claimed + " of " + total + " records claimed" + (mineCount ? " · you hold " + mineCount : "");
-  body.append(hofSection("🏭 First to buy each generator", gens.map(g => hofRow(genFirstLabel(g), genFirstData.get(g.id), g.color))));
+  const bestSeen = getBestGeneratorIndex(), seeAll = isModViewer();
+  body.append(hofSection("🏭 First to buy each generator", gens.map(g => {
+    const seen = seeAll || g.index <= bestSeen; // generators you have not discovered yet stay a mystery
+    return hofRow(seen ? genFirstLabel(g) : "???", genFirstData.get(g.id), seen ? g.color : "#555");
+  }), "Generators you have not discovered yet show as ???"));
+  const monthIds = [...hofData.keys()].filter(k => /^month-/.test(k)).sort().reverse();
+  body.append(hofSection("📅 Top earner of the month", monthIds.map(id => monthRow(id, hofData.get(id))),
+    "The player who earns the most cash in a month is added here on the 1st (UTC). See the Monthly cash leaderboard."));
   HOF_GROUPS.forEach(([group, title]) => body.append(hofSection(title,
     HOF_RECORDS.filter(r => r.group === group).map(r => hofRow(r.label.replace(/^First to (earn |reach |collect |answer |play for )?/, ""), hofData.get(r.id))))));
   const live = hofSection("📊 Current record holders", hofLive.map(item => {
@@ -4404,6 +4591,7 @@ async function loadHofLive() {
     const result = [];
     for (const key of Object.keys(LEADERBOARD_METRICS)) {
       const metric = LEADERBOARD_METRICS[key];
+      if (metric.monthly) continue; // the monthly board lives in its own collection
       let q = dbRef.collection("leaderboard");
       (metric.fields || [key]).forEach(field => { q = q.orderBy(field, "desc"); });
       const snap = await q.limit(1).get();
@@ -4430,10 +4618,23 @@ $("hofCloseBtn").addEventListener("click", () => $("hofDialog").close());
   const og2 = document.createElement("optgroup"); og2.label = "Milestones";
   HOF_RECORDS.forEach(r => { const o = document.createElement("option"); o.value = "hof:" + r.id; o.textContent = r.label; og2.append(o); });
   sel.append(og2);
+  const og3 = document.createElement("optgroup"); og3.label = "Top earner of the month";
+  for (let i = 1; i <= 12; i++) { const key = prevMonthKey(utcMonthKey(), i), o = document.createElement("option"); o.value = "month:" + key; o.textContent = monthLabel(key) + " top earner"; og3.append(o); }
+  sel.append(og3);
   const target = () => {
     const [kind, id] = sel.value.split(":");
+    if (kind === "month") return { coll: "hallOfFame", id: "month-" + id, field: "recordId", month: id };
     return kind === "gen" ? { coll: "generatorFirsts", id, field: "generatorId" } : { coll: "hallOfFame", id, field: "recordId" };
   };
+  $("adminHofPreviewBtn").addEventListener("click", () => {
+    const [kind, id] = sel.value.split(":");
+    const name = currentUsername || "Someone";
+    if (kind === "gen") { const g = GENERATORS.find(x => x.id === id); if (g) genFirstQueue.push({ g, username: name }); }
+    else if (kind === "month") genFirstQueue.push({ text: "🏆 HALL OF FAME: " + name + " earned the most cash in " + monthLabel(id) + "!" });
+    else { const r = HOF_BY_ID[id]; if (r) genFirstQueue.push({ text: "🏆 HALL OF FAME: " + name + " is the " + r.label.replace(/^First/, "first") + "!" }); }
+    if (!genFirstBusy) nextGenFirst();
+    $("adminHofStatus").textContent = "Showing a preview on your screen only. Admin accounts cannot claim records themselves.";
+  });
   $("adminHofSetBtn").addEventListener("click", async () => {
     const status = $("adminHofStatus");
     if ($("adminPanel").hidden || !currentUser || !dbRef) { status.textContent = "Admin access is required."; return; }
@@ -4443,9 +4644,15 @@ $("hofCloseBtn").addEventListener("click", () => $("hofDialog").close());
       status.textContent = "Working...";
       const player = await findGiftRecipient(name);
       const t = target();
+      const extra = {};
+      if (t.month) {
+        const amt = Number($("adminHofAmount").value);
+        if (!(amt > 0)) { status.textContent = "Type the cash amount they earned that month."; return; }
+        extra.month = t.month; extra.amount = amt;
+      }
       const day = $("adminHofDate").value;
       const when = day ? firebase.firestore.Timestamp.fromDate(new Date(day + "T12:00:00")) : firebase.firestore.FieldValue.serverTimestamp();
-      await dbRef.collection(t.coll).doc(t.id).set({ [t.field]: t.id, uid: player.id, username: player.data().username || name, createdAt: when, manual: true });
+      await dbRef.collection(t.coll).doc(t.id).set({ [t.field]: t.id, uid: player.id, username: player.data().username || name, createdAt: when, manual: true, ...extra });
       status.textContent = "Set " + (player.data().username || name) + " as the holder of: " + sel.options[sel.selectedIndex].textContent + ".";
     } catch (e) { status.textContent = e && e.code === "permission-denied" ? "Rules blocked it. Publish the updated rules." : ((e && e.message) || "Failed."); }
   });
@@ -7095,11 +7302,11 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   function after(pub){ applyCos(); lastShown=-1; refresh(); renderInv(); try{window.dmTutCheck&&window.dmTutCheck();}catch(e){} try{save();}catch(e){} if(pub){try{publishLeaderboardEntry(true);}catch(e){}} }
   function equipCos(it,on){ if(on&&it.group)COS.forEach(o=>{if(o.group===it.group&&o.id!==it.id)equipped()[o.id]=false;}); equipped()[it.id]=!!on; }
   function buy(it){
-    const l=it.type==="perk"?lvl(it.id):0, c=typeof it.cost==="function"?it.cost(l):it.cost;
+    const l=it.type==="perk"?lvl(it.id):0, c=it.type==="use"?useCost(it):(typeof it.cost==="function"?it.cost(l):it.cost);
     if(D()<c||(it.type==="perk"&&l>=it.max)||(it.type==="cos"&&owned()[it.id]))return;
     if(it.type==="use"&&it.can&&!it.can()){toast(it.cant||"Not available right now.",2600);return;}
     state.diamonds=D()-c;
-    if(it.type==="perk")perks()[it.id]=l+1; else if(it.type==="cos"){owned()[it.id]=true;} else it.run();
+    if(it.type==="perk")perks()[it.id]=l+1; else if(it.type==="cos"){owned()[it.id]=true;} else {it.run(); const ub=(state.dmUseBuys=state.dmUseBuys&&typeof state.dmUseBuys==="object"?state.dmUseBuys:{}); ub[it.id]=(Number(ub[it.id])||0)+1;}
     after(false);
     if(it.type==="cos")toast(it.name+" bought. You can find it in your inventory!",3400);
     else if(it.type==="perk")toast(it.name+" upgraded to level "+(l+1)+".",2400);
@@ -7263,6 +7470,24 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     if(p.kind==="annStyle")window.dmAnn(row,txt,{annStyle:p.val});
     row.append(meta,txt); w.append(row); return w;
   }
+  // ===== 1.5: Today's shop: a few items that change once a day (same for every player) =====
+  const DAILY_COS=8, DAILY_BUNDLES=2, DAILY_PROF=3;
+  let shownDay=null;
+  const dayRng=seed=>{let a=seed>>>0;return()=>{a=(a+0x6D2B79F5)|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};};
+  const shuffled=(arr,r)=>{const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+  function dailyPicks(day){
+    const r=dayRng(day*7919+104729), perGroup={}, cos=[];
+    shuffled(COS.filter(it=>it.cost>0&&!it.ltd),r).forEach(it=>{if(cos.length>=DAILY_COS||(perGroup[it.group]||0)>=2)return;perGroup[it.group]=(perGroup[it.group]||0)+1;cos.push(it);});
+    const bundles=shuffled(BUNDLES.filter(b=>!b.ltd&&!b.all),r).slice(0,DAILY_BUNDLES);
+    const prof=shuffled(PROF.filter(p=>!(p.kind==="annStyle"&&isPrivilegedUser())&&(!p.limited||Date.now()<SEASON1_ENDS)),r).slice(0,DAILY_PROF);
+    return {cos,bundles,prof};
+  }
+  const fmtClock=ms=>{const s=Math.max(0,Math.floor(ms/1000));return Math.floor(s/3600)+"h "+String(Math.floor(s%3600/60)).padStart(2,"0")+"m "+String(s%60).padStart(2,"0")+"s";};
+  const dailyTimerText=day=>"🔄 Today's shop changes in "+fmtClock((day+1)*864e5-Date.now())+" (at "+new Date((day+1)*864e5).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})+"). Everyone sees the same picks.";
+  setInterval(()=>{const d=dlg(); if(!d||!d.open)return; const day=Math.floor(Date.now()/864e5);
+    if(shownDay!==null&&day!==shownDay){renderShop2();return;}
+    const el=document.getElementById("dmDailyTimer"); if(el)el.textContent=dailyTimerText(day);},1000);
+  const useCost=it=>Math.ceil(it.cost*Math.pow(1.5,Math.min(60,Number((state.dmUseBuys||{})[it.id])||0)));
   function renderShop2(){
     const host=document.getElementById("diamondShopList"); if(!host||typeof state==="undefined")return;
     const scroller=document.getElementById("diamondShopScroll"), keepTop=scroller?scroller.scrollTop:0;
@@ -7292,39 +7517,45 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
          card((msLeft>0&&msLeft<864e5?"⏰ LAST CHANCE · ":"")+(L.tag?L.tag+" ":"")+b.name+(b.free?" · FREE":""),(L.blurb||"")+" Includes "+b.items.length+" items: "+names+"."+left,[pvBtn(()=>startPv(b.items.slice(),b.name)),eqBundleBtn(b),btn].filter(Boolean));
        });
      }}
-    head("Perks");
-    PERKS.forEach(it=>{const l=lvl(it.id);
-      card(it.name+" ("+l+"/"+it.max+")",it.desc,l>=it.max?makeButton("Maxed",()=>{},true,"dm-btn"):buyBtn(it.cost(l),()=>buy(it)));});
-    head("Instant use");
-    USES.forEach(it=>card(it.name,it.desc,buyBtn(it.cost,()=>buy(it))));
-    GROUPS.forEach(([g,title])=>{
-      head(title);
-      COS.filter(it=>it.group===g&&it.cost>0&&!it.ltd).forEach(it=>{
-        const has=owned()[it.id];
-        const btn=has?makeButton(equipped()[it.id]?"Owned · equipped":"Owned · equip in Inventory",()=>{},true,"dm-btn")
-                     :buyBtn(it.cost,()=>buy(it));
-        const gb=makeButton("🎁 Gift",()=>openGiftDialog(it),false,"dm-btn");
-        card(it.name,it.desc,[pvBtn(()=>startPv([it.id],it.name)),gb,btn]);
-      });
-    });
-    head("Bundles (you only pay for items you don't own yet)");
-    BUNDLES.filter(b=>!b.ltd).forEach(b=>{
+    const groupTitle={}; GROUPS.forEach(([g,title])=>{groupTitle[g]=title;});
+    const cosCard=it=>{
+      const has=owned()[it.id];
+      const btn=has?makeButton(equipped()[it.id]?"Owned · equipped":"Owned · equip in Inventory",()=>{},true,"dm-btn")
+                   :buyBtn(it.cost,()=>buy(it));
+      const gb=makeButton("🎁 Gift",()=>openGiftDialog(it),false,"dm-btn");
+      card(it.name,(groupTitle[it.group]?groupTitle[it.group]+" · ":"")+it.desc,[pvBtn(()=>startPv([it.id],it.name)),gb,btn]);
+    };
+    const bundleCard=b=>{
       const done=b.items.every(id=>owned()[id]),price=bPrice(b),full=bFull(b),pct=Math.round(b.off*100);
       const names=b.all?"Every cosmetic in the shop ("+b.items.length+" items)":b.items.map(id=>{const o=byId(id);return o?o.name:id;}).join(", ");
       card(b.name,names+". Full price 💎 "+full+" · "+pct+"% off.",[pvBtn(()=>startPv(b.items.filter(id=>{const o=byId(id);return o&&o.group!=="ui"||!b.all;}),b.name)),eqBundleBtn(b),done?makeButton("Owned",()=>{},true,"dm-btn"):buyBtn(price,()=>buyBundle(b))].filter(Boolean));
-    });
-    let sec=null;
-    PROF.forEach(p=>{
+    };
+    const profCard=p=>{
       if(p.kind==="annStyle"&&isPrivilegedUser())return;
-      if(p.sec!==sec){sec=p.sec;head(sec+" (visible to other players)");}
       const has=owned()[p.id];
       let btn;
       if(has)btn=makeButton(isEq(p)?"Owned · equipped":"Owned · equip in Inventory",()=>{},true,"dm-btn");
       else if(!profAvailable(p))btn=makeButton("No longer available",()=>{},true,"dm-btn");
       else btn=buyBtn(p.cost,()=>buyProf(p));
       const pb=pvBtn(()=>{if(openS.has(p.id))openS.delete(p.id);else openS.add(p.id);renderShop2();});
-      card(p.name,p.desc,[pb,btn],p.sw,openS.has(p.id)?sampleFor(p):null);
-    });
+      card(p.name,(p.sec?p.sec+" · ":"")+p.desc,[pb,btn],p.sw,openS.has(p.id)?sampleFor(p):null);
+    };
+    // ===== Today's shop =====
+    const day=Math.floor(Date.now()/864e5); shownDay=day;
+    const picks=dailyPicks(day);
+    const need=window.dmTutNeedTheme&&window.dmTutNeedTheme(); if(need&&!picks.cos.includes(need))picks.cos.unshift(need);
+    head("🛒 Today's shop");
+    {const note=document.createElement("p");note.className="dm-desc";note.id="dmDailyTimer";note.textContent=dailyTimerText(day);host.append(note);}
+    picks.cos.forEach(cosCard);
+    picks.bundles.forEach(bundleCard);
+    picks.prof.forEach(profCard);
+    head("Perks");
+    PERKS.forEach(it=>{const l=lvl(it.id);
+      card(it.name+" ("+l+"/"+it.max+")",it.desc,l>=it.max?makeButton("Maxed",()=>{},true,"dm-btn"):buyBtn(it.cost(l),()=>buy(it)));});
+    head("Instant use");
+    USES.forEach(it=>{const n=Number((state.dmUseBuys||{})[it.id])||0; card(it.name,it.desc+" The price rises 1.5× every time you buy it"+(n?" (bought "+n+"×).":"."),buyBtn(useCost(it),()=>buy(it)));});
+    {const vault=BUNDLES.filter(b=>!b.ltd&&b.all);
+     if(vault.length){head("Always available");vault.forEach(bundleCard);}}
     if(scroller)scroller.scrollTop=keepTop;
     try{window.dmTutAfterShop&&window.dmTutAfterShop();}catch(e){}
   }
@@ -7418,7 +7649,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     const th=tutTheme(),nm=th?th.name:"a UI theme",c=th?th.cost:40;
     return {
       1:["Open the Diamond Shop","Click or tap the 💎 Diamond Shop button at the top of the page. Opening it gives you "+TUT_GIFT+" free diamonds!"],
-      2:["Buy “"+nm+"”","You got "+TUT_GIFT+" 💎! Find “"+nm+"” under UI themes in the shop and buy it for 💎 "+c+"."],
+      2:["Buy “"+nm+"”","You got "+TUT_GIFT+" 💎! “"+nm+"” is in Today's shop at the top. Buy it for 💎 "+c+"."],
       3:["Open your Inventory","Nice! Close the shop and open the Inventory tab. Everything you buy is equipped from there."],
       4:["Equip “"+nm+"”","In the Inventory, find UI themes and press Equip on “"+nm+"”. Your whole game changes colour."],
       5:["Save it as a Loadout","Loadouts save everything you have equipped (theme, background, frames, cursor...). Press Save current on Loadout 1 at the top of the Inventory."],
@@ -7465,7 +7696,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     if(!replay&&(t.started||t.done||t.step>0))return;
     t.started=true;t.done=false;t.step=1;tutScrolled=false;tutSave();tutRender(true);
   }
-  window.dmTutCheck=tutCheck; window.dmTutStart=tutStart; window.dmTutRender=()=>{try{tutRender(false);}catch(e){}};
+  window.dmTutCheck=tutCheck; window.dmTutNeedTheme=()=>tutActive()&&tut().step===2?tutTheme():null; window.dmTutStart=tutStart; window.dmTutRender=()=>{try{tutRender(false);}catch(e){}};
   function tutOpenSections(){ // make sure the section we are teaching is not collapsed
     const t=tut(), need=t.step===4?["UI themes"]:(t.step===5||t.step===6)?["Loadouts"]:[]; if(!need.length)return;
     try{const c=new Set(JSON.parse(localStorage.getItem("sfInvClosed")||"[]"));let ch=false;need.forEach(x=>{if(c.delete(x))ch=true;});if(ch)localStorage.setItem("sfInvClosed",JSON.stringify([...c]));}catch(e){}
@@ -8294,6 +8525,12 @@ function updateLeaderboardTimer() {
   const metric = LEADERBOARD_METRICS[activeLeaderboard];
   if (!currentUser || !metric) { el.textContent = ""; return; }
   if (hideFromLeaderboard) { el.textContent = "You are hidden from the leaderboards, so your scores are not being published."; return; }
+  if (metric.monthly) {
+    const left = Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth() + 1, 1) - Date.now();
+    const d = Math.floor(left / 864e5), h = Math.floor(left % 864e5 / 36e5), mi = Math.floor(left % 36e5 / 6e4);
+    el.textContent = "📅 This board resets in " + d + "d " + h + "h " + mi + "m (1st of the month, UTC). Scores update about once a minute.";
+    return;
+  }
   const isCash = activeLeaderboard === "cashEarned";
   const last = isCash ? lastLeaderboardCashAt : lastLeaderboardPublishAt;
   const left = Math.max(0, Math.ceil((last + (isCash ? LEADERBOARD_CASH_MIN_MS : LEADERBOARD_MIN_MS) - Date.now()) / 1000));
