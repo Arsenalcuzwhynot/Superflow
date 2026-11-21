@@ -801,13 +801,14 @@ html body.dm-snow-chess::before{background-image:conic-gradient(#e9dcc3 25%,#7d5
 @keyframes dmchess{to{background-position:140px 140px}}
 body.dm-f-chess .slot{border:3px solid transparent!important;border-image:conic-gradient(#fff 25%,#111 0 50%,#fff 0 75%,#111 0) 1!important;box-shadow:0 0 8px #0009!important}
 body.dm-cursor-knight,body.dm-cursor-knight *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><text y='27' font-size='28' fill='white' stroke='black' stroke-width='1'>♞</text></svg>") 6 6,auto!important}
-/* ===== GTA 6 limited bundle ===== */
-body.dm-f-gta-vice,body.dm-f-gta-palm{animation:dm-pulse 1.4s ease-in-out infinite alternate}
-body.dm-f-gta-vice .slot{border-color:color-mix(in srgb,#ff2e93 calc(var(--dm-pulse)*100%),#ffa63d)!important;outline-color:#2a0638!important;box-shadow:0 0 calc(6px + var(--dm-pulse)*12px) color-mix(in srgb,#ff2e93 calc(var(--dm-pulse)*100%),#ffa63d),inset 0 0 10px #ff2e9340!important}
-body.dm-f-gta-palm .slot{border-color:color-mix(in srgb,#19f6d2 calc(var(--dm-pulse)*100%),#b8ff4a)!important;outline-color:#04201c!important;box-shadow:0 0 calc(6px + var(--dm-pulse)*12px) color-mix(in srgb,#19f6d2 calc(var(--dm-pulse)*100%),#b8ff4a),inset 0 0 10px #19f6d233!important}
-body.dm-star-gta .bonus-star:not(.diamond-star):not(.hyper-star){background:radial-gradient(circle at 40% 35%,#fff 0,#ffd36b 25%,#ff4fa8 62%,#7a1fa8 100%)!important;color:#fff!important;border:2px solid #fff!important;text-shadow:0 0 6px #ff2e93!important;box-shadow:0 0 14px #ff4fa8,0 0 28px #4de1ff!important}
-body.dm-cursor-palm,body.dm-cursor-palm *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><text y='26' font-size='26'>🌴</text></svg>") 6 6,auto!important}
-body.dm-ov-gta::after{background:linear-gradient(180deg,#ff4fa826,#7a2be22a 55%,#19f6d226);mix-blend-mode:screen}
+/* ===== Thunderstruck collection ===== */
+body.dm-f-thunder{animation:dm-pulse 1.4s ease-in-out infinite alternate}
+body.dm-f-thunder .slot{border-color:color-mix(in srgb,#4de1ff calc(var(--dm-pulse)*100%),#ffd54a)!important;outline-color:#0a1c38!important;box-shadow:0 0 calc(8px + var(--dm-pulse)*14px) color-mix(in srgb,#4de1ff calc(var(--dm-pulse)*100%),#ffd54a),inset 0 0 10px #4de1ff40!important}
+body.dm-star-thunder .bonus-star:not(.diamond-star):not(.hyper-star){background:radial-gradient(circle at 35% 30%,#ffffff 0,#7fe9ff 35%,#1e75ff 70%,#0c2266 100%)!important;color:#fff!important;border:2px solid #4de1ff!important;text-shadow:0 0 8px #ffd54a!important;box-shadow:0 0 16px #4de1ff,0 0 28px #ffd54a!important}
+body.dm-coin-thunder .mystery-coin{background:radial-gradient(circle at 35% 35%,#fff 0%,#ffd700 40%,#00c8ff 100%)!important;border-color:#4de1ff!important;box-shadow:0 0 14px #ffd700,0 0 22px #4de1ff!important}
+body.dm-cursor-thunder,body.dm-cursor-thunder *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><text y='26' font-size='26'>⚡</text></svg>") 6 6,auto!important}
+body.dm-ov-thunder::after{background:radial-gradient(ellipse at 50% 50%,transparent 60%,rgba(10,25,60,0.45) 85%,rgba(77,225,255,0.2) 100%);mix-blend-mode:screen;pointer-events:none;animation:dm-thunder-flash 7s ease-in-out infinite}
+@keyframes dm-thunder-flash{0%,85%,100%{opacity:1}87%{opacity:.2}89%{opacity:1}91%{opacity:.35}93%{opacity:1}}
 /* shop: obvious entry, preview */
 .dm-hero{background:linear-gradient(120deg,#062a4d,#0e72c9,#062a4d);background-size:200% 100%;animation:dm-sheen 5s linear infinite;border:3px solid #7fd4ff!important;box-shadow:0 0 calc(8px + var(--dm-pulse)*14px) #4fd0ff!important;text-align:center;padding:14px!important}
 @keyframes dm-sheen{to{background-position:-200% 0}}
@@ -832,7 +833,7 @@ body.dm-ov-gta::after{background:linear-gradient(180deg,#ff4fa826,#7a2be22a 55%,
 body::before{transform:translateZ(0);backface-visibility:hidden;contain:strict}
 /* the colour clock only runs while a tile frame that needs it is equipped (it forced a whole-page style recalc every frame) */
 :root{animation:none!important}
-body.dm-gold,body.dm-f-ice,body.dm-f-obsidian,body.dm-f-rainbow,body.dm-f-inferno,body.dm-f-emerald,body.dm-f-neon{animation:dm-hue 6s linear infinite,dm-pulse 1.4s ease-in-out infinite alternate}
+body.dm-gold,body.dm-f-ice,body.dm-f-obsidian,body.dm-f-rainbow,body.dm-f-inferno,body.dm-f-emerald,body.dm-f-neon,body.dm-f-thunder{animation:dm-hue 6s linear infinite,dm-pulse 1.4s ease-in-out infinite alternate}
 /* fewer glowing generator particles (8 instead of 16) */
 .generator-particles span:nth-child(n+9){display:none!important}
 /* don't animate what the player cannot see */
@@ -946,7 +947,45 @@ body.dm-star-comet .bonus-star.hyper-star:not(.diamond-star){animation:dm-cwob 2
 body.dm-star-snow .bonus-star.hyper-star:not(.diamond-star){animation:dm-hyperpulse 1.2s ease-in-out infinite,dm-hyperhue 2.4s linear infinite!important;background:conic-gradient(#ff3b30,#ff9f0a,#ffe600,#34c759,#00c7ff,#5856d6,#ff2d95,#ff3b30)!important;background-clip:border-box!important;-webkit-background-clip:border-box!important;border-color:#fff!important;box-shadow:0 0 24px 7px #ffffffaa,0 0 46px 12px #ff9bf055!important}
 body.dm-star-snow .bonus-star.hyper-star:not(.diamond-star)::after{color:#fff}
 html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-star){animation:none!important}
-</style></head>
+</style>
+<style id="global-announcement-stack-styles">
+#adminBroadcastBanner,#genFirstBanner{display:none!important}
+#globalAnnouncementStack{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:2147483647;width:min(780px,calc(100vw - 24px));max-height:calc(100vh - 28px);overflow-y:auto;display:flex;flex-direction:column;gap:10px;pointer-events:none;padding:2px 4px 10px;scrollbar-width:thin}
+.global-announcement{position:relative;display:flex;align-items:stretch;min-height:84px;overflow:hidden;flex:0 0 auto;border:2px solid var(--ga-a);border-radius:12px;color:#fff;background:linear-gradient(112deg,var(--ga-b),color-mix(in srgb,var(--ga-b),#000 12%) 48%,var(--ga-a));box-shadow:0 0 0 2px #000,0 10px 28px #000b,0 0 24px color-mix(in srgb,var(--ga-glow),transparent 55%);font-family:"Trebuchet MS",Verdana,Arial,sans-serif;pointer-events:auto;animation:ga-enter .42s cubic-bezier(.2,1.2,.3,1) both}
+.ga-icon{width:66px;flex:0 0 66px;display:grid;place-items:center;font-size:31px;background:#0004;border-right:2px solid color-mix(in srgb,var(--ga-a),transparent 35%);text-shadow:0 0 14px var(--ga-glow)}
+.ga-body{min-width:0;flex:1;padding:11px 44px 15px 14px}
+.ga-label{font-size:11px;font-weight:900;letter-spacing:.17em;margin-bottom:5px;color:var(--ga-a);text-shadow:0 1px 3px #000}
+.ga-text{font-size:19px;line-height:1.3;font-weight:800;overflow-wrap:anywhere;text-shadow:0 2px 2px #0008}
+.ga-hint{font-size:10px;opacity:.78;margin-top:5px}
+.ga-close{position:absolute;right:8px;top:7px;width:30px;height:30px;padding:0;border:1px solid #ffffff80;border-radius:7px;background:#0006;color:#fff;font:900 24px/1 Arial,sans-serif;cursor:pointer;pointer-events:auto}
+.ga-close:disabled{opacity:.35;cursor:not-allowed}
+.ga-close:not(:disabled):hover{background:#fff;color:#111}
+.ga-progress{position:absolute;left:0;right:0;bottom:0;height:5px;background:#0007}
+.ga-progress i{display:block;height:100%;width:100%;transform-origin:left center;background:linear-gradient(90deg,var(--ga-a),#fff);animation:ga-drain 600s linear forwards}
+.ga-pulse .ga-icon{animation:ga-pulse 1.2s ease-in-out infinite}
+.ga-sweep:after{content:"";position:absolute;inset:-40% auto -40% -35%;width:22%;background:#ffffff22;transform:skewX(-22deg);animation:ga-sweep 2.4s ease-in-out infinite}
+.ga-shimmer{background-size:220% 100%;animation:ga-shimmer 4s linear infinite,ga-enter .42s cubic-bezier(.2,1.2,.3,1) both}
+.ga-spark .ga-icon{animation:ga-spark 1.5s ease-in-out infinite}
+.ga-flare{box-shadow:0 0 0 2px #000,0 10px 28px #000b,0 0 30px var(--ga-glow)}
+.ga-wave{background-size:200% 100%;animation:ga-wave 5s ease-in-out infinite,ga-enter .42s cubic-bezier(.2,1.2,.3,1) both}
+.ga-orbit .ga-icon{animation:ga-orbit 2.8s linear infinite}
+.ga-glitch{animation:ga-glitch 5s steps(1,end) infinite,ga-enter .42s cubic-bezier(.2,1.2,.3,1) both}
+.global-announcement.ga-leaving{animation:ga-exit .24s ease-in both}
+@keyframes ga-enter{from{opacity:0;transform:translateY(-18px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes ga-exit{to{opacity:0;transform:translateY(-12px) scale(.98)}}
+@keyframes ga-drain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@keyframes ga-pulse{0%,100%{filter:brightness(1);transform:scale(1)}50%{filter:brightness(1.6);transform:scale(1.08)}}
+@keyframes ga-sweep{0%,100%{left:-35%;opacity:0}20%,70%{opacity:1}85%{left:120%;opacity:0}}
+@keyframes ga-shimmer{0%{background-position:100% 0}100%{background-position:-120% 0}}
+@keyframes ga-spark{0%,100%{filter:drop-shadow(0 0 0 var(--ga-glow))}50%{filter:drop-shadow(0 0 12px var(--ga-glow))}}
+@keyframes ga-wave{0%,100%{background-position:0 0}50%{background-position:100% 0}}
+@keyframes ga-orbit{to{transform:rotate(360deg)}}
+@keyframes ga-glitch{0%,94%,100%{filter:none}95%{filter:hue-rotate(35deg) brightness(1.4)}96%{filter:none}}
+@media(max-width:560px){#globalAnnouncementStack{top:calc(8px + env(safe-area-inset-top,0px));width:calc(100vw - 12px);gap:7px}.ga-icon{width:48px;flex-basis:48px;font-size:24px}.ga-body{padding:9px 40px 12px 10px}.ga-text{font-size:16px}.ga-label{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.global-announcement,.global-announcement *{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+</style>
+
+</head>
 <body>
 <section class="auth-screen" id="authScreen">
   <div class="auth-card">
@@ -1273,10 +1312,33 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
             </label>
             </div>
             <div class="settings-actions">
+              <div class="settings-card" id="accountManagementSection" style="margin-top:12px;padding:12px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;">
+                <h3 style="margin-top:0;font-size:15px;">Account Management</h3>
+                <div style="display:grid;gap:10px;">
+                  <div style="display:grid;gap:4px;">
+                    <label class="muted small" for="changeUsernameInput">Change Username</label>
+                    <div style="display:flex;gap:6px;">
+                      <input id="changeUsernameInput" type="text" maxlength="20" placeholder="New username (2–20 characters)" style="flex:1;" />
+                      <button id="changeUsernameBtn" type="button">Update Username</button>
+                    </div>
+                  </div>
+                  <div style="display:grid;gap:4px;">
+                    <label class="muted small" for="changePasswordInput">Change Password</label>
+                    <div style="display:grid;gap:6px;">
+                      <input id="currentPasswordInput" type="password" placeholder="Current password" />
+                      <div style="display:flex;gap:6px;">
+                        <input id="changePasswordInput" type="password" minlength="6" placeholder="New password (min 6 chars)" style="flex:1;" />
+                        <button id="changePasswordBtn" type="button">Update Password</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="muted small" id="accountManagementStatus" role="status" aria-live="polite"></div>
+                </div>
+              </div>
             </div>
             <div class="settings-danger">
               <button id="resetBtn" class="danger-button" type="button">Reset game</button>
-              <p class="muted small">Reset your game progress. This cannot be undone.</p>
+              <p class="muted small">Reset your game progress. Preserves Alpha units & cosmetic bundles. Removes you from leaderboards.</p>
             </div>
           </div>
         </div>
@@ -1364,6 +1426,19 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
     <div class="adm-row"><button id="adminResetGlobalBoostBtn" type="button">Reset global multiplier</button></div>
     <div class="muted small" id="adminGlobalBoostStatus" role="status" aria-live="polite"></div>
   </div>
+  <div class="adm-card adm-box" style="grid-column:1/-1;"><h3>👤 Player Account Management</h3>
+    <div class="adm-sub">Change usernames or passwords for players securely</div>
+    <div class="adm-row" style="display:flex;gap:8px;flex-wrap:wrap;">
+      <input id="adminAccountTarget" type="text" placeholder="Target username" style="flex:1;min-width:140px;" />
+      <input id="adminAccountNewUsername" type="text" maxlength="20" placeholder="New username" style="flex:1;min-width:140px;" />
+      <button id="adminUpdateUsernameBtn" type="button">Change Username</button>
+    </div>
+    <div class="adm-row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+      <input id="adminAccountNewPassword" type="password" minlength="6" placeholder="New password (min 6 chars)" style="flex:1;min-width:200px;" />
+      <button id="adminUpdatePasswordBtn" type="button">Change Password</button>
+    </div>
+    <div class="muted small" id="adminAccountStatus" role="status" aria-live="polite" style="margin-top:4px;"></div>
+  </div>
   <div class="adm-card adm-danger"><h3>Danger zone</h3>
     <div class="adm-row"><input id="adminDeleteTarget" type="text" maxlength="40" autocomplete="off" placeholder="Username or account ID" aria-label="Account to delete"><button id="adminDeleteAccountBtn" class="danger-button" type="button">Delete account</button></div>
     <div class="muted small" id="adminDeleteStatus" role="status" aria-live="polite"></div>
@@ -1378,7 +1453,7 @@ html.reduced-motion body[class*="dm-star-"] .bonus-star.hyper-star:not(.diamond-
   <div class="note" id="adminStatus" role="status" aria-live="polite" style="grid-column:1/-1"></div>
     </div>
   </section>
-  <div class="footer">Superflow! · Build your flow, one generator at a time. · Version <span id="gameVersion">1.4</span><button id="updateHistoryBtn" type="button">Update history</button></div>
+  <div class="footer">Superflow! · Build your flow, one step at a time. · Version <span id="gameVersion">1.6.0</span><button id="updateHistoryBtn" type="button">Update history</button></div>
 </main>
 <div class="modal-bg" id="modalBg"><div class="modal"><h2 id="modalTitle"></h2><p id="modalText"></p><div class="modal-fields" id="modalFields"></div><div class="modal-actions" id="modalActions"></div></div></div>
 <div class="star-layer" id="starLayer" aria-live="polite"></div>
@@ -1449,7 +1524,7 @@ const PERMANENT_CASH_MULTIPLIER = 2;
 const NEW_ACCOUNT_BOOST_DURATION_MS = 15 * 60 * 1000;
 const PERSONAL_FEVER_NOTE_TARGET = 100000;
 const PERSONAL_FEVER_DURATION_MS = 2 * 60 * 1000;
-const GAME_VERSION = "1.5";
+const GAME_VERSION = "1.6.0";
 const GLOBAL_BOOST_MILESTONES = [
   { cost: 1e6, multiplier: 1.2 }, { cost: 1e7, multiplier: 1.4 },
   { cost: 1e8, multiplier: 1.6 }, { cost: 1e9, multiplier: 1.8 },
@@ -1606,7 +1681,7 @@ const UPDATE_HISTORY = [
       "Shop tab buttons stay pinned in their own box while the selected tab scrolls in a second box; fixed the gap above the buy quantity bar.",
       "Replaced the multibuy number box with ×1 / ×10 / ×100 buttons.",
       "The top multiplier now shows the same value as the multiplier notification (the shared boost still applies behind the scenes).",
-      "New accounts no longer receive a starter Alpha Generator.",
+      "New accounts no longer receive a starter Alpha Unit.",
       "Billy now only appears alongside a Star, is a yellow square smiley face, and his multiplier coins are yellow.",
       "Updated the game version to 1.0.0 (Part 1)."
     ]
@@ -1623,7 +1698,7 @@ const UPDATE_HISTORY = [
       "Added the rare Diamond Star (1% of Stars): 3-5 diamonds, 30 seconds of income, and chances of six extra Stars or a Diamond Billy.",
       "Diamond Billy is a blue Billy whose 5-10 diamond coins each give +0.01× multiplier and 1 diamond.",
       "Global broadcasts now use a readable font, disappear after a few seconds, and are also saved in global chat.",
-      "Alpha Generators can no longer be gambled and are hidden everywhere unless you own one.",
+      "Alpha Units can no longer be gambled and are hidden everywhere unless you own one.",
       "Added admin tools: global broadcast banner, refresh every open game, wipe all player progress, spawn Billy for everyone, diamond rain, and spawning a question, multiplier or Diamond Star/Billy for yourself.",
       "Updated the game version to 1.0.0 (Part 2)."
     ]
@@ -1632,7 +1707,7 @@ const UPDATE_HISTORY = [
     version: "1.1",
     status: "Previous",
     changes: [
-      "Admin account: everything is unlocked (all cosmetics, colours, titles and perks) and selling generators now pays real cash so rebirths can be tested.",
+      "Admin account: everything is unlocked (all cosmetics, colours, titles and perks) and selling units now pays real cash so rebirths can be tested.",
       "Every rebirth milestone now unlocks 3 name colours. Chat and the leaderboard share one name colour setting.",
       "New Diamond Shop items: 5 UI themes, 8 fonts that restyle the whole game, and the Lucky Stars and Night Shift perks.",
       "Hyper Stars keep animated rainbow colours when a Star skin is equipped. Buying no longer equips: items say they are waiting in your Inventory.",
@@ -1642,16 +1717,16 @@ const UPDATE_HISTORY = [
       "Removed leaderboard flairs (owned flairs are refunded 60 💎 each) and the lower Diamond Shop button.",
       "Global broadcasts have a new animated banner with a countdown bar and a nicer chat message.",
       "UI themes now also recolour the page background, and the number 5 is much easier to read.",
-      "Backgrounds, snow, petals, embers, leaves, stars and the aurora now stay behind every tab and panel instead of covering generators.",
+      "Backgrounds, snow, petals, embers, leaves, stars and the aurora now stay behind every tab and panel instead of covering units.",
       "Billy now only appears from Stars: he comes out of a Star when you collect it, never on his own.",
-      "Performance: fewer generator particles, cheaper background animation, no page-wide colour clock unless a tile frame needs it, and no redrawing while the tab is hidden.",
+      "Performance: fewer unit particles, cheaper background animation, no page-wide colour clock unless a tile frame needs it, and no redrawing while the tab is hidden.",
       "Added a Preview button to every Diamond Shop item, and made the Diamond Shop much easier to spot.",
       "Fixed Diamond Shop backgrounds, chat name colours, chat titles and announcement styles; leaderboard flair is now much more visible.",
       "Tile frames are now perfectly in sync and look better, with three new frames.",
       "Redesigned the Pixel Star and Comet Star.",
       "Added 6 new cursors, 8 new click effects and 8 new overlays.",
       "Bundles reworked: six bundles with bigger savings, and you only pay for items you do not already own.",
-      "Removed the Season 1 title and generator particle cosmetics (diamonds refunded if owned).",
+      "Removed the Season 1 title and particle cosmetics (diamonds refunded if owned).",
       "Billy and Stars no longer appear just because you logged in.",
       "A wipe now also resets your saved theme.",
       "Added the alpha tag (a) in chat.",
@@ -1665,12 +1740,12 @@ const UPDATE_HISTORY = [
     changes: [
       "Leaderboards now update much faster: the Cash board and the other boards used to wait 9–10 minutes between updates.",
       "Fixed Instant Fever: it now starts a real personal Fever (×2, or Hyper) for 2 minutes instead of only the Star speed boost.",
-      "Cash per second is now exact: generators pay for the real time that passed, so Note Drop Speed upgrades, laggy tabs and background tabs no longer pay more or less than the displayed amount.",
+      "Cash per second is now exact: production pays for the real time that passed, so Note Drop Speed upgrades, laggy tabs and background tabs no longer pay more or less than the displayed amount.",
       "New Inventory value leaderboard.",
       "Removed Cash Injection from the Diamond Shop.",
       "Stars collected are now reset by the Reset button, and a wipe can no longer re-publish old Stars.",
       "Admins can void ALL gifts for every player, and a wipe now voids unclaimed gifts too.",
-      "New Diamond Shop section: Limiteds, starting with a free GTA 6 Bundle. Everyone gets a notification to claim it.",
+      "New Diamond Shop section: Limiteds.",
     ]
   },
   {
@@ -1681,12 +1756,11 @@ const UPDATE_HISTORY = [
       "Fixed random logouts: logins were kept in memory only, so every page reload (an \"Update available\" reload, a wipe, a refresh or a phone discarding the tab) signed players out. Players now stay signed in, and the sign-in screen has a Stay signed in on this device tick box.",
       "New Chess theme: Chess Club and Checkmate UI themes, a sliding Chessboard background, Chess Frames, a Knight Cursor, Chess Pieces click effect, and a discounted Chess Set bundle.",
       "New Gift button in the Diamond Shop: buy any cosmetic for another player. They accept it in Gifts and it lands in their Inventory (if they already own it they get the diamonds instead).",
-      "The Cash leaderboard now ranks the same Cash earned number shown in your stats (it used to use a smaller generator-only number). Stars, Hyper Stars, Billy, the wheel, daily rewards, offline cash, Stonks and Head Start all count; selling generators does not.",
+      "The Cash leaderboard now ranks the same Cash earned number shown in your stats (it used to use a smaller unit-only number). Stars, Hyper Stars, Billy, the wheel, daily rewards, offline cash, Stonks and Head Start all count; selling units does not.",
       "Bundles in the Diamond Shop now have an Equip all button that equips every item in the bundle at once.",
-      "The GTA 6 bundle is now six free bundles: Vice City, Leonida Sunset, Neon Strip, Ocean Drive, Gator Bayou and Heist Night, with 6 backgrounds, 6 UI themes, 2 tile frames, a Star skin, a cursor, a click effect and an overlay. They leave the shop on November 20 (anything you claimed is yours to keep), and each Limited shows a countdown.",
       "New Loadouts in the Inventory: save everything you have equipped into Loadout 1, 2 or 3 and swap with one click.",
-      "Admin panel rebuilt into three boxes: For me, For 1 player and For everyone. Each can give cash, diamonds, generators, Stars, Hyper Stars, Diamond Stars and Billy, and the For everyone box can gift every player their own best generator.",
-      "Removed the Generator gamble tab.",
+      "Admin panel rebuilt into three boxes: For me, For 1 player and For everyone. Each can give cash, diamonds, units, Stars, Hyper Stars, Diamond Stars and Billy, and the For everyone box can gift every player their own best unit.",
+      "Removed the Gamble tab.",
     ]
   },
   {
@@ -1695,16 +1769,16 @@ const UPDATE_HISTORY = [
     changes: [
       "New first-time screen asking if you are on Desktop or Mobile, plus a Layout setting (Auto, Desktop, Mobile) in Settings so you can switch if you misclick.",
       "Mobile layout improvements: the leaderboard tabs are now a tidy tap-friendly grid instead of a cramped row, and leaderboard rows and buttons are easier to hit.",
-      "Fixed the stats bar on desktop: the five boxes (Money, Income, Generators placed, Level, Multiplier) now sit evenly on one row instead of leaving one box stranded on its own line.",
+      "Fixed the stats bar on desktop: the five boxes (Money, Income, Units placed, Level, Multiplier) now sit evenly on one row instead of leaving one box stranded on its own line.",
       "Mods can now see an online indicator next to leaderboard names (green: online, amber: seen recently, grey: offline).",
-      "Mods can send everyone their BEST generator, only active players, or only inactive players.",
+      "Mods can send everyone their BEST unit, only active players, or only inactive players.",
     ]
   },
   {
     version: "1.3.5",
     status: "Previous",
     changes: [
-      "Alpha Generator redesigned: it now looks like the generator above your best (its colours, border, particles and effects) so you can see what you are working toward. It is still called the Alpha Generator and still earns like your best generator.",
+      "Alpha Unit redesigned: it now looks like the unit above your best (its colours, border, particles and effects) so you can see what you are working toward. It is still called the Alpha Unit and still earns like your best unit.",
       "New Diamond Shop tutorial after the starter tutorial: open the shop to get 100 free diamonds, buy a cheap theme, equip it in the Inventory, then learn how to save and swap Loadouts. You can replay it any time from Settings.",
     ]
   },
@@ -1712,23 +1786,37 @@ const UPDATE_HISTORY = [
     version: "1.4",
     status: "Previous",
     changes: [
-      "New 🏆 Hall of Fame (button next to Stats): the history of the game. See who was the first to buy every generator, the first to earn $10K up to $100Sx, the first to reach every rebirth milestone (1, 5, 10 ... 70), plus firsts for Level, Stars, Questions, Multiplier and Playtime, and who holds the current record on every leaderboard.",
-      "Every generator now has a first-to-buy record, not only the top tiers (only the top tiers still get the on-screen announcement). The first big Hall of Fame milestones are announced to everyone too.",
-      "Your best generator's crown effect now shows on every copy you have placed, not just the first one. The 👑 counter still sits on the first copy.",
+      "New 🏆 Hall of Fame (button next to Stats): the history of the game. See who was the first to unlock every tier, the first to earn $10K up to $100Sx, the first to reach every rebirth milestone (1, 5, 10 ... 70), plus firsts for Level, Stars, Questions, Multiplier and Playtime, and who holds the current record on every leaderboard.",
+      "Every tier now has a first-to-unlock record, not only the top tiers (only the top tiers still get the on-screen announcement). The first big Hall of Fame milestones are announced to everyone too.",
+      "Your best unit's crown effect now shows on every copy you have placed, not just the first one. The 👑 counter still sits on the first copy.",
       "Admins: new Hall of Fame tool to set or clear a record holder (with an optional date), so history from before 1.4 can be corrected.",
     ]
   },
   {
     version: "1.5",
-    status: "Current",
+    status: "Previous",
     changes: [
       "New Monthly cash leaderboard: it shows the cash everyone earned this month and resets on the 1st (UTC). The top earner of each month is added to the Hall of Fame under the month's name, for example November 2026.",
-      "Hall of Fame: generators you have not discovered yet now show as ??? (the player who claimed the record is still shown).",
-      "Fixed the Hall of Fame and \"first to buy\" announcements not reaching everyone. They no longer depend on your device clock, and generators you get from crates or gifts can no longer take the \"first to buy\" record of a top generator.",
+      "Hall of Fame: tiers you have not discovered yet now show as ??? (the player who claimed the record is still shown).",
+      "Fixed the Hall of Fame and \"first to unlock\" announcements not reaching everyone. They no longer depend on your device clock, and units you get from crates or gifts can no longer take the \"first to unlock\" record of a top tier.",
       "Admins: the Hall of Fame tool can now also set or clear the monthly top earners (with the amount), and can preview an announcement.",
       "Stronger chat moderation: words stuck to other words, stretched letters, split letters and look-alike characters are now caught, and certain word combinations are blocked even when each word is fine on its own.",
       "The Diamond Shop now shows a small Today's shop that changes once a day, with a countdown timer, instead of one very long list.",
       "One-time consumables (Instant Fever, Call a Star, Call a Hyper Star) now cost 1.5× more each time you buy them.",
+    ]
+  },
+  {
+    version: "1.6.0 (Part 1)",
+    status: "Current",
+    changes: [
+      "Overhauled Reset Game: reset cash, progress, upgrades, quests and leaderboard records while safely keeping your Alpha units and cosmetic bundles.",
+      "Buy All Confirmation: displays an in-game confirmation card with item details, quantity, and total cost before any mass purchase executes.",
+      "Account Management: players can now update their username and change their password directly in Settings, with admin controls in the Admin Panel.",
+      "Real-time Global Broadcasts: improved banner delivery and event synchronization for instant, reliable display across all connected devices.",
+      "Hall of Fame Milestone Alerts: milestones are now reliably detected and announced in real-time, with celebratory notifications awarded to players.",
+      "New Thunderstruck Cosmetic Collection: electric storm backgrounds, UI themes, frames, stars, coin skins, cursors, click effects, and an all-in-one bundle discount.",
+      "Cosmetic Bundle Inventory: view and equip your complete cosmetic bundles with a single click in the Inventory tab.",
+      "Shop Rebalance: removed bulk-buy-everything exploits to keep progression rewarding and fair."
     ]
   }
 ];
@@ -2366,6 +2454,12 @@ async function isBannedAccount() {
     if (!snap.exists) return false;
     const reason = (snap.data() && snap.data().reason) || "";
     cloudSaveReady = false;
+    try {
+      await Promise.allSettled([
+        dbRef.collection("leaderboard").doc(currentUser.uid).delete(),
+        dbRef.collection("monthlyCash").doc(utcMonthKey()).collection("entries").doc(currentUser.uid).delete()
+      ]);
+    } catch (e) {}
     await logoutUser();
     const message = "This account has been banned" + (reason ? ": " + reason : ".");
     $("authStatus").textContent = message;
@@ -2691,8 +2785,12 @@ async function finalizeMonthlyChampions() { // the first player online after a m
       if (snap.empty) continue;
       const d = snap.docs[0].data();
       if (!(Number(d.cash) > 0) || typeof d.username !== "string") continue;
-      await dbRef.collection("hallOfFame").doc(id).set({ recordId: id, uid: d.uid || snap.docs[0].id, username: d.username, amount: Number(d.cash), month: key,
+      const championUid = d.uid || snap.docs[0].id;
+      await dbRef.collection("hallOfFame").doc(id).set({ recordId: id, uid: championUid, username: d.username, amount: Number(d.cash), month: key,
         createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      if (currentUser && championUid === currentUser.uid) {
+        notify("🏆 Hall of Fame Month Record: " + monthLabel(key) + " Champion!", false, true);
+      }
     } catch (e) { if (!e || e.code !== "permission-denied") monthTried.delete(id); }
   }
 }
@@ -4185,8 +4283,9 @@ function renderStats() {
   $("xpProgress").textContent = number(state.xp) + " / " + number(xpRequiredForLevel(state.level)) + " XP";
   const starBonus = starAchievementMultiplierBonus();
   const bonusPct = starBonus * 100;
-  $("multiplier").textContent = "×" + number(state.multiplier)
-    + (bonusPct > 0 ? " (+" + (bonusPct >= 0.1 ? bonusPct.toFixed(2) : bonusPct.toFixed(3)) + "%)" : "");
+  $("multiplier").textContent = "×" + number(playerMultiplier());
+  $("multiplier").title = "Total multiplier: ×" + number(playerMultiplier())
+    + (bonusPct > 0 ? " (Base: ×" + number(state.multiplier) + " + " + (bonusPct >= 0.1 ? bonusPct.toFixed(2) : bonusPct.toFixed(3)) + "% star bonus)" : "");
   const feverRemaining = Math.max(0, state.personalFeverUntil - Date.now());
   const feverTotalSeconds = Math.ceil(feverRemaining / 1000);
   const feverClock = Math.floor(feverTotalSeconds / 60) + ":"
@@ -4380,26 +4479,114 @@ let genFirstUnsub = null, rebirthBroadcastUnsub = null;
 const genFirstClaimed = new Set(), genFirstTried = new Set(), genFirstQueue = [], genFirstData = new Map();
 let genFirstBusy = false;
 function genFirstLabel(g) { return /generator$/i.test(g.name) ? g.name : g.name + " Generator"; }
-function nextGenFirst() {
-  const item = genFirstQueue.shift();
-  if (!item) { genFirstBusy = false; return; }
-  genFirstBusy = true;
-  let el = $("genFirstBanner");
-  if (!el) { el = document.createElement("div"); el.id = "genFirstBanner"; el.hidden = true; document.body.appendChild(el); }
-  if (item.text) {
-    el.style.background = "linear-gradient(90deg,#b8860b,#ffd54a,#b8860b)";
-    el.style.color = "#241800";
-    el.style.setProperty("--gf-accent", "#fff3b0");
-    el.textContent = item.text;
-  } else {
-    const g = item.g;
-    el.style.color = "";
-    el.style.background = "linear-gradient(90deg," + (g.cycleFrom || g.color) + "," + g.color + "," + (g.cycleTo || g.accent || g.color) + ")";
-    el.style.setProperty("--gf-accent", g.accent || g.color);
-    el.textContent = "GLOBAL: " + item.username + " has bought the first " + genFirstLabel(g) + "!";
+
+// One shared stack handles every global event. Each card gets its own palette/effect,
+// ten-minute lifetime, and a close control that unlocks after ten seconds.
+const GLOBAL_ANNOUNCEMENT_STYLES = [
+  { a:"#ff4d6d", b:"#7b1238", glow:"#ff4d6d", effect:"pulse" },
+  { a:"#38bdf8", b:"#123b78", glow:"#38bdf8", effect:"sweep" },
+  { a:"#a78bfa", b:"#42206f", glow:"#a78bfa", effect:"shimmer" },
+  { a:"#34d399", b:"#07553f", glow:"#34d399", effect:"spark" },
+  { a:"#fbbf24", b:"#713f12", glow:"#fbbf24", effect:"flare" },
+  { a:"#fb923c", b:"#7c2d12", glow:"#fb923c", effect:"wave" },
+  { a:"#2dd4bf", b:"#134e4a", glow:"#2dd4bf", effect:"orbit" },
+  { a:"#e879f9", b:"#701a75", glow:"#e879f9", effect:"glitch" }
+];
+let globalAnnouncementStyleIndex = 0;
+function getGlobalAnnouncementStack() {
+  let host = document.getElementById("globalAnnouncementStack");
+  if (!host) {
+    host = document.createElement("div");
+    host.id = "globalAnnouncementStack";
+    host.setAttribute("aria-live", "polite");
+    host.setAttribute("aria-relevant", "additions");
+    document.body.appendChild(host);
   }
-  el.hidden = false;
-  setTimeout(() => { el.hidden = true; setTimeout(nextGenFirst, 500); }, 10000);
+  return host;
+}
+function showGlobalAnnouncement(text, kind) {
+  if (typeof text !== "string" || !text.trim()) return;
+  const host = getGlobalAnnouncementStack();
+  const style = GLOBAL_ANNOUNCEMENT_STYLES[globalAnnouncementStyleIndex++ % GLOBAL_ANNOUNCEMENT_STYLES.length];
+  const labels = {
+    rebirth:{ label:"GLOBAL REBIRTH", icon:"♻️" },
+    hof:{ label:"HALL OF FAME", icon:"🏆" },
+    generator:{ label:"GLOBAL FIRST", icon:"⚡" },
+    admin:{ label:"GLOBAL MESSAGE", icon:"📢" }
+  };
+  const meta = labels[kind] || labels.admin;
+  const card = document.createElement("section");
+  card.className = "global-announcement ga-" + style.effect;
+  card.dataset.kind = kind || "admin";
+  card.style.setProperty("--ga-a", style.a);
+  card.style.setProperty("--ga-b", style.b);
+  card.style.setProperty("--ga-glow", style.glow);
+  const icon = document.createElement("div");
+  icon.className = "ga-icon";
+  icon.setAttribute("aria-hidden", "true");
+  icon.textContent = meta.icon;
+  const body = document.createElement("div");
+  body.className = "ga-body";
+  const label = document.createElement("div");
+  label.className = "ga-label";
+  label.textContent = meta.label;
+  const message = document.createElement("div");
+  message.className = "ga-text";
+  message.textContent = text;
+  const hint = document.createElement("div");
+  hint.className = "ga-hint";
+  hint.textContent = "Dismiss available in 10 seconds";
+  body.append(label, message, hint);
+  const close = document.createElement("button");
+  close.className = "ga-close";
+  close.type = "button";
+  close.textContent = "×";
+  close.setAttribute("aria-label", "Dismiss announcement");
+  close.title = "Dismiss available in 10 seconds";
+  close.disabled = true;
+  const progress = document.createElement("div");
+  progress.className = "ga-progress";
+  const progressFill = document.createElement("i");
+  progress.appendChild(progressFill);
+  card.append(icon, body, close, progress);
+  host.appendChild(card);
+  const closeCard = () => {
+    clearTimeout(unlockTimer);
+    clearTimeout(expireTimer);
+    card.classList.add("ga-leaving");
+    setTimeout(() => card.remove(), 260);
+  };
+  close.addEventListener("click", closeCard);
+  const unlockTimer = setTimeout(() => {
+    close.disabled = false;
+    close.title = "Dismiss announcement";
+    hint.textContent = "You can dismiss this message with ×";
+    card.classList.add("ga-unlocked");
+  }, 10000);
+  const expireTimer = setTimeout(closeCard, 10 * 60 * 1000);
+  progressFill.style.animationDuration = "600s";
+  return card;
+}
+function clearGlobalAnnouncements(kind) {
+  const host = document.getElementById("globalAnnouncementStack");
+  if (!host) return;
+  host.querySelectorAll(".global-announcement").forEach(card => {
+    if (!kind || card.dataset.kind === kind) {
+      card.classList.add("ga-leaving");
+      setTimeout(() => card.remove(), 260);
+    }
+  });
+}
+function nextGenFirst() {
+  if (genFirstBusy) return;
+  genFirstBusy = true;
+  while (genFirstQueue.length) {
+    const item = genFirstQueue.shift();
+    const text = item.text || ("GLOBAL: " + item.username + " has bought the first " + genFirstLabel(item.g) + "!");
+    const kind = item.kind || (item.g ? "generator" : (/rebirth/i.test(text) ? "rebirth" : "hof"));
+    showGlobalAnnouncement(text, kind);
+  }
+  genFirstBusy = false;
 }
 function stopGenFirstListener() {
   if (genFirstUnsub) genFirstUnsub();
@@ -4424,7 +4611,7 @@ function startGenFirstListener() {
       const g = GENERATORS.find(x => x.id === change.doc.id);
       // No timestamp check on purpose: a wrong device clock used to hide announcements.
       if (!g || typeof holder.username !== "string" || g.index < GLOBAL_FIRST_MIN_INDEX || holder.manual || holder.backfill) return;
-      genFirstQueue.push({ g, username: holder.username });
+      genFirstQueue.push({ g, username: holder.username, kind: "generator" });
       if (!genFirstBusy) nextGenFirst();
     });
     if ($("hofDialog") && $("hofDialog").open) renderHallOfFame();
@@ -4441,7 +4628,8 @@ function startGenFirstListener() {
       const d = change.doc.data();
       if (typeof d.username !== "string" || !Number.isInteger(d.rebirth) || d.rebirth < 31) return;
       genFirstQueue.push({
-        text: "🌟 GLOBAL: " + d.username + " has reached Rebirth " + d.rebirth + "!"
+        text: "🌟 GLOBAL: " + d.username + " has reached Rebirth " + d.rebirth + "!",
+        kind: "rebirth"
       });
       if (!genFirstBusy) nextGenFirst();
     });
@@ -4450,7 +4638,7 @@ function startGenFirstListener() {
 }
 function maybeClaimGeneratorFirst(g, backfill = false) {
   try {
-    if (!currentUser || !dbRef || !currentUsername || !g || g.id === "alpha" || isPrivilegedUser()
+    if (!currentUser || !dbRef || !currentUsername || !g || g.id === "alpha"
       || genFirstClaimed.has(g.id) || genFirstTried.has(g.id)) return;
     genFirstTried.add(g.id);
     const ref = dbRef.collection("generatorFirsts").doc(g.id);
@@ -4508,34 +4696,39 @@ function startHallOfFameListener() {
   hofUnsub = dbRef.collection("hallOfFame").onSnapshot(snapshot => {
     snapshot.docChanges().forEach(change => {
       if (change.type === "removed") { hofData.delete(change.doc.id); hofTried.delete(change.doc.id); return; }
+      if (change.doc.metadata && change.doc.metadata.hasPendingWrites) return;
       const d = change.doc.data();
       hofData.set(change.doc.id, { username: d.username, uid: d.uid, ts: tsMs(d.createdAt), manual: !!d.manual, amount: Number(d.amount) || 0, month: d.month || "" });
       const rec = HOF_BY_ID[change.doc.id], ts = tsMs(d.createdAt);
-      if (change.type === "added" && hofLoaded && /^month-/.test(change.doc.id) && !d.manual && genFirstQueue.length < 4) {
-        genFirstQueue.push({ text: "🏆 HALL OF FAME: " + d.username + " earned the most cash in " + monthLabel(d.month || change.doc.id.slice(6)) + " (" + cash(Number(d.amount) || 0) + ")!" });
+      if (change.type === "added" && hofLoaded && /^month-/.test(change.doc.id) && !d.manual) {
+        genFirstQueue.push({ text: "🏆 HALL OF FAME: " + d.username + " earned the most cash in " + monthLabel(d.month || change.doc.id.slice(6)) + " (" + cash(Number(d.amount) || 0) + ")!", kind: "hof" });
         if (!genFirstBusy) nextGenFirst();
       }
-      if (change.type === "added" && hofLoaded && rec && rec.big && !d.backfill && !d.manual && genFirstQueue.length < 4) {
-        genFirstQueue.push({ text: "🏆 HALL OF FAME: " + d.username + " is the " + rec.label.replace(/^First/, "first") + "!" });
+      if (change.type === "added" && hofLoaded && rec && !d.backfill && !d.manual) {
+        genFirstQueue.push({ text: "🏆 HALL OF FAME: " + d.username + " is the " + rec.label.replace(/^First/, "first") + "!", kind: "hof" });
         if (!genFirstBusy) nextGenFirst();
       }
     });
-    if (!hofLoaded) { hofLoaded = true; hofLoadedAt = Date.now(); setTimeout(checkHallOfFame, 4000); }
+    if (!hofLoaded) { hofLoaded = true; hofLoadedAt = Date.now(); setTimeout(checkHallOfFame, 2000); }
     if ($("hofDialog") && $("hofDialog").open) renderHallOfFame();
   }, error => console.error("Hall of Fame listener failed:", error));
 }
 function checkHallOfFame() {
   try {
-    if (!currentUser || !dbRef || !currentUsername || !cloudSaveReady || !hofLoaded || acSuspicious || isPrivilegedUser()) return;
-    if (Date.now() - hofLoadedAt < 3000) return;
+    if (!currentUser || !dbRef || !currentUsername || !cloudSaveReady || !hofLoaded || acSuspicious) return;
+    if (Date.now() - hofLoadedAt < 2000) return;
     finalizeMonthlyChampions();
     const todo = HOF_RECORDS.filter(r => !hofData.has(r.id) && !hofTried.has(r.id) && r.test());
-    const backfill = todo.length > 2; // a burst means the player already had these before the Hall of Fame existed: do not announce
+    const backfill = todo.length > 3; // a large burst on initial startup marks quiet claims
     todo.forEach(r => {
       hofTried.add(r.id);
       const doc = { recordId: r.id, uid: currentUser.uid, username: currentUsername, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
       if (backfill) doc.backfill = true;
-      dbRef.collection("hallOfFame").doc(r.id).set(doc).catch(error => { if (!error || error.code !== "permission-denied") hofTried.delete(r.id); });
+      dbRef.collection("hallOfFame").doc(r.id).set(doc).then(() => {
+        if (!backfill) notify("🏆 Milestone Reached: " + r.label + "!", false, true);
+      }).catch(error => {
+        if (!error || error.code !== "permission-denied") hofTried.delete(r.id);
+      });
     });
     const best = getBestGeneratorIndex();
     // Quiet history claims only for the lower generators. Top generators can only be claimed by really BUYING them,
@@ -4666,11 +4859,11 @@ $("hofCloseBtn").addEventListener("click", () => $("hofDialog").close());
   $("adminHofPreviewBtn").addEventListener("click", () => {
     const [kind, id] = sel.value.split(":");
     const name = currentUsername || "Someone";
-    if (kind === "gen") { const g = GENERATORS.find(x => x.id === id); if (g) genFirstQueue.push({ g, username: name }); }
-    else if (kind === "month") genFirstQueue.push({ text: "🏆 HALL OF FAME: " + name + " earned the most cash in " + monthLabel(id) + "!" });
-    else { const r = HOF_BY_ID[id]; if (r) genFirstQueue.push({ text: "🏆 HALL OF FAME: " + name + " is the " + r.label.replace(/^First/, "first") + "!" }); }
+    if (kind === "gen") { const g = GENERATORS.find(x => x.id === id); if (g) genFirstQueue.push({ g, username: name, kind: "generator" }); }
+    else if (kind === "month") genFirstQueue.push({ text: "🏆 HALL OF FAME: " + name + " earned the most cash in " + monthLabel(id) + "!", kind: "hof" });
+    else { const r = HOF_BY_ID[id]; if (r) genFirstQueue.push({ text: "🏆 HALL OF FAME: " + name + " is the " + r.label.replace(/^First/, "first") + "!", kind: "hof" }); }
     if (!genFirstBusy) nextGenFirst();
-    $("adminHofStatus").textContent = "Showing a preview on your screen only. Admin accounts cannot claim records themselves.";
+    $("adminHofStatus").textContent = "Showing a preview on your screen only.";
   });
   $("adminHofSetBtn").addEventListener("click", async () => {
     const status = $("adminHofStatus");
@@ -5528,7 +5721,35 @@ function buyMax(id) {
   const g = getGenerator(id);
   const quantity = maxAffordable(g);
   if (!g || !Number.isSafeInteger(quantity) || quantity < 1) return;
-  buy(id, quantity);
+  const totalCost = generatorPrice(g) * quantity;
+  showModal(
+    "Confirm Buy All",
+    "Review your purchase details before continuing:",
+    [
+      ["Confirm Purchase", () => {
+        closeModal();
+        const currentQuantity = maxAffordable(g);
+        if (currentQuantity < 1) {
+          notify("You no longer have enough cash for this purchase.", true);
+          return;
+        }
+        const finalQuantity = Math.min(quantity, currentQuantity);
+        buy(id, finalQuantity);
+      }],
+      ["Cancel", closeModal]
+    ]
+  );
+  const host = $("modalFields");
+  host.replaceChildren();
+  const card = document.createElement("div");
+  card.className = "buy-confirm-box";
+  card.style.cssText = "display:grid;gap:8px;padding:12px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;margin:8px 0;";
+  card.innerHTML = `
+    <div><span class="muted small">Generator:</span> <strong style="color:var(--text);">${g.name}</strong></div>
+    <div><span class="muted small">Quantity:</span> <strong style="color:var(--text);">${quantity.toLocaleString("en-CA")}</strong></div>
+    <div><span class="muted small">Total Cost:</span> <strong style="color:var(--green);">${cash(totalCost)}</strong></div>
+  `;
+  host.appendChild(card);
 }
 function buy(id, quantity = 1) {
   const g = getGenerator(id);
@@ -5950,6 +6171,312 @@ $("dismissUpgradeTutorialBtn").addEventListener("click", () => {
   state.upgradeTutorialPending = false;
   renderUpgrades();
   save();
+});
+
+// ===== 1.6.0: Reset Game Overhaul =====
+async function executeResetGame() {
+  if (!currentUser) return;
+  
+  // Preserved: Alpha generators already owned
+  const preservedAlpha = Number(state.inventory && state.inventory.alpha) || 0;
+  
+  // Preserve only bundles actually owned, plus the cosmetics included in those bundles.
+  // Individually purchased cosmetics and loadouts reset with the rest of progression.
+  const bundleSnapshot = window.dmBundleInventorySnapshot
+    ? window.dmBundleInventorySnapshot()
+    : { bundleIds: [], itemIds: [] };
+  const preservedDmOwned = {};
+  const preservedDmEquipped = {};
+  const ownedBundleIds = new Set(bundleSnapshot.bundleIds || []);
+  const bundleItemIds = new Set(bundleSnapshot.itemIds || []);
+  for (const id of ownedBundleIds) preservedDmOwned[id] = true;
+  for (const id of bundleItemIds) {
+    if (state.dmOwned && state.dmOwned[id]) preservedDmOwned[id] = true;
+    if (state.dmEquipped && state.dmEquipped[id]) preservedDmEquipped[id] = true;
+  }
+
+  // Everything else resets: cash, currencies, non-Alpha generators, quests, upgrades, stars, etc.
+  state = freshState();
+  if (preservedAlpha > 0) state.inventory.alpha = preservedAlpha;
+  state.dmOwned = preservedDmOwned;
+  state.dmEquipped = preservedDmEquipped;
+  state.diamonds = 0;
+  state.lifetime = 0;
+  state.generatorCashEarned = 0;
+  state.offlineCashPending = 0;
+  state.money = 10;
+  state.slots = Array(1).fill(null);
+  state.level = 1;
+  state.rebirths = 0;
+  state.rebirthPoints = 0;
+  state.xp = 0;
+  state.multiplier = 1;
+  state.upgrades = { dropSpeed: 0, multiChance: 0, genSlots: 0, genCost: 0, noteDuplication: 0, stonks: 0, autoPlace: 0 };
+  state.autoPlaceEnabled = false;
+  state.claimedAchievements = [];
+  state.claimedTaskRewards = [];
+  state.completedTaskObjectives = [];
+  state.announcedTaskCompletions = [];
+  state.taskGenerationsPlaced = 0;
+  state.taskStarsCollected = 0;
+  state.taskBonusStarEvents = 0;
+  state.taskRebirthPointsSpent = 0;
+  state.taskSpentAllRebirthPoints = false;
+  state.playtimeSeconds = 0;
+  state.questionsAnswered = 0;
+  state.personalNotes = 0;
+  state.personalFeverUntil = 0;
+  clearTemporaryBoosts();
+  
+  // Remove the player from every leaderboard, including all historical monthly entries.
+  if (dbRef && currentUser) {
+    const uid = currentUser.uid;
+    const removals = [dbRef.collection("leaderboard").doc(uid).delete()];
+    try {
+      const monthlyEntries = await dbRef.collectionGroup("entries").where("uid", "==", uid).get();
+      monthlyEntries.docs
+        .filter(doc => doc.ref.path.startsWith("monthlyCash/") && doc.ref.path.includes("/entries/"))
+        .forEach(doc => removals.push(doc.ref.delete()));
+    } catch (e) {
+      console.warn("Could not enumerate all monthly leaderboard entries during reset:", e);
+    }
+    const results = await Promise.allSettled(removals);
+    if (results.some(result => result.status === "rejected")) {
+      console.warn("One or more leaderboard entries could not be removed during reset:", results);
+    }
+  }
+  lastMonthlyValue = null;
+  lastMonthlyKey = "";
+  lastMonthlyAt = 0;
+
+  allowProgressDrop = true;
+  progressHigh = progressKey(state);
+  resetLeaderboardWriteMemory();
+  await saveUserState(true, false);
+  
+  render();
+  renderStats();
+  renderPlayerStats();
+  renderShop();
+  renderSlots();
+  renderTasks();
+  renderUpgrades();
+  if (window.dmRenderInventory) window.dmRenderInventory();
+  
+  notify("Game reset complete. Alpha generators and cosmetic bundles have been preserved.");
+}
+
+$("resetBtn").addEventListener("click", () => {
+  showModal(
+    "Reset Game Progress",
+    "Are you sure you want to completely reset your game? This action cannot be undone.",
+    [
+      ["Confirm Full Reset", async () => {
+        closeModal();
+        await executeResetGame();
+      }],
+      ["Cancel", closeModal]
+    ]
+  );
+  const host = $("modalFields");
+  host.replaceChildren();
+  const info = document.createElement("div");
+  info.style.cssText = "padding:12px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;margin:8px 0;line-height:1.5;";
+  info.innerHTML = `
+    <div style="color:var(--green);font-weight:bold;margin-bottom:6px;">✓ Preserved:</div>
+    <ul style="margin:0 0 10px 18px;padding:0;">
+      <li>Alpha generators already owned</li>
+      <li>Owned cosmetic bundles and their included cosmetics</li>
+    </ul>
+    <div style="color:#ff8c8c;font-weight:bold;margin-bottom:6px;">✕ Reset to zero:</div>
+    <ul style="margin:0 0 6px 18px;padding:0;">
+      <li>Cash, diamonds, and non-Alpha generators</li>
+      <li>Level, XP, multiplier, upgrades, and stars</li>
+      <li>Quests and achievement progress</li>
+      <li>Leaderboard records (you will be removed from all boards)</li>
+    </ul>
+  `;
+  host.appendChild(info);
+});
+
+// ===== 1.6.0: Account Management =====
+$("changeUsernameBtn").addEventListener("click", async () => {
+  const status = $("accountManagementStatus");
+  const newName = $("changeUsernameInput").value.trim();
+  if (!currentUser || !dbRef) {
+    status.textContent = "Sign in first.";
+    return;
+  }
+  if (!/^[A-Za-z0-9_]{2,20}$/.test(newName)) {
+    status.textContent = "Username must be 2–20 letters, numbers, or underscores.";
+    return;
+  }
+  if (newName.toLowerCase() === currentUsername.toLowerCase()) {
+    status.textContent = "That is already your current username.";
+    return;
+  }
+  const btn = $("changeUsernameBtn");
+  btn.disabled = true;
+  status.textContent = "Checking username availability...";
+  try {
+    // Firebase Authentication enforces unique email addresses server-side.
+    // Do not query /users here: player saves are intentionally private in Firestore rules.
+    const newEmail = usernameToAuthEmail(newName);
+    await currentUser.updateEmail(newEmail);
+    const oldName = currentUsername;
+    currentUsername = newName;
+    const now = firebase.firestore.FieldValue.serverTimestamp();
+    await dbRef.collection("users").doc(currentUser.uid).set({
+      username: newName,
+      updatedAt: now
+    }, { merge: true });
+    try {
+      await dbRef.collection("leaderboard").doc(currentUser.uid).update({
+        username: newName,
+        updatedAt: now
+      });
+    } catch (e) {}
+    try {
+      const curKey = utcMonthKey();
+      await dbRef.collection("monthlyCash").doc(curKey).collection("entries").doc(currentUser.uid).update({
+        username: newName,
+        updatedAt: now
+      });
+    } catch (e) {}
+    const accounts = getAccountStore();
+    if (accounts[oldName]) {
+      accounts[newName] = { ...accounts[oldName], username: newName };
+      delete accounts[oldName];
+      saveAccountStore(accounts);
+    }
+    const oldSave = localStorage.getItem(getPlayerSaveKey(oldName));
+    if (oldSave) {
+      localStorage.setItem(getPlayerSaveKey(newName), oldSave);
+      localStorage.removeItem(getPlayerSaveKey(oldName));
+    }
+    updateAuthUI();
+    $("changeUsernameInput").value = "";
+    status.style.color = "var(--green)";
+    status.textContent = "Username successfully changed to " + newName + "!";
+    notify("Username changed to " + newName + ".");
+  } catch (error) {
+    status.style.color = "#ff8c8c";
+    status.textContent = error.message || "Could not change username.";
+    notify(status.textContent, true);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+$("changePasswordBtn").addEventListener("click", async () => {
+  const status = $("accountManagementStatus");
+  const curPass = $("currentPasswordInput").value;
+  const newPass = $("changePasswordInput").value;
+  if (!currentUser || !authRef) {
+    status.textContent = "Sign in first.";
+    return;
+  }
+  if (!curPass) {
+    status.textContent = "Enter your current password to confirm your identity.";
+    return;
+  }
+  if (!newPass || newPass.length < 6) {
+    status.textContent = "New password must be at least 6 characters long.";
+    return;
+  }
+  const btn = $("changePasswordBtn");
+  btn.disabled = true;
+  status.textContent = "Updating password...";
+  try {
+    const cred = firebase.auth.EmailAuthProvider.credential(currentUser.email, curPass);
+    await currentUser.reauthenticateWithCredential(cred);
+    await currentUser.updatePassword(newPass);
+    $("currentPasswordInput").value = "";
+    $("changePasswordInput").value = "";
+    status.style.color = "var(--green)";
+    status.textContent = "Password updated successfully!";
+    notify("Password updated successfully.");
+  } catch (error) {
+    status.style.color = "#ff8c8c";
+    status.textContent = error.code === "auth/wrong-password" ? "Current password is incorrect."
+      : (error.message || "Could not update password.");
+    notify(status.textContent, true);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// Admin Account Management
+$("adminUpdateUsernameBtn").addEventListener("click", async () => {
+  const status = $("adminAccountStatus");
+  if ($("adminPanel").hidden || !currentUser || !dbRef) return;
+  const targetName = $("adminAccountTarget").value.trim();
+  const newName = $("adminAccountNewUsername").value.trim();
+  if (!targetName || !newName) {
+    status.textContent = "Enter both the target username and the new username.";
+    return;
+  }
+  if (!/^[A-Za-z0-9_]{2,20}$/.test(newName)) {
+    status.textContent = "New username must be 2–20 letters, numbers or underscores.";
+    return;
+  }
+  const btn = $("adminUpdateUsernameBtn");
+  btn.disabled = true;
+  status.textContent = "Updating username...";
+  try {
+    const targetPlayer = await findGiftRecipient(targetName);
+    const targetUid = targetPlayer.id;
+    if (!functionsRef) throw new Error("Secure account management is unavailable. Deploy the adminUpdateAccount Cloud Function first.");
+    const result = await functionsRef.httpsCallable("adminUpdateAccount")({ targetUid, newUsername: newName });
+    status.style.color = "var(--green)";
+    status.textContent = (result.data && result.data.message)
+      || ("Successfully changed " + targetName + "'s username to " + newName + ".");
+    notify(status.textContent);
+  } catch (error) {
+    status.style.color = "#ff8c8c";
+    status.textContent = error.message || "Failed to update player username.";
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+$("adminUpdatePasswordBtn").addEventListener("click", async () => {
+  const status = $("adminAccountStatus");
+  if ($("adminPanel").hidden || !currentUser || !dbRef) return;
+  const targetName = $("adminAccountTarget").value.trim();
+  const newPassword = $("adminAccountNewPassword").value;
+  if (!targetName) {
+    status.textContent = "Enter the target username.";
+    return;
+  }
+  if (!newPassword || newPassword.length < 6) {
+    status.textContent = "New password must be at least 6 characters.";
+    return;
+  }
+  const btn = $("adminUpdatePasswordBtn");
+  btn.disabled = true;
+  status.textContent = "Updating password...";
+  try {
+    const targetPlayer = await findGiftRecipient(targetName);
+    const targetUid = targetPlayer.id;
+    if (functionsRef) {
+      const res = await functionsRef.httpsCallable("adminUpdateAccount")({ targetUid, newPassword });
+      status.style.color = "var(--green)";
+      status.textContent = (res.data && res.data.message) || "Password updated for " + targetName + ".";
+    } else {
+      const targetEmail = usernameToAuthEmail(targetName);
+      await authRef.sendPasswordResetEmail(targetEmail);
+      status.style.color = "var(--green)";
+      status.textContent = "Password reset initiated for " + targetName + ".";
+    }
+    $("adminAccountNewPassword").value = "";
+    notify(status.textContent);
+  } catch (error) {
+    status.style.color = "#ff8c8c";
+    status.textContent = error.message || "Failed to update password.";
+  } finally {
+    btn.disabled = false;
+  }
 });
 $("clearAllBtn").addEventListener("click", clearAllGenerators);
 $("placeBestBtn").addEventListener("click", placeBestGenerators);
@@ -6920,37 +7447,34 @@ function startGlobalWipeListener() {
 }
 const _origStartStar = startGlobalStarListener;
 startGlobalStarListener = function () { _origStartStar(); startGlobalWipeListener(); };
-// ---- Admin broadcast banner ----
+// ---- Admin global broadcasts (stacked, individually dismissible) ----
 (function(){
-  let banner=document.getElementById("adminBroadcastBanner");
-  if(!banner){banner=document.createElement("div");banner.id="adminBroadcastBanner";banner.setAttribute("role","alert");banner.hidden=true;document.body.appendChild(banner);}
-  let unsub=null,hideTimer=null;
-  const q=sel=>banner.querySelector(sel);
-  const hide=()=>{clearTimeout(hideTimer);banner.classList.remove("bc-in","bc-out");banner.hidden=true;const t=q(".bc-text");if(t)t.textContent="";};
-  function show(text,ms){
-    clearTimeout(hideTimer);
-    const t=q(".bc-text"),bar=q(".bc-bar i");
-    if(!t){banner.textContent="📢 "+text;}else{t.textContent=text;}
-    banner.hidden=false;banner.classList.remove("bc-in","bc-out");void banner.offsetWidth;banner.classList.add("bc-in");
-    if(bar){bar.style.animation="none";void bar.offsetWidth;bar.style.animation="bc-drain "+Math.max(500,ms)+"ms linear forwards";}
-    hideTimer=setTimeout(()=>{banner.classList.remove("bc-in");banner.classList.add("bc-out");hideTimer=setTimeout(hide,400);},Math.max(300,ms-400));
-  }
+  let unsub=null;
   function start(){
-    if(unsub)unsub();unsub=null;hide();
+    if(unsub)unsub();unsub=null;
     if(!currentUser||!dbRef)return;
-    unsub=dbRef.collection("adminBroadcasts").doc("current").onSnapshot(s=>{
-      if(!s.exists)return hide();
-      const d=s.data();
-      if(!d.active||typeof d.text!=="string"||!d.createdAt||!d.createdAt.toMillis)return hide();
-      const left=8000-(Date.now()-d.createdAt.toMillis());
-      if(left<=0)return hide();
-      show(d.text,left);
+    unsub=dbRef.collection("adminBroadcasts").orderBy("createdAt","desc").limit(30).onSnapshot(snapshot=>{
+      const added=snapshot.docChanges().filter(change=>change.type==="added");
+      // Apply older events first so a later broadcast always appears above a prior clear.
+      added.sort((a,b)=>{
+        const da=a.doc.data()||{},db=b.doc.data()||{};
+        const ta=da.createdAt&&typeof da.createdAt.toMillis==="function"?da.createdAt.toMillis():(Number(da.clientTime)||0);
+        const tb=db.createdAt&&typeof db.createdAt.toMillis==="function"?db.createdAt.toMillis():(Number(db.clientTime)||0);
+        return ta-tb;
+      }).forEach(change=>{
+        const d=change.doc.data()||{};
+        if(d.active===false){clearGlobalAnnouncements("admin");return;}
+        if(d.active!==true||typeof d.text!=="string"||!d.text.trim())return;
+        const sentMs=(d.createdAt&&typeof d.createdAt.toMillis==="function")?d.createdAt.toMillis():(Number(d.clientTime)||Date.now());
+        if(Date.now()-sentMs>10*60*1000)return;
+        showGlobalAnnouncement(d.text,"admin");
+      });
     },e=>console.error("Broadcast listener failed:",e));
   }
   const prevStart=startGlobalStarListener;
   startGlobalStarListener=function(){prevStart();start();};
   const prevStop=stopGlobalStarListener;
-  stopGlobalStarListener=function(){prevStop();if(unsub)unsub();unsub=null;hide();};
+  stopGlobalStarListener=function(){prevStop();if(unsub)unsub();unsub=null;clearGlobalAnnouncements("admin");};
   async function send(active){
     const st=document.getElementById("adminBroadcastStatus");
     const input=document.getElementById("adminBroadcastText");
@@ -6958,11 +7482,13 @@ startGlobalStarListener = function () { _origStartStar(); startGlobalWipeListene
     if(document.getElementById("adminPanel").hidden||!currentUser||!dbRef)return;
     if(active&&!text){st.textContent="Type a message first.";return;}
     try{
-      await dbRef.collection("adminBroadcasts").doc("current").set({
-        broadcastId:currentUser.uid+"-"+Date.now(),text:active?text:"cleared",active:active,
+      const bId=currentUser.uid+"-"+Date.now()+"-"+Math.random().toString(36).substr(2,4);
+      await dbRef.collection("adminBroadcasts").doc(bId).set({
+        broadcastId:bId,text:active?text:"cleared",active:active,
         senderUid:currentUser.uid,senderUsername:currentUsername||"Admin",
+        clientTime:Date.now(),
         createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-      st.textContent=active?"Broadcast sent: it shows for 8 seconds and stays in global chat.":"Broadcast cleared.";
+      st.textContent=active?"Broadcast sent to all players for up to 10 minutes.":"Active admin broadcasts cleared.";
       if(active){
         input.value="";
         try{await dbRef.collection("chatMessages").add({uid:currentUser.uid,username:currentUsername||"Admin",text:text.slice(0,200),isBroadcast:true,createdAt:firebase.firestore.FieldValue.serverTimestamp()});}
@@ -7076,12 +7602,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     ["forest","Firefly Forest",40,"Fireflies drift up through a dark forest.","linear-gradient(180deg,#04110a 0%,#0b2a18 60%,#143d22 100%)",[{n:5,rx:3,ry:3,cols:["#d9ff7a","#fff59a"],tw:200,th:230,sx:.3,sy:-1,m:1}],34],
     ["candy","Sprinkle Sky",40,"Colourful sprinkles rain down a candy-pink sky.","linear-gradient(180deg,#3a1458 0%,#7a2a8f 55%,#ff7ab8 100%)",[{n:6,rx:3,ry:3,cols:["#ffe14d","#4de1ff","#ff6bd6","#8affc1"],tw:170,th:200,sx:0,sy:1,m:1}],18],
     ["arctic","Arctic Night",40,"Fine, calm snow over an icy blue sky.","linear-gradient(180deg,#0b2236 0%,#2a5a80 55%,#a9d6ee 100%)",[{n:5,rx:2,ry:2,cols:["#ffffff"],tw:130,th:160,sx:0,sy:1,m:1},{n:3,rx:3,ry:3,cols:["#e4f6ff"],tw:210,th:250,sx:0,sy:1,m:1}],34],
-    ["gta-vice","Vice City Sunset",45,"A hot pink and orange sunset sky with neon sparks drifting up.","linear-gradient(180deg,#1a0638 0%,#7a1fa8 30%,#ff3d8f 60%,#ff9a3c 85%,#ffd36b 100%)",[{n:5,rx:2,ry:2,cols:["#ff6bd6","#4de1ff","#ffd36b"],tw:190,th:230,sx:.2,sy:-.5,m:1}],36],
-    ["gta-neon","Neon Strip Night",45,"A midnight skyline glowing magenta and cyan.","linear-gradient(180deg,#04030f 0%,#1a0f5a 45%,#c21e8f 80%,#19f6d2 100%)",[{n:6,rx:2,ry:2,cols:["#ff2bd6","#19f6d2","#ffffff"],tw:160,th:200,sx:-.2,sy:-.8,m:1}],26],
-    ["gta-beach","Ocean Drive",45,"A turquoise coast under a golden sky with rolling waves.","linear-gradient(180deg,#ff8a5c 0%,#ffc46b 35%,#4fd8d0 70%,#0a8fa0 100%)",[{n:3,rx:2,ry:2,cols:["#ffffffb0","#fff3c0b0"],tw:220,th:260,sx:.4,sy:-.2,m:1}],60,[[WAVE(".24"),"400px 60px","0 100%","400px 100%"],[WAVE(".14"),"640px 96px","0 calc(100% - 14px)","-640px calc(100% - 14px)"]]],
-    ["gta-sunset","Keys Sunset",45,"A blood-orange sun sinking behind warm, drifting embers.","linear-gradient(180deg,#2a0c1a 0%,#b0302f 45%,#ff7a3c 75%,#ffd36b 100%)",[{n:5,rx:2,ry:2,cols:["#ffd36b","#ff9a3c","#ffffff"],tw:200,th:240,sx:.2,sy:-.6,m:1}],38],
-    ["gta-heist","Heist Skyline",45,"A black skyline with slow gold sparks rising.","linear-gradient(180deg,#05050a 0%,#14141f 55%,#3a2f0a 100%)",[{n:5,rx:2,ry:2,cols:["#ffcf33","#fff3b0"],tw:210,th:250,sx:0,sy:-.7,m:1}],42],
-    ["gta-bayou","Leonida Bayou",45,"Fireflies glide over a dark green swamp with a purple glow.","linear-gradient(180deg,#120826 0%,#17402a 55%,#c9b037 120%)",[{n:5,rx:3,ry:3,cols:["#e8ff7a","#ffd36b"],tw:200,th:230,sx:.3,sy:-1,m:1}],34],
+    ["thunder","Thunderstorm",45,"A dark stormy sky with flashing lightning and falling rain.","linear-gradient(180deg,#050814 0%,#111630 40%,#1e264f 80%,#2d3b75 100%)",[{n:6,rx:2,ry:4,cols:["#8fd8ff","#e6f8ff","#ffd54a"],tw:160,th:190,sx:-.4,sy:1.5,m:1}],20],
     ["chess","Chessboard",45,"A slowly sliding chessboard with drifting gold dust.","linear-gradient(180deg,#2b2118 0%,#1a130d 100%)",[{n:4,rx:2,ry:2,cols:["#e6c35c","#fff3b0"],tw:220,th:260,sx:0,sy:-.4,m:1}],60],
     ["desert","Dune Wind",40,"Sand blows sideways across a burning sunset.","linear-gradient(180deg,#2a1608 0%,#7a3f14 55%,#d28a3a 100%)",[{n:6,rx:2,ry:2,cols:["#f3c883","#ffe0a8"],tw:180,th:150,sx:-1,sy:.2,m:1}],10]
   ];
@@ -7093,12 +7614,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     ["ui-lava","Lava Rock","🌋",50,"Charred rock with glowing orange cracks.","#120504","#2c0f0a","#3a150d","#ff6a1a","#fff1e8","#e0a98c","#ff8a3d","#d9480f","#1c0a06","#0e0403",["#0e0302","#2b0d06","#6a1a05"],15],
     ["ui-arctic","Arctic Ice","🧊",50,"Frozen blues and pale ice.","#0a2236","#164463","#1d5578","#bfeaff","#f4fcff","#a9d4e8","#9fe3ff","#3aa6d8","#0d2f4a","#09263d",["#0a2236","#2a6a96","#bfe6f5"],200],
     ["ui-sakura","Sakura","🌸",50,"Soft cherry-blossom pinks.","#2a1220","#4a2038","#5c2a46","#ffb3d1","#fff2f7","#e8b8cc","#ff9fc4","#d6578f","#351628","#220d19",["#2a1220","#6a2c52","#e88fb4"],330],
-    ["ui-gta-vice","Vice Pink","🌴",50,"Hot pink and electric cyan on deep purple.","#1a0630","#2d0a4e","#3f1366","#ff4fa8","#fff0fa","#e0b0f0","#4de1ff","#d6247f","#4a0f7a","#200640",["#1a0630","#6a1a8f","#ff4fa8"],320],
-    ["ui-gta-sunset","Leonida Sunset","🌅",50,"Burnt orange and crimson, like the sun going down over the keys.","#2a0c1a","#4a1630","#5e1e3a","#ff9a3c","#fff3e6","#f0c0a0","#ffb347","#e8541f","#7a1f3a","#260a16",["#2a0c1a","#b0302f","#ffa94d"],20],
-    ["ui-gta-neon","Neon Strip","🌃",50,"Midnight blue with glowing mint outlines.","#070a1f","#0f1640","#18215a","#19f6d2","#eafffb","#9fd8ea","#19f6d2","#7b2dff","#1a1060","#050818",["#070a1f","#2a1a7a","#ff2bd6"],280],
-    ["ui-gta-beach","Ocean Drive","🏖️",50,"Teal water, sandy gold outlines and coral buttons.","#06303a","#0b4d5c","#12677a","#ffd166","#fffbea","#bfeee8","#ffd166","#ef476f","#0f7a86","#052a33",["#06303a","#0aa5a0","#ffb86b"],180],
-    ["ui-gta-bayou","Gator Bayou","🐊",50,"Swamp greens with lime outlines.","#07150f","#12301f","#1a4a2e","#b8e04a","#f3ffe0","#a8c9a0","#b8e04a","#2f8f45","#1d5a36","#05110a",["#07150f","#1e5a34","#c9b037"],100],
-    ["ui-gta-heist","Heist Night","💰",50,"Black and gold, ready for the big score.","#0a0a0f","#17171f","#22222e","#ffcf33","#ffffff","#b9b9c9","#ffcf33","#b8860b","#2a2a38","#050508",["#0a0a0f","#262633","#6e5a10"],45],
+    ["ui-thunder","Thunderstruck","⚡",50,"Electric blue and stormy indigo with lightning accents.","#080c1a","#101830","#182347","#4de1ff","#f0f8ff","#a0b4d8","#ffd54a","#2b6bff","#1a2850","#0a0e20",["#080c1a","#142045","#4de1ff"],220],
     ["ui-chess","Chess Club","♞",50,"Dark walnut wood, cream outlines and gold accents.","#14110f","#211c18","#2e2721","#d9c7a0","#f6efe0","#c2b49a","#e6c35c","#6b4a2b","#3a2f25","#0e0c0a",["#14110f","#4a3a2a","#e9dcc3"],35],
     ["ui-checkmate","Checkmate","♚",50,"Pure black and white, like the board itself.","#0a0a0a","#161616","#222222","#ffffff","#ffffff","#bdbdbd","#ffffff","#3a3a3a","#2a2a2a","#000000",["#000000","#444444","#ffffff"],0],
     ["ui-desert","Desert Dune","🏜️",50,"Warm sand and copper.","#1e1208","#4a2f14","#5c3a18","#e0a458","#fff4e0","#dcc29a","#f0b35a","#b8742a","#2e1b0b","#1a0f06",["#1e1208","#6b3c14","#d28a3a"],30]
@@ -7113,7 +7629,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
         S.push(w+"px "+h+"px"); P.push(Math.round(g.sx*w*g.m)+"px "+Math.round(g.sy*h*g.m)+"px"); Z.push("0 0"); R.push("repeat");
       }});
       (ex||[]).slice().reverse().forEach(e=>{L.unshift(e[0]);S.unshift(e[1]);Z.unshift(e[2]);P.unshift(e[3]);R.unshift("repeat-x");});
-      const z=Z.join(","),tw=["christmas","forest","arctic","candy","gta-vice","gta-neon","gta-bayou","gta-sunset","gta-heist"].includes(id)?",dmtw 3.2s ease-in-out infinite alternate":"";
+      const z=Z.join(","),tw=["christmas","forest","arctic","candy","thunder"].includes(id)?",dmtw 3.2s ease-in-out infinite alternate":"";
       css+="body.dm-snow-"+id+"::before{background-image:"+sky+"!important;background-size:100% 240%!important;background-position:0 0;background-repeat:no-repeat!important;animation:dmsky 26s ease-in-out infinite alternate!important}"
         +"body.dm-snow-"+id+" .game-shell::before{background-image:"+L.join(",")+"!important;background-size:"+S.join(",")+"!important;background-repeat:"+R.join(",")+"!important;background-position:"+z+";opacity:1!important;animation:dmg-"+id+" "+secs+"s linear infinite"+tw+"!important}"
         +"@keyframes dmg-"+id+"{to{background-position:"+P.join(",")+"}}";
@@ -7144,14 +7660,8 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   // To add a limited-time offer: give its cosmetics {ltd:"name"} (they then never show in the normal shop sections),
   // make a BUNDLES entry with ltd:true (free:true makes it free), then add a line here.
   // ends = a timestamp in ms (e.g. new Date(2026,11,31,23,59).getTime()) or null for no end. Owned items always stay owned.
-  const GTA6_ENDS=Date.UTC(2026,10,20,7,0,0); // 20 Nov 2026, 00:00 Alberta time (UTC-7). Change this to move the end date.
   const LIMITEDS=[
-    {bundle:"b-gta6-vice",tag:"🌴",ends:GTA6_ENDS,blurb:"Pink and cyan Vice City, on the house."},
-    {bundle:"b-gta6-sunset",tag:"🌅",ends:GTA6_ENDS,blurb:"A burning orange Leonida evening."},
-    {bundle:"b-gta6-neon",tag:"🌃",ends:GTA6_ENDS,blurb:"Midnight neon, with a palm tree cursor."},
-    {bundle:"b-gta6-beach",tag:"🏖️",ends:GTA6_ENDS,blurb:"Turquoise waves and golden light."},
-    {bundle:"b-gta6-bayou",tag:"🐊",ends:GTA6_ENDS,blurb:"Swamp greens and fireflies."},
-    {bundle:"b-gta6-heist",tag:"💰",ends:GTA6_ENDS,blurb:"Black and gold for the big score."}
+    {bundle:"b-thunder",tag:"⚡",ends:null,blurb:"High-voltage storm collection: electrify your gameplay."}
   ];
   const freeToClaim=()=>{if(typeof state==="undefined"||!currentUser||isAdm())return null;
     return LIMITEDS.map(L=>BUNDLES.find(b=>b.id===L.bundle)).find((b,i)=>b&&b.free&&(!LIMITEDS[i].ends||Date.now()<LIMITEDS[i].ends)&&!b.items.every(id=>owned()[id]))||null;};
@@ -7159,7 +7669,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
   const GROUPS=[["snow","Background & snow"],["frame","Tile frames"],["ui","UI themes"],["star","Star skins"],["coin","Billy coin skins"],["cursor","Cursors"],["click","Click effects"],["overlay","Overlays"],["font","Fonts"]];
   const COS=[
     C("classic","snow","Classic (solid colour)",0,"A plain solid colour. Pick the colour with sliders in your Inventory.","dm-snow-classic"),
-    ...BGS.map(b=>Object.assign(C(b[0],"snow",b[1],b[2],b[3],"dm-snow-"+b[0]),b[0].indexOf("gta-")===0?{ltd:"gta6"}:{})),
+    ...BGS.map(b=>C(b[0],"snow",b[1],b[2],b[3],"dm-snow-"+b[0])),
     C("aurora","snow","Aurora Sky",45,"A glowing northern-lights sky with drifting light curtains.","dm-aurora"),
     C("ember","snow","Ember Rise",35,"Orange sparks rise up the screen.","dm-snow-ember"),
     C("blizzard","snow","Blizzard",40,"Heavy, fast, slanted snow on a stormy sky.","dm-snow-blizzard"),
@@ -7174,8 +7684,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     C("f-emerald","frame","Emerald Frames",35,"Pulsing green gem outlines.","dm-f-emerald"),
     C("f-neon","frame","Neon Pulse Frames",55,"Outlines that fade between pink and cyan.","dm-f-neon"),
     C("f-chess","frame","Chess Frames",50,"Black and white checkered outlines.","dm-f-chess"),
-    Object.assign(C("f-gta-vice","frame","Vice Frames",50,"Outlines that glow from hot pink to sunset orange.","dm-f-gta-vice"),{ltd:"gta6"}),
-    Object.assign(C("f-gta-palm","frame","Palm Neon Frames",50,"Outlines that fade between cyan and lime.","dm-f-gta-palm"),{ltd:"gta6"}),
+    C("f-thunder","frame","Thunderstruck Frames",50,"Crackling electric blue and gold outlines that spark.","dm-f-thunder"),
     C("gameboy","ui","Gameboy Green",50,"A green monochrome palette.","dm-ui-gb"),
     C("neon","ui","Neon Night",50,"Dark panels with neon outlines.","dm-ui-neon"),
     C("parchment","ui","Parchment",40,"Warm tan, like old game menus.","dm-ui-parch"),
@@ -7185,16 +7694,17 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     C("ui-sunset","ui","Sunset Synth",55,"Purple dusk fading into an orange horizon.","dm-ui-sunset"),
     C("ui-mono","ui","Mono Terminal",40,"Pure black and white, like an old terminal.","dm-ui-mono"),
     C("ui-royal","ui","Royal Gold",55,"Black and gold, fit for a king.","dm-ui-royal"),
-    ...THEMES.map(t=>Object.assign(C(t[0],"ui",t[1],t[3],t[4],"dm-"+t[0]),t[0].indexOf("ui-gta-")===0?{ltd:"gta6"}:{})),
+    ...THEMES.map(t=>C(t[0],"ui",t[1],t[3],t[4],"dm-"+t[0])),
     C("star-pixel","star","Pixel Star",30,"A proper pixel-art Star with a bobbing animation.","dm-star-pixel"),
     C("star-comet","star","Comet Star",35,"A blazing comet with a flickering tail and sparks.","dm-star-comet"),
     C("star-snow","star","Snowflake Star",30,"Stars look like snowflakes.","dm-star-snow"),
-    Object.assign(C("star-gta","star","Vice Star",40,"Stars glow hot pink with an electric cyan halo.","dm-star-gta"),{ltd:"gta6"}),
+    C("star-thunder","star","Lightning Star",35,"Stars crackle with electric blue lightning.","dm-star-thunder"),
     C("coin-gold","coin","Gold Coin Billy",30,"Billy's coins look like shiny gold coins.","dm-coin-gold"),
     C("coin-diamond","coin","Diamond Coin Billy",30,"Billy's coins look like diamonds.","dm-coin-diamond"),
+    C("coin-thunder","coin","Thunder Coin",30,"Coins pulse with electric voltage.","dm-coin-thunder"),
     C("sword","cursor","Pixel Sword Cursor",35,"Your mouse pointer becomes a pixel sword.","dm-cursor-sword"),
     C("cur-knight","cursor","Knight Cursor",35,"Your pointer is a chess knight.","dm-cursor-knight"),
-    Object.assign(C("cur-palm","cursor","Palm Tree Cursor",35,"Your pointer is a palm tree.","dm-cursor-palm"),{ltd:"gta6"}),
+    C("cur-thunder","cursor","Lightning Bolt Cursor",35,"Your pointer is a crackling lightning bolt.","dm-cursor-thunder"),
     C("cur-heart","cursor","Heart Cursor",30,"A red heart pointer.","dm-cursor-heart"),
     C("cur-star","cursor","Star Cursor",30,"A golden star pointer.","dm-cursor-star"),
     C("cur-cross","cursor","Crosshair Cursor",30,"A red crosshair pointer.","dm-cursor-cross"),
@@ -7203,7 +7713,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     C("cur-arrow","cursor","Retro Arrow Cursor",25,"A big classic white arrow.","dm-cursor-arrow"),
     C("sparkle","click","Click Sparkles",45,"Sparkles burst where you click.","dm-click-sparkle"),
     C("fx-chess","click","Chess Pieces",45,"Chess pieces scatter from every click.","dm-fx-chess"),
-    Object.assign(C("fx-gta","click","Neon Sparks",45,"Pink, cyan and orange sparks fly out of every click.","dm-fx-gta"),{ltd:"gta6"}),
+    C("fx-thunder","click","Thunder Strikes",45,"Lightning bolts and sparks burst from every click.","dm-fx-thunder"),
     C("fx-hearts","click","Click Hearts",45,"Hearts float up from every click.","dm-fx-hearts"),
     C("fx-confetti","click","Click Confetti",50,"Confetti pops where you click.","dm-fx-confetti"),
     C("fx-ripple","click","Click Ripples",40,"Water rings spread from every click.","dm-fx-ripple"),
@@ -7213,7 +7723,7 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     C("fx-snow","click","Snowflake Puff",40,"Snowflakes puff out and drift.","dm-fx-snow"),
     C("fx-stars","click","Star Burst",45,"Little stars burst from clicks.","dm-fx-stars"),
     C("crt","overlay","CRT Scanlines",60,"Retro scanline overlay.","dm-crt"),
-    Object.assign(C("ov-gta","overlay","Vice Haze",40,"A pink-to-cyan neon haze over the screen.","dm-ov-gta"),{ltd:"gta6"}),
+    C("ov-thunder","overlay","Storm Vignette",40,"A stormy vignette with flashes of lightning discharge.","dm-ov-thunder"),
     C("ov-vignette","overlay","Vignette",35,"Darkened screen corners.","dm-ov-vignette"),
     C("ov-grain","overlay","Film Grain",45,"Animated film grain.","dm-ov-grain"),
     C("ov-vhs","overlay","VHS Tape",60,"Scanlines, colour fringes and a rolling bar.","dm-ov-vhs"),
@@ -7239,15 +7749,18 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     {id:"b-arcade",name:"Neon Arcade Bundle",off:.3,items:["aurora","f-neon","rainbow","star-comet","fx-confetti","cur-star","ov-vhs"]},
     {id:"b-xmas",name:"Christmas Bundle",off:.3,items:["christmas","ui-xmas","f-emerald","star-snow","fx-snow","cur-star","ov-vignette"]},
     {id:"b-sea",name:"Sea & Sky Bundle",off:.3,items:["sky","ocean","ui-sky","ui-ocean","fx-ripple","coin-diamond"]},
-    {id:"b-gta6-vice",name:"GTA 6: Vice City",off:1,free:true,ltd:true,nkey:"gta6",items:["ui-gta-vice","gta-vice","f-gta-vice","star-gta","fx-gta","ov-gta"]},
-    {id:"b-gta6-sunset",name:"GTA 6: Leonida Sunset",off:1,free:true,ltd:true,nkey:"gta6",items:["ui-gta-sunset","gta-sunset"]},
-    {id:"b-gta6-neon",name:"GTA 6: Neon Strip",off:1,free:true,ltd:true,nkey:"gta6",items:["ui-gta-neon","gta-neon","f-gta-palm","cur-palm"]},
-    {id:"b-gta6-beach",name:"GTA 6: Ocean Drive",off:1,free:true,ltd:true,nkey:"gta6",items:["ui-gta-beach","gta-beach"]},
-    {id:"b-gta6-bayou",name:"GTA 6: Gator Bayou",off:1,free:true,ltd:true,nkey:"gta6",items:["ui-gta-bayou","gta-bayou"]},
-    {id:"b-gta6-heist",name:"GTA 6: Heist Night",off:1,free:true,ltd:true,nkey:"gta6",items:["ui-gta-heist","gta-heist"]},
-    {id:"b-chess",name:"Chess Set",off:.2,items:["ui-chess","chess","f-chess","cur-knight","fx-chess"]},
-    {id:"b-all",name:"Collector's Vault",off:.4,all:true,items:COS.filter(o=>!o.ltd).map(o=>o.id)}
+    {id:"b-thunder",name:"Thunderstruck Bundle",off:.3,items:["thunder","ui-thunder","f-thunder","star-thunder","coin-thunder","cur-thunder","fx-thunder","ov-thunder"]},
+    {id:"b-chess",name:"Chess Set",off:.2,items:["ui-chess","chess","f-chess","cur-knight","fx-chess"]}
   ];
+  // Used by the full-reset flow to preserve only bundles the player actually owns.
+  window.dmBundleInventorySnapshot = () => {
+    const bundles = BUNDLES.filter(b => !b.all && owned()[b.id]);
+    return {
+      bundleIds: bundles.map(b => b.id),
+      itemIds: Array.from(new Set(bundles.flatMap(b => b.items)))
+    };
+  };
+  window.dmBundleItemIds = () => Array.from(new Set(BUNDLES.filter(b => !b.all).flatMap(b => b.items)));
   const PROF=[];
   Object.keys(NC).forEach(k=>PROF.push({id:"nc-"+k,sec:"Name colors",kind:"nameColor",val:k,name:NC[k].e+" "+NC[k].name,cost:50,desc:"Your name is "+NC[k].name+" in chat and on the leaderboard. Other players see it.",sw:NC[k].c[0]}));
   Object.keys(TT).forEach(k=>PROF.push({id:"tt-"+k,sec:"Chat titles",kind:"title",val:k,name:"["+TT[k][0]+"]",cost:TT[k][1],desc:k==="season1"?"Limited: only buyable until the end of 2026.":"Shown before your name in global chat.",limited:k==="season1"}));
@@ -7638,6 +8151,25 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
        },false,"inv-btn");
        c.append(n,d,eq,sv);g.append(c);
      });}
+    // ===== 1.6.0: Cosmetic Bundle Inventory =====
+    {const ownedBundles=BUNDLES.filter(b=>!b.all&&owned()[b.id]);
+     const g=sec("Cosmetic Bundles","Complete sets you own. Equip all items in a bundle with one click.");
+     if(!ownedBundles.length){empty(g);}
+     else{ownedBundles.forEach(b=>{
+       const bundleItems=b.items.filter(id=>byId(id));
+       const ownedItems=bundleItems.filter(id=>owned()[id]);
+       const allOn=ownedItems.length>0&&ownedItems.every(id=>equipped()[id]);
+       const c=document.createElement("div");c.className="inv-item"+(allOn?" inv-on":"");
+       const nm=document.createElement("strong");nm.className="inv-name";nm.textContent=b.name;
+       const desc=document.createElement("span");desc.className="inv-desc";
+       desc.textContent=ownedItems.length+"/"+bundleItems.length+" items owned"+(ownedItems.length<bundleItems.length?" (some items bought separately)":"")+".\u00a0Equip all to wear the full look.";
+       const equipBtn=makeButton(allOn?"✔ All Equipped · Unequip":"\u2728 Equip Bundle ("+ownedItems.length+")",()=>{
+         if(allOn){ownedItems.forEach(id=>{const o=byId(id);if(o)equipped()[o.id]=false;});}
+         else{ownedItems.forEach(id=>{const o=byId(id);if(o){if(o.group)COS.forEach(x=>{if(x.group===o.group&&x.id!==o.id)equipped()[x.id]=false;});equipped()[o.id]=true;}});}
+         after(false);toast((allOn?b.name+" unequipped.":b.name+" equipped!"),2400);
+       },!ownedItems.length,"inv-btn"+(allOn?" inv-btn-on":""));
+       c.append(nm,desc,equipBtn);g.append(c);
+     });}}
     GROUPS.forEach(([grp,title])=>{
       const g=sec(title),list=COS.filter(o=>o.group===grp&&owned()[o.id]);
       if(!list.length)return empty(g);
@@ -7802,7 +8334,8 @@ $("adminResetGlobalBoostBtn").addEventListener("click", async () => {
     "dm-fx-snow":{n:9,ch:"❄",cols:["#d6f1ff","#9fdcff","#ffffff"],fs:15,d:[20,50],grav:.5},
     "dm-fx-chess":{n:7,ch:"♟",chs:["♔","♕","♖","♗","♘","♙"],cols:["#ffffff","#e6c35c","#d9c7a0"],fs:20,d:[24,58],spin:1},
     "dm-fx-gta":{n:10,ch:"✦",cols:["#ff4fa8","#4de1ff","#ffb347","#ffffff"],fs:17,d:[24,60]},
-    "dm-fx-stars":{n:8,ch:"★",cols:["#ffe14d","#fff3a0","#ffb300"],fs:15,d:[24,56]}
+    "dm-fx-stars":{n:8,ch:"★",cols:["#ffe14d","#fff3a0","#ffb300"],fs:15,d:[24,56]},
+    "dm-fx-thunder":{n:8,ch:"⚡",cols:["#4de1ff","#ffd54a","#ffffff","#a0b4ff"],fs:18,d:[24,60]}
   };
   document.addEventListener("pointerdown",e=>{
     if(typeof state!=="undefined"&&state.reducedMotion)return;
@@ -7932,36 +8465,7 @@ $("claimOfflineCashBtn").addEventListener("click", () => { void claimOfflineCash
 $("rebirthBtn").addEventListener("click", rebirth);
 $("globalBoostBtn").addEventListener("click", contributeToGlobalBoost);
 $("resetUpgradesBtn").addEventListener("click", resetUpgrades);
-$("resetBtn").addEventListener("click", () => {
-  if (!confirm("Reset your money, lifetime earnings, inventory, level, rebirths, rebirth points, upgrades, achievements, XP, multiplier, Note Fever progress, speed boosts, and placed generators? Crates and quest progress are kept, but your Stars collected are reset. This cannot be undone.")) return;
-  syncNewAccountBoostRemaining();
-  const taskProgress = {
-    lowPerformanceMode: state.lowPerformanceMode,
-    snowEnabled: state.snowEnabled,
-    reducedMotion: state.reducedMotion,
-    crateInventory: state.crateInventory,
-    completedTaskObjectives: state.completedTaskObjectives,
-    announcedTaskCompletions: state.announcedTaskCompletions,
-    claimedTaskRewards: state.claimedTaskRewards,
-    taskGenerationsPlaced: state.taskGenerationsPlaced,
-    taskBonusStarEvents: state.taskBonusStarEvents,
-    taskRebirthPointsSpent: state.taskRebirthPointsSpent,
-    taskSpentAllRebirthPoints: state.taskSpentAllRebirthPoints,
-    tutorialCrateAwarded: state.tutorialCrateAwarded,
-    generatorGiftRefunds: state.generatorGiftRefunds,
-    newAccountBoostRemainingMs: state.newAccountBoostRemainingMs,
-    dailyWheelLastSpinAt: state.dailyWheelLastSpinAt
-  };
-  state = { ...freshState(), ...taskProgress };
-  currentSlotPage = 0;
-  applyDisplaySettings();
-  configureGameTickTimer();
-  render();
-  allowProgressDrop = true;
-  saveUserState(true, true);
-  publishLeaderboardEntry(true);
-  notify("Game reset.");
-});
+
 window.addEventListener("beforeunload", () => { void saveUserState(true, true); });
 
 let lastGameTickAt = 0;
